@@ -1,7 +1,9 @@
+@file:Suppress("UnstableApiUsage")
+
 pluginManagement {
     repositories {
-        google()
         gradlePluginPortal()
+        google()
         mavenCentral()
     }
 }
@@ -12,6 +14,9 @@ dependencyResolutionManagement {
         mavenCentral()
     }
 }
+
+enableFeaturePreview("STABLE_CONFIGURATION_CACHE")
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 rootProject.name = "linkding-apps"
 include(":androidApp")

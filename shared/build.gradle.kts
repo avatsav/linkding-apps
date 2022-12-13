@@ -1,6 +1,8 @@
+@file:Suppress("UnstableApiUsage", "DSL_SCOPE_VIOLATION")
+
 plugins {
-    kotlin("multiplatform")
-    id("com.android.library")
+    alias(libs.plugins.kotlin.multiplatform)
+    alias(libs.plugins.android.library)
 }
 
 kotlin {
@@ -48,8 +50,4 @@ kotlin {
 
 android {
     namespace = "dev.avatsav.linkding"
-    compileSdk = 33
-    defaultConfig {
-        minSdk = 26
-    }
 }
