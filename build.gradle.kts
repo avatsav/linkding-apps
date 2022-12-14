@@ -54,12 +54,7 @@ allprojects {
 
     tasks.withType<KotlinCompile>().configureEach {
         kotlinOptions {
-            allWarningsAsErrors = true
             jvmTarget = JavaVersion.VERSION_11.toString()
-//            freeCompilerArgs = freeCompilerArgs + listOf(
-//                "-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi",
-//                "-opt-in=kotlin.Experimental",
-//            )
         }
     }
     plugins.withId(rootProject.libs.plugins.hilt.get().pluginId) {
