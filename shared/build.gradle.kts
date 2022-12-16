@@ -3,6 +3,7 @@
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.android.library)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 kotlin {
@@ -19,13 +20,31 @@ kotlin {
     }
 
     sourceSets {
-        val commonMain by getting
+        val commonMain by getting {
+            dependencies {
+                implementation(libs.kotlin.coroutines.core)
+                implementation(libs.kotlin.serialization.json)
+                implementation(project.dependencies.platform(libs.arrow.bom))
+                implementation(libs.arrow.core)
+                implementation(libs.arrow.fx.coroutines)
+                implementation(libs.arrow.fx.stm)
+                implementation(libs.multiplatform.settings)
+                implementation(libs.multiplatform.settings.noarg)
+                implementation(libs.multiplatform.settings.coroutines)
+                implementation(libs.multiplatform.settings.serialization)
+            }
+        }
         val commonTest by getting {
             dependencies {
                 implementation(kotlin("test"))
+                implementation(libs.kotlin.coroutines.test)
             }
         }
-        val androidMain by getting
+        val androidMain by getting {
+            dependencies {
+                implementation(libs.androidx.lifecycle.viewmodel.ktx)
+            }
+        }
         val androidTest by getting
         val iosX64Main by getting
         val iosArm64Main by getting

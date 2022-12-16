@@ -9,6 +9,10 @@ compose-bom = "2022.12.00"
 compose-compiler = "1.4.0-alpha02"
 dagger = "2.44.2"
 androidxlifecycle = "2.6.0-alpha03"
+multiplatform-settings = "1.0.0-RC"
+koin = "3.3.0"
+arrow = "1.1.2"
+kswift = "0.6.1"
 
 compileSdk = "33"
 minSdk = "26"
@@ -22,9 +26,11 @@ android-test = { id = "com.android.test", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "dagger" }
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
+kswift = { id = "dev.icerock.moko.kswift", version.ref = "kswift" }
 
 [libraries]
 androidx-activity-compose = "androidx.activity:activity-compose:1.6.1"
@@ -57,10 +63,27 @@ hilt-testing = { module = "com.google.dagger:hilt-android-testing", version.ref 
 kotlin-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "coroutines" }
 kotlin-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
 kotlin-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutines" }
+kotlin-serialization-json = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.1"
 
 leakCanary = "com.squareup.leakcanary:leakcanary-android:2.10"
 timber = "com.jakewharton.timber:timber:5.0.1"
 truth = "com.google.truth:truth:1.1.3"
+kswiftRuntime = "dev.icerock.moko:kswift-runtime:0.6.1"
+
+multiplatform-settings = { module = "com.russhwolf:multiplatform-settings", version.ref = "multiplatform-settings" }
+multiplatform-settings-noarg = { module = "com.russhwolf:multiplatform-settings-no-arg", version.ref = "multiplatform-settings" }
+multiplatform-settings-coroutines = { module = "com.russhwolf:multiplatform-settings-coroutines", version.ref = "multiplatform-settings" }
+multiplatform-settings-serialization = { module = "com.russhwolf:multiplatform-settings-serialization", version.ref = "multiplatform-settings" }
+
+koin = { module = "io.insert-koin:koin-core", version.ref = "koin" }
+koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin" }
+koin-test = { module = "io.insert-koin:koin-test", version.ref = "koin" }
+koin-test-junit4 = { module = "io.insert-koin:koin-test-junit4", version.ref = "koin" }
+
+arrow-bom = { module = "io.arrow-kt:arrow-stack", version.ref = "arrow" }
+arrow-core = { module = "io.arrow-kt:arrow-core" }
+arrow-fx-coroutines = { module = "io.arrow-kt:arrow-fx-coroutines" }
+arrow-fx-stm = { module = "io.arrow-kt:arrow-fx-stm" }
 
 junit = "junit:junit:4.13.2"
 androidx-test-core = "androidx.test:core-ktx:1.5.0"
