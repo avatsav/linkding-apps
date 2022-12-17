@@ -16,6 +16,7 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
     buildFeatures {
+        buildConfig = true
         compose = true
     }
     composeOptions {
@@ -52,10 +53,7 @@ dependencies {
     implementation(libs.compose.ui.tooling)
     implementation(libs.compose.ui.tooling.preview)
 
-    implementation(libs.kotlin.coroutines.core)
     implementation(libs.kotlin.coroutines.android)
-
-    implementation(libs.koin.core)
     implementation(libs.koin.android)
     implementation(libs.koin.android.compose)
     implementation(libs.timber)
