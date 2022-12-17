@@ -75,8 +75,11 @@ multiplatform-settings-noarg = { module = "com.russhwolf:multiplatform-settings-
 multiplatform-settings-coroutines = { module = "com.russhwolf:multiplatform-settings-coroutines", version.ref = "multiplatform-settings" }
 multiplatform-settings-serialization = { module = "com.russhwolf:multiplatform-settings-serialization", version.ref = "multiplatform-settings" }
 
-koin = { module = "io.insert-koin:koin-core", version.ref = "koin" }
-koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin" }
+koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
+koin-annotations = { module = "io.insert-koin:koin-core", version.ref = "koin" }
+koin-compiler = { module = "io.insert-koin:koin-ksp-compiler", version.ref = "koin" }
+koin-android = { module = "io.insert-koin:koin-android", version = "3.3.1" }
+koin-android-compose = { module = "io.insert-koin:koin-androidx-compose", version = "3.4.0" }
 koin-test = { module = "io.insert-koin:koin-test", version.ref = "koin" }
 koin-test-junit4 = { module = "io.insert-koin:koin-test-junit4", version.ref = "koin" }
 

@@ -3,8 +3,6 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.kotlin.kapt)
-    alias(libs.plugins.hilt)
 }
 
 android {
@@ -57,10 +55,9 @@ dependencies {
     implementation(libs.kotlin.coroutines.core)
     implementation(libs.kotlin.coroutines.android)
 
-    implementation(libs.hilt.library)
-    implementation(libs.hilt.compose)
-    kapt(libs.hilt.compiler)
-
+    implementation(libs.koin.core)
+    implementation(libs.koin.android)
+    implementation(libs.koin.android.compose)
     implementation(libs.timber)
 
     debugImplementation(libs.compose.ui.test.mainfest)

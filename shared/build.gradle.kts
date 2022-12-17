@@ -32,6 +32,7 @@ kotlin {
                 implementation(libs.multiplatform.settings.noarg)
                 implementation(libs.multiplatform.settings.coroutines)
                 implementation(libs.multiplatform.settings.serialization)
+                implementation(libs.koin.core)
             }
         }
         val commonTest by getting {
@@ -42,7 +43,7 @@ kotlin {
         }
         val androidMain by getting {
             dependencies {
-                implementation(libs.androidx.lifecycle.viewmodel.ktx)
+                implementation(libs.koin.android)
             }
         }
         val androidTest by getting
