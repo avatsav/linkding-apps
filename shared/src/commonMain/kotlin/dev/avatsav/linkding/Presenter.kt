@@ -1,33 +1,32 @@
 package dev.avatsav.linkding
 
-import kotlin.coroutines.CoroutineContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 
 abstract class Presenter {
+    var cleared = false
+        private set
 
     val presenterScope: CoroutineScope by lazy {
-        CloseableCoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
+        CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
     }
 
-    open fun clear() {
-        presenterScope.cancel()
+    open fun onCleared() {}
+
+    fun clear() {
+        cleared = true
+        clearCoroutineScopeWithRuntimeException()
+        onCleared()
     }
 
-}
-
-
-internal class CloseableCoroutineScope(context: CoroutineContext) : Closeable, CoroutineScope {
-
-    override val coroutineContext: CoroutineContext = context
-
-    override fun close() {
-        coroutineContext.cancel()
+    private fun clearCoroutineScopeWithRuntimeException() {
+        try {
+            presenterScope.cancel()
+        } catch (e: Exception) {
+            throw RuntimeException(e)
+        }
     }
 }
 
-internal interface Closeable {
-    fun close()
-}

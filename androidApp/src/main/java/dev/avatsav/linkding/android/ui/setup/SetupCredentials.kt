@@ -1,5 +1,6 @@
 package dev.avatsav.linkding.android.ui.setup
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -48,9 +49,7 @@ fun SetupCredentials(presenter: SetupPresenter) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SetupCredentials(
-    modifier: Modifier = Modifier,
-    uiState: ViewState,
-    onSubmitted: (String, String) -> Unit
+    modifier: Modifier = Modifier, uiState: ViewState, onSubmitted: (String, String) -> Unit
 ) {
     var url by remember { mutableStateOf("") }
     var apiKey by remember { mutableStateOf("") }
@@ -74,7 +73,11 @@ fun SetupCredentials(
             enabled = !uiState.loading,
             label = { Text(text = "Linkding Host URL") },
             isError = uiState.error is Error.UrlEmpty,
-            supportingText = { if (uiState.error is Error.UrlEmpty) Text(text = uiState.error.message) },
+            supportingText = {
+                AnimatedVisibility(visible = uiState.error is Error.UrlEmpty) {
+                    Text(text = uiState.error.message)
+                }
+            },
             keyboardOptions = KeyboardOptions(
                 autoCorrect = false,
                 keyboardType = KeyboardType.Uri,
@@ -88,7 +91,11 @@ fun SetupCredentials(
             enabled = !uiState.loading,
             label = { Text(text = "API Key") },
             isError = uiState.error is Error.ApiKeyEmpty,
-            supportingText = { if (uiState.error is Error.ApiKeyEmpty) Text(text = uiState.error.message) },
+            supportingText = {
+                AnimatedVisibility(visible = uiState.error is Error.ApiKeyEmpty) {
+                    Text(text = uiState.error.message)
+                }
+            },
             onValueChange = { value ->
                 apiKey = value
             })
