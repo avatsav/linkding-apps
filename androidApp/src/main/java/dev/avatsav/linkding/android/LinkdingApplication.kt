@@ -11,7 +11,7 @@ class LinkdingApplication : Application() {
         super.onCreate()
         startKoin {
             androidContext(this@LinkdingApplication)
-            modules(sharedModule)
+            modules(sharedModule(enableNetworkLogs = BuildConfig.DEBUG))
         }
     }
 

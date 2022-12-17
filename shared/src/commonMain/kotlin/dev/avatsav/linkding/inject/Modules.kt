@@ -25,8 +25,8 @@ private val repositoryModule = module {
 /**
  * Network dependencies.
  */
-private val networkModule = module {
-
+private fun networkModule(enableNetworkLogs: Boolean) = module {
+    single { httpClient(enableNetworkLogs) }
 }
 
 /**
@@ -38,8 +38,8 @@ private val storageModule = module {
 }
 
 
-val sharedModule = listOf(
-    networkModule,
+fun sharedModule(enableNetworkLogs: Boolean) = listOf(
+    networkModule(enableNetworkLogs),
     storageModule,
     repositoryModule,
     presenterModule

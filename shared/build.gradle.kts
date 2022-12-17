@@ -33,6 +33,11 @@ kotlin {
                 implementation(libs.multiplatform.settings.coroutines)
                 implementation(libs.multiplatform.settings.serialization)
                 implementation(libs.koin.core)
+                implementation(libs.ktor.client.core)
+                implementation(libs.ktor.client.logging)
+                implementation(libs.ktor.client.contentNegotiation)
+                implementation(libs.ktor.serialization.json)
+                implementation(libs.napier)
             }
         }
         val commonTest by getting {
@@ -44,6 +49,7 @@ kotlin {
         val androidMain by getting {
             dependencies {
                 implementation(libs.koin.android)
+                implementation(libs.ktor.client.okhttp)
             }
         }
         val androidTest by getting
@@ -55,6 +61,9 @@ kotlin {
             iosX64Main.dependsOn(this)
             iosArm64Main.dependsOn(this)
             iosSimulatorArm64Main.dependsOn(this)
+            dependencies {
+                implementation(libs.ktor.client.darwin)
+            }
         }
         val iosX64Test by getting
         val iosArm64Test by getting
