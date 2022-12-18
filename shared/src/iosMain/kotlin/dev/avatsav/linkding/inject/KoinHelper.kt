@@ -2,8 +2,8 @@ package dev.avatsav.linkding.inject
 
 import org.koin.core.context.startKoin
 
-fun initKoin(enableNetworkLogging: Boolean) {
+fun initKoin() {
     startKoin {
-        modules(sharedModule(enableNetworkLogging))
+        modules(sharedModule(Platform.isDebugBinary))
     }
 }
