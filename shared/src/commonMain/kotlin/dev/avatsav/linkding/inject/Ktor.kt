@@ -19,6 +19,9 @@ internal fun httpClient(enableNetworkLogs: Boolean) = HttpClient {
             classDiscriminator = "#class"
         })
     }
+    // TODO: Add response validator that checks 4xx statuses, network errors etc
+    // TODO: Add interceptor -> set Authorization header
+    // REF: scoped httpClients (logged in version)
     if (enableNetworkLogs) {
         install(Logging) {
             logger = NapierLogger()
