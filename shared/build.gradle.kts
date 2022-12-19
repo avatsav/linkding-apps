@@ -51,6 +51,7 @@ kotlin {
             dependencies {
                 implementation(kotlin("test"))
                 implementation(libs.kotlin.coroutines.test)
+                implementation(libs.multiplatform.settings.test)
             }
         }
         val androidMain by getting {
@@ -59,7 +60,11 @@ kotlin {
                 implementation(libs.ktor.client.okhttp)
             }
         }
-        val androidTest by getting
+        val androidTest by getting {
+            dependencies {
+                implementation(libs.multiplatform.settings.test)
+            }
+        }
         val iosX64Main by getting
         val iosArm64Main by getting
         val iosSimulatorArm64Main by getting
@@ -82,6 +87,10 @@ kotlin {
             iosSimulatorArm64Test.dependsOn(this)
         }
     }
+}
+
+nativeCoroutines {
+    suffix = "Apple"
 }
 
 android {

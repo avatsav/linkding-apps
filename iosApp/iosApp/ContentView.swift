@@ -3,7 +3,7 @@ import shared
 
 struct ContentView: View {
     var body: some View {
-        SetupCredentialsView()
+        SetupCredentialsScreen(presenter: SetupPresenter(credentialsStore: CredentialsStore()))
     }
 }
 
