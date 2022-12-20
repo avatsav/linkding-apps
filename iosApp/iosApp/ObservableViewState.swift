@@ -7,25 +7,20 @@
 //
 
 import Foundation
+import SwiftUI
 
 @MainActor
-class ViewStateObject<ViewState>: ObservableObject {
+class ObservableViewState<ViewState>: ObservableObject {
+    
     @Published var state: ViewState
-    @Published var error: Error?
-
-    var stateStream: AsyncThrowingStream<ViewState, Error>?
 
     init(initialState: ViewState) {
         self.state = initialState
     }
 
-    func startObserving() async {
-        guard let stateStream = self.stateStream else {
-            NSLog("No stream to observe. Did you forget to set the stateStream?")
-            return
-        }
+    func from(asyncStream: AsyncThrowingStream<ViewState, Error>) async {
         do {
-            for try await data in stateStream {
+            for try await data in asyncStream {
                 state = data
             }
         } catch {

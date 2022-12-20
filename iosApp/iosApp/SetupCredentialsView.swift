@@ -12,33 +12,37 @@ import shared
 import SwiftUI
 
 struct SetupCredentialsScreen: View {
-    @StateObject var viewState: ViewStateObject<SetupPresenter.ViewState> = ViewStateObject<SetupPresenter.ViewState>(initialState: SetupPresenter.ViewStateCompanion().Initial)
+    @StateObject var viewState: ObservableViewState<SetupPresenter.ViewState> = .init(initialState: SetupPresenter.ViewStateCompanion().Initial)
 
     let presenter: SetupPresenter
 
-    init(presenter: SetupPresenter) {
-        self.presenter = presenter
-    }
-
     var body: some View {
-        NavigationView {
-            SetupCredentialsView(viewState: viewState, submitted: { url, apiKey in
-                presenter.setCredentials(url: url, apiKey: apiKey)
-            })
-            .padding()
-            .navigationTitle("Hello there!")
-            .navigationBarTitleDisplayMode(.large)
-        }.onAppear {
-            viewState.stateStream = asyncStream(for: presenter.uiStateApple)
-            Task {
-                await viewState.startObserving()
-            }
+        SetupCredentialsView(
+            viewState: viewState,
+            submitted: { url, apiKey in presenter.setCredentials(url: url, apiKey: apiKey) }
+        )
+        .task {
+            await viewState.from(asyncStream: asyncStream(for: presenter.uiStateApple))
         }
     }
 }
 
 struct SetupCredentialsView: View {
-    @ObservedObject var viewState: ViewStateObject<SetupPresenter.ViewState>
+    @ObservedObject var viewState: ObservableViewState<SetupPresenter.ViewState>
+    var submitted: (String, String) -> Void
+
+    var body: some View {
+        NavigationView {
+            SetupCredentialsContent(viewState: viewState, submitted: submitted)
+                .padding()
+                .navigationTitle("Hello there!")
+                .navigationBarTitleDisplayMode(.large)
+        }
+    }
+}
+
+struct SetupCredentialsContent: View {
+    @ObservedObject var viewState: ObservableViewState<SetupPresenter.ViewState>
     var submitted: (String, String) -> Void
 
     @State private var hostUrl: String = ""
@@ -48,25 +52,17 @@ struct SetupCredentialsView: View {
         VStack(alignment: .leading, spacing: 16) {
             Text("Enter details and start bookmarking")
             Spacer().frame(height: 16)
-            TextField("Linkding Host URL", text: $hostUrl)
-                .padding()
-                .overlay(
-                    RoundedRectangle(cornerRadius: 10.0)
-                        .strokeBorder(
-                            Color.gray,
-                            style: StrokeStyle(lineWidth: 1.0)
-                        )
-                )
+            OutlineTextField(title: "Linkding Host URL",
+                             text: $hostUrl,
+                             isError: viewState.state.error is SetupPresenter.ViewStateErrorUrlEmpty,
+                             errorText: viewState.state.error.message)
+                .disabled(viewState.state.loading)
                 .padding(.bottom, 16)
-            TextField("Api Key", text: $apiKey)
-                .padding()
-                .overlay(
-                    RoundedRectangle(cornerRadius: 10.0)
-                        .strokeBorder(
-                            Color.gray,
-                            style: StrokeStyle(lineWidth: 1.0)
-                        )
-                )
+            OutlineTextField(title: "Api Key",
+                             text: $apiKey,
+                             isError: viewState.state.error is SetupPresenter.ViewStateErrorApiKeyEmpty,
+                             errorText: viewState.state.error.message)
+                .disabled(viewState.state.loading)
             Spacer().frame(height: 16)
             HStack(spacing: 12) {
                 Button(action: { submitted(hostUrl, apiKey) }) {
@@ -82,23 +78,14 @@ struct SetupCredentialsView: View {
                     ProgressView()
                 }
             }
-            ErrorView(viewState: viewState)
             Spacer()
         }
     }
 }
 
-struct ErrorView: View {
-    @ObservedObject var viewState: ViewStateObject<SetupPresenter.ViewState>
-
-    var body: some View {
-        switch viewState.state.error {
-            case is SetupPresenter.ViewStateErrorUrlEmpty:
-                Text("Url cannot be empty").foregroundColor(Color.red)
-            case is SetupPresenter.ViewStateErrorApiKeyEmpty:
-                Text("Api key cannot be empty").foregroundColor(Color.red)
-            default:
-                EmptyView()
+struct SetupCredentialsView_Previews: PreviewProvider {
+    static var previews: some View {
+        SetupCredentialsView(viewState: ObservableViewState<SetupPresenter.ViewState>.init(initialState: SetupPresenter.ViewStateCompanion().Initial)) { _, _ in
         }
     }
 }

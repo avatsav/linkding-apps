@@ -11,8 +11,8 @@
 		058557D9273AAEEB004C7B11 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 058557D8273AAEEB004C7B11 /* Preview Assets.xcassets */; };
 		2152FB042600AC8F00CF470E /* iOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2152FB032600AC8F00CF470E /* iOSApp.swift */; };
 		3D465F9F57BF1F0BB4B30554 /* Pods_iosApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50CAC7662778C9131F9D248D /* Pods_iosApp.framework */; };
-		4447B98F294F1CF70067BDFF /* SetupViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4447B98E294F1CF70067BDFF /* SetupViewModel.swift */; };
-		44D992A3295120210095B0FC /* ViewStateObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44D992A2295120210095B0FC /* ViewStateObject.swift */; };
+		4461CE9F295209D800473232 /* OutlineTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4461CE9E295209D800473232 /* OutlineTextField.swift */; };
+		44D992A3295120210095B0FC /* ObservableViewState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44D992A2295120210095B0FC /* ObservableViewState.swift */; };
 		44EE093F294F0969004DE1B8 /* SetupCredentialsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44EE093E294F0969004DE1B8 /* SetupCredentialsView.swift */; };
 		7555FF83242A565900829871 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7555FF82242A565900829871 /* ContentView.swift */; };
 /* End PBXBuildFile section */
@@ -21,8 +21,8 @@
 		058557BA273AAA24004C7B11 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		058557D8273AAEEB004C7B11 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		2152FB032600AC8F00CF470E /* iOSApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iOSApp.swift; sourceTree = "<group>"; };
-		4447B98E294F1CF70067BDFF /* SetupViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetupViewModel.swift; sourceTree = "<group>"; };
-		44D992A2295120210095B0FC /* ViewStateObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewStateObject.swift; sourceTree = "<group>"; };
+		4461CE9E295209D800473232 /* OutlineTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutlineTextField.swift; sourceTree = "<group>"; };
+		44D992A2295120210095B0FC /* ObservableViewState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObservableViewState.swift; sourceTree = "<group>"; };
 		44EE093E294F0969004DE1B8 /* SetupCredentialsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SetupCredentialsView.swift; sourceTree = "<group>"; };
 		4A5B2E33477B65CB11B1850D /* Pods-iosApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iosApp.debug.xcconfig"; path = "Target Support Files/Pods-iosApp/Pods-iosApp.debug.xcconfig"; sourceTree = "<group>"; };
 		50CAC7662778C9131F9D248D /* Pods_iosApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_iosApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -52,6 +52,14 @@
 			path = "Preview Content";
 			sourceTree = "<group>";
 		};
+		4461CE9D295209B900473232 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				4461CE9E295209D800473232 /* OutlineTextField.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
 		7555FF72242A565900829871 = {
 			isa = PBXGroup;
 			children = (
@@ -73,14 +81,14 @@
 		7555FF7D242A565900829871 /* iosApp */ = {
 			isa = PBXGroup;
 			children = (
+				4461CE9D295209B900473232 /* Components */,
 				058557BA273AAA24004C7B11 /* Assets.xcassets */,
 				7555FF82242A565900829871 /* ContentView.swift */,
 				44EE093E294F0969004DE1B8 /* SetupCredentialsView.swift */,
 				7555FF8C242A565B00829871 /* Info.plist */,
 				2152FB032600AC8F00CF470E /* iOSApp.swift */,
 				058557D7273AAEEB004C7B11 /* Preview Content */,
-				4447B98E294F1CF70067BDFF /* SetupViewModel.swift */,
-				44D992A2295120210095B0FC /* ViewStateObject.swift */,
+				44D992A2295120210095B0FC /* ObservableViewState.swift */,
 			);
 			path = iosApp;
 			sourceTree = "<group>";
@@ -216,8 +224,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				44D992A3295120210095B0FC /* ViewStateObject.swift in Sources */,
-				4447B98F294F1CF70067BDFF /* SetupViewModel.swift in Sources */,
+				4461CE9F295209D800473232 /* OutlineTextField.swift in Sources */,
+				44D992A3295120210095B0FC /* ObservableViewState.swift in Sources */,
 				2152FB042600AC8F00CF470E /* iOSApp.swift in Sources */,
 				7555FF83242A565900829871 /* ContentView.swift in Sources */,
 				44EE093F294F0969004DE1B8 /* SetupCredentialsView.swift in Sources */,
@@ -278,7 +286,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -333,7 +341,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;

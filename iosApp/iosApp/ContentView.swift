@@ -1,14 +1,9 @@
-import SwiftUI
 import shared
+import SwiftUI
 
 struct ContentView: View {
     var body: some View {
-        SetupCredentialsScreen(presenter: SetupPresenter(credentialsStore: CredentialsStore()))
-    }
-}
-
-struct ContentView_Previews: PreviewProvider {
-    static var previews: some View {
-        ContentView()
+        let setupPresenter = SetupPresenter(credentialsStore: CredentialsStore())
+        SetupCredentialsScreen(presenter: setupPresenter)
     }
 }
