@@ -1,5 +1,6 @@
 package dev.avatsav.linkding
 
+import com.rickclephas.kmp.nativecoroutines.NativeCoroutineScope
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -9,6 +10,7 @@ abstract class Presenter {
     var cleared = false
         private set
 
+    @NativeCoroutineScope
     val presenterScope: CoroutineScope by lazy {
         CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
     }

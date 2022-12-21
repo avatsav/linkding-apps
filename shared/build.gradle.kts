@@ -4,18 +4,25 @@ plugins {
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.kotlin.native.cocoapods)
+    alias(libs.plugins.kmpNativeCoroutines)
 }
 
 kotlin {
     android()
+    iosX64()
+    iosArm64()
+    iosSimulatorArm64()
 
-    listOf(
-        iosX64(),
-        iosArm64(),
-        iosSimulatorArm64()
-    ).forEach {
-        it.binaries.framework {
+    cocoapods {
+        summary = "Some description for the Shared Module"
+        homepage = "Link to the Shared Module homepage"
+        version = "1.0"
+        ios.deploymentTarget = "15.0"
+        podfile = project.file("../iosApp/Podfile")
+        framework {
             baseName = "shared"
+            isStatic = true
         }
     }
 
@@ -44,6 +51,7 @@ kotlin {
             dependencies {
                 implementation(kotlin("test"))
                 implementation(libs.kotlin.coroutines.test)
+                implementation(libs.multiplatform.settings.test)
             }
         }
         val androidMain by getting {
@@ -52,7 +60,11 @@ kotlin {
                 implementation(libs.ktor.client.okhttp)
             }
         }
-        val androidTest by getting
+        val androidTest by getting {
+            dependencies {
+                implementation(libs.multiplatform.settings.test)
+            }
+        }
         val iosX64Main by getting
         val iosArm64Main by getting
         val iosSimulatorArm64Main by getting
@@ -75,6 +87,10 @@ kotlin {
             iosSimulatorArm64Test.dependsOn(this)
         }
     }
+}
+
+nativeCoroutines {
+    suffix = "Apple"
 }
 
 android {

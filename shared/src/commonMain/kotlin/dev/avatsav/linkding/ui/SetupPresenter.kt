@@ -32,6 +32,12 @@ class SetupPresenter(
     }
 
     data class ViewState(val loading: Boolean = false, val error: Error = Error.None) {
+        companion object {
+            val Initial = ViewState(
+                loading = false, error = Error.None
+            )
+        }
+
         sealed class Error(val message: String = "") {
             object None : Error()
             object UrlEmpty : Error("URL cannot be empty")
@@ -40,22 +46,21 @@ class SetupPresenter(
     }
 
     object ValidateInput {
-        private fun Credentials.urlNotEmpty(): Validated<ViewState.Error, Credentials> =
+        private fun Credentials.urlNotEmpty(): Validated<SetupPresenter.ViewState.Error, Credentials> =
             if (url.isNotEmpty()) valid()
-            else ViewState.Error.UrlEmpty.invalid()
+            else SetupPresenter.ViewState.Error.UrlEmpty.invalid()
 
-        private fun Credentials.apiKeyNotEmpty(): Validated<ViewState.Error, Credentials> =
+        private fun Credentials.apiKeyNotEmpty(): Validated<SetupPresenter.ViewState.Error, Credentials> =
             if (apiKey.isNotEmpty()) valid()
-            else ViewState.Error.ApiKeyEmpty.invalid()
+            else SetupPresenter.ViewState.Error.ApiKeyEmpty.invalid()
 
-        private fun Credentials.validate(): Either<ViewState.Error, Credentials> =
-            either.eager {
-                urlNotEmpty().bind()
-                apiKeyNotEmpty().bind()
-                Credentials(url, apiKey)
-            }
+        private fun Credentials.validate(): Either<SetupPresenter.ViewState.Error, Credentials> = either.eager {
+            urlNotEmpty().bind()
+            apiKeyNotEmpty().bind()
+            Credentials(url, apiKey)
+        }
 
-        operator fun invoke(url: String, apiKey: String): Either<ViewState.Error, Credentials> {
+        operator fun invoke(url: String, apiKey: String): Either<SetupPresenter.ViewState.Error, Credentials> {
             return Credentials(url, apiKey).validate()
         }
 

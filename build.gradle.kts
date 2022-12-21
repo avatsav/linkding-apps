@@ -16,9 +16,11 @@ plugins {
     alias(libs.plugins.kotlin.kapt) apply false
     alias(libs.plugins.kotlin.multiplatform) apply false
     alias(libs.plugins.kotlin.serialization) apply false
+    alias(libs.plugins.kotlin.native.cocoapods) apply false
     alias(libs.plugins.ksp) apply false
     alias(libs.plugins.hilt) apply false
     alias(libs.plugins.spotless) apply false
+    alias(libs.plugins.kmpNativeCoroutines) apply false
 }
 
 allprojects {
