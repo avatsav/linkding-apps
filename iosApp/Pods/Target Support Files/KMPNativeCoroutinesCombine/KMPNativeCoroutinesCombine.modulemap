@@ -1,4 +1,4 @@
-framework module KMPNativeCoroutinesCombine {
+module KMPNativeCoroutinesCombine {
   umbrella header "KMPNativeCoroutinesCombine-umbrella.h"
 
   export *

@@ -1,4 +1,4 @@
-framework module KMPNativeCoroutinesCore {
+module KMPNativeCoroutinesCore {
   umbrella header "KMPNativeCoroutinesCore-umbrella.h"
 
   export *

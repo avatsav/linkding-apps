@@ -6,26 +6,28 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import dev.avatsav.linkding.android.ui.setup.SetupCredentials
 import dev.avatsav.linkding.android.ui.theme.LinkdingTheme
-import dev.avatsav.linkding.ui.SetupPresenter
-import org.koin.android.ext.android.get
+import org.koin.androidx.compose.get
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             LinkdingTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    val presenter: SetupPresenter = get()
-                    SetupCredentials(presenter)
-                }
+                LinkdingApp()
             }
         }
+    }
+}
+
+@Composable
+fun LinkdingApp() {
+    Surface(
+        modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background
+    ) {
+        SetupCredentials(get())
     }
 }

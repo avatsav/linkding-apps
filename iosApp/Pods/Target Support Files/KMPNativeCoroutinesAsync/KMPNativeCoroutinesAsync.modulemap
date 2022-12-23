@@ -1,4 +1,4 @@
-framework module KMPNativeCoroutinesAsync {
+module KMPNativeCoroutinesAsync {
   umbrella header "KMPNativeCoroutinesAsync-umbrella.h"
 
   export *

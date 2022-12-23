@@ -8,13 +8,13 @@ import arrow.core.valid
 import dev.avatsav.linkding.Presenter
 import dev.avatsav.linkding.data.Credentials
 import dev.avatsav.linkding.data.CredentialsStore
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
-class SetupPresenter(
-    private val credentialsStore: CredentialsStore
-) : Presenter() {
+class SetupPresenter(private val credentialsStore: CredentialsStore) : Presenter() {
 
     private val _uiState = MutableStateFlow(ViewState())
     val uiState: StateFlow<ViewState> = _uiState
@@ -23,7 +23,9 @@ class SetupPresenter(
         presenterScope.launch {
             _uiState.emit(_uiState.value.copy(loading = true))
             ValidateInput(url, apiKey).map { credentials ->
-                credentialsStore.set(credentials)
+                withContext(Dispatchers.Default) {
+                    credentialsStore.set(credentials)
+                }
                 _uiState.emit(_uiState.value.copy(loading = false, error = ViewState.Error.None))
             }.mapLeft { error ->
                 _uiState.emit((_uiState.value.copy(loading = false, error = error)))
@@ -46,21 +48,21 @@ class SetupPresenter(
     }
 
     object ValidateInput {
-        private fun Credentials.urlNotEmpty(): Validated<SetupPresenter.ViewState.Error, Credentials> =
+        private fun Credentials.urlNotEmpty(): Validated<ViewState.Error, Credentials> =
             if (url.isNotEmpty()) valid()
-            else SetupPresenter.ViewState.Error.UrlEmpty.invalid()
+            else ViewState.Error.UrlEmpty.invalid()
 
-        private fun Credentials.apiKeyNotEmpty(): Validated<SetupPresenter.ViewState.Error, Credentials> =
+        private fun Credentials.apiKeyNotEmpty(): Validated<ViewState.Error, Credentials> =
             if (apiKey.isNotEmpty()) valid()
-            else SetupPresenter.ViewState.Error.ApiKeyEmpty.invalid()
+            else ViewState.Error.ApiKeyEmpty.invalid()
 
-        private fun Credentials.validate(): Either<SetupPresenter.ViewState.Error, Credentials> = either.eager {
+        private fun Credentials.validate(): Either<ViewState.Error, Credentials> = either.eager {
             urlNotEmpty().bind()
             apiKeyNotEmpty().bind()
             Credentials(url, apiKey)
         }
 
-        operator fun invoke(url: String, apiKey: String): Either<SetupPresenter.ViewState.Error, Credentials> {
+        operator fun invoke(url: String, apiKey: String): Either<ViewState.Error, Credentials> {
             return Credentials(url, apiKey).validate()
         }
 

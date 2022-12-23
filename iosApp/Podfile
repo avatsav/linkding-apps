@@ -1,5 +1,4 @@
 target 'iosApp' do
-  use_frameworks!
   platform :ios, '15.0'
   pod 'shared', :path => '../shared'
   pod 'KMPNativeCoroutinesAsync', '0.13.2'
