@@ -1,6 +1,8 @@
 package dev.avatsav.linkding.inject
 
 import com.russhwolf.settings.ExperimentalSettingsApi
+import dev.avatsav.linkding.bookmark.adapter.out.LinkdingBookmarkRepository
+import dev.avatsav.linkding.bookmark.application.services.LinkdingBookmarkService
 import dev.avatsav.linkding.data.CredentialsStore
 import dev.avatsav.linkding.ui.MainPresenter
 import dev.avatsav.linkding.ui.SetupPresenter
@@ -28,7 +30,8 @@ private val presenterModule = module {
  * Repository dependencies.
  */
 private val repositoryModule = module {
-
+    single { LinkdingBookmarkService(get(), get()) }
+    single { LinkdingBookmarkRepository(get()) }
 }
 
 /**

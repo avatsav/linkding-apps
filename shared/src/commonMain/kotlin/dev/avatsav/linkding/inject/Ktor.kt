@@ -9,23 +9,26 @@ import io.ktor.client.plugins.logging.Logging
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 
-internal fun httpClient(enableNetworkLogs: Boolean) = HttpClient {
-    install(ContentNegotiation) {
-        json(Json {
-            isLenient = true
-            ignoreUnknownKeys = true
-            encodeDefaults = true
-            prettyPrint = enableNetworkLogs
-            classDiscriminator = "#class"
-        })
-    }
-    if (enableNetworkLogs) {
-        install(Logging) {
-            logger = NapierLogger()
-            level = LogLevel.BODY
+internal fun httpClient(enableNetworkLogs: Boolean) =
+    HttpClient {
+        install(ContentNegotiation) {
+            json(Json {
+                explicitNulls = false
+                isLenient = true
+                ignoreUnknownKeys = true
+                encodeDefaults = true
+                prettyPrint = enableNetworkLogs
+                classDiscriminator = "#class"
+            })
+        }
+
+        if (enableNetworkLogs) {
+            install(Logging) {
+                logger = NapierLogger()
+                level = LogLevel.BODY
+            }
         }
     }
-}
 
 internal class NapierLogger : Logger {
     override fun log(message: String) {
