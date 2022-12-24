@@ -30,21 +30,24 @@ class BookmarkServiceTest {
         LinkdingBookmarkService(bookmarkRepository, credentialsStore)
 
     @BeforeTest
-    fun init() = runBlocking {
-        credentialsStore.set(
-            Credentials(
-                // TODO: Setup using test containers ?
-                apiKey = "asdasdasd", url = "https://bookmarks.dvastav.adasd"
+    fun init() {
+        runBlocking {
+            credentialsStore.set(
+                Credentials(
+                    apiKey = "TODO", url = "TODO"
+                )
             )
-        )
+        }
     }
 
     @Test
-    fun testGetBookmarks() = runBlocking {
-        bookmarkService.get().map { println(it) }.mapLeft {
-            when (it) {
-                is BookmarkError.CouldNotGetBookmark -> println(it.message)
-                BookmarkError.CredentialsNotSetup -> println("Credentials are not setup")
+    fun testGetBookmarks() {
+        runBlocking {
+            bookmarkService.get().map { println(it) }.mapLeft {
+                when (it) {
+                    is BookmarkError.CouldNotGetBookmark -> println(it.message)
+                    BookmarkError.CredentialsNotSetup -> println("Credentials are not setup")
+                }
             }
         }
     }

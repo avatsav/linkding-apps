@@ -34,13 +34,15 @@ fun LinkdingNavigation(
 
 private fun NavGraphBuilder.addSetupScreen(navController: NavController) {
     composable(Screen.Setup.route) {
-        SetupScreen(get())
+        SetupScreen(presenter = get())
     }
 }
 
 private fun NavGraphBuilder.addBookmarksScreen(navController: NavController) {
     composable(Screen.Bookmarks.route) {
-        BookmarksScreen(onAddBookmark = { })
+        BookmarksScreen(
+            presenter = get(),
+            onAddBookmark = { })
     }
 }
 

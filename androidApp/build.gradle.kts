@@ -54,6 +54,7 @@ dependencies {
     implementation(libs.compose.ui.tooling.preview)
 
     implementation(libs.kotlin.coroutines.android)
+    implementation(libs.kotlin.datetime)
     implementation(libs.koin.android)
     implementation(libs.koin.android.compose)
     implementation(libs.timber)
