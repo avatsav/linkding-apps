@@ -34,21 +34,21 @@ import dev.avatsav.linkding.ui.SetupPresenter.ViewState
 import dev.avatsav.linkding.ui.SetupPresenter.ViewState.Error
 
 @Composable
-fun SetupCredentials(presenter: SetupPresenter) {
+fun SetupScreen(presenter: SetupPresenter) {
     val uiState by presenter.uiState.collectAsState()
     DisposableEffect(presenter) {
         onDispose {
             presenter.clear()
         }
     }
-    SetupCredentials(uiState = uiState, onSubmitted = { url, apiKey ->
+    SetupScreen(uiState = uiState, onSubmitted = { url, apiKey ->
         presenter.setCredentials(url, apiKey)
     })
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SetupCredentials(
+fun SetupScreen(
     modifier: Modifier = Modifier, uiState: ViewState, onSubmitted: (String, String) -> Unit
 ) {
     var url by remember { mutableStateOf("") }
@@ -117,9 +117,9 @@ fun SetupCredentials(
 
 @Preview(showBackground = true)
 @Composable
-fun SetupPreview() {
+fun SetupScreenPreview() {
     LinkdingTheme {
-        SetupCredentials(uiState = ViewState(
+        SetupScreen(uiState = ViewState(
             loading = false,
             error = Error.None,
         ), onSubmitted = { _, _ -> })

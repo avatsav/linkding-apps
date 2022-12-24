@@ -4,19 +4,26 @@ import dev.avatsav.linkding.Presenter
 import dev.avatsav.linkding.data.CredentialsNotSetup
 import dev.avatsav.linkding.data.CredentialsStore
 import dev.avatsav.linkding.data.Setup
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 
-class MainPresenter(private val credentialsStore: CredentialsStore) : Presenter() {
+class MainPresenter(credentialsStore: CredentialsStore) : Presenter() {
+    data class ViewState(val loading: Boolean = false, val setup: Boolean)
 
-    val credentialsSetup: StateFlow<Boolean> = credentialsStore.credentialsState.map { state ->
+    val state: StateFlow<ViewState> = credentialsStore.state.map { state ->
         when (state) {
-            CredentialsNotSetup -> false
-            is Setup -> true
+            is CredentialsNotSetup -> ViewState(loading = false, setup = false)
+            is Setup -> ViewState(loading = false, setup = true)
         }
-    }.stateIn(scope = presenterScope, SharingStarted.Lazily, false)
+    }.onEach { delay(300) }.stateIn(
+        scope = presenterScope,
+        started = SharingStarted.WhileSubscribed(5_000),
+        initialValue = ViewState(loading = true, setup = false)
+    )
 
 }
 

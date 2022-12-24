@@ -22,7 +22,7 @@ private const val ApiKeyCredentialsKey = "apiKey"
 @OptIn(ExperimentalSettingsApi::class)
 class CredentialsStore(private val settings: FlowSettings) {
 
-    val credentialsState: Flow<CredentialsState> = combine(
+    val state: Flow<CredentialsState> = combine(
         settings.getStringOrNullFlow(HostUrlCredentialsKey),
         settings.getStringOrNullFlow(ApiKeyCredentialsKey),
     ) { hostUrl: String?, apiKey: String? ->
