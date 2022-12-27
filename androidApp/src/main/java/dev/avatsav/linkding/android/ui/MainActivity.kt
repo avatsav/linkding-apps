@@ -35,7 +35,8 @@ fun LinkdingApp() {
     val navigationController = rememberNavController()
     LinkdingTheme {
         Surface(
-            modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background
+            modifier = Modifier.fillMaxSize(),
+            color = MaterialTheme.colorScheme.background
         ) {
 
             if (state.loading) {

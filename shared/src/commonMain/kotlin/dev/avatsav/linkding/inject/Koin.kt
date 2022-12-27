@@ -9,6 +9,8 @@ import dev.avatsav.linkding.data.CredentialsStore
 import dev.avatsav.linkding.ui.BookmarksPresenter
 import dev.avatsav.linkding.ui.MainPresenter
 import dev.avatsav.linkding.ui.SetupPresenter
+import io.github.aakira.napier.DebugAntilog
+import io.github.aakira.napier.Napier
 import org.koin.core.context.startKoin
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.factoryOf
@@ -18,6 +20,7 @@ import org.koin.dsl.module
 
 fun initKoin(enableNetworkLogs: Boolean, appDeclaration: KoinAppDeclaration = {}) = startKoin {
     appDeclaration()
+    if (enableNetworkLogs) Napier.base(DebugAntilog())
     modules(sharedModule(enableNetworkLogs))
 }
 

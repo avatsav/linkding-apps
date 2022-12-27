@@ -1,5 +1,6 @@
 package dev.avatsav.linkding.android.ui.setup
 
+import android.content.res.Configuration
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -115,7 +116,8 @@ fun SetupScreen(
     }
 }
 
-@Preview(showBackground = true)
+@Preview
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 fun SetupScreenPreview() {
     LinkdingTheme {

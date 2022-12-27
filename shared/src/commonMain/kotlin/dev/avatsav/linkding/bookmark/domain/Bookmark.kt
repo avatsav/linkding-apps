@@ -7,7 +7,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Bookmark(
-    val id: Long? = null,
+    val id: Long,
     val url: String,
     val title: String,
     val description: String? = null,
