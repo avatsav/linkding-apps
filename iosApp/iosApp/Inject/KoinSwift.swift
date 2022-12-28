@@ -13,7 +13,7 @@ public typealias Koin = Koin_coreKoin
 
 extension IosDependencies {
     private static let presenterKeyPaths: [PartialKeyPath<IosDependencies>] = [
-        \.setupPresenter,
+        \.setupConfigurationPresenter,
         \.mainPresenter
     ]
 

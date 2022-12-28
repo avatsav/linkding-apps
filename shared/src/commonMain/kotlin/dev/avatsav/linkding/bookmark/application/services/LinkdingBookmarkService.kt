@@ -8,11 +8,13 @@ import dev.avatsav.linkding.bookmark.domain.Bookmark
 import dev.avatsav.linkding.bookmark.domain.BookmarkError
 import dev.avatsav.linkding.bookmark.domain.BookmarkList
 import dev.avatsav.linkding.bookmark.domain.BookmarkSaveError
-import dev.avatsav.linkding.data.CredentialsStore
+import dev.avatsav.linkding.bookmark.domain.TestConnectionError
+import dev.avatsav.linkding.data.Configuration
+import dev.avatsav.linkding.data.ConfigurationStore
 
 class LinkdingBookmarkService(
     private val bookmarkRepository: BookmarkRepository,
-    private val credentialsStore: CredentialsStore
+    private val configurationStore: ConfigurationStore
 ) : BookmarkService {
 
     override suspend fun get(
@@ -20,7 +22,7 @@ class LinkdingBookmarkService(
         limit: Int,
         query: String
     ): Either<BookmarkError, BookmarkList> {
-        return credentialsStore.get().toEither()
+        return configurationStore.get().toEither()
             .map { credentials ->
                 return bookmarkRepository.fetch(
                     credentials.url,
@@ -30,12 +32,12 @@ class LinkdingBookmarkService(
                     query
                 )
             }
-            .mapLeft { return@get BookmarkError.CredentialsNotSetup.left() }
+            .mapLeft { return@get BookmarkError.ConfigurationNotSetup.left() }
     }
 
 
     override suspend fun get(bookmarkId: Long): Either<BookmarkError, Bookmark> {
-        return credentialsStore.get().toEither()
+        return configurationStore.get().toEither()
             .map { credentials ->
                 return bookmarkRepository.fetch(
                     credentials.url,
@@ -43,19 +45,28 @@ class LinkdingBookmarkService(
                     bookmarkId
                 )
             }
-            .mapLeft { return@get BookmarkError.CredentialsNotSetup.left() }
+            .mapLeft { return@get BookmarkError.ConfigurationNotSetup.left() }
+    }
+
+    override suspend fun testConnection(configuration: Configuration): Either<TestConnectionError, Configuration> {
+        return bookmarkRepository.fetch(
+            configuration.url,
+            configuration.apiKey,
+            0, 1, ""
+        ).fold(ifLeft = { Either.Left(TestConnectionError) },
+            ifRight = { Either.Right(configuration) })
     }
 
     override suspend fun save(bookmark: Bookmark): Either<BookmarkSaveError, Bookmark> {
-        return credentialsStore.get().toEither()
-            .map { credentials ->
+        return configurationStore.get().toEither()
+            .map { configuration ->
                 return bookmarkRepository.save(
-                    credentials.url,
-                    credentials.apiKey,
+                    configuration.url,
+                    configuration.apiKey,
                     bookmark
                 )
             }
-            .mapLeft { return@save BookmarkSaveError.CredentialsNotSetup.left() }
+            .mapLeft { return@save BookmarkSaveError.ConfigurationNotSetup.left() }
     }
 
     override suspend fun update(

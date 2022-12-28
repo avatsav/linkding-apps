@@ -4,6 +4,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 sealed class BookmarkError {
-    object CredentialsNotSetup : BookmarkError()
+    object ConfigurationNotSetup : BookmarkError()
     data class CouldNotGetBookmark(val message: LinkdingErrorResponse) : BookmarkError()
 }

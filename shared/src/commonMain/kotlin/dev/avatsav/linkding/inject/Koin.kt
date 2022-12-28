@@ -5,10 +5,10 @@ import dev.avatsav.linkding.bookmark.adapter.out.LinkdingBookmarkRepository
 import dev.avatsav.linkding.bookmark.application.ports.`in`.BookmarkService
 import dev.avatsav.linkding.bookmark.application.ports.out.BookmarkRepository
 import dev.avatsav.linkding.bookmark.application.services.LinkdingBookmarkService
-import dev.avatsav.linkding.data.CredentialsStore
+import dev.avatsav.linkding.data.ConfigurationStore
 import dev.avatsav.linkding.ui.BookmarksPresenter
 import dev.avatsav.linkding.ui.MainPresenter
-import dev.avatsav.linkding.ui.SetupPresenter
+import dev.avatsav.linkding.ui.SetupConfigurationPresenter
 import io.github.aakira.napier.DebugAntilog
 import io.github.aakira.napier.Napier
 import org.koin.core.context.startKoin
@@ -28,7 +28,7 @@ fun initKoin(enableNetworkLogs: Boolean, appDeclaration: KoinAppDeclaration = {}
  * Presenter dependencies.
  */
 private val presenterModule = module {
-    factoryOf(::SetupPresenter)
+    factoryOf(::SetupConfigurationPresenter)
     factoryOf(::MainPresenter)
     factory { BookmarksPresenter(get()) }
 }
@@ -53,7 +53,7 @@ private fun networkModule(enableNetworkLogs: Boolean) = module {
  */
 @OptIn(ExperimentalSettingsApi::class)
 private val storageModule = module {
-    singleOf(::CredentialsStore)
+    singleOf(::ConfigurationStore)
 }
 
 expect fun platformModule(): Module

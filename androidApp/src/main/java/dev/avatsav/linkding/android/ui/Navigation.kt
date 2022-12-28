@@ -8,7 +8,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import dev.avatsav.linkding.android.ui.bookmarks.BookmarksScreen
-import dev.avatsav.linkding.android.ui.setup.SetupScreen
+import dev.avatsav.linkding.android.ui.setup.SetupConfigurationScreen
 import org.koin.androidx.compose.get
 
 internal sealed class Screen(open val route: String) {
@@ -27,14 +27,14 @@ fun LinkdingNavigation(
         startDestination = if (credentialsSetup) Screen.Bookmarks.route else Screen.Setup.route,
         modifier = modifier
     ) {
-        addSetupScreen(navController)
+        addSetupConfigurationScreen(navController)
         addBookmarksScreen(navController)
     }
 }
 
-private fun NavGraphBuilder.addSetupScreen(navController: NavController) {
+private fun NavGraphBuilder.addSetupConfigurationScreen(navController: NavController) {
     composable(Screen.Setup.route) {
-        SetupScreen(presenter = get())
+        SetupConfigurationScreen(presenter = get())
     }
 }
 

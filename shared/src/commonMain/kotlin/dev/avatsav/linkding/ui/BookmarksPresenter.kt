@@ -22,7 +22,7 @@ class BookmarksPresenter(private val bookmarkService: BookmarkService) : Present
             }.mapLeft { error ->
                 when (error) {
                     is BookmarkError.CouldNotGetBookmark -> {}
-                    BookmarkError.CredentialsNotSetup -> {}
+                    BookmarkError.ConfigurationNotSetup -> {}
                 }
             }
         }

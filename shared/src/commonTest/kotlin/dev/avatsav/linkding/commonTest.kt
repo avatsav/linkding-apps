@@ -8,8 +8,8 @@ import dev.avatsav.linkding.bookmark.application.ports.`in`.BookmarkService
 import dev.avatsav.linkding.bookmark.application.ports.out.BookmarkRepository
 import dev.avatsav.linkding.bookmark.application.services.LinkdingBookmarkService
 import dev.avatsav.linkding.bookmark.domain.BookmarkError
-import dev.avatsav.linkding.data.Credentials
-import dev.avatsav.linkding.data.CredentialsStore
+import dev.avatsav.linkding.data.Configuration
+import dev.avatsav.linkding.data.ConfigurationStore
 import dev.avatsav.linkding.inject.httpClient
 import io.ktor.client.HttpClient
 import kotlin.test.BeforeTest
@@ -23,17 +23,17 @@ class BookmarkServiceTest {
     private val bookmarkRepository: BookmarkRepository = LinkdingBookmarkRepository(httpClient)
 
     @OptIn(ExperimentalSettingsApi::class)
-    private val credentialsStore: CredentialsStore =
-        CredentialsStore(MapSettings().toFlowSettings())
+    private val configurationStore: ConfigurationStore =
+        ConfigurationStore(MapSettings().toFlowSettings())
 
     private val bookmarkService: BookmarkService =
-        LinkdingBookmarkService(bookmarkRepository, credentialsStore)
+        LinkdingBookmarkService(bookmarkRepository, configurationStore)
 
     @BeforeTest
     fun init() {
         runBlocking {
-            credentialsStore.set(
-                Credentials(
+            configurationStore.set(
+                Configuration(
                     apiKey = "TODO", url = "TODO"
                 )
             )
@@ -46,7 +46,7 @@ class BookmarkServiceTest {
             bookmarkService.get().map { println(it) }.mapLeft {
                 when (it) {
                     is BookmarkError.CouldNotGetBookmark -> println(it.message)
-                    BookmarkError.CredentialsNotSetup -> println("Credentials are not setup")
+                    BookmarkError.ConfigurationNotSetup -> println("Credentials are not setup")
                 }
             }
         }

@@ -11,15 +11,15 @@ import KMPNativeCoroutinesAsync
 import shared
 import SwiftUI
 
-struct SetupCredentialsScreen: View {
-    @StateObject var viewState: ObservableViewState<SetupPresenter.ViewState> = .init(initialState: SetupPresenter.ViewStateCompanion().Initial)
+struct SetupConfigurationScreen: View {
+    @StateObject var viewState: ObservableViewState<SetupConfigurationPresenter.ViewState> = .init(initialState: SetupConfigurationPresenter.ViewStateCompanion().Initial)
 
-    let presenter: SetupPresenter
+    let presenter: SetupConfigurationPresenter
 
     var body: some View {
-        SetupCredentialsView(
+        SetupConfigurationView(
             viewState: viewState,
-            submitted: { url, apiKey in presenter.setCredentials(url: url, apiKey: apiKey) }
+            submitted: { url, apiKey in presenter.setConfiguration(url: url, apiKey: apiKey) }
         )
         .task {
             await viewState.from(asyncStream: asyncStream(for: presenter.uiStateApple))
@@ -27,13 +27,13 @@ struct SetupCredentialsScreen: View {
     }
 }
 
-struct SetupCredentialsView: View {
-    @ObservedObject var viewState: ObservableViewState<SetupPresenter.ViewState>
+struct SetupConfigurationView: View {
+    @ObservedObject var viewState: ObservableViewState<SetupConfigurationPresenter.ViewState>
     var submitted: (String, String) -> Void
 
     var body: some View {
         NavigationView {
-            SetupCredentialsContent(viewState: viewState, submitted: submitted)
+            SetupConfigurationContent(viewState: viewState, submitted: submitted)
                 .padding()
                 .navigationTitle("Hello there!")
                 .navigationBarTitleDisplayMode(.large)
@@ -41,8 +41,8 @@ struct SetupCredentialsView: View {
     }
 }
 
-struct SetupCredentialsContent: View {
-    @ObservedObject var viewState: ObservableViewState<SetupPresenter.ViewState>
+struct SetupConfigurationContent: View {
+    @ObservedObject var viewState: ObservableViewState<SetupConfigurationPresenter.ViewState>
     var submitted: (String, String) -> Void
 
     @State private var hostUrl: String = ""
@@ -54,13 +54,13 @@ struct SetupCredentialsContent: View {
             Spacer().frame(height: 16)
             OutlineTextField(title: "Linkding Host URL",
                              text: $hostUrl,
-                             isError: viewState.state.error is SetupPresenter.ViewStateErrorUrlEmpty,
+                             isError: viewState.state.error is SetupConfigurationPresenter.ViewStateErrorUrlEmpty,
                              errorText: viewState.state.error.message)
                 .disabled(viewState.state.loading)
                 .padding(.bottom, 16)
             OutlineTextField(title: "Api Key",
                              text: $apiKey,
-                             isError: viewState.state.error is SetupPresenter.ViewStateErrorApiKeyEmpty,
+                             isError: viewState.state.error is SetupConfigurationPresenter.ViewStateErrorApiKeyEmpty,
                              errorText: viewState.state.error.message)
                 .disabled(viewState.state.loading)
             Spacer().frame(height: 16)
@@ -77,15 +77,20 @@ struct SetupCredentialsContent: View {
                 if viewState.state.loading {
                     ProgressView()
                 }
+                if viewState.state.error is SetupConfigurationPresenter.ViewStateErrorCannotConnect {
+                    Text("Cannot connect")
+                        .bold()
+                        .foregroundColor(Color.red)
+                }
             }
             Spacer()
         }
     }
 }
 
-struct SetupCredentialsView_Previews: PreviewProvider {
+struct SetupConfigurationView_Previews: PreviewProvider {
     static var previews: some View {
-        SetupCredentialsView(viewState: ObservableViewState<SetupPresenter.ViewState>.init(initialState: SetupPresenter.ViewStateCompanion().Initial)) { _, _ in
+        SetupConfigurationView(viewState: ObservableViewState<SetupConfigurationPresenter.ViewState>.init(initialState: SetupConfigurationPresenter.ViewStateCompanion().Initial)) { _, _ in
         }
     }
 }

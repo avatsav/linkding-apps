@@ -23,33 +23,35 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.avatsav.linkding.android.ui.theme.LinkdingTheme
-import dev.avatsav.linkding.ui.SetupPresenter
-import dev.avatsav.linkding.ui.SetupPresenter.ViewState
-import dev.avatsav.linkding.ui.SetupPresenter.ViewState.Error
+import dev.avatsav.linkding.ui.SetupConfigurationPresenter
+import dev.avatsav.linkding.ui.SetupConfigurationPresenter.ViewState
+import dev.avatsav.linkding.ui.SetupConfigurationPresenter.ViewState.Error
 
 @Composable
-fun SetupScreen(presenter: SetupPresenter) {
+fun SetupConfigurationScreen(presenter: SetupConfigurationPresenter) {
     val uiState by presenter.uiState.collectAsState()
     DisposableEffect(presenter) {
         onDispose {
             presenter.clear()
         }
     }
-    SetupScreen(uiState = uiState, onSubmitted = { url, apiKey ->
-        presenter.setCredentials(url, apiKey)
+    SetupConfigurationScreen(uiState = uiState, onSubmitted = { url, apiKey ->
+        presenter.setConfiguration(url, apiKey)
     })
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SetupScreen(
+fun SetupConfigurationScreen(
     modifier: Modifier = Modifier, uiState: ViewState, onSubmitted: (String, String) -> Unit
 ) {
     var url by remember { mutableStateOf("") }
@@ -101,7 +103,10 @@ fun SetupScreen(
                 apiKey = value
             })
         Spacer(modifier = Modifier.size(24.dp))
-        Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             Button(enabled = !uiState.loading, onClick = {
                 onSubmitted(url, apiKey)
             }) {
@@ -112,16 +117,23 @@ fun SetupScreen(
                     color = Color.White
                 )
             }
+            AnimatedVisibility(visible = uiState.error is Error.CannotConnect) {
+                Text(
+                    text = uiState.error.message,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.error
+                )
+            }
         }
     }
 }
 
-@Preview
+@Preview(showBackground = true)
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
-fun SetupScreenPreview() {
+fun SetupConfigurationScreen_Preview() {
     LinkdingTheme {
-        SetupScreen(uiState = ViewState(
+        SetupConfigurationScreen(uiState = ViewState(
             loading = false,
             error = Error.None,
         ), onSubmitted = { _, _ -> })

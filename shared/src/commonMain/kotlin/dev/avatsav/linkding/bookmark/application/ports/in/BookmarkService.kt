@@ -5,6 +5,8 @@ import dev.avatsav.linkding.bookmark.domain.Bookmark
 import dev.avatsav.linkding.bookmark.domain.BookmarkError
 import dev.avatsav.linkding.bookmark.domain.BookmarkList
 import dev.avatsav.linkding.bookmark.domain.BookmarkSaveError
+import dev.avatsav.linkding.bookmark.domain.TestConnectionError
+import dev.avatsav.linkding.data.Configuration
 
 
 interface BookmarkService {
@@ -14,9 +16,14 @@ interface BookmarkService {
         query: String = ""
     ): Either<BookmarkError, BookmarkList>
 
+    suspend fun testConnection(configuration: Configuration): Either<TestConnectionError, Configuration>
+
     suspend fun save(bookmark: Bookmark): Either<BookmarkSaveError, Bookmark>
 
-    suspend fun update(bookmarkId: Long, updatedBookmark: Bookmark): Either<BookmarkSaveError, Bookmark>
+    suspend fun update(
+        bookmarkId: Long,
+        updatedBookmark: Bookmark
+    ): Either<BookmarkSaveError, Bookmark>
 
     suspend fun get(bookmarkId: Long): Either<BookmarkError, Bookmark>
 
