@@ -54,9 +54,7 @@ fun BookmarksScreen(
         },
         floatingActionButton = {
             FloatingActionButton(onClick = onAddBookmark) {
-                Icon(
-                    imageVector = Icons.Filled.Add, contentDescription = "Add Bookmark"
-                )
+                Icon(imageVector = Icons.Filled.Add, contentDescription = "Add Bookmark")
             }
         },
     ) { paddingValues ->
@@ -71,9 +69,7 @@ fun BookmarksScreen(
             } else {
                 LazyColumn(modifier = Modifier.fillMaxSize()) {
                     items(items = state.bookmarks, key = { it.id }) { bookmark ->
-                        Text(
-                            text = bookmark.title, modifier = Modifier.padding(16.dp)
-                        )
+                        Text(text = bookmark.getTitleForUi(), modifier = Modifier.padding(16.dp))
                         Divider()
                     }
                 }
@@ -95,8 +91,7 @@ fun BookmarkScreenPreview() {
         Bookmark(id = 1, title = "Finding Your Way", url = "www.findingyourway.com")
     )
     LinkdingTheme {
-        BookmarksScreen(
-            state = BookmarksPresenter.ViewState(false, sampleBookmarkList),
+        BookmarksScreen(state = BookmarksPresenter.ViewState(false, sampleBookmarkList),
             onAddBookmark = {})
     }
 }

@@ -18,6 +18,7 @@ import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -38,7 +39,8 @@ fun SearchBar(
             .padding(horizontal = 12.dp, vertical = 8.dp)
             .height(48.dp)
             .background(
-                MaterialTheme.colorScheme.secondaryContainer, RoundedCornerShape(50)
+                color = MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp),
+                shape = RoundedCornerShape(50)
             )
             .fillMaxWidth(),
         singleLine = true,
@@ -49,14 +51,14 @@ fun SearchBar(
                 IconButton(onClick = { /*TODO*/ }) {
                     Icon(
                         imageVector = Icons.Default.Search,
-                        tint = MaterialTheme.colorScheme.onSecondaryContainer,
+                        tint = MaterialTheme.colorScheme.onSurface,
                         contentDescription = "Search"
                     )
                 }
                 Box(Modifier.weight(1f)) {
                     Text(
                         "Search for words or #tags", style = LocalTextStyle.current.copy(
-                            color = MaterialTheme.colorScheme.onSecondaryContainer,
+                            color = MaterialTheme.colorScheme.onSurface,
                         )
                     )
                     innerTextField()
@@ -64,7 +66,7 @@ fun SearchBar(
                 IconButton(onClick = { /*TODO*/ }) {
                     Icon(
                         imageVector = Icons.Default.MoreVert,
-                        tint = MaterialTheme.colorScheme.onSecondaryContainer,
+                        tint = MaterialTheme.colorScheme.onSurface,
                         contentDescription = "Menu"
                     )
                 }

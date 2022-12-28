@@ -26,6 +26,11 @@ kotlin {
     }
 
     sourceSets {
+        all {
+            languageSettings.optIn("com.russhwolf.settings.ExperimentalSettingsApi")
+            languageSettings.optIn("com.russhwolf.settings.ExperimentalSettingsImplementation")
+            languageSettings.optIn("kotlinx.serialization.ExperimentalSerializationApi")
+        }
         val commonMain by getting {
             dependencies {
                 implementation(libs.kotlin.coroutines.core)

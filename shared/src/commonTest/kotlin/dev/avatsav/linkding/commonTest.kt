@@ -1,6 +1,5 @@
 package dev.avatsav.linkding
 
-import com.russhwolf.settings.ExperimentalSettingsApi
 import com.russhwolf.settings.MapSettings
 import com.russhwolf.settings.coroutines.toFlowSettings
 import dev.avatsav.linkding.bookmark.adapter.out.LinkdingBookmarkRepository
@@ -22,7 +21,6 @@ class BookmarkServiceTest {
 
     private val bookmarkRepository: BookmarkRepository = LinkdingBookmarkRepository(httpClient)
 
-    @OptIn(ExperimentalSettingsApi::class)
     private val configurationStore: ConfigurationStore =
         ConfigurationStore(MapSettings().toFlowSettings())
 

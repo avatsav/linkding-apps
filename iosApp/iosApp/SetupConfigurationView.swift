@@ -35,7 +35,7 @@ struct SetupConfigurationView: View {
         NavigationView {
             SetupConfigurationContent(viewState: viewState, submitted: submitted)
                 .padding()
-                .navigationTitle("Hello there!")
+                .navigationTitle("Setup Linkding")
                 .navigationBarTitleDisplayMode(.large)
         }
     }
@@ -50,7 +50,7 @@ struct SetupConfigurationContent: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            Text("Enter details and start bookmarking")
+            Text("Configure settings, so that the app can communicate with your linkding installation.")
             Spacer().frame(height: 16)
             OutlineTextField(title: "Linkding Host URL",
                              text: $hostUrl,

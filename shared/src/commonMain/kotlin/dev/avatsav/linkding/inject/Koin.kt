@@ -1,6 +1,5 @@
 package dev.avatsav.linkding.inject
 
-import com.russhwolf.settings.ExperimentalSettingsApi
 import dev.avatsav.linkding.bookmark.adapter.out.LinkdingBookmarkRepository
 import dev.avatsav.linkding.bookmark.application.ports.`in`.BookmarkService
 import dev.avatsav.linkding.bookmark.application.ports.out.BookmarkRepository
@@ -51,7 +50,6 @@ private fun networkModule(enableNetworkLogs: Boolean) = module {
 /**
  * Storage/DB/Caching dependencies.
  */
-@OptIn(ExperimentalSettingsApi::class)
 private val storageModule = module {
     singleOf(::ConfigurationStore)
 }

@@ -13,8 +13,10 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.LargeTopAppBar
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -57,75 +59,75 @@ fun SetupConfigurationScreen(
     var url by remember { mutableStateOf("") }
     var apiKey by remember { mutableStateOf("") }
 
-    Column(
-        modifier = modifier
-            .padding(16.dp)
-            .fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
-    ) {
-
-        Text(
-            text = "Hello there!", style = MaterialTheme.typography.titleLarge
-        )
-        Text(
-            text = "Enter details and start bookmarking", style = MaterialTheme.typography.bodySmall
-        )
-        Spacer(modifier = Modifier.size(24.dp))
-        OutlinedTextField(modifier = Modifier.fillMaxWidth(),
-            value = url,
-            enabled = !uiState.loading,
-            label = { Text(text = "Linkding Host URL") },
-            isError = uiState.error is Error.UrlEmpty,
-            supportingText = {
-                AnimatedVisibility(visible = uiState.error is Error.UrlEmpty) {
-                    Text(text = uiState.error.message)
-                }
-            },
-            keyboardOptions = KeyboardOptions(
-                autoCorrect = false,
-                keyboardType = KeyboardType.Uri,
-                imeAction = ImeAction.Next,
-            ),
-            onValueChange = { value ->
-                url = value
-            })
-        OutlinedTextField(modifier = Modifier.fillMaxWidth(),
-            value = apiKey,
-            enabled = !uiState.loading,
-            label = { Text(text = "API Key") },
-            isError = uiState.error is Error.ApiKeyEmpty,
-            supportingText = {
-                AnimatedVisibility(visible = uiState.error is Error.ApiKeyEmpty) {
-                    Text(text = uiState.error.message)
-                }
-            },
-            onValueChange = { value ->
-                apiKey = value
-            })
-        Spacer(modifier = Modifier.size(24.dp))
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            verticalAlignment = Alignment.CenterVertically
+    Scaffold(topBar = {
+        LargeTopAppBar(title = { Text(text = "Setup Linkding") })
+    }) { padding ->
+        Column(
+            modifier = modifier
+                .padding(padding)
+                .padding(horizontal = 16.dp)
+                .fillMaxWidth(),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            Button(enabled = !uiState.loading, onClick = {
-                onSubmitted(url, apiKey)
-            }) {
-                Text("Let's go")
-            }
-            if (uiState.loading) {
-                CircularProgressIndicator(
-                    color = Color.White
-                )
-            }
-            AnimatedVisibility(visible = uiState.error is Error.CannotConnect) {
-                Text(
-                    text = uiState.error.message,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.error
-                )
+            Text(text = "Configure settings, so that the app can communicate with your linkding installation.")
+            Spacer(modifier = Modifier.size(8.dp))
+            OutlinedTextField(modifier = Modifier.fillMaxWidth(),
+                value = url,
+                enabled = !uiState.loading,
+                label = { Text(text = "Linkding Host URL") },
+                isError = uiState.error is Error.UrlEmpty,
+                supportingText = {
+                    AnimatedVisibility(visible = uiState.error is Error.UrlEmpty) {
+                        Text(text = uiState.error.message)
+                    }
+                },
+                keyboardOptions = KeyboardOptions(
+                    autoCorrect = false,
+                    keyboardType = KeyboardType.Uri,
+                    imeAction = ImeAction.Next,
+                ),
+                onValueChange = { value ->
+                    url = value
+                })
+            OutlinedTextField(modifier = Modifier.fillMaxWidth(),
+                value = apiKey,
+                enabled = !uiState.loading,
+                label = { Text(text = "API Key") },
+                isError = uiState.error is Error.ApiKeyEmpty,
+                supportingText = {
+                    AnimatedVisibility(visible = uiState.error is Error.ApiKeyEmpty) {
+                        Text(text = uiState.error.message)
+                    }
+                },
+                onValueChange = { value ->
+                    apiKey = value
+                })
+            Spacer(modifier = Modifier.size(24.dp))
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Button(enabled = !uiState.loading, onClick = {
+                    onSubmitted(url, apiKey)
+                }) {
+                    Text("Save")
+                }
+                if (uiState.loading) {
+                    CircularProgressIndicator(
+                        color = Color.White
+                    )
+                }
+                AnimatedVisibility(visible = uiState.error is Error.CannotConnect) {
+                    Text(
+                        text = uiState.error.message,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.error
+                    )
+                }
             }
         }
     }
+
 }
 
 @Preview(showBackground = true)

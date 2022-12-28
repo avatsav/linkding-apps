@@ -16,6 +16,7 @@ internal fun httpClient(enableNetworkLogs: Boolean) =
                 explicitNulls = false
                 isLenient = true
                 ignoreUnknownKeys = true
+                coerceInputValues = true
                 encodeDefaults = true
                 prettyPrint = enableNetworkLogs
                 classDiscriminator = "#class"
