@@ -14,7 +14,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -24,8 +24,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.avatsav.linkding.android.ui.theme.LinkdingTheme
-import dev.avatsav.linkding.bookmark.domain.Bookmark
 import dev.avatsav.linkding.ui.BookmarksPresenter
+import dev.avatsav.linkding.ui.model.BookmarkViewItem
 
 @OptIn(ExperimentalLifecycleComposeApi::class)
 @Composable
@@ -50,6 +50,7 @@ fun BookmarksScreen(
             SearchBar(
                 searchClicked = { /*TODO*/ },
                 menuClicked = { /*TODO*/ },
+                tagsClicked = { /*TODO*/ },
             )
         },
         floatingActionButton = {
@@ -69,8 +70,8 @@ fun BookmarksScreen(
             } else {
                 LazyColumn(modifier = Modifier.fillMaxSize()) {
                     items(items = state.bookmarks, key = { it.id }) { bookmark ->
-                        Text(text = bookmark.getTitleForUi(), modifier = Modifier.padding(16.dp))
-                        Divider()
+                        BookmarkItem(bookmark = bookmark, onClicked = {}, onTagClicked = {})
+                        Divider(thickness = 0.5.dp)
                     }
                 }
             }
@@ -78,20 +79,59 @@ fun BookmarksScreen(
     }
 }
 
-@Preview
+
+@Preview(showBackground = true, showSystemUi = true)
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 fun BookmarkScreenPreview() {
     val sampleBookmarkList = listOf(
-        Bookmark(id = 1, title = "The Road to Success", url = "www.roadtosuccess.com"),
-        Bookmark(id = 1, title = "From Darkness to Light", url = "www.darkness2light.com"),
-        Bookmark(id = 1, title = "The Power of Perseverance", url = "www.perseverancepower.com"),
-        Bookmark(id = 1, title = "The Art of Courage", url = "www.courageart.com"),
-        Bookmark(id = 1, title = "The Journey Within", url = "www.journeywithin.com"),
-        Bookmark(id = 1, title = "Finding Your Way", url = "www.findingyourway.com")
+        BookmarkViewItem(
+            id = 1,
+            title = "The Road to Success",
+            description = "A step by step tutorial in how to navigate your way to the road to success!",
+            url = "www.roadtosuccess.com",
+            urlHostName = "www.roadtosuccess.com"
+        ),
+        BookmarkViewItem(
+            id = 1,
+            title = "From Darkness to Light",
+            description = "Darkness is just the beginning.",
+            url = "www.darkness2light.com",
+            urlHostName = "www.roadtosuccess.com"
+        ),
+        BookmarkViewItem(
+            id = 1,
+            title = "The Power of Perseverance",
+            url = "www.perseverancepower.com",
+            description = "",
+            urlHostName = "www.roadtosuccess.com"
+        ),
+        BookmarkViewItem(
+            id = 1,
+            title = "The Art of Courage",
+            url = "www.courageart.com",
+            description = "",
+            urlHostName = "www.roadtosuccess.com"
+        ),
+        BookmarkViewItem(
+            id = 1,
+            title = "The Journey Within",
+            url = "www.journeywithin.com",
+            description = "",
+            urlHostName = "www.roadtosuccess.com"
+        ),
+        BookmarkViewItem(
+            id = 1,
+            title = "Finding Your Way",
+            url = "www.findingyourway.com",
+            description = "",
+            urlHostName = "www.roadtosuccess.com"
+        )
     )
     LinkdingTheme {
-        BookmarksScreen(state = BookmarksPresenter.ViewState(false, sampleBookmarkList),
-            onAddBookmark = {})
+        Surface {
+            BookmarksScreen(state = BookmarksPresenter.ViewState(false, sampleBookmarkList),
+                onAddBookmark = {})
+        }
     }
 }

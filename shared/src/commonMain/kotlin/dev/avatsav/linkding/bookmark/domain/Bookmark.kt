@@ -24,4 +24,10 @@ data class Bookmark(
         else if (websiteTitle.isNotBlank()) websiteTitle
         else ""
     }
+
+    fun getDescriptionForUi(): String {
+        return if (description.isNotBlank()) description
+        else if (websiteDescription.isNotBlank()) websiteDescription
+        else ""
+    }
 }

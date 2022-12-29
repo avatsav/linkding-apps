@@ -33,7 +33,7 @@ fun LinkdingApp() {
     val presenter: MainPresenter = get()
     val state: MainPresenter.ViewState by presenter.state.collectAsStateWithLifecycle()
     val navigationController = rememberNavController()
-    LinkdingTheme {
+    LinkdingTheme(dynamicColor = false) {
         Surface(
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background

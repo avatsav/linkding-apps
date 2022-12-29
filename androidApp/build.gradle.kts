@@ -52,6 +52,8 @@ dependencies {
     implementation(libs.compose.material3.windowSizeClass)
     implementation(libs.compose.ui.tooling)
     implementation(libs.compose.ui.tooling.preview)
+    implementation(libs.accompanist.flowlayout)
+    implementation(libs.accompanist.navAnimation)
 
     implementation(libs.kotlin.coroutines.android)
     implementation(libs.kotlin.datetime)

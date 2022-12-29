@@ -16,6 +16,7 @@ ktor = "2.2.1"
 kmpNativeCoroutines = "0.13.2"
 androidxDatastore = "1.0.0"
 datetime = "0.4.0"
+accompanist = "0.28.0"
 
 compileSdk = "33"
 minSdk = "26"
@@ -60,6 +61,8 @@ compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling" }
 compose-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview" }
 compose-ui-test-mainfest = { module = "androidx.compose.ui:ui-test-manifest" }
 compose-ui-util = { module = "androidx.compose.ui:ui-util" }
+accompanist-flowlayout = { module = "com.google.accompanist:accompanist-flowlayout", version.ref = "accompanist" }
+accompanist-navAnimation = { module = "com.google.accompanist:accompanist-navigation-animation", version.ref = "accompanist" }
 
 hilt-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "dagger" }
 hilt-library = { module = "com.google.dagger:hilt-android", version.ref = "dagger" }
@@ -70,7 +73,7 @@ kotlin-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines
 kotlin-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
 kotlin-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutines" }
 kotlin-serialization-json = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.1"
-kotlin-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "datetime"}
+kotlin-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "datetime" }
 
 ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
 ktor-client-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor" }
