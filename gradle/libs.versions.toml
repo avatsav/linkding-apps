@@ -97,8 +97,8 @@ multiplatform-settings-test = { module = "com.russhwolf:multiplatform-settings-t
 koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
 koin-annotations = { module = "io.insert-koin:koin-core", version.ref = "koin" }
 koin-compiler = { module = "io.insert-koin:koin-ksp-compiler", version.ref = "koin" }
-koin-android = { module = "io.insert-koin:koin-android", version = "3.3.1" }
-koin-android-compose = { module = "io.insert-koin:koin-androidx-compose", version = "3.4.0" }
+koin-android = { module = "io.insert-koin:koin-android", version = "3.3.2" }
+koin-android-compose = { module = "io.insert-koin:koin-androidx-compose", version = "3.4.1" }
 koin-test = { module = "io.insert-koin:koin-test", version.ref = "koin" }
 koin-test-junit4 = { module = "io.insert-koin:koin-test-junit4", version.ref = "koin" }
 
