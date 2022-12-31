@@ -20,9 +20,8 @@ struct SetupConfigurationScreen: View {
         SetupConfigurationView(
             viewState: viewState,
             submitted: { url, apiKey in presenter.setConfiguration(url: url, apiKey: apiKey) }
-        )
-        .task {
-            await viewState.from(asyncStream: asyncStream(for: presenter.uiStateApple))
+        ).task {
+            await viewState.from(asyncSequence: asyncSequence(for: presenter.uiStateFlow))
         }
     }
 }

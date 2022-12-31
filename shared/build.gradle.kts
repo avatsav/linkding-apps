@@ -2,6 +2,7 @@
 
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
+    alias(libs.plugins.ksp)
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.kotlin.native.cocoapods)
@@ -21,7 +22,6 @@ kotlin {
         podfile = project.file("../iosApp/Podfile")
         framework {
             baseName = "shared"
-            isStatic = true
         }
     }
 
@@ -30,6 +30,7 @@ kotlin {
             languageSettings.optIn("com.russhwolf.settings.ExperimentalSettingsApi")
             languageSettings.optIn("com.russhwolf.settings.ExperimentalSettingsImplementation")
             languageSettings.optIn("kotlinx.serialization.ExperimentalSerializationApi")
+            languageSettings.optIn("kotlin.experimental.ExperimentalObjCName")
         }
         val commonMain by getting {
             dependencies {

@@ -1,5 +1,6 @@
 package dev.avatsav.linkding.ui
 
+import com.rickclephas.kmp.nativecoroutines.NativeCoroutinesState
 import dev.avatsav.linkding.Presenter
 import dev.avatsav.linkding.data.ConfigurationNotSetup
 import dev.avatsav.linkding.data.ConfigurationStore
@@ -14,6 +15,7 @@ import kotlinx.coroutines.flow.stateIn
 class MainPresenter(configurationStore: ConfigurationStore) : Presenter() {
     data class ViewState(val loading: Boolean = false, val setup: Boolean)
 
+    @NativeCoroutinesState
     val state: StateFlow<ViewState> = configurationStore.state.map { state ->
         when (state) {
             is ConfigurationNotSetup -> ViewState(loading = false, setup = false)

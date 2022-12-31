@@ -1,5 +1,6 @@
 package dev.avatsav.linkding.ui
 
+import com.rickclephas.kmp.nativecoroutines.NativeCoroutinesState
 import dev.avatsav.linkding.Presenter
 import dev.avatsav.linkding.bookmark.application.ports.`in`.BookmarkService
 import dev.avatsav.linkding.bookmark.domain.BookmarkError
@@ -15,6 +16,8 @@ class BookmarksPresenter(private val bookmarkService: BookmarkService) : Present
     data class ViewState(val loading: Boolean, val bookmarks: List<BookmarkViewItem>)
 
     private val _state = MutableStateFlow(ViewState(true, emptyList()))
+
+    @NativeCoroutinesState
     val state: StateFlow<ViewState> = _state
 
     init {

@@ -5,6 +5,7 @@ import arrow.core.Validated
 import arrow.core.continuations.either
 import arrow.core.invalid
 import arrow.core.valid
+import com.rickclephas.kmp.nativecoroutines.NativeCoroutinesState
 import dev.avatsav.linkding.Presenter
 import dev.avatsav.linkding.bookmark.application.ports.`in`.BookmarkService
 import dev.avatsav.linkding.data.Configuration
@@ -20,6 +21,8 @@ class SetupConfigurationPresenter(
 ) : Presenter() {
 
     private val _uiState = MutableStateFlow(ViewState())
+
+    @NativeCoroutinesState
     val uiState: StateFlow<ViewState> = _uiState
 
     fun setConfiguration(url: String, apiKey: String) {

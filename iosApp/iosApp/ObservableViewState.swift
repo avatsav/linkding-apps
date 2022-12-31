@@ -7,20 +7,21 @@
 //
 
 import Foundation
+import KMPNativeCoroutinesAsync
 import SwiftUI
+import shared
 
 @MainActor
 class ObservableViewState<ViewState>: ObservableObject {
-    
     @Published var state: ViewState
 
     init(initialState: ViewState) {
         self.state = initialState
     }
 
-    func from(asyncStream: AsyncThrowingStream<ViewState, Error>) async {
+    func from(asyncSequence: NativeFlowAsyncSequence<ViewState, any Error, KotlinUnit>) async {
         do {
-            for try await data in asyncStream {
+            for try await data in asyncSequence {
                 state = data
             }
         } catch {
