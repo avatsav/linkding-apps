@@ -27,6 +27,7 @@ allprojects {
     repositories {
         google()
         mavenCentral()
+        maven("https://androidx.dev/storage/compose-compiler/repository")
     }
     apply(plugin = rootProject.libs.plugins.spotless.get().pluginId)
     configure<SpotlessExtension> {
@@ -58,6 +59,10 @@ allprojects {
     tasks.withType<KotlinCompile>().configureEach {
         kotlinOptions {
             jvmTarget = JavaVersion.VERSION_11.toString()
+            freeCompilerArgs = freeCompilerArgs + listOf(
+                "-P",
+                "plugin:androidx.compose.compiler.plugins.kotlin:suppressKotlinVersionCompatibilityCheck=true"
+            )
         }
     }
     plugins.withId(rootProject.libs.plugins.hilt.get().pluginId) {

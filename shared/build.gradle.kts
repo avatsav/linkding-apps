@@ -67,7 +67,7 @@ kotlin {
                 implementation(libs.androidx.datastore.preferences)
             }
         }
-        val androidTest by getting {
+        val androidInstrumentedTest by getting {
             dependencies {
                 implementation(libs.multiplatform.settings.test)
             }
