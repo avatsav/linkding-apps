@@ -19,6 +19,7 @@ import androidx.compose.material3.AssistChip
 import androidx.compose.material3.AssistChipDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
+import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalTextStyle
@@ -107,13 +108,15 @@ fun SearchBar(
                     modifier = Modifier.padding(start = 4.dp),
                     label = { Text("Unread") },
                     onClick = { /*TODO*/ },
-                    selected = false
+                    selected = false,
+                    border = FilterChipDefaults.filterChipBorder(borderWidth = 0.5.dp)
                 )
                 FilterChip(
                     modifier = Modifier.padding(start = 4.dp),
                     label = { Text("Archived") },
                     onClick = { /*TODO*/ },
-                    selected = false
+                    selected = false,
+                    border = FilterChipDefaults.filterChipBorder(borderWidth = 0.5.dp)
                 )
             }
         }

@@ -1,10 +1,9 @@
 package dev.avatsav.linkding.inject
 
 import dev.avatsav.linkding.bookmark.adapter.out.LinkdingBookmarkRepository
-import dev.avatsav.linkding.bookmark.application.ports.`in`.BookmarkService
-import dev.avatsav.linkding.bookmark.application.ports.out.BookmarkRepository
 import dev.avatsav.linkding.bookmark.application.services.LinkdingBookmarkService
 import dev.avatsav.linkding.data.ConfigurationStore
+import dev.avatsav.linkding.ui.AddBookmarkPresenter
 import dev.avatsav.linkding.ui.BookmarksPresenter
 import dev.avatsav.linkding.ui.MainPresenter
 import dev.avatsav.linkding.ui.SetupConfigurationPresenter
@@ -29,15 +28,16 @@ fun initKoin(enableNetworkLogs: Boolean, appDeclaration: KoinAppDeclaration = {}
 private val presenterModule = module {
     factoryOf(::SetupConfigurationPresenter)
     factoryOf(::MainPresenter)
-    factory { BookmarksPresenter(get()) }
+    factoryOf(::BookmarksPresenter)
+    factoryOf(::AddBookmarkPresenter)
 }
 
 /**
  * Repository dependencies.
  */
 private val repositoryModule = module {
-    single<BookmarkService> { LinkdingBookmarkService(get(), get()) }
-    single<BookmarkRepository> { LinkdingBookmarkRepository(get()) }
+    singleOf(::LinkdingBookmarkService)
+    singleOf(::LinkdingBookmarkRepository)
 }
 
 /**
