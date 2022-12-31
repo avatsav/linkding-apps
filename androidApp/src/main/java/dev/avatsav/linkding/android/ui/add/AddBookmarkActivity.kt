@@ -34,6 +34,9 @@ class AddBookmarkActivity : ComponentActivity() {
                 ) {
                     // TODO: Assisted inject with the shared link
                     val presenter: AddBookmarkPresenter = get()
+                    if (!link.isNullOrBlank()) {
+                        presenter.setLink(link)
+                    }
                     AddBookmarkScreen(presenter)
                 }
             }
