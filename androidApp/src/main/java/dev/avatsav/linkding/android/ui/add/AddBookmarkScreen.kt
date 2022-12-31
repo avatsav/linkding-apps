@@ -26,6 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.avatsav.linkding.android.ui.theme.LinkdingTheme
@@ -40,13 +41,15 @@ fun AddBookmarkScreen(presenter: AddBookmarkPresenter) {
             presenter.clear()
         }
     }
-    AddBookmarkScreen(uiState = uiState)
+    AddBookmarkScreen(uiState = uiState, onLinkChanged = { link -> presenter.setLink(link) })
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddBookmarkScreen(
-    modifier: Modifier = Modifier, uiState: ViewState
+    modifier: Modifier = Modifier,
+    uiState: ViewState,
+    onLinkChanged: (String) -> Unit,
 ) {
     var url by remember { mutableStateOf("") }
     var tags by remember { mutableStateOf("") }
@@ -64,7 +67,7 @@ fun AddBookmarkScreen(
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             OutlinedTextField(modifier = Modifier.fillMaxWidth(),
-                value = url,
+                value = uiState.url ?: "",
                 enabled = !uiState.loading,
                 label = { Text(text = "URL") },
                 keyboardOptions = KeyboardOptions(
@@ -74,6 +77,7 @@ fun AddBookmarkScreen(
                 ),
                 onValueChange = { value ->
                     url = value
+                    onLinkChanged(url)
                 })
             OutlinedTextField(modifier = Modifier.fillMaxWidth(),
                 value = tags,
@@ -86,19 +90,39 @@ fun AddBookmarkScreen(
                     tags = value
                 })
             OutlinedTextField(modifier = Modifier.fillMaxWidth(),
-                value = tags,
+                value = title,
                 enabled = !uiState.loading,
                 label = { Text(text = "Title") },
                 supportingText = {
                     Text(text = "Optional, leave empty to use title from website.")
                 },
+                placeholder = {
+                    if (uiState.unfluredTitle != null) {
+                        Text(
+                            text = uiState.unfluredTitle!!,
+                            maxLines = 4,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
+                },
+                maxLines = 2,
                 onValueChange = { value ->
                     title = value
                 })
             OutlinedTextField(modifier = Modifier.fillMaxWidth(),
-                value = tags,
+                value = description,
                 enabled = !uiState.loading,
                 label = { Text(text = "Description") },
+                maxLines = 4,
+                placeholder = {
+                    if (uiState.unfluredDescription != null) {
+                        Text(
+                            text = uiState.unfluredDescription!!,
+                            maxLines = 4,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
+                },
                 supportingText = {
                     Text(text = "Optional, leave empty to use description from website.")
                 },
@@ -128,8 +152,11 @@ fun AddBookmarkScreen(
 @Composable
 fun SetupConfigurationScreen_Preview() {
     LinkdingTheme {
-        AddBookmarkScreen(
-            uiState = ViewState(loading = false)
-        )
+        AddBookmarkScreen(uiState = ViewState(
+            loading = false,
+            "https://staffeng.com/guides/work-on-what-matters",
+            "Work on what matters",
+            "Stories of folks reaching Staff Engineer roles."
+        ), onLinkChanged = {})
     }
 }

@@ -1,6 +1,8 @@
 package dev.avatsav.linkding.inject
 
 import dev.avatsav.linkding.bookmark.adapter.out.LinkdingBookmarkRepository
+import dev.avatsav.linkding.bookmark.application.ports.`in`.BookmarkService
+import dev.avatsav.linkding.bookmark.application.ports.out.BookmarkRepository
 import dev.avatsav.linkding.bookmark.application.services.LinkdingBookmarkService
 import dev.avatsav.linkding.data.ConfigurationStore
 import dev.avatsav.linkding.ui.AddBookmarkPresenter
@@ -36,8 +38,8 @@ private val presenterModule = module {
  * Repository dependencies.
  */
 private val repositoryModule = module {
-    singleOf(::LinkdingBookmarkService)
-    singleOf(::LinkdingBookmarkRepository)
+    single<BookmarkService> { LinkdingBookmarkService(get(), get()) }
+    single<BookmarkRepository> { LinkdingBookmarkRepository(get()) }
 }
 
 /**

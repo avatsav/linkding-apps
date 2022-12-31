@@ -66,10 +66,17 @@ kotlin {
                 implementation(libs.ktor.client.okhttp)
                 implementation(libs.multiplatform.settings.datastore)
                 implementation(libs.androidx.datastore.preferences)
+                implementation(libs.unfurl)
             }
         }
         val androidInstrumentedTest by getting {
             dependencies {
+                implementation(kotlin("test"))
+                implementation(libs.kotlin.coroutines.test)
+                implementation(libs.androidx.test.core)
+                implementation(libs.androidx.test.rules)
+                implementation(libs.androidx.test.runner)
+                implementation(libs.truth)
                 implementation(libs.multiplatform.settings.test)
             }
         }
@@ -93,10 +100,9 @@ kotlin {
     }
 }
 
-nativeCoroutines {
-    suffix = "Apple"
-}
-
 android {
     namespace = "dev.avatsav.linkding"
+    defaultConfig {
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
 }
