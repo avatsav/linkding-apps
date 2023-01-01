@@ -41,7 +41,9 @@ fun AddBookmarkScreen(presenter: AddBookmarkPresenter) {
             presenter.clear()
         }
     }
-    AddBookmarkScreen(uiState = uiState, onLinkChanged = { link -> presenter.setLink(link) })
+    AddBookmarkScreen(
+        uiState = uiState, onLinkChanged = presenter::setLink, onSave = presenter::save
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -50,6 +52,7 @@ fun AddBookmarkScreen(
     modifier: Modifier = Modifier,
     uiState: ViewState,
     onLinkChanged: (String) -> Unit,
+    onSave: (AddBookmarkPresenter.AddBookmarkRequest) -> Unit
 ) {
     var url by remember { mutableStateOf("") }
     var tags by remember { mutableStateOf("") }
@@ -67,7 +70,7 @@ fun AddBookmarkScreen(
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             OutlinedTextField(modifier = Modifier.fillMaxWidth(),
-                value = uiState.url ?: "",
+                value = url,
                 enabled = !uiState.loading,
                 label = { Text(text = "URL") },
                 keyboardOptions = KeyboardOptions(
@@ -97,13 +100,11 @@ fun AddBookmarkScreen(
                     Text(text = "Optional, leave empty to use title from website.")
                 },
                 placeholder = {
-                    if (uiState.unfluredTitle != null) {
-                        Text(
-                            text = uiState.unfluredTitle!!,
-                            maxLines = 4,
-                            overflow = TextOverflow.Ellipsis
-                        )
-                    }
+                    Text(
+                        text = uiState.unfluredTitle ?: "",
+                        maxLines = 4,
+                        overflow = TextOverflow.Ellipsis
+                    )
                 },
                 maxLines = 2,
                 onValueChange = { value ->
@@ -115,13 +116,11 @@ fun AddBookmarkScreen(
                 label = { Text(text = "Description") },
                 maxLines = 4,
                 placeholder = {
-                    if (uiState.unfluredDescription != null) {
-                        Text(
-                            text = uiState.unfluredDescription!!,
-                            maxLines = 4,
-                            overflow = TextOverflow.Ellipsis
-                        )
-                    }
+                    Text(
+                        text = uiState.unfluredDescription ?: "",
+                        maxLines = 4,
+                        overflow = TextOverflow.Ellipsis
+                    )
                 },
                 supportingText = {
                     Text(text = "Optional, leave empty to use description from website.")
@@ -133,7 +132,13 @@ fun AddBookmarkScreen(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Button(enabled = !uiState.loading, onClick = { /* TODO*/ }) {
+                Button(enabled = !uiState.loading, onClick = {
+                    onSave(
+                        AddBookmarkPresenter.AddBookmarkRequest(
+                            url = url, tags = setOf(), title = title, description = description
+                        )
+                    )
+                }) {
                     Text("Save")
                 }
                 if (uiState.loading) {
@@ -144,7 +149,6 @@ fun AddBookmarkScreen(
             }
         }
     }
-
 }
 
 @Preview(showBackground = true)
@@ -157,6 +161,6 @@ fun SetupConfigurationScreen_Preview() {
             "https://staffeng.com/guides/work-on-what-matters",
             "Work on what matters",
             "Stories of folks reaching Staff Engineer roles."
-        ), onLinkChanged = {})
+        ), onLinkChanged = {}, onSave = {})
     }
 }
