@@ -23,6 +23,13 @@ class AddBookmarkPresenter(
         val unfluredDescription: String?
     )
 
+    data class AddBookmarkRequest(
+        val url: String?,
+        val tags: Set<String>,
+        val title: String?,
+        val description: String?,
+    )
+
     private val _state = MutableStateFlow(ViewState(true, null, null, null))
     val state: StateFlow<ViewState> = _state
 
@@ -34,7 +41,7 @@ class AddBookmarkPresenter(
                     is UnfurlResult.Data -> _state.emit(
                         _state.value.copy(
                             loading = false,
-                            url = result.title,
+                            url = result.url,
                             unfluredTitle = result.title,
                             unfluredDescription = result.description
                         )
@@ -46,6 +53,10 @@ class AddBookmarkPresenter(
                 }
             }
         }
+    }
+
+    fun save(addBookmarkRequest: AddBookmarkRequest) {
+        /* TODO */
     }
 
 }
