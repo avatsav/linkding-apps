@@ -21,7 +21,6 @@ class AddBookmarkActivity : ComponentActivity() {
             Intent.ACTION_SEND -> {
                 intent.getStringExtra(Intent.EXTRA_TEXT)
             }
-
             else -> null
         }?.trim()
 

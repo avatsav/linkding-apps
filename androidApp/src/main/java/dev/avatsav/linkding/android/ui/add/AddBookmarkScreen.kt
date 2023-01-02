@@ -29,6 +29,8 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import dev.avatsav.linkding.android.ui.components.tags.TagsTextField
+import dev.avatsav.linkding.android.ui.components.tags.TagsTextFieldValue
 import dev.avatsav.linkding.android.ui.theme.LinkdingTheme
 import dev.avatsav.linkding.ui.AddBookmarkPresenter
 import dev.avatsav.linkding.ui.AddBookmarkPresenter.ViewState
@@ -55,7 +57,7 @@ fun AddBookmarkScreen(
     onSave: (AddBookmarkPresenter.AddBookmarkRequest) -> Unit
 ) {
     var url by remember { mutableStateOf("") }
-    var tags by remember { mutableStateOf("") }
+    var tagsValue by remember { mutableStateOf(TagsTextFieldValue()) }
     var title by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
 
@@ -82,15 +84,11 @@ fun AddBookmarkScreen(
                     url = value
                     onLinkChanged(url)
                 })
-            OutlinedTextField(modifier = Modifier.fillMaxWidth(),
-                value = tags,
-                enabled = !uiState.loading,
+            TagsTextField(modifier = Modifier.fillMaxWidth(),
+                value = tagsValue,
                 label = { Text(text = "Tags") },
                 supportingText = {
                     Text(text = "Enter any number of tags separated by space and without the hash (#). If a tag does not exist it will be automatically created.")
-                },
-                onValueChange = { value ->
-                    tags = value
                 })
             OutlinedTextField(modifier = Modifier.fillMaxWidth(),
                 value = title,
