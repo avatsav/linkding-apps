@@ -1,51 +1,78 @@
 package dev.avatsav.linkding.android.ui.add
 
 import android.content.res.Configuration
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.LargeTopAppBar
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import dev.avatsav.linkding.android.ui.components.tags.TagsTextField
-import dev.avatsav.linkding.android.ui.components.tags.TagsTextFieldValue
+import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import dev.avatsav.linkding.android.ui.components.TagsTextField
+import dev.avatsav.linkding.android.ui.components.TagsTextFieldValue
 import dev.avatsav.linkding.android.ui.theme.LinkdingTheme
-import dev.avatsav.linkding.bookmark.domain.SaveBookmark
 import dev.avatsav.linkding.ui.AddBookmarkPresenter
-import dev.avatsav.linkding.ui.AddBookmarkPresenter.ViewState
+import dev.avatsav.linkding.ui.UnfurlData
+import dev.avatsav.linkding.ui.model.Async
+import dev.avatsav.linkding.ui.model.Fail
+import dev.avatsav.linkding.ui.model.Loading
+import dev.avatsav.linkding.ui.model.Success
 
 @Composable
-fun AddBookmarkScreen(sharedLink: String?, presenter: AddBookmarkPresenter) {
-    val uiState by presenter.state.collectAsState()
+fun AddBookmarkScreen(
+    sharedLink: String?, presenter: AddBookmarkPresenter
+) {
+    if (sharedLink != null) presenter.setLink(sharedLink)
     DisposableEffect(presenter) {
         onDispose {
             presenter.clear()
         }
     }
-    if (sharedLink != null) presenter.setLink(sharedLink)
     AddBookmarkScreen(
+        modifier = Modifier,
         sharedLink = sharedLink,
-        uiState = uiState,
+        presenter = presenter,
+    )
+}
+
+@OptIn(ExperimentalLifecycleComposeApi::class)
+@Composable
+fun AddBookmarkScreen(
+    modifier: Modifier,
+    sharedLink: String?,
+    presenter: AddBookmarkPresenter,
+) {
+    val uiState by presenter.state.collectAsStateWithLifecycle()
+    AddBookmarkScreen(
+        modifier = modifier,
+        sharedLink = sharedLink,
+        unfurlState = uiState.unfurlState,
+        saveState = uiState.saveState,
         onLinkChanged = presenter::setLink,
         onSave = presenter::save
     )
@@ -54,11 +81,12 @@ fun AddBookmarkScreen(sharedLink: String?, presenter: AddBookmarkPresenter) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddBookmarkScreen(
-    modifier: Modifier = Modifier,
+    modifier: Modifier,
     sharedLink: String?,
-    uiState: ViewState,
+    unfurlState: Async<UnfurlData>,
+    saveState: Async<Unit>,
     onLinkChanged: (String) -> Unit,
-    onSave: (SaveBookmark) -> Unit
+    onSave: (url: String, title: String?, description: String?, tags: List<String>) -> Unit
 ) {
     var url by remember { mutableStateOf(sharedLink ?: "") }
     val tagsValue by remember { mutableStateOf(TagsTextFieldValue()) }
@@ -99,12 +127,19 @@ fun AddBookmarkScreen(
                 supportingText = {
                     Text(text = "Optional, leave empty to use title from website.")
                 },
+                trailingIcon = {
+                    if (unfurlState is Loading) {
+                        CircularProgressIndicator(modifier = Modifier.size(16.dp))
+                    }
+                },
                 placeholder = {
-                    Text(
-                        text = uiState.unfluredTitle ?: "",
-                        maxLines = 4,
-                        overflow = TextOverflow.Ellipsis
-                    )
+                    (unfurlState as? Success)?.run {
+                        Text(
+                            text = this().unfurledTitle ?: "",
+                            maxLines = 4,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
                 },
                 maxLines = 2,
                 onValueChange = { value ->
@@ -115,11 +150,18 @@ fun AddBookmarkScreen(
                 label = { Text(text = "Description") },
                 maxLines = 4,
                 placeholder = {
-                    Text(
-                        text = uiState.unfluredDescription ?: "",
-                        maxLines = 4,
-                        overflow = TextOverflow.Ellipsis
-                    )
+                    (unfurlState as? Success)?.run {
+                        Text(
+                            text = this().unfurledDescription ?: "",
+                            maxLines = 4,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
+                },
+                trailingIcon = {
+                    if (unfurlState is Loading) {
+                        CircularProgressIndicator(modifier = Modifier.size(16.dp))
+                    }
                 },
                 supportingText = {
                     Text(text = "Optional, leave empty to use description from website.")
@@ -132,10 +174,23 @@ fun AddBookmarkScreen(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Button(onClick = {
-                    onSave(SaveBookmark(url))
+                    onSave(
+                        url, title, description, tagsValue.tags.map { it.value }.toList()
+                    )
                 }) {
                     Text("Save")
                 }
+                if (saveState is Loading) {
+                    CircularProgressIndicator()
+                }
+            }
+            AnimatedVisibility(visible = saveState is Fail) {
+                val errorMessage = (saveState as? Fail<Unit>)?.message ?: "Unknown error"
+                Text(
+                    text = errorMessage,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.error
+                )
             }
         }
     }
@@ -146,11 +201,17 @@ fun AddBookmarkScreen(
 @Composable
 fun SetupConfigurationScreen_Preview() {
     LinkdingTheme {
-        AddBookmarkScreen(sharedLink = "https://staffeng.com/guides/work-on-what-matters",
-            uiState = ViewState(
-                "Work on what matters", "Stories of folks reaching Staff Engineer roles."
+        AddBookmarkScreen(modifier = Modifier,
+            sharedLink = "https://staffeng.com/guides/work-on-what-matters",
+            unfurlState = Success(
+                UnfurlData(
+                    unfurledUrl = "https://staffeng.com/guides/work-on-what-matters",
+                    unfurledTitle = "Work on what matters",
+                    unfurledDescription = "Stories of folks reaching Staff Engineer roles."
+                )
             ),
+            saveState = Fail("Error saving bookmark"),
             onLinkChanged = {},
-            onSave = {})
+            onSave = { _, _, _, _ -> })
     }
 }
