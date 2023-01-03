@@ -7,6 +7,8 @@ import dev.avatsav.linkding.bookmark.application.ports.`in`.BookmarkService
 import dev.avatsav.linkding.bookmark.application.ports.out.BookmarkRepository
 import dev.avatsav.linkding.bookmark.application.services.LinkdingBookmarkService
 import dev.avatsav.linkding.bookmark.domain.BookmarkError
+import dev.avatsav.linkding.bookmark.domain.BookmarkSaveError
+import dev.avatsav.linkding.bookmark.domain.SaveBookmark
 import dev.avatsav.linkding.data.Configuration
 import dev.avatsav.linkding.data.ConfigurationStore
 import dev.avatsav.linkding.inject.httpClient
@@ -32,7 +34,8 @@ class BookmarkServiceTest {
         runBlocking {
             configurationStore.set(
                 Configuration(
-                    apiKey = "TODO", url = "TODO"
+                    apiKey = "TODO",
+                    url = "TODO"
                 )
             )
         }
@@ -45,6 +48,19 @@ class BookmarkServiceTest {
                 when (it) {
                     is BookmarkError.CouldNotGetBookmark -> println(it.message)
                     BookmarkError.ConfigurationNotSetup -> println("Credentials are not setup")
+                }
+            }
+        }
+    }
+
+    @Test
+    fun testSaveBookmarks() {
+        runBlocking {
+            val saveBookmark = SaveBookmark(url = "https://melix.github.io/blog/tags/gradle.html")
+            bookmarkService.save(saveBookmark).map { println(it) }.mapLeft {
+                when (it) {
+                    BookmarkSaveError.ConfigurationNotSetup -> TODO()
+                    is BookmarkSaveError.CouldNotSaveBookmark -> TODO()
                 }
             }
         }
