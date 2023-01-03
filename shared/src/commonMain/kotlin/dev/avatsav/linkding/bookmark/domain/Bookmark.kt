@@ -4,7 +4,7 @@ import kotlinx.datetime.Instant
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
-@Serializable()
+@Serializable
 data class Bookmark(
     val id: Long,
     val url: String,

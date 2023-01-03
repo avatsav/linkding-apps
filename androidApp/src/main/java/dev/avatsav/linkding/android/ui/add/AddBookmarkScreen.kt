@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.LargeTopAppBar
 import androidx.compose.material3.OutlinedTextField
@@ -23,7 +22,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextOverflow
@@ -32,19 +30,24 @@ import androidx.compose.ui.unit.dp
 import dev.avatsav.linkding.android.ui.components.tags.TagsTextField
 import dev.avatsav.linkding.android.ui.components.tags.TagsTextFieldValue
 import dev.avatsav.linkding.android.ui.theme.LinkdingTheme
+import dev.avatsav.linkding.bookmark.domain.SaveBookmark
 import dev.avatsav.linkding.ui.AddBookmarkPresenter
 import dev.avatsav.linkding.ui.AddBookmarkPresenter.ViewState
 
 @Composable
-fun AddBookmarkScreen(presenter: AddBookmarkPresenter) {
+fun AddBookmarkScreen(sharedLink: String?, presenter: AddBookmarkPresenter) {
     val uiState by presenter.state.collectAsState()
     DisposableEffect(presenter) {
         onDispose {
             presenter.clear()
         }
     }
+    if (sharedLink != null) presenter.setLink(sharedLink)
     AddBookmarkScreen(
-        uiState = uiState, onLinkChanged = presenter::setLink, onSave = presenter::save
+        sharedLink = sharedLink,
+        uiState = uiState,
+        onLinkChanged = presenter::setLink,
+        onSave = presenter::save
     )
 }
 
@@ -52,12 +55,13 @@ fun AddBookmarkScreen(presenter: AddBookmarkPresenter) {
 @Composable
 fun AddBookmarkScreen(
     modifier: Modifier = Modifier,
+    sharedLink: String?,
     uiState: ViewState,
     onLinkChanged: (String) -> Unit,
-    onSave: (AddBookmarkPresenter.AddBookmarkRequest) -> Unit
+    onSave: (SaveBookmark) -> Unit
 ) {
-    var url by remember { mutableStateOf("") }
-    var tagsValue by remember { mutableStateOf(TagsTextFieldValue()) }
+    var url by remember { mutableStateOf(sharedLink ?: "") }
+    val tagsValue by remember { mutableStateOf(TagsTextFieldValue()) }
     var title by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
 
@@ -73,7 +77,6 @@ fun AddBookmarkScreen(
         ) {
             OutlinedTextField(modifier = Modifier.fillMaxWidth(),
                 value = url,
-                enabled = !uiState.loading,
                 label = { Text(text = "URL") },
                 keyboardOptions = KeyboardOptions(
                     autoCorrect = false,
@@ -92,7 +95,6 @@ fun AddBookmarkScreen(
                 })
             OutlinedTextField(modifier = Modifier.fillMaxWidth(),
                 value = title,
-                enabled = !uiState.loading,
                 label = { Text(text = "Title") },
                 supportingText = {
                     Text(text = "Optional, leave empty to use title from website.")
@@ -110,7 +112,6 @@ fun AddBookmarkScreen(
                 })
             OutlinedTextField(modifier = Modifier.fillMaxWidth(),
                 value = description,
-                enabled = !uiState.loading,
                 label = { Text(text = "Description") },
                 maxLines = 4,
                 placeholder = {
@@ -130,19 +131,10 @@ fun AddBookmarkScreen(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Button(enabled = !uiState.loading, onClick = {
-                    onSave(
-                        AddBookmarkPresenter.AddBookmarkRequest(
-                            url = url, tags = setOf(), title = title, description = description
-                        )
-                    )
+                Button(onClick = {
+                    onSave(SaveBookmark(url))
                 }) {
                     Text("Save")
-                }
-                if (uiState.loading) {
-                    CircularProgressIndicator(
-                        color = Color.White
-                    )
                 }
             }
         }
@@ -154,11 +146,11 @@ fun AddBookmarkScreen(
 @Composable
 fun SetupConfigurationScreen_Preview() {
     LinkdingTheme {
-        AddBookmarkScreen(uiState = ViewState(
-            loading = false,
-            "https://staffeng.com/guides/work-on-what-matters",
-            "Work on what matters",
-            "Stories of folks reaching Staff Engineer roles."
-        ), onLinkChanged = {}, onSave = {})
+        AddBookmarkScreen(sharedLink = "https://staffeng.com/guides/work-on-what-matters",
+            uiState = ViewState(
+                "Work on what matters", "Stories of folks reaching Staff Engineer roles."
+            ),
+            onLinkChanged = {},
+            onSave = {})
     }
 }

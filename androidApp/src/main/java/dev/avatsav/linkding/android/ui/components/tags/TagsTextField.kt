@@ -28,6 +28,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.KeyEventType
@@ -127,15 +128,17 @@ private fun TagsTextField(
             }
             BasicTextField(
                 value = textValue,
-                modifier = Modifier.onPreviewKeyEvent { keyEvent ->
-                    if (keyEvent.type == KeyEventType.KeyDown && keyEvent.key == Key.Backspace) {
-                        if (textValue.text.isEmpty() && tagsValue.tags.isNotEmpty()) {
-                            tagsValue.removeLastTag()
-                            return@onPreviewKeyEvent true
+                modifier = Modifier
+                    .focusRequester(textFieldFocusRequester)
+                    .onPreviewKeyEvent { keyEvent ->
+                        if (keyEvent.type == KeyEventType.KeyDown && keyEvent.key == Key.Backspace) {
+                            if (textValue.text.isEmpty() && tagsValue.tags.isNotEmpty()) {
+                                tagsValue.removeLastTag()
+                                return@onPreviewKeyEvent true
+                            }
                         }
-                    }
-                    false
-                },
+                        false
+                    },
                 onValueChange = taggableValueChange(
                     onTag = { tagText ->
                         tagsValue.addTag(Tag(tagText))
