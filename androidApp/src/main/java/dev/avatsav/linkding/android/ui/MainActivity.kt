@@ -5,7 +5,6 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -34,10 +33,7 @@ fun LinkdingApp() {
     val state: MainPresenter.ViewState by presenter.state.collectAsStateWithLifecycle()
     val navigationController = rememberNavController()
     LinkdingTheme(dynamicColor = false) {
-        Surface(
-            modifier = Modifier.fillMaxSize(),
-            color = MaterialTheme.colorScheme.background
-        ) {
+        Surface(modifier = Modifier.fillMaxSize()) {
 
             if (state.loading) {
                 SplashScreen()

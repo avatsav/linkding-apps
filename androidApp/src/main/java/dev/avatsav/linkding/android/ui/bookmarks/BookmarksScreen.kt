@@ -16,6 +16,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -33,7 +34,12 @@ fun BookmarksScreen(
     presenter: BookmarksPresenter,
     onAddBookmark: () -> Unit,
 ) {
-    val state: BookmarksPresenter.ViewState by presenter.state.collectAsStateWithLifecycle()
+    val state by presenter.state.collectAsStateWithLifecycle()
+    DisposableEffect(key1 = presenter) {
+        onDispose {
+            presenter.clear()
+        }
+    }
     BookmarksScreen(state = state, onAddBookmark = onAddBookmark)
 }
 
@@ -91,36 +97,31 @@ fun BookmarkScreenPreview() {
             description = "A step by step tutorial in how to navigate your way to the road to success!",
             url = "www.roadtosuccess.com",
             urlHostName = "www.roadtosuccess.com"
-        ),
-        BookmarkViewItem(
+        ), BookmarkViewItem(
             id = 1,
             title = "From Darkness to Light",
             description = "Darkness is just the beginning.",
             url = "www.darkness2light.com",
             urlHostName = "www.roadtosuccess.com"
-        ),
-        BookmarkViewItem(
+        ), BookmarkViewItem(
             id = 1,
             title = "The Power of Perseverance",
             url = "www.perseverancepower.com",
             description = "",
             urlHostName = "www.roadtosuccess.com"
-        ),
-        BookmarkViewItem(
+        ), BookmarkViewItem(
             id = 1,
             title = "The Art of Courage",
             url = "www.courageart.com",
             description = "",
             urlHostName = "www.roadtosuccess.com"
-        ),
-        BookmarkViewItem(
+        ), BookmarkViewItem(
             id = 1,
             title = "The Journey Within",
             url = "www.journeywithin.com",
             description = "",
             urlHostName = "www.roadtosuccess.com"
-        ),
-        BookmarkViewItem(
+        ), BookmarkViewItem(
             id = 1,
             title = "Finding Your Way",
             url = "www.findingyourway.com",

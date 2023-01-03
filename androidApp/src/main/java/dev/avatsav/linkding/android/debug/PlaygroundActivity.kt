@@ -1,4 +1,4 @@
-package dev.avatsav.linkding.android.ui.components
+package dev.avatsav.linkding.android.debug
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -20,9 +20,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
-import dev.avatsav.linkding.android.ui.components.tags.Tag
-import dev.avatsav.linkding.android.ui.components.tags.TagsTextField
-import dev.avatsav.linkding.android.ui.components.tags.TagsTextFieldValue
+import dev.avatsav.linkding.android.ui.components.Tag
+import dev.avatsav.linkding.android.ui.components.TagsTextField
+import dev.avatsav.linkding.android.ui.components.TagsTextFieldValue
 import dev.avatsav.linkding.android.ui.theme.LinkdingTheme
 
 class PlaygroundActivity : ComponentActivity() {
