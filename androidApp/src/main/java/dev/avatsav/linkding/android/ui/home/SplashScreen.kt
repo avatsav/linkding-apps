@@ -1,6 +1,6 @@
 package dev.avatsav.linkding.android
 
-import androidx.compose.animation.ExperimentalAnimationApi
+import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -22,11 +23,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import dev.avatsav.linkding.android.ui.theme.LinkdingTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
-@ExperimentalAnimationApi
 @Composable
 fun SplashScreen() {
     Scaffold(content = { padding ->
@@ -56,22 +55,22 @@ fun SplashScreen() {
                     tint = MaterialTheme.colorScheme.onPrimary
                 )
             }
+            CircularProgressIndicator(
+                modifier = Modifier.padding(vertical = 36.dp)
+            )
             Text(
                 text = "Linkding",
-                fontSize = 24.sp,
-                modifier = Modifier.padding(top = 24.dp),
-                color = MaterialTheme.colorScheme.onBackground,
+                style = MaterialTheme.typography.titleLarge
             )
-
         }
     })
 }
 
-@OptIn(ExperimentalAnimationApi::class)
 @Preview(showBackground = true)
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
-fun SetupScreenPreview() {
-    LinkdingTheme(darkTheme = true) {
+fun SplashScreen_Preview() {
+    LinkdingTheme {
         SplashScreen()
     }
 }

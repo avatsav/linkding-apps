@@ -10,10 +10,8 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import dev.avatsav.linkding.android.ui.theme.LinkdingTheme
-import org.koin.androidx.compose.get
 
 class AddBookmarkActivity : ComponentActivity() {
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val sharedLink = when (intent?.action) {
@@ -30,7 +28,6 @@ class AddBookmarkActivity : ComponentActivity() {
             AddBookmarksScreenFromActivity(sharedUrl = sharedLink, finishActivity = finishActivity)
         }
     }
-
 }
 
 @Composable
@@ -45,7 +42,6 @@ private fun AddBookmarksScreenFromActivity(
         ) {
             AddBookmarkScreen(
                 sharedUrl = sharedUrl,
-                presenter = get(),
                 onBookmarkSaved = {
                     finishActivity()
                 },

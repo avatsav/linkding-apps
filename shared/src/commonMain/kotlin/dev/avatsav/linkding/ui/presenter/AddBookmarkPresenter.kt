@@ -1,11 +1,17 @@
-package dev.avatsav.linkding.ui
+package dev.avatsav.linkding.ui.presenter
 
+import com.rickclephas.kmp.nativecoroutines.NativeCoroutinesState
 import dev.avatsav.linkding.LinkUnfurler
 import dev.avatsav.linkding.Presenter
 import dev.avatsav.linkding.UnfurlResult
 import dev.avatsav.linkding.bookmark.application.ports.`in`.BookmarkService
 import dev.avatsav.linkding.bookmark.domain.BookmarkSaveError
 import dev.avatsav.linkding.bookmark.domain.SaveBookmark
+import dev.avatsav.linkding.ui.AsyncState
+import dev.avatsav.linkding.ui.Fail
+import dev.avatsav.linkding.ui.Loading
+import dev.avatsav.linkding.ui.Success
+import dev.avatsav.linkding.ui.Uninitialized
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
@@ -48,7 +54,8 @@ class AddBookmarkPresenter(
 
     private val saveStateFlow = MutableStateFlow<AsyncState<Unit, String>>(Uninitialized)
 
-    val state: StateFlow<AddBookmarkViewState> =
+    @NativeCoroutinesState
+    val uiState: StateFlow<AddBookmarkViewState> =
         combine(unfurlStateFlow, saveStateFlow) { unfurlState, saveState ->
             val state = AddBookmarkViewState(unfurlState, saveState)
             Napier.w { "Emitting State: $state" }

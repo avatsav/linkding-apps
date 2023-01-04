@@ -38,34 +38,75 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import dev.avatsav.linkding.android.ui.components.OutlinedPlaceholderTextField
 import dev.avatsav.linkding.android.ui.components.OutlinedTagsTextField
 import dev.avatsav.linkding.android.ui.components.SmallCircularProgressIndicator
 import dev.avatsav.linkding.android.ui.components.TagsTextFieldValue
 import dev.avatsav.linkding.android.ui.extensions.getComposableOnSuccess
 import dev.avatsav.linkding.android.ui.theme.LinkdingTheme
-import dev.avatsav.linkding.ui.AddBookmarkPresenter
+import dev.avatsav.linkding.ui.presenter.AddBookmarkPresenter
 import dev.avatsav.linkding.ui.AsyncState
 import dev.avatsav.linkding.ui.Fail
 import dev.avatsav.linkding.ui.Success
-import dev.avatsav.linkding.ui.UnfurlData
+import dev.avatsav.linkding.ui.presenter.UnfurlData
 import dev.avatsav.linkding.ui.onFail
 import dev.avatsav.linkding.ui.onLoading
 import dev.avatsav.linkding.ui.onSuccess
+import org.koin.androidx.compose.get
+
+@Composable
+@Destination
+fun AddBookmarkScreen(
+    sharedUrl: String?,
+    navigator: DestinationsNavigator
+) {
+    val presenter: AddBookmarkPresenter = get()
+    DisposableEffect(presenter) {
+        onDispose {
+            presenter.clear()
+        }
+    }
+    AddBookmarkScreen(
+        sharedUrl = sharedUrl,
+        presenter = presenter,
+        onBookmarkSaved = {
+            navigator.popBackStack()
+        },
+        onClose = {
+            navigator.popBackStack()
+        })
+}
 
 @Composable
 fun AddBookmarkScreen(
+    sharedUrl: String?,
+    onBookmarkSaved: () -> Unit = {},
+    onClose: () -> Unit = {}
+) {
+    val presenter: AddBookmarkPresenter = get()
+    DisposableEffect(presenter) {
+        onDispose {
+            presenter.clear()
+        }
+    }
+    AddBookmarkScreen(
+        sharedUrl = sharedUrl,
+        presenter = presenter,
+        onBookmarkSaved = onBookmarkSaved,
+        onClose = onClose
+    )
+}
+
+@Composable
+private fun AddBookmarkScreen(
     sharedUrl: String?,
     presenter: AddBookmarkPresenter,
     onBookmarkSaved: () -> Unit = {},
     onClose: () -> Unit = {}
 ) {
     if (sharedUrl != null) presenter.urlChanged(sharedUrl)
-    DisposableEffect(presenter) {
-        onDispose {
-            presenter.clear()
-        }
-    }
     AddBookmarkScreen(
         modifier = Modifier,
         sharedUrl = sharedUrl,
@@ -77,20 +118,19 @@ fun AddBookmarkScreen(
 
 @OptIn(ExperimentalLifecycleComposeApi::class)
 @Composable
-fun AddBookmarkScreen(
+private fun AddBookmarkScreen(
     modifier: Modifier,
     sharedUrl: String?,
     presenter: AddBookmarkPresenter,
     onBookmarkSaved: () -> Unit,
     onClose: () -> Unit
 ) {
-    val uiState by presenter.state.collectAsStateWithLifecycle()
+    val uiState by presenter.uiState.collectAsStateWithLifecycle()
 
     uiState.saveState onSuccess {
         onBookmarkSaved()
         return
     }
-
     AddBookmarkScreen(
         modifier = modifier,
         sharedUrl = sharedUrl,
@@ -104,7 +144,7 @@ fun AddBookmarkScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddBookmarkScreen(
+private fun AddBookmarkScreen(
     modifier: Modifier,
     sharedUrl: String?,
     unfurlState: AsyncState<UnfurlData, String>,
@@ -123,14 +163,16 @@ fun AddBookmarkScreen(
 
     Scaffold(
         topBar = {
-            LargeTopAppBar(title = { Text(text = "Add Bookmark") },
+            LargeTopAppBar(
+                title = { Text(text = "Add Bookmark") },
                 scrollBehavior = scrollBehavior,
-                actions = {
+                navigationIcon = {
                     IconButton(onClick = { onClose() }) {
                         Icon(imageVector = Icons.Default.Close, contentDescription = "Close")
                     }
                 })
-        }, modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
+        },
+        modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
     ) { padding ->
         Column(
             modifier = modifier

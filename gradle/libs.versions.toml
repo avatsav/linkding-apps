@@ -1,5 +1,5 @@
 [versions]
-agp = "8.0.0-alpha10"
+agp = "8.0.0-alpha11"
 kotlin = "1.8.0"
 coroutines = "1.6.4"
 ksp = "1.8.0-1.0.8"
@@ -19,6 +19,7 @@ kmpNativeCoroutines = "1.0.0-ALPHA-4"
 androidxDatastore = "1.0.0"
 datetime = "0.4.0"
 accompanist = "0.28.0"
+compose-destinations = "1.7.30-beta"
 
 compileSdk = "33"
 minSdk = "26"
@@ -65,6 +66,9 @@ compose-ui-test-mainfest = { module = "androidx.compose.ui:ui-test-manifest" }
 compose-ui-util = { module = "androidx.compose.ui:ui-util" }
 accompanist-flowlayout = { module = "com.google.accompanist:accompanist-flowlayout", version.ref = "accompanist" }
 accompanist-navAnimation = { module = "com.google.accompanist:accompanist-navigation-animation", version.ref = "accompanist" }
+
+compose-destinations = { module = "io.github.raamcosta.compose-destinations:animations-core", version.ref = "compose-destinations" }
+compose-destinations-compiler = { module = "io.github.raamcosta.compose-destinations:ksp", version.ref = "compose-destinations" }
 
 hilt-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "dagger" }
 hilt-library = { module = "com.google.dagger:hilt-android", version.ref = "dagger" }

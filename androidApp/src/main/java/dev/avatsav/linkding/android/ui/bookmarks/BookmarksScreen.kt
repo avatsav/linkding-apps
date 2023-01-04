@@ -24,9 +24,27 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import dev.avatsav.linkding.android.ui.destinations.AddBookmarkScreenDestination
 import dev.avatsav.linkding.android.ui.theme.LinkdingTheme
-import dev.avatsav.linkding.ui.BookmarksPresenter
-import dev.avatsav.linkding.ui.model.BookmarkViewItem
+import dev.avatsav.linkding.ui.presenter.BookmarkViewItem
+import dev.avatsav.linkding.ui.presenter.BookmarksPresenter
+import org.koin.androidx.compose.get
+
+@Composable
+@Destination
+fun BookmarksScreen(navigator: DestinationsNavigator) {
+    val presenter: BookmarksPresenter = get()
+    DisposableEffect(key1 = presenter) {
+        onDispose {
+            presenter.clear()
+        }
+    }
+    BookmarksScreen(presenter = presenter, onAddBookmark = {
+        navigator.navigate(AddBookmarkScreenDestination(sharedUrl = null))
+    })
+}
 
 @OptIn(ExperimentalLifecycleComposeApi::class)
 @Composable
@@ -34,13 +52,10 @@ fun BookmarksScreen(
     presenter: BookmarksPresenter,
     onAddBookmark: () -> Unit,
 ) {
-    val state by presenter.state.collectAsStateWithLifecycle()
-    DisposableEffect(key1 = presenter) {
-        onDispose {
-            presenter.clear()
-        }
-    }
-    BookmarksScreen(state = state, onAddBookmark = onAddBookmark)
+    val state by presenter.uiState.collectAsStateWithLifecycle()
+    BookmarksScreen(
+        state = state, onAddBookmark = onAddBookmark
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -131,7 +146,8 @@ fun BookmarkScreenPreview() {
     )
     LinkdingTheme {
         Surface {
-            BookmarksScreen(state = BookmarksPresenter.ViewState(false, sampleBookmarkList),
+            BookmarksScreen(
+                state = BookmarksPresenter.ViewState(false, sampleBookmarkList),
                 onAddBookmark = {})
         }
     }

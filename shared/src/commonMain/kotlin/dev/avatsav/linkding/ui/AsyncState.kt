@@ -74,6 +74,23 @@ fun <V, E> AsyncState<V, E>.get(): V? {
 }
 
 @OptIn(ExperimentalContracts::class)
+fun <V, E> AsyncState<V, E>.getError(): E? {
+    contract {
+        returnsNotNull() implies (this@getError is Fail<E>)
+        returns(null) implies (this@getError is Success<V>)
+        returns(null) implies (this@getError is Loading)
+        returns(null) implies (this@getError is Uninitialized)
+
+    }
+    return when (this) {
+        is Loading -> null
+        is Success -> null
+        is Fail -> error
+        Uninitialized -> null
+    }
+}
+
+@OptIn(ExperimentalContracts::class)
 inline infix fun <V, E, U> AsyncState<V, E>.mapSuccess(transform: (V) -> U): AsyncState<U, E> {
     contract {
         callsInPlace(transform, InvocationKind.AT_MOST_ONCE)

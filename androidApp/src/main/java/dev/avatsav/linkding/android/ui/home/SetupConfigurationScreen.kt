@@ -1,4 +1,4 @@
-package dev.avatsav.linkding.android.ui.setup
+package dev.avatsav.linkding.android.ui.home
 
 import android.content.res.Configuration
 import androidx.compose.animation.AnimatedVisibility
@@ -19,8 +19,6 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -33,30 +31,32 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.avatsav.linkding.android.ui.theme.LinkdingTheme
-import dev.avatsav.linkding.ui.SetupConfigurationPresenter
-import dev.avatsav.linkding.ui.SetupConfigurationPresenter.ViewState
-import dev.avatsav.linkding.ui.SetupConfigurationPresenter.ViewState.Error
-
-@Composable
-fun SetupConfigurationScreen(presenter: SetupConfigurationPresenter) {
-    val uiState by presenter.uiState.collectAsState()
-    DisposableEffect(presenter) {
-        onDispose {
-            presenter.clear()
-        }
-    }
-    SetupConfigurationScreen(uiState = uiState, onSubmitted = { url, apiKey ->
-        presenter.setConfiguration(url, apiKey)
-    })
-}
+import dev.avatsav.linkding.ui.AsyncState
+import dev.avatsav.linkding.ui.Loading
+import dev.avatsav.linkding.ui.presenter.SaveConfigurationError
+import dev.avatsav.linkding.ui.Uninitialized
+import dev.avatsav.linkding.ui.getError
+import dev.avatsav.linkding.ui.onLoading
+import dev.avatsav.linkding.ui.onSuccess
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SetupConfigurationScreen(
-    modifier: Modifier = Modifier, uiState: ViewState, onSubmitted: (String, String) -> Unit
+    modifier: Modifier = Modifier,
+    state: AsyncState<Unit, SaveConfigurationError>,
+    onSaveSuccess: () -> Unit,
+    onConfigurationSubmitted: (String, String) -> Unit
 ) {
     var url by remember { mutableStateOf("") }
     var apiKey by remember { mutableStateOf("") }
+
+    val urlEmptyError = state.getError() as? SaveConfigurationError.UrlEmpty
+    val apiKeyEmptyError = state.getError() as? SaveConfigurationError.ApiKeyEmpty
+    val cannotConnectError = state.getError() as? SaveConfigurationError.CannotConnect
+
+    state.onSuccess {
+        onSaveSuccess()
+    }
 
     Scaffold(topBar = {
         LargeTopAppBar(title = { Text(text = "Setup Linkding") })
@@ -72,12 +72,12 @@ fun SetupConfigurationScreen(
             Spacer(modifier = Modifier.size(8.dp))
             OutlinedTextField(modifier = Modifier.fillMaxWidth(),
                 value = url,
-                enabled = !uiState.loading,
+                enabled = state !is Loading,
                 label = { Text(text = "Linkding Host URL") },
-                isError = uiState.error is Error.UrlEmpty,
+                isError = urlEmptyError != null,
                 supportingText = {
-                    AnimatedVisibility(visible = uiState.error is Error.UrlEmpty) {
-                        Text(text = uiState.error.message)
+                    AnimatedVisibility(visible = urlEmptyError != null) {
+                        if (urlEmptyError != null) Text(text = urlEmptyError.message)
                     }
                 },
                 keyboardOptions = KeyboardOptions(
@@ -90,12 +90,12 @@ fun SetupConfigurationScreen(
                 })
             OutlinedTextField(modifier = Modifier.fillMaxWidth(),
                 value = apiKey,
-                enabled = !uiState.loading,
+                enabled = state !is Loading,
                 label = { Text(text = "API Key") },
-                isError = uiState.error is Error.ApiKeyEmpty,
+                isError = apiKeyEmptyError != null,
                 supportingText = {
-                    AnimatedVisibility(visible = uiState.error is Error.ApiKeyEmpty) {
-                        Text(text = uiState.error.message)
+                    AnimatedVisibility(visible = apiKeyEmptyError != null) {
+                        if (apiKeyEmptyError != null) Text(text = apiKeyEmptyError.message)
                     }
                 },
                 onValueChange = { value ->
@@ -106,17 +106,18 @@ fun SetupConfigurationScreen(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Button(enabled = !uiState.loading, onClick = {
-                    onSubmitted(url, apiKey)
-                }) {
+                Button(
+                    enabled = state !is Loading,
+                    onClick = { onConfigurationSubmitted(url, apiKey) })
+                {
                     Text("Save")
                 }
-                if (uiState.loading) {
+                state onLoading {
                     CircularProgressIndicator()
                 }
-                AnimatedVisibility(visible = uiState.error is Error.CannotConnect) {
-                    Text(
-                        text = uiState.error.message,
+                AnimatedVisibility(visible = cannotConnectError != null) {
+                    if (cannotConnectError != null) Text(
+                        text = cannotConnectError.message,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.error
                     )
@@ -132,9 +133,8 @@ fun SetupConfigurationScreen(
 @Composable
 fun SetupConfigurationScreen_Preview() {
     LinkdingTheme {
-        SetupConfigurationScreen(uiState = ViewState(
-            loading = false,
-            error = Error.None,
-        ), onSubmitted = { _, _ -> })
+        SetupConfigurationScreen(state = Uninitialized,
+            onSaveSuccess = {},
+            onConfigurationSubmitted = { _, _ -> })
     }
 }

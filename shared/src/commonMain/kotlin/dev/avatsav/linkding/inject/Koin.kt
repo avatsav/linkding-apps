@@ -5,15 +5,13 @@ import dev.avatsav.linkding.bookmark.application.ports.`in`.BookmarkService
 import dev.avatsav.linkding.bookmark.application.ports.out.BookmarkRepository
 import dev.avatsav.linkding.bookmark.application.services.LinkdingBookmarkService
 import dev.avatsav.linkding.data.ConfigurationStore
-import dev.avatsav.linkding.ui.AddBookmarkPresenter
-import dev.avatsav.linkding.ui.BookmarksPresenter
-import dev.avatsav.linkding.ui.MainPresenter
-import dev.avatsav.linkding.ui.SetupConfigurationPresenter
+import dev.avatsav.linkding.ui.presenter.AddBookmarkPresenter
+import dev.avatsav.linkding.ui.presenter.BookmarksPresenter
+import dev.avatsav.linkding.ui.presenter.HomePresenter
 import io.github.aakira.napier.DebugAntilog
 import io.github.aakira.napier.Napier
 import org.koin.core.context.startKoin
 import org.koin.core.module.Module
-import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.KoinAppDeclaration
 import org.koin.dsl.module
@@ -28,10 +26,9 @@ fun initKoin(enableNetworkLogs: Boolean, appDeclaration: KoinAppDeclaration = {}
  * Presenter dependencies.
  */
 private val presenterModule = module {
-    factoryOf(::SetupConfigurationPresenter)
-    factoryOf(::MainPresenter)
-    factoryOf(::BookmarksPresenter)
-    factoryOf(::AddBookmarkPresenter)
+    factory { HomePresenter(get(), get()) }
+    factory { BookmarksPresenter(get()) }
+    factory { AddBookmarkPresenter(get(), get()) }
 }
 
 /**
