@@ -3,6 +3,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.ksp)
 }
 
 android {
@@ -30,6 +31,13 @@ android {
             isMinifyEnabled = false
         }
     }
+    applicationVariants.all {
+        sourceSets {
+            getByName(name) {
+                kotlin.srcDir("build/generated/ksp/$name/kotlin")
+            }
+        }
+    }
 }
 
 dependencies {
@@ -53,7 +61,8 @@ dependencies {
     implementation(libs.compose.ui.tooling)
     implementation(libs.compose.ui.tooling.preview)
     implementation(libs.accompanist.flowlayout)
-    implementation(libs.accompanist.navAnimation)
+    implementation(libs.compose.destinations)
+    ksp(libs.compose.destinations.compiler)
 
     implementation(libs.kotlin.coroutines.android)
     implementation(libs.kotlin.datetime)
