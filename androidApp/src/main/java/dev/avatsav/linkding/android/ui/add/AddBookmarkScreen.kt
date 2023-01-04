@@ -37,11 +37,13 @@ import dev.avatsav.linkding.android.ui.components.TagsTextField
 import dev.avatsav.linkding.android.ui.components.TagsTextFieldValue
 import dev.avatsav.linkding.android.ui.theme.LinkdingTheme
 import dev.avatsav.linkding.ui.AddBookmarkPresenter
+import dev.avatsav.linkding.ui.AsyncState
+import dev.avatsav.linkding.ui.Fail
+import dev.avatsav.linkding.ui.Success
 import dev.avatsav.linkding.ui.UnfurlData
-import dev.avatsav.linkding.ui.model.Async
-import dev.avatsav.linkding.ui.model.Fail
-import dev.avatsav.linkding.ui.model.Loading
-import dev.avatsav.linkding.ui.model.Success
+import dev.avatsav.linkding.ui.onFail
+import dev.avatsav.linkding.ui.onLoading
+import dev.avatsav.linkding.ui.onSuccess
 
 @Composable
 fun AddBookmarkScreen(
@@ -83,8 +85,8 @@ fun AddBookmarkScreen(
 fun AddBookmarkScreen(
     modifier: Modifier,
     sharedUrl: String?,
-    unfurlState: Async<UnfurlData>,
-    saveState: Async<Unit>,
+    unfurlState: AsyncState<UnfurlData, String>,
+    saveState: AsyncState<Unit, String>,
     onUrlChanged: (String) -> Unit,
     onSave: (url: String, title: String?, description: String?, tags: List<String>) -> Unit
 ) {
@@ -128,15 +130,13 @@ fun AddBookmarkScreen(
                     Text(text = "Optional, leave empty to use title from website.")
                 },
                 trailingIcon = {
-                    if (unfurlState is Loading) {
-                        SmallCircularProgressIndicator()
-                    }
+                    unfurlState onLoading { SmallCircularProgressIndicator() }
                 },
                 placeholder = {
-                    (unfurlState as? Success)?.run {
+                    unfurlState onSuccess { data ->
                         Text(
-                            text = this().unfurledTitle ?: "",
-                            maxLines = 4,
+                            text = data.unfurledTitle ?: "",
+                            maxLines = 2,
                             overflow = TextOverflow.Ellipsis
                         )
                     }
@@ -150,25 +150,21 @@ fun AddBookmarkScreen(
                 label = { Text(text = "Description") },
                 maxLines = 4,
                 placeholder = {
-                    (unfurlState as? Success)?.run {
+                    unfurlState.onSuccess { data ->
                         Text(
-                            text = this().unfurledDescription ?: "",
+                            text = data.unfurledDescription ?: "",
                             maxLines = 4,
                             overflow = TextOverflow.Ellipsis
                         )
                     }
                 },
                 trailingIcon = {
-                    if (unfurlState is Loading) {
-                        SmallCircularProgressIndicator()
-                    }
+                    unfurlState onLoading { SmallCircularProgressIndicator() }
                 },
                 supportingText = {
                     Text(text = "Optional, leave empty to use description from website.")
                 },
-                onValueChange = { value ->
-                    description = value
-                })
+                onValueChange = { value -> description = value })
             Row(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 verticalAlignment = Alignment.CenterVertically
@@ -180,18 +176,20 @@ fun AddBookmarkScreen(
                 }) {
                     Text("Save")
                 }
-                if (saveState is Loading) {
+                saveState onLoading {
                     CircularProgressIndicator()
                 }
             }
-            AnimatedVisibility(visible = saveState is Fail) {
-                val errorMessage = (saveState as? Fail<Unit>)?.message ?: "Unknown error"
-                Text(
-                    text = errorMessage,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.error
-                )
+            saveState onFail { error ->
+                AnimatedVisibility(visible = true) {
+                    Text(
+                        text = error,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.error
+                    )
+                }
             }
+
         }
     }
 }

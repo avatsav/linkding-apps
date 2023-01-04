@@ -6,11 +6,6 @@ import dev.avatsav.linkding.UnfurlResult
 import dev.avatsav.linkding.bookmark.application.ports.`in`.BookmarkService
 import dev.avatsav.linkding.bookmark.domain.BookmarkSaveError
 import dev.avatsav.linkding.bookmark.domain.SaveBookmark
-import dev.avatsav.linkding.ui.model.Async
-import dev.avatsav.linkding.ui.model.Fail
-import dev.avatsav.linkding.ui.model.Loading
-import dev.avatsav.linkding.ui.model.Success
-import dev.avatsav.linkding.ui.model.Uninitialized
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
@@ -27,7 +22,8 @@ import kotlinx.coroutines.flow.transform
 import kotlinx.coroutines.launch
 
 data class AddBookmarkViewState(
-    val unfurlState: Async<UnfurlData> = Uninitialized, val saveState: Async<Unit> = Uninitialized
+    val unfurlState: AsyncState<UnfurlData, String> = Uninitialized,
+    val saveState: AsyncState<Unit, String> = Uninitialized
 )
 
 data class UnfurlData(
@@ -44,13 +40,13 @@ class AddBookmarkPresenter(
 
     private val urlFlow = MutableStateFlow("")
 
-    private val unfurlStateFlow: Flow<Async<UnfurlData>> =
+    private val unfurlStateFlow: Flow<AsyncState<UnfurlData, String>> =
         urlFlow.debounce(1000).distinctUntilChanged().transform { link ->
             emit(Loading())
             emit(linkUnfurler.unfurl(link).toAsyncState())
         }.flowOn(Dispatchers.Default)
 
-    private val saveStateFlow = MutableStateFlow<Async<Unit>>(Uninitialized)
+    private val saveStateFlow = MutableStateFlow<AsyncState<Unit, String>>(Uninitialized)
 
     val state: StateFlow<AddBookmarkViewState> =
         combine(unfurlStateFlow, saveStateFlow) { unfurlState, saveState ->
@@ -73,7 +69,7 @@ class AddBookmarkPresenter(
             bookmarkService.save(saveBookmark).map {
                 saveStateFlow.emit(Success(Unit))
             }.mapLeft { error ->
-                val failure: Fail<Unit> = when (error) {
+                val failure: Fail<String> = when (error) {
                     BookmarkSaveError.ConfigurationNotSetup -> Fail("Linkding not configured")
                     is BookmarkSaveError.CouldNotSaveBookmark -> Fail(error.message.detail)
                 }
@@ -83,7 +79,7 @@ class AddBookmarkPresenter(
     }
 }
 
-private fun UnfurlResult.toAsyncState(): Async<UnfurlData> = when (this) {
+private fun UnfurlResult.toAsyncState(): AsyncState<UnfurlData, String> = when (this) {
     is UnfurlResult.Data -> Success(UnfurlData(url, title, description))
     is UnfurlResult.Error -> Fail(message)
 }
