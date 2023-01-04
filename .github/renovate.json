@@ -17,6 +17,13 @@
       ]
     },
     {
+      "groupName": "AndroidX Tests",
+      "groupSlug": "androidx-tests",
+      "matchPackagePatterns": [
+        "androidx.tests.*"
+      ]
+    },
+    {
       "description": "Automatically merge minor and patch-level updates",
       "matchUpdateTypes": [
         "minor",
