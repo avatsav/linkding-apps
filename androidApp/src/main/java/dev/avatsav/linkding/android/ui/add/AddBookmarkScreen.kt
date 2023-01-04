@@ -1,7 +1,6 @@
 package dev.avatsav.linkding.android.ui.add
 
 import android.content.res.Configuration
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -39,9 +38,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import dev.avatsav.linkding.android.ui.components.OutlinedPlaceholderTextField
+import dev.avatsav.linkding.android.ui.components.OutlinedTagsTextField
 import dev.avatsav.linkding.android.ui.components.SmallCircularProgressIndicator
-import dev.avatsav.linkding.android.ui.components.TagsTextField
 import dev.avatsav.linkding.android.ui.components.TagsTextFieldValue
+import dev.avatsav.linkding.android.ui.extensions.getComposableOnSuccess
 import dev.avatsav.linkding.android.ui.theme.LinkdingTheme
 import dev.avatsav.linkding.ui.AddBookmarkPresenter
 import dev.avatsav.linkding.ui.AsyncState
@@ -122,17 +123,14 @@ fun AddBookmarkScreen(
 
     Scaffold(
         topBar = {
-            LargeTopAppBar(
-                title = { Text(text = "Add Bookmark") },
+            LargeTopAppBar(title = { Text(text = "Add Bookmark") },
                 scrollBehavior = scrollBehavior,
                 actions = {
                     IconButton(onClick = { onClose() }) {
                         Icon(imageVector = Icons.Default.Close, contentDescription = "Close")
                     }
-                }
-            )
-        },
-        modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
+                })
+        }, modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
     ) { padding ->
         Column(
             modifier = modifier
@@ -153,13 +151,13 @@ fun AddBookmarkScreen(
                     url = value
                     onUrlChanged(url)
                 })
-            TagsTextField(modifier = Modifier.fillMaxWidth(),
+            OutlinedTagsTextField(modifier = Modifier.fillMaxWidth(),
                 value = tagsValue,
                 label = { Text(text = "Tags") },
                 supportingText = {
                     Text(text = "Enter any number of tags separated by space and without the hash (#). If a tag does not exist it will be automatically created.")
                 })
-            OutlinedTextField(modifier = Modifier.fillMaxWidth(),
+            OutlinedPlaceholderTextField(modifier = Modifier.fillMaxWidth(),
                 value = title,
                 label = { Text(text = "Title") },
                 supportingText = {
@@ -168,30 +166,34 @@ fun AddBookmarkScreen(
                 trailingIcon = {
                     unfurlState onLoading { SmallCircularProgressIndicator() }
                 },
-                placeholder = {
-                    unfurlState onSuccess { data ->
-                        Text(
-                            text = data.unfurledTitle ?: "",
-                            maxLines = 2,
-                            overflow = TextOverflow.Ellipsis
-                        )
+                placeholder = unfurlState getComposableOnSuccess { data: UnfurlData ->
+                    if (data.unfurledTitle == null) {
+                        null
+                    } else {
+                        {
+                            Text(
+                                text = data.unfurledTitle ?: "",
+                                maxLines = 4,
+                                overflow = TextOverflow.Ellipsis
+                            )
+                        }
                     }
                 },
-                maxLines = 2,
-                onValueChange = { value ->
-                    title = value
-                })
-            OutlinedTextField(modifier = Modifier.fillMaxWidth(),
+                onValueChange = { value -> title = value })
+            OutlinedPlaceholderTextField(modifier = Modifier.fillMaxWidth(),
                 value = description,
                 label = { Text(text = "Description") },
-                maxLines = 4,
-                placeholder = {
-                    unfurlState.onSuccess { data ->
-                        Text(
-                            text = data.unfurledDescription ?: "",
-                            maxLines = 4,
-                            overflow = TextOverflow.Ellipsis
-                        )
+                placeholder = unfurlState getComposableOnSuccess { data: UnfurlData ->
+                    if (data.unfurledTitle == null) {
+                        null
+                    } else {
+                        {
+                            Text(
+                                text = data.unfurledDescription ?: "",
+                                maxLines = 4,
+                                overflow = TextOverflow.Ellipsis
+                            )
+                        }
                     }
                 },
                 trailingIcon = {
@@ -217,15 +219,12 @@ fun AddBookmarkScreen(
                 }
             }
             saveState onFail { error ->
-                AnimatedVisibility(visible = true) {
-                    Text(
-                        text = error,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.error
-                    )
-                }
+                Text(
+                    text = error,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.error
+                )
             }
-
         }
     }
 }

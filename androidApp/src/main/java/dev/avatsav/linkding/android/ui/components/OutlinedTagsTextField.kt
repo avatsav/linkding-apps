@@ -36,7 +36,6 @@ import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.onPreviewKeyEvent
 import androidx.compose.ui.input.key.type
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
@@ -48,7 +47,7 @@ import dev.avatsav.linkding.android.ui.extensions.onCondition
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TagsTextField(
+fun OutlinedTagsTextField(
     modifier: Modifier = Modifier,
     value: TagsTextFieldValue,
     label: @Composable (() -> Unit)? = null,
@@ -58,7 +57,7 @@ fun TagsTextField(
 ) {
     var textValue by remember { mutableStateOf(TextFieldValue()) }
     Box(modifier = modifier.onCondition(label != null) { padding(top = 4.dp) }) {
-        TagsTextField(
+        OutlinedTagsTextField(
             tagsValue = value,
             textValue = textValue,
             onTextValueChange = { textValue = it },
@@ -87,7 +86,7 @@ fun TagsTextField(
     ExperimentalMaterial3Api::class,
 )
 @Composable
-private fun TagsTextField(
+private fun OutlinedTagsTextField(
     modifier: Modifier = Modifier,
     tagsValue: TagsTextFieldValue,
     textValue: TextFieldValue,
@@ -97,7 +96,7 @@ private fun TagsTextField(
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     decorationBox: @Composable (innerTextField: @Composable () -> Unit) -> Unit = @Composable { innerTextField -> innerTextField() },
 ) {
-    val keyboardController = LocalSoftwareKeyboardController.current
+
     val textFieldFocusRequester = remember { FocusRequester() }
 
     decorationBox {
@@ -107,7 +106,6 @@ private fun TagsTextField(
                 .pointerInput(textValue) {
                     detectTapGestures(
                         onTap = {
-                            keyboardController?.show()
                             textFieldFocusRequester.requestFocus()
                         },
                     )
@@ -139,7 +137,7 @@ private fun TagsTextField(
                         }
                         false
                     },
-                onValueChange = taggableValueChange(
+                onValueChange = tagValueChange(
                     onTag = { tagText ->
                         tagsValue.addTag(Tag(tagText))
                     }, onValueChange = onTextValueChange
@@ -189,7 +187,7 @@ class TagsTextFieldValue(tags: List<Tag> = emptyList()) {
     }
 }
 
-private inline fun taggableValueChange(
+private inline fun tagValueChange(
     crossinline onTag: (tagText: String) -> Unit,
     crossinline onValueChange: (TextFieldValue) -> Unit,
 ): (TextFieldValue) -> Unit = { it ->

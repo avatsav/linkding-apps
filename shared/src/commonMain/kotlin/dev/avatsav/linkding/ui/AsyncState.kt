@@ -5,6 +5,7 @@ import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
 
 // Inspired by : https://github.com/airbnb/mavericks/blob/main/mvrx-common/src/main/java/com/airbnb/mvrx/Async.kt
+// and https://github.com/michaelbull/kotlin-result
 
 sealed class AsyncState<out V, out E>(
     val complete: Boolean, val shouldLoad: Boolean, private val value: V?,
@@ -53,4 +54,34 @@ inline infix fun <V, E> AsyncState<V, E>.onFail(action: (E) -> Unit): AsyncState
         action(error)
     }
     return this
+}
+
+@OptIn(ExperimentalContracts::class)
+fun <V, E> AsyncState<V, E>.get(): V? {
+    contract {
+        returnsNotNull() implies (this@get is Success<V>)
+        returns(null) implies (this@get is Fail<E>)
+        returns(null) implies (this@get is Loading)
+        returns(null) implies (this@get is Uninitialized)
+
+    }
+    return when (this) {
+        is Loading -> null
+        is Success -> value
+        is Fail -> null
+        Uninitialized -> null
+    }
+}
+
+@OptIn(ExperimentalContracts::class)
+inline infix fun <V, E, U> AsyncState<V, E>.mapSuccess(transform: (V) -> U): AsyncState<U, E> {
+    contract {
+        callsInPlace(transform, InvocationKind.AT_MOST_ONCE)
+    }
+    return when (this) {
+        is Loading -> Loading()
+        is Success -> Success(transform(value))
+        is Fail -> this
+        Uninitialized -> Uninitialized
+    }
 }

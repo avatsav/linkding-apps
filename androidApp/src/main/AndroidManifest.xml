@@ -22,7 +22,7 @@
             </intent-filter>
         </activity>
 <!--        <activity-->
-<!--            android:name=".ui.components.PlaygroundActivity"-->
+<!--            android:name=".debug.PlaygroundActivity"-->
 <!--            android:exported="true">-->
 <!--            <intent-filter>-->
 <!--                <action android:name="android.intent.action.MAIN" />-->
