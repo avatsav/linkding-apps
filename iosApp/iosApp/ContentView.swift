@@ -3,7 +3,7 @@ import SwiftUI
 
 struct ContentView: View {
     var body: some View {
-        let setupPresenter: SetupConfigurationPresenter = KoinSwift.get()
+        let setupPresenter: HomePresenter = KoinSwift.get()
         SetupConfigurationScreen(presenter: setupPresenter)
     }
 }

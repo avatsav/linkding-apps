@@ -94,7 +94,11 @@ class HomePresenter(
 data class HomeViewState(
     val setupState: AsyncState<Boolean, String> = Uninitialized,
     val saveConfigurationState: AsyncState<Unit, SaveConfigurationError> = Uninitialized
-)
+) {
+    companion object {
+        val Initial = HomeViewState()
+    }
+}
 
 sealed class SaveConfigurationError(val message: String) {
     object UrlEmpty : SaveConfigurationError("URL cannot be empty")
