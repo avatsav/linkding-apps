@@ -11,16 +11,19 @@ import dev.avatsav.linkding.ui.model.Fail
 import dev.avatsav.linkding.ui.model.Loading
 import dev.avatsav.linkding.ui.model.Success
 import dev.avatsav.linkding.ui.model.Uninitialized
+import io.github.aakira.napier.Napier
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.transform
 import kotlinx.coroutines.launch
 
 data class AddBookmarkViewState(
@@ -39,58 +42,49 @@ class AddBookmarkPresenter(
     private val linkUnfurler: LinkUnfurler,
 ) : Presenter() {
 
-    private val _state = MutableStateFlow(AddBookmarkViewState())
-    val state: StateFlow<AddBookmarkViewState> = _state
+    private val urlFlow = MutableStateFlow("")
 
-    private val linkFlow = MutableStateFlow("")
+    private val unfurlStateFlow: Flow<Async<UnfurlData>> =
+        urlFlow.debounce(1000).distinctUntilChanged().transform { link ->
+            emit(Loading())
+            emit(linkUnfurler.unfurl(link).toAsyncState())
+        }.flowOn(Dispatchers.Default)
 
-    init {
-        linkFlow.debounce(1000).distinctUntilChanged()
-            .onEach { _state.emit(value = _state.value.copy(unfurlState = Loading())) }
-            .map { link -> linkUnfurler.unfurl(link) }
-            .flowOn(Dispatchers.Default)
-            .onEach { unfurlResult ->
-                when (unfurlResult) {
-                    is UnfurlResult.Data -> {
-                        _state.value = _state.value.copy(
-                            unfurlState = Success(
-                                UnfurlData(
-                                    unfurledUrl = unfurlResult.url,
-                                    unfurledTitle = unfurlResult.title,
-                                    unfurledDescription = unfurlResult.description
-                                )
-                            ),
-                        )
-                    }
+    private val saveStateFlow = MutableStateFlow<Async<Unit>>(Uninitialized)
 
-                    is UnfurlResult.Error -> {
-                        _state.value = _state.value.copy(unfurlState = Fail(unfurlResult.message))
-                    }
-                }
-            }.launchIn(presenterScope)
-    }
+    val state: StateFlow<AddBookmarkViewState> =
+        combine(unfurlStateFlow, saveStateFlow) { unfurlState, saveState ->
+            val state = AddBookmarkViewState(unfurlState, saveState)
+            Napier.w { "Emitting State: $state" }
+            state
+        }.stateIn(presenterScope, SharingStarted.WhileSubscribed(), AddBookmarkViewState())
 
-    fun setLink(link: String) {
-        if (linkFlow.value == link) return
+    fun urlChanged(url: String) {
+        if (urlFlow.value == url) return
         presenterScope.launch {
-            linkFlow.emit(link)
+            urlFlow.emit(url)
         }
     }
 
     fun save(url: String, title: String?, description: String?, tags: List<String>) {
-        val saveBookmark = SaveBookmark(url, title, description, tags.toSet())
         presenterScope.launch {
-            _state.emit(_state.value.copy(saveState = Loading()))
+            saveStateFlow.emit(Loading())
+            val saveBookmark = SaveBookmark(url, title, description, tags.toSet())
             bookmarkService.save(saveBookmark).map {
-                _state.emit(_state.value.copy(saveState = Success(Unit)))
+                saveStateFlow.emit(Success(Unit))
             }.mapLeft { error ->
                 val failure: Fail<Unit> = when (error) {
                     BookmarkSaveError.ConfigurationNotSetup -> Fail("Linkding not configured")
                     is BookmarkSaveError.CouldNotSaveBookmark -> Fail(error.message.detail)
                 }
-                _state.emit(_state.value.copy(saveState = failure))
+                saveStateFlow.emit(failure)
             }
         }
     }
-
 }
+
+private fun UnfurlResult.toAsyncState(): Async<UnfurlData> = when (this) {
+    is UnfurlResult.Data -> Success(UnfurlData(url, title, description))
+    is UnfurlResult.Error -> Fail(message)
+}
+

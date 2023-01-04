@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
@@ -33,6 +32,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import dev.avatsav.linkding.android.ui.components.SmallCircularProgressIndicator
 import dev.avatsav.linkding.android.ui.components.TagsTextField
 import dev.avatsav.linkding.android.ui.components.TagsTextFieldValue
 import dev.avatsav.linkding.android.ui.theme.LinkdingTheme
@@ -45,9 +45,9 @@ import dev.avatsav.linkding.ui.model.Success
 
 @Composable
 fun AddBookmarkScreen(
-    sharedLink: String?, presenter: AddBookmarkPresenter
+    sharedUrl: String?, presenter: AddBookmarkPresenter
 ) {
-    if (sharedLink != null) presenter.setLink(sharedLink)
+    if (sharedUrl != null) presenter.urlChanged(sharedUrl)
     DisposableEffect(presenter) {
         onDispose {
             presenter.clear()
@@ -55,7 +55,7 @@ fun AddBookmarkScreen(
     }
     AddBookmarkScreen(
         modifier = Modifier,
-        sharedLink = sharedLink,
+        sharedUrl = sharedUrl,
         presenter = presenter,
     )
 }
@@ -64,16 +64,16 @@ fun AddBookmarkScreen(
 @Composable
 fun AddBookmarkScreen(
     modifier: Modifier,
-    sharedLink: String?,
+    sharedUrl: String?,
     presenter: AddBookmarkPresenter,
 ) {
     val uiState by presenter.state.collectAsStateWithLifecycle()
     AddBookmarkScreen(
         modifier = modifier,
-        sharedLink = sharedLink,
+        sharedUrl = sharedUrl,
         unfurlState = uiState.unfurlState,
         saveState = uiState.saveState,
-        onLinkChanged = presenter::setLink,
+        onUrlChanged = presenter::urlChanged,
         onSave = presenter::save
     )
 }
@@ -82,13 +82,13 @@ fun AddBookmarkScreen(
 @Composable
 fun AddBookmarkScreen(
     modifier: Modifier,
-    sharedLink: String?,
+    sharedUrl: String?,
     unfurlState: Async<UnfurlData>,
     saveState: Async<Unit>,
-    onLinkChanged: (String) -> Unit,
+    onUrlChanged: (String) -> Unit,
     onSave: (url: String, title: String?, description: String?, tags: List<String>) -> Unit
 ) {
-    var url by remember { mutableStateOf(sharedLink ?: "") }
+    var url by remember { mutableStateOf(sharedUrl ?: "") }
     val tagsValue by remember { mutableStateOf(TagsTextFieldValue()) }
     var title by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
@@ -113,7 +113,7 @@ fun AddBookmarkScreen(
                 ),
                 onValueChange = { value ->
                     url = value
-                    onLinkChanged(url)
+                    onUrlChanged(url)
                 })
             TagsTextField(modifier = Modifier.fillMaxWidth(),
                 value = tagsValue,
@@ -129,7 +129,7 @@ fun AddBookmarkScreen(
                 },
                 trailingIcon = {
                     if (unfurlState is Loading) {
-                        CircularProgressIndicator(modifier = Modifier.size(16.dp))
+                        SmallCircularProgressIndicator()
                     }
                 },
                 placeholder = {
@@ -160,7 +160,7 @@ fun AddBookmarkScreen(
                 },
                 trailingIcon = {
                     if (unfurlState is Loading) {
-                        CircularProgressIndicator(modifier = Modifier.size(16.dp))
+                        SmallCircularProgressIndicator()
                     }
                 },
                 supportingText = {
@@ -202,7 +202,7 @@ fun AddBookmarkScreen(
 fun SetupConfigurationScreen_Preview() {
     LinkdingTheme {
         AddBookmarkScreen(modifier = Modifier,
-            sharedLink = "https://staffeng.com/guides/work-on-what-matters",
+            sharedUrl = "https://staffeng.com/guides/work-on-what-matters",
             unfurlState = Success(
                 UnfurlData(
                     unfurledUrl = "https://staffeng.com/guides/work-on-what-matters",
@@ -211,7 +211,7 @@ fun SetupConfigurationScreen_Preview() {
                 )
             ),
             saveState = Fail("Error saving bookmark"),
-            onLinkChanged = {},
+            onUrlChanged = {},
             onSave = { _, _, _, _ -> })
     }
 }
