@@ -7,6 +7,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import dev.avatsav.linkding.android.ui.theme.LinkdingTheme
 import org.koin.androidx.compose.get
@@ -22,16 +23,36 @@ class AddBookmarkActivity : ComponentActivity() {
 
             else -> null
         }?.trim()
+        val finishActivity: () -> Unit = {
+            finishAndRemoveTask()
+        }
         setContent {
-            LinkdingTheme(dynamicColor = false) {
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    AddBookmarkScreen(sharedLink, get())
-                }
-            }
+            AddBookmarksScreenFromActivity(sharedUrl = sharedLink, finishActivity = finishActivity)
         }
     }
 
+}
+
+@Composable
+private fun AddBookmarksScreenFromActivity(
+    sharedUrl: String?,
+    finishActivity: () -> Unit
+) {
+    LinkdingTheme {
+        Surface(
+            modifier = Modifier.fillMaxSize(),
+            color = MaterialTheme.colorScheme.background
+        ) {
+            AddBookmarkScreen(
+                sharedUrl = sharedUrl,
+                presenter = get(),
+                onBookmarkSaved = {
+                    finishActivity()
+                },
+                onClose = {
+                    finishActivity()
+                }
+            )
+        }
+    }
 }
