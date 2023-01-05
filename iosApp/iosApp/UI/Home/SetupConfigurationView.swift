@@ -12,7 +12,7 @@ import shared
 import SwiftUI
 
 struct SetupConfigurationScreen: View {
-    @StateObject var viewState: ObservableViewState<HomeViewState> = .init(initialState: HomeViewState.companion.Initial)
+//    @StateObject var viewState: ObservableViewState<HomeViewState> = .init(initialState: HomeViewState.companion.Initial)
 
     let presenter: HomePresenter
 

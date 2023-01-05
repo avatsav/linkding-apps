@@ -44,7 +44,7 @@ import dev.avatsav.linkding.android.ui.components.OutlinedPlaceholderTextField
 import dev.avatsav.linkding.android.ui.components.OutlinedTagsTextField
 import dev.avatsav.linkding.android.ui.components.SmallCircularProgressIndicator
 import dev.avatsav.linkding.android.ui.components.TagsTextFieldValue
-import dev.avatsav.linkding.android.ui.extensions.getComposableOnSuccess
+import dev.avatsav.linkding.android.ui.extensions.composableOnSuccess
 import dev.avatsav.linkding.android.ui.theme.LinkdingTheme
 import dev.avatsav.linkding.ui.presenter.AddBookmarkPresenter
 import dev.avatsav.linkding.ui.AsyncState
@@ -208,7 +208,7 @@ private fun AddBookmarkScreen(
                 trailingIcon = {
                     unfurlState onLoading { SmallCircularProgressIndicator() }
                 },
-                placeholder = unfurlState getComposableOnSuccess { data: UnfurlData ->
+                placeholder = unfurlState composableOnSuccess { data: UnfurlData ->
                     if (data.unfurledTitle == null) {
                         null
                     } else {
@@ -225,7 +225,7 @@ private fun AddBookmarkScreen(
             OutlinedPlaceholderTextField(modifier = Modifier.fillMaxWidth(),
                 value = description,
                 label = { Text(text = "Description") },
-                placeholder = unfurlState getComposableOnSuccess { data: UnfurlData ->
+                placeholder = unfurlState composableOnSuccess { data: UnfurlData ->
                     if (data.unfurledTitle == null) {
                         null
                     } else {

@@ -6,17 +6,37 @@
 //  Copyright © 2023 orgName. All rights reserved.
 //
 
+import shared
 import SwiftUI
 
-struct HomeView: View {
-    
+struct HomeScreen: View {
+    let homePresenter: HomePresenter = KoinSwift.get()
+
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        var uiState = homePresenter.uiState
+        HomeView(state: uiState)
     }
 }
 
-struct HomeView_Previews: PreviewProvider {
-    static var previews: some View {
-        HomeView()
+struct HomeView: View {
+    let state: HomeViewState
+    var setupUiState: UiState<KotlinBoolean, NSString>
+
+    init(state: HomeViewState) {
+        self.state = state
+        self.setupUiState = UiState(state.setupState)
+    }
+
+    var body: some View {
+        switch setupUiState {
+        case .uninitialized:
+            Text("Unitialized")
+        case .loading(_):
+            Text("Loading")
+        case .success(_):
+            Text("Success")
+        case .fail(_):
+            Text("Failure")
+        }
     }
 }

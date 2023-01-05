@@ -7,7 +7,7 @@ import kotlin.contracts.contract
 // Inspired by : https://github.com/airbnb/mavericks/blob/main/mvrx-common/src/main/java/com/airbnb/mvrx/Async.kt
 // and https://github.com/michaelbull/kotlin-result
 
-sealed class AsyncState<out V, out E>(
+sealed class AsyncState<out V : Any, out E : Any>(
     val complete: Boolean, val shouldLoad: Boolean, private val value: V?,
 ) {
     open operator fun invoke(): V? = value
@@ -16,21 +16,21 @@ sealed class AsyncState<out V, out E>(
 object Uninitialized :
     AsyncState<Nothing, Nothing>(complete = false, shouldLoad = true, value = null)
 
-data class Loading<out V>(val value: V? = null) :
+data class Loading<out V : Any>(val value: V? = null) :
     AsyncState<V, Nothing>(complete = false, shouldLoad = false, value = value)
 
-data class Success<out V>(val value: V) :
+data class Success<out V : Any>(val value: V) :
     AsyncState<V, Nothing>(complete = true, shouldLoad = false, value = value) {
     override operator fun invoke(): V = value
 }
 
-data class Fail<out E>(
+data class Fail<out E : Any>(
     val error: E,
 ) : AsyncState<Nothing, E>(complete = true, shouldLoad = true, value = null)
 
 
 @OptIn(ExperimentalContracts::class)
-inline infix fun <V, E> AsyncState<V, E>.onSuccess(action: (V) -> Unit): AsyncState<V, E> {
+inline infix fun <V : Any, E : Any> AsyncState<V, E>.onSuccess(action: (V) -> Unit): AsyncState<V, E> {
     contract { callsInPlace(action, InvocationKind.AT_MOST_ONCE) }
     if (this is Success) {
         action(value)
@@ -39,7 +39,7 @@ inline infix fun <V, E> AsyncState<V, E>.onSuccess(action: (V) -> Unit): AsyncSt
 }
 
 @OptIn(ExperimentalContracts::class)
-inline infix fun <V, E> AsyncState<V, E>.onLoading(action: () -> Unit): AsyncState<V, E> {
+inline infix fun <V : Any, E : Any> AsyncState<V, E>.onLoading(action: () -> Unit): AsyncState<V, E> {
     contract { callsInPlace(action, InvocationKind.AT_MOST_ONCE) }
     if (this is Loading) {
         action()
@@ -48,7 +48,7 @@ inline infix fun <V, E> AsyncState<V, E>.onLoading(action: () -> Unit): AsyncSta
 }
 
 @OptIn(ExperimentalContracts::class)
-inline infix fun <V, E> AsyncState<V, E>.onFail(action: (E) -> Unit): AsyncState<V, E> {
+inline infix fun <V : Any, E : Any> AsyncState<V, E>.onFail(action: (E) -> Unit): AsyncState<V, E> {
     contract { callsInPlace(action, InvocationKind.AT_MOST_ONCE) }
     if (this is Fail) {
         action(error)
@@ -57,7 +57,7 @@ inline infix fun <V, E> AsyncState<V, E>.onFail(action: (E) -> Unit): AsyncState
 }
 
 @OptIn(ExperimentalContracts::class)
-fun <V, E> AsyncState<V, E>.get(): V? {
+fun <V : Any, E : Any> AsyncState<V, E>.get(): V? {
     contract {
         returnsNotNull() implies (this@get is Success<V>)
         returns(null) implies (this@get is Fail<E>)
@@ -74,7 +74,7 @@ fun <V, E> AsyncState<V, E>.get(): V? {
 }
 
 @OptIn(ExperimentalContracts::class)
-fun <V, E> AsyncState<V, E>.getError(): E? {
+fun <V : Any, E : Any> AsyncState<V, E>.getError(): E? {
     contract {
         returnsNotNull() implies (this@getError is Fail<E>)
         returns(null) implies (this@getError is Success<V>)
@@ -91,7 +91,7 @@ fun <V, E> AsyncState<V, E>.getError(): E? {
 }
 
 @OptIn(ExperimentalContracts::class)
-inline infix fun <V, E, U> AsyncState<V, E>.mapSuccess(transform: (V) -> U): AsyncState<U, E> {
+inline infix fun <V : Any, E : Any, U : Any> AsyncState<V, E>.mapSuccess(transform: (V) -> U): AsyncState<U, E> {
     contract {
         callsInPlace(transform, InvocationKind.AT_MOST_ONCE)
     }

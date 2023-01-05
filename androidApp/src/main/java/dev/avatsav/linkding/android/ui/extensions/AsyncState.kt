@@ -7,7 +7,7 @@ import dev.avatsav.linkding.ui.Loading
 import dev.avatsav.linkding.ui.Success
 
 @Composable
-inline infix fun <V, E> AsyncState<V, E>.getComposableOnSuccess(
+inline infix fun <V : Any, E : Any> AsyncState<V, E>.composableOnSuccess(
     transform: @Composable (V) -> (@Composable (() -> Unit)?)
 ): (@Composable () -> Unit)? {
     if (this is Success) {
@@ -18,7 +18,7 @@ inline infix fun <V, E> AsyncState<V, E>.getComposableOnSuccess(
 
 
 @Composable
-inline infix fun <V, E> AsyncState<V, E>.getComposableOnLoading(
+inline infix fun <V : Any, E : Any> AsyncState<V, E>.composableOnLoading(
     transform: @Composable () -> (@Composable (() -> Unit)?)
 ): (@Composable () -> Unit)? {
     if (this is Loading) {
@@ -29,7 +29,7 @@ inline infix fun <V, E> AsyncState<V, E>.getComposableOnLoading(
 
 
 @Composable
-inline infix fun <V, E> AsyncState<V, E>.getComposableOnFail(
+inline infix fun <V : Any, E : Any> AsyncState<V, E>.composableOnFail(
     transform: @Composable (E) -> (@Composable (() -> Unit)?)
 ): (@Composable () -> Unit)? {
     if (this is Fail) {
