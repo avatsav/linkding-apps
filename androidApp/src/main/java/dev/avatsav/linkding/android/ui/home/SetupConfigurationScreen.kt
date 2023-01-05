@@ -1,6 +1,6 @@
 package dev.avatsav.linkding.android.ui.home
 
-import android.content.res.Configuration
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -31,19 +31,20 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.avatsav.linkding.android.ui.theme.LinkdingTheme
+import dev.avatsav.linkding.data.Configuration
 import dev.avatsav.linkding.ui.AsyncState
 import dev.avatsav.linkding.ui.Loading
-import dev.avatsav.linkding.ui.presenter.SaveConfigurationError
 import dev.avatsav.linkding.ui.Uninitialized
 import dev.avatsav.linkding.ui.getError
 import dev.avatsav.linkding.ui.onLoading
 import dev.avatsav.linkding.ui.onSuccess
+import dev.avatsav.linkding.ui.presenter.SaveConfigurationError
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SetupConfigurationScreen(
     modifier: Modifier = Modifier,
-    state: AsyncState<Unit, SaveConfigurationError>,
+    state: AsyncState<Configuration, SaveConfigurationError>,
     onSaveSuccess: () -> Unit,
     onConfigurationSubmitted: (String, String) -> Unit
 ) {
@@ -129,7 +130,7 @@ fun SetupConfigurationScreen(
 }
 
 @Preview(showBackground = true)
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Preview(uiMode = UI_MODE_NIGHT_YES)
 @Composable
 fun SetupConfigurationScreen_Preview() {
     LinkdingTheme {

@@ -13,8 +13,6 @@ sealed class ConfigurationState
 data class Setup(val configuration: Configuration) : ConfigurationState()
 object ConfigurationNotSetup : ConfigurationState()
 
-data class Configuration(val url: String, val apiKey: String)
-
 private const val HostUrlConfigurationKey = "hostUrl"
 private const val ApiKeyConfigurationKey = "apiKey"
 

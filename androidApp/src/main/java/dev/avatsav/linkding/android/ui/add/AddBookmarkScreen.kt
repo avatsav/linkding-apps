@@ -1,6 +1,6 @@
 package dev.avatsav.linkding.android.ui.add
 
-import android.content.res.Configuration
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -46,14 +46,16 @@ import dev.avatsav.linkding.android.ui.components.SmallCircularProgressIndicator
 import dev.avatsav.linkding.android.ui.components.TagsTextFieldValue
 import dev.avatsav.linkding.android.ui.extensions.composableOnSuccess
 import dev.avatsav.linkding.android.ui.theme.LinkdingTheme
-import dev.avatsav.linkding.ui.presenter.AddBookmarkPresenter
+import dev.avatsav.linkding.bookmark.domain.Bookmark
 import dev.avatsav.linkding.ui.AsyncState
 import dev.avatsav.linkding.ui.Fail
 import dev.avatsav.linkding.ui.Success
-import dev.avatsav.linkding.ui.presenter.UnfurlData
 import dev.avatsav.linkding.ui.onFail
 import dev.avatsav.linkding.ui.onLoading
 import dev.avatsav.linkding.ui.onSuccess
+import dev.avatsav.linkding.ui.presenter.AddBookmarkPresenter
+import dev.avatsav.linkding.ui.presenter.AddBookmarkViewState.*
+import dev.avatsav.linkding.ui.presenter.UnfurlData
 import org.koin.androidx.compose.get
 
 @Composable
@@ -147,8 +149,8 @@ private fun AddBookmarkScreen(
 private fun AddBookmarkScreen(
     modifier: Modifier,
     sharedUrl: String?,
-    unfurlState: AsyncState<UnfurlData, String>,
-    saveState: AsyncState<Unit, String>,
+    unfurlState: AsyncState<UnfurlData, UnfurlError>,
+    saveState: AsyncState<Bookmark, SaveError>,
     onClose: () -> Unit,
     onUrlChanged: (String) -> Unit,
     onSave: (url: String, title: String?, description: String?, tags: List<String>) -> Unit
@@ -262,7 +264,7 @@ private fun AddBookmarkScreen(
             }
             saveState onFail { error ->
                 Text(
-                    text = error,
+                    text = error.message,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.error
                 )
@@ -272,7 +274,7 @@ private fun AddBookmarkScreen(
 }
 
 @Preview(showBackground = true)
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Preview(uiMode = UI_MODE_NIGHT_YES)
 @Composable
 fun SetupConfigurationScreen_Preview() {
     LinkdingTheme {
@@ -285,7 +287,7 @@ fun SetupConfigurationScreen_Preview() {
                     unfurledDescription = "Stories of folks reaching Staff Engineer roles."
                 )
             ),
-            saveState = Fail("Error saving bookmark"),
+            saveState = Fail(SaveError("Error saving bookmark")),
             onClose = {},
             onUrlChanged = {},
             onSave = { _, _, _, _ -> })

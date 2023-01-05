@@ -28,20 +28,19 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class HomePresenter(
-    private val configurationStore: ConfigurationStore,
-    private val bookmarkService: BookmarkService
+    private val configurationStore: ConfigurationStore, private val bookmarkService: BookmarkService
 ) : Presenter() {
 
-    private val setupStateFlow: Flow<AsyncState<Boolean, String>> =
+    private val setupStateFlow: Flow<AsyncState<Configuration, HomeViewState.NotSetup>> =
         configurationStore.state.transform { state ->
             when (state) {
-                is ConfigurationNotSetup -> emit(Success(false))
-                is Setup -> emit(Success(true))
+                is ConfigurationNotSetup -> emit(Fail(HomeViewState.NotSetup))
+                is Setup -> emit(Success(state.configuration))
             }
         }
 
     private val saveConfigurationFlow =
-        MutableStateFlow<AsyncState<Unit, SaveConfigurationError>>(Uninitialized)
+        MutableStateFlow<AsyncState<Configuration, SaveConfigurationError>>(Uninitialized)
 
     @NativeCoroutinesState
     val uiState = combine(
@@ -58,7 +57,7 @@ class HomePresenter(
                 withContext(Dispatchers.Default) {
                     configurationStore.set(configuration)
                 }
-                saveConfigurationFlow.emit(Success(Unit))
+                saveConfigurationFlow.emit(Success(configuration))
             }.mapLeft { error ->
                 saveConfigurationFlow.emit(Fail(error))
             }
@@ -92,10 +91,13 @@ class HomePresenter(
 }
 
 data class HomeViewState(
-    val setupState: AsyncState<Boolean, String> = Uninitialized,
-    val saveConfigurationState: AsyncState<Unit, SaveConfigurationError> = Uninitialized
+    val configuration: AsyncState<Configuration, NotSetup> = Uninitialized,
+    val saveConfigurationState: AsyncState<Configuration, SaveConfigurationError> = Uninitialized
 ) {
-    companion object {
+
+    object NotSetup
+
+    companion object Defaults {
         val Initial = HomeViewState()
     }
 }
@@ -104,7 +106,6 @@ sealed class SaveConfigurationError(val message: String) {
     object UrlEmpty : SaveConfigurationError("URL cannot be empty")
     object ApiKeyEmpty : SaveConfigurationError("Api Key cannot be empty")
     object CannotConnect : SaveConfigurationError("Cannot connect.")
-
 }
 
 
