@@ -11,10 +11,10 @@
 		058557D9273AAEEB004C7B11 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 058557D8273AAEEB004C7B11 /* Preview Assets.xcassets */; };
 		2152FB042600AC8F00CF470E /* iOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2152FB032600AC8F00CF470E /* iOSApp.swift */; };
 		4461CE9F295209D800473232 /* OutlineTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4461CE9E295209D800473232 /* OutlineTextField.swift */; };
+		44A7641B296785A200663E12 /* ViewModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44A7641A296785A200663E12 /* ViewModels.swift */; };
 		44C7F62D2966D5B500844A78 /* UiState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44C7F62C2966D5B500844A78 /* UiState.swift */; };
 		44CAFF202955D3A7004C6C10 /* KoinSwift.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44CAFF1F2955D3A7004C6C10 /* KoinSwift.swift */; };
 		44CB08FD2966277B00D69239 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44CB08FC2966277B00D69239 /* HomeView.swift */; };
-		44D992A3295120210095B0FC /* ObservableViewState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44D992A2295120210095B0FC /* ObservableViewState.swift */; };
 		44EE093F294F0969004DE1B8 /* SetupConfigurationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44EE093E294F0969004DE1B8 /* SetupConfigurationView.swift */; };
 		7555FF83242A565900829871 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7555FF82242A565900829871 /* ContentView.swift */; };
 		C861EA03C856075B776E9E67 /* libPods-iosApp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BC33BAC3FD95E06D7E2A8400 /* libPods-iosApp.a */; };
@@ -25,10 +25,10 @@
 		058557D8273AAEEB004C7B11 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		2152FB032600AC8F00CF470E /* iOSApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iOSApp.swift; sourceTree = "<group>"; };
 		4461CE9E295209D800473232 /* OutlineTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutlineTextField.swift; sourceTree = "<group>"; };
+		44A7641A296785A200663E12 /* ViewModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModels.swift; sourceTree = "<group>"; };
 		44C7F62C2966D5B500844A78 /* UiState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiState.swift; sourceTree = "<group>"; };
 		44CAFF1F2955D3A7004C6C10 /* KoinSwift.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KoinSwift.swift; sourceTree = "<group>"; };
 		44CB08FC2966277B00D69239 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
-		44D992A2295120210095B0FC /* ObservableViewState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObservableViewState.swift; sourceTree = "<group>"; };
 		44EE093E294F0969004DE1B8 /* SetupConfigurationView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SetupConfigurationView.swift; sourceTree = "<group>"; };
 		4A5B2E33477B65CB11B1850D /* Pods-iosApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iosApp.debug.xcconfig"; path = "Target Support Files/Pods-iosApp/Pods-iosApp.debug.xcconfig"; sourceTree = "<group>"; };
 		7555FF7B242A565900829871 /* iosApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iosApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -66,6 +66,15 @@
 			path = Components;
 			sourceTree = "<group>";
 		};
+		44A764182967852700663E12 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				44C7F62C2966D5B500844A78 /* UiState.swift */,
+				44A7641A296785A200663E12 /* ViewModels.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
 		44CAFF1E2955D393004C6C10 /* Inject */ = {
 			isa = PBXGroup;
 			children = (
@@ -74,13 +83,12 @@
 			path = Inject;
 			sourceTree = "<group>";
 		};
-		44CB08FA2966270D00D69239 /* UI */ = {
+		44CB08FA2966270D00D69239 /* Screens */ = {
 			isa = PBXGroup;
 			children = (
 				44CB08FB2966272E00D69239 /* Home */,
-				4461CE9D295209B900473232 /* Components */,
 			);
-			path = UI;
+			path = Screens;
 			sourceTree = "<group>";
 		};
 		44CB08FB2966272E00D69239 /* Home */ = {
@@ -113,15 +121,15 @@
 		7555FF7D242A565900829871 /* iosApp */ = {
 			isa = PBXGroup;
 			children = (
-				44CAFF1E2955D393004C6C10 /* Inject */,
-				44CB08FA2966270D00D69239 /* UI */,
-				7555FF82242A565900829871 /* ContentView.swift */,
-				2152FB032600AC8F00CF470E /* iOSApp.swift */,
 				7555FF8C242A565B00829871 /* Info.plist */,
+				44CAFF1E2955D393004C6C10 /* Inject */,
+				44A764182967852700663E12 /* Extensions */,
+				4461CE9D295209B900473232 /* Components */,
+				44CB08FA2966270D00D69239 /* Screens */,
+				2152FB032600AC8F00CF470E /* iOSApp.swift */,
+				7555FF82242A565900829871 /* ContentView.swift */,
 				058557D7273AAEEB004C7B11 /* Preview Content */,
-				44D992A2295120210095B0FC /* ObservableViewState.swift */,
 				058557BA273AAA24004C7B11 /* Assets.xcassets */,
-				44C7F62C2966D5B500844A78 /* UiState.swift */,
 			);
 			path = iosApp;
 			sourceTree = "<group>";
@@ -173,7 +181,7 @@
 			attributes = {
 				LastSwiftUpdateCheck = 1130;
 				LastUpgradeCheck = 1130;
-				ORGANIZATIONNAME = orgName;
+				ORGANIZATIONNAME = "Abhijith Srivatsav";
 				TargetAttributes = {
 					7555FF7A242A565900829871 = {
 						CreatedOnToolsVersion = 11.3.1;
@@ -260,7 +268,7 @@
 				44CAFF202955D3A7004C6C10 /* KoinSwift.swift in Sources */,
 				44CB08FD2966277B00D69239 /* HomeView.swift in Sources */,
 				4461CE9F295209D800473232 /* OutlineTextField.swift in Sources */,
-				44D992A3295120210095B0FC /* ObservableViewState.swift in Sources */,
+				44A7641B296785A200663E12 /* ViewModels.swift in Sources */,
 				2152FB042600AC8F00CF470E /* iOSApp.swift in Sources */,
 				7555FF83242A565900829871 /* ContentView.swift in Sources */,
 				44EE093F294F0969004DE1B8 /* SetupConfigurationView.swift in Sources */,

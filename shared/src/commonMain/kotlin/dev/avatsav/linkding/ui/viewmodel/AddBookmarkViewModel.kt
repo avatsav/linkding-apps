@@ -1,8 +1,8 @@
-package dev.avatsav.linkding.ui.presenter
+package dev.avatsav.linkding.ui.viewmodel
 
 import com.rickclephas.kmp.nativecoroutines.NativeCoroutinesState
 import dev.avatsav.linkding.LinkUnfurler
-import dev.avatsav.linkding.Presenter
+import dev.avatsav.linkding.ViewModel
 import dev.avatsav.linkding.UnfurlResult
 import dev.avatsav.linkding.bookmark.application.ports.`in`.BookmarkService
 import dev.avatsav.linkding.bookmark.domain.Bookmark
@@ -13,7 +13,7 @@ import dev.avatsav.linkding.ui.Fail
 import dev.avatsav.linkding.ui.Loading
 import dev.avatsav.linkding.ui.Success
 import dev.avatsav.linkding.ui.Uninitialized
-import dev.avatsav.linkding.ui.presenter.AddBookmarkViewState.*
+import dev.avatsav.linkding.ui.viewmodel.AddBookmarkViewState.*
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
@@ -46,10 +46,10 @@ data class UnfurlData(
 )
 
 @OptIn(FlowPreview::class)
-class AddBookmarkPresenter(
+class AddBookmarkViewModel(
     private val bookmarkService: BookmarkService,
     private val linkUnfurler: LinkUnfurler,
-) : Presenter() {
+) : ViewModel() {
 
     private val urlFlow = MutableStateFlow("")
 
@@ -62,22 +62,22 @@ class AddBookmarkPresenter(
     private val saveStateFlow = MutableStateFlow<AsyncState<Bookmark, SaveError>>(Uninitialized)
 
     @NativeCoroutinesState
-    val uiState: StateFlow<AddBookmarkViewState> =
+    val state: StateFlow<AddBookmarkViewState> =
         combine(unfurlStateFlow, saveStateFlow) { unfurlState, saveState ->
             val state = AddBookmarkViewState(unfurlState, saveState)
             Napier.w { "Emitting State: $state" }
             state
-        }.stateIn(presenterScope, SharingStarted.WhileSubscribed(5_000), AddBookmarkViewState())
+        }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), AddBookmarkViewState())
 
     fun urlChanged(url: String) {
         if (urlFlow.value == url) return
-        presenterScope.launch {
+        viewModelScope.launch {
             urlFlow.emit(url)
         }
     }
 
     fun save(url: String, title: String?, description: String?, tags: List<String>) {
-        presenterScope.launch {
+        viewModelScope.launch {
             saveStateFlow.emit(Loading())
             val saveBookmark = SaveBookmark(url, title, description, tags.toSet())
             bookmarkService.save(saveBookmark).map { bookmark ->

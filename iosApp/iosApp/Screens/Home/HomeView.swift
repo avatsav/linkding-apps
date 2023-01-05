@@ -10,32 +10,33 @@ import shared
 import SwiftUI
 
 struct HomeScreen: View {
-    let homePresenter: HomePresenter = KoinSwift.get()
+    let homeViewModel: HomeViewModel = KoinSwift.inject()
 
     var body: some View {
-        var uiState = homePresenter.uiState
-        HomeView(state: uiState)
+        let viewModel = ObservableViewModel(homeViewModel)
+        let state = viewModel.state
+        HomeView(state: state)
     }
 }
 
 struct HomeView: View {
     let state: HomeViewState
-    var setupUiState: UiState<KotlinBoolean, NSString>
+    var setupUiState: UiState<Configuration, HomeViewState.NotSetup>
 
     init(state: HomeViewState) {
         self.state = state
-        self.setupUiState = UiState(state.setupState)
+        self.setupUiState = UiState(state.configuration)
     }
 
     var body: some View {
         switch setupUiState {
         case .uninitialized:
-            Text("Unitialized")
-        case .loading(_):
+            Text("Uninitialized")
+        case .loading:
             Text("Loading")
-        case .success(_):
+        case .success:
             Text("Success")
-        case .fail(_):
+        case .fail:
             Text("Failure")
         }
     }

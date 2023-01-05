@@ -5,9 +5,6 @@ import dev.avatsav.linkding.bookmark.application.ports.`in`.BookmarkService
 import dev.avatsav.linkding.bookmark.application.ports.out.BookmarkRepository
 import dev.avatsav.linkding.bookmark.application.services.LinkdingBookmarkService
 import dev.avatsav.linkding.data.ConfigurationStore
-import dev.avatsav.linkding.ui.presenter.AddBookmarkPresenter
-import dev.avatsav.linkding.ui.presenter.BookmarksPresenter
-import dev.avatsav.linkding.ui.presenter.HomePresenter
 import io.github.aakira.napier.DebugAntilog
 import io.github.aakira.napier.Napier
 import org.koin.core.context.startKoin
@@ -22,43 +19,27 @@ fun initKoin(enableNetworkLogs: Boolean, appDeclaration: KoinAppDeclaration = {}
     modules(sharedModule(enableNetworkLogs))
 }
 
-/**
- * Presenter dependencies.
- */
-private val presenterModule = module {
-    factory { HomePresenter(get(), get()) }
-    factory { BookmarksPresenter(get()) }
-    factory { AddBookmarkPresenter(get(), get()) }
-}
-
-/**
- * Repository dependencies.
- */
 private val repositoryModule = module {
     single<BookmarkService> { LinkdingBookmarkService(get(), get()) }
     single<BookmarkRepository> { LinkdingBookmarkRepository(get()) }
 }
 
-/**
- * Network dependencies.
- */
 private fun networkModule(enableNetworkLogs: Boolean) = module {
     single { httpClient(enableNetworkLogs) }
 }
 
-/**
- * Storage/DB/Caching dependencies.
- */
 private val storageModule = module {
     singleOf(::ConfigurationStore)
 }
 
 expect fun platformModule(): Module
 
+expect fun viewModelsModule(): Module
+
 fun sharedModule(enableNetworkLogs: Boolean) = listOf(
     networkModule(enableNetworkLogs),
     platformModule(),
     storageModule,
     repositoryModule,
-    presenterModule,
+    viewModelsModule(),
 )

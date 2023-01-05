@@ -16,7 +16,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -28,20 +27,16 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import dev.avatsav.linkding.android.ui.destinations.AddBookmarkScreenDestination
 import dev.avatsav.linkding.android.ui.theme.LinkdingTheme
-import dev.avatsav.linkding.ui.presenter.BookmarkViewItem
-import dev.avatsav.linkding.ui.presenter.BookmarksPresenter
-import org.koin.androidx.compose.get
+import dev.avatsav.linkding.ui.viewmodel.BookmarkViewItem
+import dev.avatsav.linkding.ui.viewmodel.BookmarksViewModel
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 @Destination
 fun BookmarksScreen(navigator: DestinationsNavigator) {
-    val presenter: BookmarksPresenter = get()
-    DisposableEffect(key1 = presenter) {
-        onDispose {
-            presenter.clear()
-        }
-    }
-    BookmarksScreen(presenter = presenter, onAddBookmark = {
+    val viewModel: BookmarksViewModel = koinViewModel()
+    
+    BookmarksScreen(viewModel = viewModel, onAddBookmark = {
         navigator.navigate(AddBookmarkScreenDestination(sharedUrl = null))
     })
 }
@@ -49,10 +44,10 @@ fun BookmarksScreen(navigator: DestinationsNavigator) {
 @OptIn(ExperimentalLifecycleComposeApi::class)
 @Composable
 fun BookmarksScreen(
-    presenter: BookmarksPresenter,
+    viewModel: BookmarksViewModel,
     onAddBookmark: () -> Unit,
 ) {
-    val state by presenter.uiState.collectAsStateWithLifecycle()
+    val state by viewModel.state.collectAsStateWithLifecycle()
     BookmarksScreen(
         state = state, onAddBookmark = onAddBookmark
     )
@@ -62,7 +57,7 @@ fun BookmarksScreen(
 @Composable
 fun BookmarksScreen(
     modifier: Modifier = Modifier,
-    state: BookmarksPresenter.ViewState,
+    state: BookmarksViewModel.ViewState,
     onAddBookmark: () -> Unit,
 ) {
     Scaffold(
@@ -147,7 +142,7 @@ fun BookmarkScreenPreview() {
     LinkdingTheme {
         Surface {
             BookmarksScreen(
-                state = BookmarksPresenter.ViewState(false, sampleBookmarkList),
+                state = BookmarksViewModel.ViewState(false, sampleBookmarkList),
                 onAddBookmark = {})
         }
     }

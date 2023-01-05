@@ -62,6 +62,7 @@ kotlin {
         }
         val androidMain by getting {
             dependencies {
+                implementation(libs.androidx.lifecycle.viewmodel.ktx)
                 implementation(libs.koin.android)
                 implementation(libs.ktor.client.okhttp)
                 implementation(libs.multiplatform.settings.datastore)

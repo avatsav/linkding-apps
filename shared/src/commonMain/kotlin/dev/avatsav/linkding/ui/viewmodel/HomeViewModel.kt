@@ -1,4 +1,4 @@
-package dev.avatsav.linkding.ui.presenter
+package dev.avatsav.linkding.ui.viewmodel
 
 import arrow.core.Either
 import arrow.core.Validated
@@ -6,7 +6,7 @@ import arrow.core.continuations.either
 import arrow.core.invalid
 import arrow.core.valid
 import com.rickclephas.kmp.nativecoroutines.NativeCoroutinesState
-import dev.avatsav.linkding.Presenter
+import dev.avatsav.linkding.ViewModel
 import dev.avatsav.linkding.bookmark.application.ports.`in`.BookmarkService
 import dev.avatsav.linkding.data.Configuration
 import dev.avatsav.linkding.data.ConfigurationNotSetup
@@ -27,9 +27,9 @@ import kotlinx.coroutines.flow.transform
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class HomePresenter(
+class HomeViewModel(
     private val configurationStore: ConfigurationStore, private val bookmarkService: BookmarkService
-) : Presenter() {
+) : ViewModel() {
 
     private val setupStateFlow: Flow<AsyncState<Configuration, HomeViewState.NotSetup>> =
         configurationStore.state.transform { state ->
@@ -43,15 +43,15 @@ class HomePresenter(
         MutableStateFlow<AsyncState<Configuration, SaveConfigurationError>>(Uninitialized)
 
     @NativeCoroutinesState
-    val uiState = combine(
+    val state = combine(
         setupStateFlow, saveConfigurationFlow
     ) { setupState, saveConfigurationState ->
         HomeViewState(setupState, saveConfigurationState)
-    }.stateIn(presenterScope, SharingStarted.WhileSubscribed(5_000), HomeViewState())
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), HomeViewState())
 
 
     fun setConfiguration(url: String, apiKey: String) {
-        presenterScope.launch {
+        viewModelScope.launch {
             saveConfigurationFlow.emit(Loading())
             ValidateInput(bookmarkService).invoke(url, apiKey).map { configuration ->
                 withContext(Dispatchers.Default) {

@@ -38,7 +38,7 @@ import dev.avatsav.linkding.ui.Uninitialized
 import dev.avatsav.linkding.ui.getError
 import dev.avatsav.linkding.ui.onLoading
 import dev.avatsav.linkding.ui.onSuccess
-import dev.avatsav.linkding.ui.presenter.SaveConfigurationError
+import dev.avatsav.linkding.ui.viewmodel.SaveConfigurationError
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
