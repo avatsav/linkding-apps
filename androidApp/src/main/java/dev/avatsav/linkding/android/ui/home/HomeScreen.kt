@@ -1,7 +1,6 @@
 package dev.avatsav.linkding.android.ui.home
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import com.ramcosta.composedestinations.annotation.Destination
@@ -12,22 +11,17 @@ import dev.avatsav.linkding.android.ui.destinations.BookmarksScreenDestination
 import dev.avatsav.linkding.ui.onFail
 import dev.avatsav.linkding.ui.onLoading
 import dev.avatsav.linkding.ui.onSuccess
-import dev.avatsav.linkding.ui.presenter.HomePresenter
-import dev.avatsav.linkding.ui.presenter.HomeViewState
-import org.koin.androidx.compose.get
+import dev.avatsav.linkding.ui.viewmodel.HomeViewModel
+import dev.avatsav.linkding.ui.viewmodel.HomeViewState
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 @RootNavGraph(start = true)
 @Destination
 fun HomeScreen(navigator: DestinationsNavigator) {
-    val presenter: HomePresenter = get()
-    DisposableEffect(presenter) {
-        onDispose {
-            presenter.clear()
-        }
-    }
+    val viewModel: HomeViewModel = koinViewModel()
     HomeScreen(
-        presenter = presenter,
+        viewModel = viewModel,
         onSetupSuccess = {
             navigator.popBackStack()
             navigator.navigate(BookmarksScreenDestination)
@@ -36,31 +30,31 @@ fun HomeScreen(navigator: DestinationsNavigator) {
 
 @Composable
 private fun HomeScreen(
-    presenter: HomePresenter,
+    viewModel: HomeViewModel,
     onSetupSuccess: () -> Unit,
 ) {
-    val uiState by presenter.uiState.collectAsState()
-    HomeScreen(uiState = uiState,
+    val state by viewModel.state.collectAsState()
+    HomeScreen(state = state,
         onSetupSuccess = onSetupSuccess,
         onConfigurationSubmitted = { url, apiKey ->
-            presenter.setConfiguration(url, apiKey)
+            viewModel.setConfiguration(url, apiKey)
         })
 }
 
 @Composable
 private fun HomeScreen(
-    uiState: HomeViewState,
+    state: HomeViewState,
     onSetupSuccess: () -> Unit,
     onConfigurationSubmitted: (String, String) -> Unit
 ) {
-    uiState.configuration onLoading {
+    state.configuration onLoading {
         SplashScreen()
     } onSuccess {
         onSetupSuccess()
 
     } onFail {
         SetupConfigurationScreen(
-            state = uiState.saveConfigurationState,
+            state = state.saveConfigurationState,
             onSaveSuccess = onSetupSuccess,
             onConfigurationSubmitted = onConfigurationSubmitted
         )

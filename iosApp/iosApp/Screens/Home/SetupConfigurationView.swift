@@ -14,7 +14,7 @@ import SwiftUI
 struct SetupConfigurationScreen: View {
 //    @StateObject var viewState: ObservableViewState<HomeViewState> = .init(initialState: HomeViewState.companion.Initial)
 
-    let presenter: HomePresenter
+    let viewModel: HomeViewModel
 
     var body: some View {
         Text("Hello World")

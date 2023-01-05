@@ -1,7 +1,7 @@
-package dev.avatsav.linkding.ui.presenter
+package dev.avatsav.linkding.ui.viewmodel
 
 import com.rickclephas.kmp.nativecoroutines.NativeCoroutinesState
-import dev.avatsav.linkding.Presenter
+import dev.avatsav.linkding.ViewModel
 import dev.avatsav.linkding.bookmark.application.ports.`in`.BookmarkService
 import dev.avatsav.linkding.bookmark.domain.BookmarkError
 import io.ktor.http.Url
@@ -19,17 +19,17 @@ data class BookmarkViewItem(
     val tagNames: Set<String> = emptySet()
 )
 
-class BookmarksPresenter(private val bookmarkService: BookmarkService) : Presenter() {
+class BookmarksViewModel(private val bookmarkService: BookmarkService) : ViewModel() {
 
     data class ViewState(val loading: Boolean, val bookmarks: List<BookmarkViewItem>)
 
     private val _state = MutableStateFlow(ViewState(true, emptyList()))
 
     @NativeCoroutinesState
-    val uiState: StateFlow<ViewState> = _state
+    val state: StateFlow<ViewState> = _state
 
     init {
-        presenterScope.launch(Dispatchers.Default) {
+        viewModelScope.launch(Dispatchers.Default) {
             bookmarkService.get().map { bookmarks ->
                 val bookmarkItems = bookmarks.results.map { bookmark ->
                     BookmarkViewItem(

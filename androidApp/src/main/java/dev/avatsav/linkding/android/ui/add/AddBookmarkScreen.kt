@@ -22,7 +22,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -53,49 +52,37 @@ import dev.avatsav.linkding.ui.Success
 import dev.avatsav.linkding.ui.onFail
 import dev.avatsav.linkding.ui.onLoading
 import dev.avatsav.linkding.ui.onSuccess
-import dev.avatsav.linkding.ui.presenter.AddBookmarkPresenter
-import dev.avatsav.linkding.ui.presenter.AddBookmarkViewState.*
-import dev.avatsav.linkding.ui.presenter.UnfurlData
-import org.koin.androidx.compose.get
+import dev.avatsav.linkding.ui.viewmodel.AddBookmarkViewModel
+import dev.avatsav.linkding.ui.viewmodel.AddBookmarkViewState.*
+import dev.avatsav.linkding.ui.viewmodel.UnfurlData
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 @Destination
 fun AddBookmarkScreen(
-    sharedUrl: String?,
-    navigator: DestinationsNavigator
+    sharedUrl: String?, navigator: DestinationsNavigator
 ) {
-    val presenter: AddBookmarkPresenter = get()
-    DisposableEffect(presenter) {
-        onDispose {
-            presenter.clear()
-        }
-    }
-    AddBookmarkScreen(
-        sharedUrl = sharedUrl,
-        presenter = presenter,
-        onBookmarkSaved = {
-            navigator.popBackStack()
-        },
-        onClose = {
-            navigator.popBackStack()
-        })
+    val viewModel: AddBookmarkViewModel = koinViewModel()
+
+    AddBookmarkScreen(sharedUrl = sharedUrl, viewModel = viewModel, onBookmarkSaved = {
+        navigator.popBackStack()
+    }, onClose = {
+        navigator.popBackStack()
+    })
 }
 
+/**
+ * Using this composable from the activity called from share.
+ */
 @Composable
 fun AddBookmarkScreen(
-    sharedUrl: String?,
-    onBookmarkSaved: () -> Unit = {},
-    onClose: () -> Unit = {}
+    sharedUrl: String?, onBookmarkSaved: () -> Unit = {}, onClose: () -> Unit = {}
 ) {
-    val presenter: AddBookmarkPresenter = get()
-    DisposableEffect(presenter) {
-        onDispose {
-            presenter.clear()
-        }
-    }
+    val viewModel: AddBookmarkViewModel = koinViewModel()
+
     AddBookmarkScreen(
         sharedUrl = sharedUrl,
-        presenter = presenter,
+        viewModel = viewModel,
         onBookmarkSaved = onBookmarkSaved,
         onClose = onClose
     )
@@ -104,15 +91,15 @@ fun AddBookmarkScreen(
 @Composable
 private fun AddBookmarkScreen(
     sharedUrl: String?,
-    presenter: AddBookmarkPresenter,
+    viewModel: AddBookmarkViewModel,
     onBookmarkSaved: () -> Unit = {},
     onClose: () -> Unit = {}
 ) {
-    if (sharedUrl != null) presenter.urlChanged(sharedUrl)
+    if (sharedUrl != null) viewModel.urlChanged(sharedUrl)
     AddBookmarkScreen(
         modifier = Modifier,
         sharedUrl = sharedUrl,
-        presenter = presenter,
+        viewModel = viewModel,
         onBookmarkSaved = onBookmarkSaved,
         onClose = onClose
     )
@@ -123,24 +110,24 @@ private fun AddBookmarkScreen(
 private fun AddBookmarkScreen(
     modifier: Modifier,
     sharedUrl: String?,
-    presenter: AddBookmarkPresenter,
+    viewModel: AddBookmarkViewModel,
     onBookmarkSaved: () -> Unit,
     onClose: () -> Unit
 ) {
-    val uiState by presenter.uiState.collectAsStateWithLifecycle()
+    val state by viewModel.state.collectAsStateWithLifecycle()
 
-    uiState.saveState onSuccess {
+    state.saveState onSuccess {
         onBookmarkSaved()
         return
     }
     AddBookmarkScreen(
         modifier = modifier,
         sharedUrl = sharedUrl,
-        unfurlState = uiState.unfurlState,
-        saveState = uiState.saveState,
+        unfurlState = state.unfurlState,
+        saveState = state.saveState,
         onClose = onClose,
-        onUrlChanged = presenter::urlChanged,
-        onSave = presenter::save
+        onUrlChanged = viewModel::urlChanged,
+        onSave = viewModel::save
     )
 }
 
@@ -165,16 +152,14 @@ private fun AddBookmarkScreen(
 
     Scaffold(
         topBar = {
-            LargeTopAppBar(
-                title = { Text(text = "Add Bookmark") },
+            LargeTopAppBar(title = { Text(text = "Add Bookmark") },
                 scrollBehavior = scrollBehavior,
                 navigationIcon = {
                     IconButton(onClick = { onClose() }) {
                         Icon(imageVector = Icons.Default.Close, contentDescription = "Close")
                     }
                 })
-        },
-        modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
+        }, modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
     ) { padding ->
         Column(
             modifier = modifier
