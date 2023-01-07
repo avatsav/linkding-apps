@@ -6,30 +6,42 @@
 //  Copyright © 2023 orgName. All rights reserved.
 //
 
+import KMPNativeCoroutinesCombine
 import shared
 import SwiftUI
 
-struct HomeScreen: View {
-    let homeViewModel: HomeViewModel = KoinSwift.inject()
+//struct HomeScreen: View {
+//    @StateObject var viewModel = ObservableViewModel<HomeViewModel>(KoinSwift.inject())
+//
+//    var body: some View {
+//        HomeView(state: viewModel.viewState)
+//            .task {
+//                // TODO: Find a way to access the methods.
+//                // Error: Dynamic key path member lookup cannot refer to instance method 'startObservingViewState()'
+//                // Seems the keypaths are for porperties only and can't "mirror" the methods.
+//                // viewModel.startObservingViewState()
+//            }
+//    }
+//}
+
+struct HomeScreen2: View {
+    let viewModel: HomeViewModel = KoinSwift.inject()
 
     var body: some View {
-        let viewModel = ObservableViewModel(homeViewModel)
-        let state = viewModel.state
-        HomeView(state: state)
+        HomeView(state: viewModel.state)
     }
 }
 
 struct HomeView: View {
-    let state: HomeViewState
-    var setupUiState: UiState<Configuration, HomeViewState.NotSetup>
+    @State var state: HomeViewState
 
     init(state: HomeViewState) {
         self.state = state
-        self.setupUiState = UiState(state.configuration)
     }
 
     var body: some View {
-        switch setupUiState {
+        let configurationState = UiState(state.configuration)
+        switch configurationState {
         case .uninitialized:
             Text("Uninitialized")
         case .loading:
