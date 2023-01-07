@@ -408,10 +408,14 @@ private struct Registration<P, T> {
         #if DEBUG
         let typeComponents = String(describing: T.self).components(separatedBy: CharacterSet(charactersIn: "<>"))
         let typeName = typeComponents.count > 1 ? typeComponents[1] : typeComponents[0]
-        let typeIndex = dependencyChain.firstIndex(where: { $0 == typeName })
-        dependencyChain.append(typeName)
+        let typeIndex = globalDependencyChain.firstIndex(where: { $0 == typeName })
+        globalDependencyChain.append(typeName)
         if let index = typeIndex {
-            fatalError("circular dependency chain - \(dependencyChain[index...].joined(separator: " > "))")
+            let message = "circular dependency chain - \(globalDependencyChain[index...].joined(separator: " > "))"
+            globalDependencyChain = []
+            globalGraphResolutionDepth = 0
+            globalRecursiveLock = NSRecursiveLock()
+            triggerFatalError(message, #file, #line)
         }
         #endif
 
@@ -424,7 +428,7 @@ private struct Registration<P, T> {
         }
 
         #if DEBUG
-        dependencyChain.removeLast()
+        globalDependencyChain.removeLast()
         #endif
 
         SharedContainer.Decorator.decorate?(instance)
@@ -458,7 +462,7 @@ private var globalGraphResolutionDepth = 0
 
 #if DEBUG
 /// Internal array used to check for circular dependency cycles
-private var dependencyChain = Array<String>()
+private var globalDependencyChain: [String] = []
 #endif
 
 /// Internal protocol used to evaluate optional types for caching
@@ -498,3 +502,9 @@ private struct StrongBox<T>: AnyBox {
 private struct WeakBox: AnyBox {
     weak var boxed: AnyObject?
 }
+
+#if DEBUG
+/// Allow unit test interception of any fatal errors that may occur running the circular dependency check
+/// Variation of solution: https://stackoverflow.com/questions/32873212/unit-test-fatalerror-in-swift#
+internal var triggerFatalError = Swift.fatalError
+#endif
