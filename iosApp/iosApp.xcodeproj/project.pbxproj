@@ -10,6 +10,7 @@
 		058557BB273AAA24004C7B11 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 058557BA273AAA24004C7B11 /* Assets.xcassets */; };
 		058557D9273AAEEB004C7B11 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 058557D8273AAEEB004C7B11 /* Preview Assets.xcassets */; };
 		2152FB042600AC8F00CF470E /* iOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2152FB032600AC8F00CF470E /* iOSApp.swift */; };
+		440240FF29684271005BF929 /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 440240FE29684271005BF929 /* HomeViewModel.swift */; };
 		4461CE9F295209D800473232 /* OutlineTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4461CE9E295209D800473232 /* OutlineTextField.swift */; };
 		44A7641B296785A200663E12 /* ViewModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44A7641A296785A200663E12 /* ViewModels.swift */; };
 		44C7F62D2966D5B500844A78 /* UiState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44C7F62C2966D5B500844A78 /* UiState.swift */; };
@@ -24,6 +25,7 @@
 		058557BA273AAA24004C7B11 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		058557D8273AAEEB004C7B11 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		2152FB032600AC8F00CF470E /* iOSApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iOSApp.swift; sourceTree = "<group>"; };
+		440240FE29684271005BF929 /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
 		4461CE9E295209D800473232 /* OutlineTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutlineTextField.swift; sourceTree = "<group>"; };
 		44A7641A296785A200663E12 /* ViewModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModels.swift; sourceTree = "<group>"; };
 		44C7F62C2966D5B500844A78 /* UiState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiState.swift; sourceTree = "<group>"; };
@@ -96,6 +98,7 @@
 			children = (
 				44EE093E294F0969004DE1B8 /* SetupConfigurationView.swift */,
 				44CB08FC2966277B00D69239 /* HomeView.swift */,
+				440240FE29684271005BF929 /* HomeViewModel.swift */,
 			);
 			path = Home;
 			sourceTree = "<group>";
@@ -266,6 +269,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				44CAFF202955D3A7004C6C10 /* KoinSwift.swift in Sources */,
+				440240FF29684271005BF929 /* HomeViewModel.swift in Sources */,
 				44CB08FD2966277B00D69239 /* HomeView.swift in Sources */,
 				4461CE9F295209D800473232 /* OutlineTextField.swift in Sources */,
 				44A7641B296785A200663E12 /* ViewModels.swift in Sources */,

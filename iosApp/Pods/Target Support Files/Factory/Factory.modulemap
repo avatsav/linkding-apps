@@ -1,0 +1,6 @@
+module Factory {
+  umbrella header "Factory-umbrella.h"
+
+  export *
+  module * { export * }
+}

@@ -27,7 +27,7 @@ import kotlinx.coroutines.flow.transform
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class HomeViewModel(
+open class HomeViewModel(
     private val configurationStore: ConfigurationStore, private val bookmarkService: BookmarkService
 ) : ViewModel() {
 
