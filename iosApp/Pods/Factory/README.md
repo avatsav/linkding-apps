@@ -4,18 +4,16 @@ A new approach to Container-Based Dependency Injection for Swift and SwiftUI.
 
 ## Why Something New?
 
-The first dependency injection system I ever wrote was [Resolver](https://github.com/hmlongco/Resolver). This open source project, while quite powerful and still in use in many applications, suffers from a few drawbacks.
+The first dependency injection system I wrote was [Resolver](https://github.com/hmlongco/Resolver). That open source project, while quite powerful and still in use in many applications, suffered from a few drawbacks.
 
-1. Resolver requires pre-registration of all services up front. 
+1. Resolver required pre-registration of all services up front. 
 2. Resolver uses type inference to dynamically find and return registered services from a container.
 
 The first drawback is relatively minor. While preregistration could lead to a performance hit on application launch, in practice the process is usually quick and not normally noticeable.
 
-No, it’s the second one that’s somewhat more problematic.
-
-Failure to find a matching type can lead to an application crash if we attempt to resolve a given type and a matching registration is not found. In real life that isn’t really a problem as such a thing tends to be noticed and fixed rather quickly the very first time you run a unit test or the second you run the application to see if your newest feature works.
+The second issue, however, is more problematic since failure to find a matching registration for that type can lead to an application crash. In real life that isn’t usually a problem as such a thing tends to be noticed and fixed the first time you run a unit test or the second you run the application to see if your newest feature works.
  
- But... could we do better? That question lead me on a quest for compile-time type safety. Several other systems have attempted to solve this, but I didn't want to have to add a source code scanning and generation step to my build process, nor did I want to give up a lot of the control and flexibility inherent in a run-time-based system.
+ But still... could we do better? That question lead me on a quest for compile-time type safety. Several other systems have attempted to solve this, but I didn't want to have to add a source code scanning and generation step to my build process, nor did I want to give up a lot of the control and flexibility inherent in a run-time-based system.
  
  I also wanted something simple, fast, clean, and easy to use.
  
@@ -28,10 +26,10 @@ Failure to find a matching type can lead to an application crash if we attempt t
  * **Safe:** Factory is compile-time safe; a factory for a given type *must* exist or the code simply will not compile.
  * **Flexible:** It's easy to override dependencies at runtime and for use in SwiftUI Previews.
  * **Powerful:** Like Resolver, Factory supports application, cached, shared, and custom scopes, custom containers, arguments, decorators, and more.
- * **Lightweight:** With all of that Factory is slim and trim, just 400 lines of code and half the size of Resolver.
+ * **Lightweight:** With all of that Factory is slim and trim, just 500 lines of code and half the size of Resolver.
  * **Performant:** Little to no setup time is needed for the vast majority of your services, resolutions are extremely fast, and no compile-time scripts or build phases are needed.
  * **Concise:** Defining a registration usually takes just a single line of code. Same for resolution.
- * **Tested:** Unit tests ensure correct operation of registrations, resolutions, and scopes.
+ * **Tested:** Unit tests with 100% code coverage helps ensure correct operation of registrations, resolutions, and scopes.
  * **Free:** Factory is free and open source under the MIT License.
  
  Sound too good to be true? Let's take a look.
@@ -57,7 +55,7 @@ class ContentViewModel: ObservableObject {
     ...
 }
 ```
-Here our view model uses one of Factory's `@Injected` property wrappers to request the desired dependency. Similar to `@EnvironmentObject` in SwiftUI, we provide the property wrapper initializer with a reference to a factory of the desired type and it handles the rest.
+Here our view model uses one of Factory's `@Injected` property wrappers to request the desired dependency. Similar to `@Environment` in SwiftUI, we provide the property wrapper initializer with a reference to a factory of the desired type and it handles the rest.
 
 And that's the core mechanism. In order to use the property wrapper you *must* define a factory. That factory *must* return the desired type when asked. Fail to do either one and the code will simply not compile. As such, Factory is compile-time safe.
 
@@ -77,7 +75,7 @@ We can also get the same result by explicitly specializing the generic Factory a
 static let myService = Factory<MyServiceType> { MyService() }
 ```
 
-Do neither one and the factory type will always be the returned type. In this case it's `MyService`.
+Do neither one and the factory type will always be the returned type. Here it's `MyService`.
 
 ```swift
 static let myService = Factory { MyService() }
@@ -141,7 +139,6 @@ Note the line in our preview code where we’re gone back to our container and r
 Now when our preview is displayed `ContentView` creates a `ContentViewModel` which in turn has a dependency on `myService` using the `Injected` property wrapper. 
 
 And when the wrapper asks the factory for an instance of `MyServiceType` it now gets a `MockService2` instead of the `MyService` type originally defined.
-
 
 This is a powerful concept that lets us reach deep into a chain of dependencies and alter the behavior of a system as needed.
 
@@ -584,9 +581,15 @@ Container.Scope.reset(includingSingletons: true) // all including singletons
 ```
 The `includingSingletons` option must be explicitly specified in order to reset singletons. You have the power. Use it wisely.
 
+Note that Injected, LazyInjected, and WeakLazyInjected perform the resolution request once and only once, just as if you did...
+```swift
+let service = Container.myService()
+```
+Resetting the cache has no impact on existing service resolutions, and only insures that new resolutions will get a new copy of the service.
+
 ## Xcode Unit Tests
 
-Finally, Factory has a few additional provisions added to make unit testing easier. In your unit test setUp function you can *push* the current state of the registration system and then register and test anything you want.
+Factory has a few additional provisions added to make unit testing easier. In your unit test setUp function you can *push* the current state of the registration system and then register and test anything you want.
 
 ```swift
 final class FactoryCoreTests: XCTestCase {
@@ -612,6 +615,40 @@ final class FactoryCoreTests: XCTestCase {
 ```
 
 Then in your tearDown function simply *pop* your changes to restore everything back to the way it was prior to running that test suite.
+
+## Xcode UI Testing
+
+We can use the autoregistration feature mentioned earlier to help us out when running UI Tests. The test case is fairly straightforward.
+```swift
+import XCTest
+
+final class FactoryDemoUITests: XCTestCase {
+    func testExample() throws {
+        let app = XCUIApplication()
+        app.launchArguments.append("-mock1")
+        app.launch()
+
+        let welcome = app.staticTexts["Mock Number 1! for Michael"]
+        XCTAssert(welcome.exists)
+    }
+}
+```
+And then in the application we check the launch arguments to see what registrations we might want to change.
+```swift
+import Foundation
+import Factory
+
+#if DEBUG
+extension Container: AutoRegistering {
+    public static func registerAllServices() {
+        if ProcessInfo().arguments.contains("-mock1") {
+            myServiceType.register { MockServiceN(1) }
+        }
+    }
+}
+#endif
+```
+Obviously, one can add as many different test cases and registrations as needed.
 
 ## Resolver
 
