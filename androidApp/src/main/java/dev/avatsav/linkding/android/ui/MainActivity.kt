@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import com.ramcosta.composedestinations.DestinationsNavHost
+import dev.avatsav.linkding.android.ui.screens.NavGraphs
 import dev.avatsav.linkding.android.ui.theme.LinkdingTheme
 
 class MainActivity : ComponentActivity() {

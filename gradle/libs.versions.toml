@@ -5,8 +5,9 @@ coroutines = "1.6.4"
 ksp = "1.8.0-1.0.8"
 spotless = "6.12.1"
 ktlint = "0.47.1"
-compose-bom = "2022.12.00"
+compose = "1.4.0-alpha03"
 compose-compiler = "1.4.0-dev-k1.8.0-RC-4c1865595ed"
+compose-material3 = "1.1.0-alpha03"
 dagger = "2.44.2"
 androidxlifecycle = "2.6.0-alpha03"
 multiplatform-settings = "1.0.0-RC"
@@ -53,17 +54,17 @@ androidx-lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-
 
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "androidxDatastore" }
 
-compose-bom = { module = "androidx.compose:compose-bom", version.ref = "compose-bom" }
-compose-animation = { module = "androidx.compose.animation:animation" }
-compose-foundation = { module = "androidx.compose.foundation:foundation" }
-compose-foundation-layout = { module = "androidx.compose.foundation:foundation-layout" }
-compose-material3 = { module = "androidx.compose.material3:material3" }
-compose-material3-windowSizeClass = { module = "androidx.compose.material3:material3-window-size-class" }
-compose-ui-ui = { module = "androidx.compose.ui:ui" }
-compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling" }
-compose-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview" }
-compose-ui-test-mainfest = { module = "androidx.compose.ui:ui-test-manifest" }
-compose-ui-util = { module = "androidx.compose.ui:ui-util" }
+compose-animation = { module = "androidx.compose.animation:animation", version.ref = "compose" }
+compose-foundation = { module = "androidx.compose.foundation:foundation", version.ref = "compose" }
+compose-foundation-layout = { module = "androidx.compose.foundation:foundation-layout", version.ref = "compose" }
+compose-material = { module = "androidx.compose.material:material", version.ref = "compose" }
+compose-material3 = { module = "androidx.compose.material3:material3", version.ref = "compose-material3" }
+compose-material3-windowSizeClass = { module = "androidx.compose.material3:material3-window-size-class", version.ref = "compose-material3" }
+compose-ui-ui = { module = "androidx.compose.ui:ui", version.ref = "compose" }
+compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling", version.ref = "compose" }
+compose-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview", version.ref = "compose" }
+compose-ui-test-mainfest = { module = "androidx.compose.ui:ui-test-manifest", version.ref = "compose" }
+compose-ui-util = { module = "androidx.compose.ui:ui-util", version.ref = "compose" }
 accompanist-flowlayout = { module = "com.google.accompanist:accompanist-flowlayout", version.ref = "accompanist" }
 accompanist-navAnimation = { module = "com.google.accompanist:accompanist-navigation-animation", version.ref = "accompanist" }
 

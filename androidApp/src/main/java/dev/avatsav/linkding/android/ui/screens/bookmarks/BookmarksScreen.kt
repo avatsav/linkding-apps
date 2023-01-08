@@ -25,7 +25,7 @@ import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
-import dev.avatsav.linkding.android.ui.destinations.AddBookmarkScreenDestination
+import dev.avatsav.linkding.android.ui.screens.destinations.AddBookmarkScreenDestination
 import dev.avatsav.linkding.android.ui.theme.LinkdingTheme
 import dev.avatsav.linkding.ui.viewmodel.BookmarkViewItem
 import dev.avatsav.linkding.ui.viewmodel.BookmarksViewModel
@@ -35,7 +35,6 @@ import org.koin.androidx.compose.koinViewModel
 @Destination
 fun BookmarksScreen(navigator: DestinationsNavigator) {
     val viewModel: BookmarksViewModel = koinViewModel()
-    
     BookmarksScreen(viewModel = viewModel, onAddBookmark = {
         navigator.navigate(AddBookmarkScreenDestination(sharedUrl = null))
     })

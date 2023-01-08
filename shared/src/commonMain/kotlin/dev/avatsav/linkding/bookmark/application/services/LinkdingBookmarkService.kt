@@ -44,10 +44,10 @@ class LinkdingBookmarkService(
             ifRight = { Either.Right(configuration) })
     }
 
-    override suspend fun save(bookmark: SaveBookmark): Either<BookmarkSaveError, Bookmark> {
+    override suspend fun save(saveBookmark: SaveBookmark): Either<BookmarkSaveError, Bookmark> {
         return configurationStore.get().toEither().map { configuration ->
             return bookmarkRepository.save(
-                configuration.url, configuration.apiKey, bookmark
+                configuration.url, configuration.apiKey, saveBookmark
             )
         }.mapLeft { return@save BookmarkSaveError.ConfigurationNotSetup.left() }
     }

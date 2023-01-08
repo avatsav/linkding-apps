@@ -64,11 +64,14 @@ fun AddBookmarkScreen(
 ) {
     val viewModel: AddBookmarkViewModel = koinViewModel()
 
-    AddBookmarkScreen(sharedUrl = sharedUrl, viewModel = viewModel, onBookmarkSaved = {
-        navigator.popBackStack()
-    }, onClose = {
-        navigator.popBackStack()
-    })
+    AddBookmarkScreen(
+        sharedUrl = sharedUrl,
+        viewModel = viewModel,
+        onBookmarkSaved = {
+            navigator.popBackStack()
+        }, onClose = {
+            navigator.popBackStack()
+        })
 }
 
 /**

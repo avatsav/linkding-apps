@@ -7,7 +7,7 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootNavGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import dev.avatsav.linkding.android.SplashScreen
-import dev.avatsav.linkding.android.ui.destinations.BookmarksScreenDestination
+import dev.avatsav.linkding.android.ui.screens.destinations.BookmarksScreenDestination
 import dev.avatsav.linkding.ui.onFail
 import dev.avatsav.linkding.ui.onLoading
 import dev.avatsav.linkding.ui.onSuccess
