@@ -29,7 +29,12 @@ class BookmarksViewModel(private val bookmarkService: BookmarkService) : ViewMod
     val state: StateFlow<ViewState> = _state
 
     init {
+        refresh()
+    }
+
+    fun refresh() {
         viewModelScope.launch(Dispatchers.Default) {
+            _state.emit(_state.value.copy(loading = true))
             bookmarkService.get().map { bookmarks ->
                 val bookmarkItems = bookmarks.results.map { bookmark ->
                     BookmarkViewItem(

@@ -15,11 +15,9 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.AssistChip
-import androidx.compose.material3.AssistChipDefaults
+import androidx.compose.material3.ElevatedAssistChip
+import androidx.compose.material3.ElevatedFilterChip
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FilterChip
-import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalTextStyle
@@ -89,7 +87,7 @@ fun SearchBar(
             contentPadding = PaddingValues(start = 12.dp)
         ) {
             item(key = "tag") {
-                AssistChip(
+                ElevatedAssistChip(
                     modifier = Modifier.padding(start = 4.dp),
                     label = { Text("Tags") },
                     trailingIcon = {
@@ -100,23 +98,20 @@ fun SearchBar(
                         )
                     },
                     onClick = { tagsClicked() },
-                    border = AssistChipDefaults.assistChipBorder(borderWidth = 0.5.dp)
                 )
             }
             item(key = "filter-group") {
-                FilterChip(
+                ElevatedFilterChip(
                     modifier = Modifier.padding(start = 4.dp),
                     label = { Text("Unread") },
                     onClick = { /*TODO*/ },
                     selected = false,
-                    border = FilterChipDefaults.filterChipBorder(borderWidth = 0.5.dp)
                 )
-                FilterChip(
+                ElevatedFilterChip(
                     modifier = Modifier.padding(start = 4.dp),
                     label = { Text("Archived") },
                     onClick = { /*TODO*/ },
                     selected = false,
-                    border = FilterChipDefaults.filterChipBorder(borderWidth = 0.5.dp)
                 )
             }
         }
