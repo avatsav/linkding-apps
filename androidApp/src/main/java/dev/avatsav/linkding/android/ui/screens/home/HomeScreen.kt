@@ -1,4 +1,4 @@
-package dev.avatsav.linkding.android.ui.home
+package dev.avatsav.linkding.android.ui.screens.home
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState

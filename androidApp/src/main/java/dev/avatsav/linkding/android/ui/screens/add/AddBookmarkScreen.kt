@@ -1,4 +1,4 @@
-package dev.avatsav.linkding.android.ui.add
+package dev.avatsav.linkding.android.ui.screens.add
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.layout.Arrangement

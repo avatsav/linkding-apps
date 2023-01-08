@@ -30,7 +30,7 @@
 <!--            </intent-filter>-->
 <!--        </activity>-->
         <activity
-            android:name=".ui.add.AddBookmarkActivity"
+            android:name=".ui.screens.add.AddBookmarkActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />

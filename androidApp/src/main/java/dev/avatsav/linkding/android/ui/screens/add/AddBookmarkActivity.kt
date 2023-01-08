@@ -1,4 +1,4 @@
-package dev.avatsav.linkding.android.ui.add
+package dev.avatsav.linkding.android.ui.screens.add
 
 import android.content.Intent
 import android.os.Bundle

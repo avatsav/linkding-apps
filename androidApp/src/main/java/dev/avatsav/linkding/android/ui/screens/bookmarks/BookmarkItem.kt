@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalMaterial3Api::class)
 
-package dev.avatsav.linkding.android.ui.bookmarks
+package dev.avatsav.linkding.android.ui.screens.bookmarks
 
 import android.content.res.Configuration
 import androidx.compose.foundation.clickable

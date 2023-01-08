@@ -1,4 +1,4 @@
-package dev.avatsav.linkding.android.ui.home
+package dev.avatsav.linkding.android.ui.screens.home
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.animation.AnimatedVisibility
