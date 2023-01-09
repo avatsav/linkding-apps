@@ -5,7 +5,8 @@ import arrow.core.left
 import dev.avatsav.linkding.bookmark.application.ports.`in`.BookmarkService
 import dev.avatsav.linkding.bookmark.application.ports.out.BookmarkRepository
 import dev.avatsav.linkding.bookmark.domain.Bookmark
-import dev.avatsav.linkding.bookmark.domain.BookmarkError import dev.avatsav.linkding.bookmark.domain.BookmarkFilter
+import dev.avatsav.linkding.bookmark.domain.BookmarkError
+import dev.avatsav.linkding.bookmark.domain.BookmarkFilter
 import dev.avatsav.linkding.bookmark.domain.BookmarkList
 import dev.avatsav.linkding.bookmark.domain.BookmarkSaveError
 import dev.avatsav.linkding.bookmark.domain.SaveBookmark
@@ -19,7 +20,10 @@ class LinkdingBookmarkService(
 ) : BookmarkService {
 
     override suspend fun get(
-        startIndex: Int, limit: Int, filter: BookmarkFilter, query: String
+        startIndex: Int,
+        limit: Int,
+        filter: BookmarkFilter,
+        query: String
     ): Either<BookmarkError, BookmarkList> {
         return configurationStore.get().toEither().map { credentials ->
             return bookmarkRepository.fetch(
@@ -39,7 +43,11 @@ class LinkdingBookmarkService(
 
     override suspend fun testConnection(configuration: Configuration): Either<TestConnectionError, Configuration> {
         return bookmarkRepository.fetch(
-            configuration.url, configuration.apiKey, 0, 1, BookmarkFilter.None, ""
+            configuration.url,
+            configuration.apiKey,
+            0,
+            1,
+            BookmarkFilter.None, ""
         ).fold(ifLeft = { Either.Left(TestConnectionError) },
             ifRight = { Either.Right(configuration) })
     }

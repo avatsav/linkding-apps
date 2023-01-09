@@ -4,5 +4,5 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class LinkdingErrorResponse(
-    val detail: String
+    val detail: String?
 )

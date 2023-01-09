@@ -2,8 +2,8 @@ package dev.avatsav.linkding.ui.viewmodel
 
 import com.rickclephas.kmp.nativecoroutines.NativeCoroutinesState
 import dev.avatsav.linkding.LinkUnfurler
-import dev.avatsav.linkding.ViewModel
 import dev.avatsav.linkding.UnfurlResult
+import dev.avatsav.linkding.ViewModel
 import dev.avatsav.linkding.bookmark.application.ports.`in`.BookmarkService
 import dev.avatsav.linkding.bookmark.domain.Bookmark
 import dev.avatsav.linkding.bookmark.domain.BookmarkSaveError
@@ -33,10 +33,8 @@ data class AddBookmarkViewState(
     val unfurlState: AsyncState<UnfurlData, UnfurlError> = Uninitialized,
     val saveState: AsyncState<Bookmark, SaveError> = Uninitialized
 ) {
-
     object UnfurlError
     data class SaveError(val message: String)
-
 }
 
 data class UnfurlData(
@@ -85,7 +83,7 @@ class AddBookmarkViewModel(
             }.mapLeft { error ->
                 val failure: Fail<SaveError> = when (error) {
                     BookmarkSaveError.ConfigurationNotSetup -> Fail(SaveError("Linkding not configured"))
-                    is BookmarkSaveError.CouldNotSaveBookmark -> Fail(SaveError(error.message.detail))
+                    is BookmarkSaveError.CouldNotSaveBookmark -> Fail(SaveError(error.message))
                 }
                 saveStateFlow.emit(failure)
             }

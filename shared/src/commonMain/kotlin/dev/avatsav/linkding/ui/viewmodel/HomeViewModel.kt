@@ -53,7 +53,7 @@ open class HomeViewModel(
     fun setConfiguration(url: String, apiKey: String) {
         viewModelScope.launch {
             saveConfigurationFlow.emit(Loading())
-            ValidateInput(bookmarkService).invoke(url, apiKey).map { configuration ->
+            ValidateInput(bookmarkService).invoke(url.trimEnd('/'), apiKey).map { configuration ->
                 withContext(Dispatchers.Default) {
                     configurationStore.set(configuration)
                 }

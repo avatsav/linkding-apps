@@ -44,9 +44,9 @@ class BookmarkServiceTest {
     @Test
     fun testGetBookmarks() {
         runBlocking {
-            bookmarkService.get().map { println(it) }.mapLeft {
+            bookmarkService.get().map { println("Success: $it") }.mapLeft {
                 when (it) {
-                    is BookmarkError.CouldNotGetBookmark -> println(it.message)
+                    is BookmarkError.CouldNotGetBookmark -> println("Error: ${it.message}")
                     BookmarkError.ConfigurationNotSetup -> println("Credentials are not setup")
                 }
             }
@@ -57,10 +57,10 @@ class BookmarkServiceTest {
     fun testSaveBookmarks() {
         runBlocking {
             val saveBookmark = SaveBookmark(url = "https://melix.github.io/blog/tags/gradle.html")
-            bookmarkService.save(saveBookmark).map { println(it) }.mapLeft {
+            bookmarkService.save(saveBookmark).map { println("Success: $it") }.mapLeft {
                 when (it) {
-                    BookmarkSaveError.ConfigurationNotSetup -> TODO()
-                    is BookmarkSaveError.CouldNotSaveBookmark -> TODO()
+                    BookmarkSaveError.ConfigurationNotSetup -> println("Credentials are not setup")
+                    is BookmarkSaveError.CouldNotSaveBookmark -> println("Error: ${it.message}")
                 }
             }
         }
