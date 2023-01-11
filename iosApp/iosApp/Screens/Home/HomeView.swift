@@ -6,38 +6,31 @@
 //  Copyright © 2023 orgName. All rights reserved.
 //
 
-import KMPNativeCoroutinesCombine
+import KMPNativeCoroutinesAsync
 import shared
 import SwiftUI
 
-//struct HomeScreen: View {
-//    @StateObject var viewModel = ObservableViewModel<HomeViewModel>(KoinSwift.inject())
-//
-//    var body: some View {
-//        HomeView(state: viewModel.viewState)
-//            .task {
-//                // TODO: Find a way to access the methods.
-//                // Error: Dynamic key path member lookup cannot refer to instance method 'startObservingViewState()'
-//                // Seems the keypaths are for porperties only and can't "mirror" the methods.
-//                // viewModel.startObservingViewState()
-//            }
-//    }
-//}
-
-struct HomeScreen2: View {
-    let viewModel: HomeViewModel = KoinSwift.inject()
+struct HomeScreen: View {
+    @VMStateObject var viewModel: HomeViewModel = KoinSwift.inject()
+    @State var state: HomeViewState = .Defaults().Initial
 
     var body: some View {
-        HomeView(state: viewModel.state)
+        HomeView(state: $state)
+            .task {
+                do {
+                    let sequence = asyncSequence(for: viewModel.stateFlow)
+                    for try await state in sequence {
+                        self.state = state
+                    }
+                } catch {
+                    print("Failed with error: \(error)")
+                }
+            }
     }
 }
 
 struct HomeView: View {
-    @State var state: HomeViewState
-
-    init(state: HomeViewState) {
-        self.state = state
-    }
+    @Binding var state: HomeViewState
 
     var body: some View {
         let configurationState = UiState(state.configuration)
@@ -46,10 +39,10 @@ struct HomeView: View {
             Text("Uninitialized")
         case .loading:
             Text("Loading")
-        case .success:
+        case let .success(configuration):
             Text("Success")
-        case .fail:
-            Text("Failure")
+        case let .fail(error):
+            Text("Failure: Not setup")
         }
     }
 }

@@ -29,4 +29,3 @@ public enum UiState<Value, Error> where Value: AnyObject, Error: AnyObject {
         }
     }
 }
-
