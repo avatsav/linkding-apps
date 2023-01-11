@@ -59,10 +59,6 @@ allprojects {
     tasks.withType<KotlinCompile>().configureEach {
         kotlinOptions {
             jvmTarget = JavaVersion.VERSION_11.toString()
-            freeCompilerArgs = freeCompilerArgs + listOf(
-                "-P",
-                "plugin:androidx.compose.compiler.plugins.kotlin:suppressKotlinVersionCompatibilityCheck=true"
-            )
         }
     }
     plugins.withId(rootProject.libs.plugins.hilt.get().pluginId) {
