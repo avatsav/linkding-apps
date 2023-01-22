@@ -28,7 +28,6 @@ import dev.avatsav.linkding.android.R
 import dev.avatsav.linkding.android.theme.LinkdingTheme
 import dev.avatsav.linkding.ui.bookmarks.BookmarkViewItem
 
-
 @Composable
 fun BookmarkItem(
     modifier: Modifier = Modifier,
@@ -36,11 +35,13 @@ fun BookmarkItem(
     onClicked: (BookmarkViewItem) -> Unit,
     onTagClicked: (String) -> Unit,
 ) {
-    Column(modifier = modifier
-        .clickable { onClicked(bookmark) }
-        .padding(16.dp)
-        .fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(8.dp)) {
+    Column(
+        modifier = modifier
+            .clickable { onClicked(bookmark) }
+            .padding(16.dp)
+            .fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
         Text(
             text = bookmark.title,
             color = MaterialTheme.colorScheme.primary,
@@ -57,11 +58,11 @@ fun BookmarkItem(
         }
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(4.dp)
+            horizontalArrangement = Arrangement.spacedBy(4.dp),
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.ic_link_12),
-                contentDescription = bookmark.title + "link"
+                contentDescription = bookmark.title + "link",
             )
             Text(
                 text = bookmark.urlHostName,
@@ -72,14 +73,14 @@ fun BookmarkItem(
             )
         }
         LazyRow(
-            horizontalArrangement = Arrangement.spacedBy(4.dp)
+            horizontalArrangement = Arrangement.spacedBy(4.dp),
         ) {
             items(items = bookmark.tagNames.toTypedArray()) { tagName ->
                 Text(
                     modifier = Modifier.clickable { /*TODO*/ },
                     text = "#$tagName",
                     color = MaterialTheme.colorScheme.tertiary,
-                    style = MaterialTheme.typography.labelMedium
+                    style = MaterialTheme.typography.labelMedium,
                 )
             }
         }
@@ -93,14 +94,18 @@ fun BookmarkItem(
 fun BookmarkItem_Preview() {
     LinkdingTheme {
         Surface {
-            BookmarkItem(bookmark = BookmarkViewItem(
-                id = 1L,
-                title = "Effective Null Checks in Java",
-                description = "Strategies to avoid bike-shedding and get on with Java code-reviews with confidence ",
-                url = "https://www.blog.com/effective-nulls-java",
-                urlHostName = "https://www.blog.com",
-                tagNames = setOf("java", "null checks", "kotlin", "blogpost")
-            ), onClicked = {}, onTagClicked = {})
+            BookmarkItem(
+                bookmark = BookmarkViewItem(
+                    id = 1L,
+                    title = "Effective Null Checks in Java",
+                    description = "Strategies to avoid bike-shedding and get on with Java code-reviews with confidence ",
+                    url = "https://www.blog.com/effective-nulls-java",
+                    urlHostName = "https://www.blog.com",
+                    tagNames = setOf("java", "null checks", "kotlin", "blogpost"),
+                ),
+                onClicked = {},
+                onTagClicked = {},
+            )
         }
     }
 }

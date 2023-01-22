@@ -11,8 +11,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import dev.avatsav.linkding.android.ui.common.SmallCircularProgressIndicator
 import dev.avatsav.linkding.android.theme.LinkdingTheme
+import dev.avatsav.linkding.android.ui.common.SmallCircularProgressIndicator
 
 @Composable
 fun LoadingMoreItem(
@@ -25,7 +25,7 @@ fun LoadingMoreItem(
             .fillMaxWidth(),
     ) {
         SmallCircularProgressIndicator(
-            modifier.align(Alignment.Center)
+            modifier.align(Alignment.Center),
         )
     }
 }

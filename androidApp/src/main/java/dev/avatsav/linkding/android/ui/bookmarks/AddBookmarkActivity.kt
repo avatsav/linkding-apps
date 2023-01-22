@@ -33,12 +33,12 @@ class AddBookmarkActivity : ComponentActivity() {
 @Composable
 private fun AddBookmarksScreenFromActivity(
     sharedUrl: String?,
-    finishActivity: () -> Unit
+    finishActivity: () -> Unit,
 ) {
     LinkdingTheme {
         Surface(
             modifier = Modifier.fillMaxSize(),
-            color = MaterialTheme.colorScheme.background
+            color = MaterialTheme.colorScheme.background,
         ) {
             AddBookmarkScreen(
                 sharedUrl = sharedUrl,
@@ -47,7 +47,7 @@ private fun AddBookmarksScreenFromActivity(
                 },
                 onClose = {
                     finishActivity()
-                }
+                },
             )
         }
     }
