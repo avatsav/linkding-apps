@@ -37,9 +37,9 @@ import dev.avatsav.linkding.android.ui.theme.LinkdingTheme
 import dev.avatsav.linkding.ui.Loading
 import dev.avatsav.linkding.ui.PageStatus
 import dev.avatsav.linkding.ui.onPagedContent
-import dev.avatsav.linkding.ui.viewmodel.BookmarkViewItem
-import dev.avatsav.linkding.ui.viewmodel.BookmarksViewModel
-import dev.avatsav.linkding.ui.viewmodel.BookmarksViewState
+import dev.avatsav.linkding.ui.bookmarks.BookmarkViewItem
+import dev.avatsav.linkding.ui.bookmarks.BookmarksViewModel
+import dev.avatsav.linkding.ui.bookmarks.BookmarksViewState
 import org.koin.androidx.compose.koinViewModel
 
 @Composable

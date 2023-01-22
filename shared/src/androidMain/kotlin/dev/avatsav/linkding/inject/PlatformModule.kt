@@ -7,7 +7,7 @@ import androidx.datastore.preferences.preferencesDataStore
 import com.russhwolf.settings.coroutines.FlowSettings
 import com.russhwolf.settings.datastore.DataStoreSettings
 import dev.avatsav.linkding.Constants
-import dev.avatsav.linkding.LinkUnfurler
+import dev.avatsav.linkding.data.unfurl.LinkUnfurler
 import me.saket.unfurl.Unfurler
 import org.koin.android.ext.koin.androidApplication
 import org.koin.dsl.module

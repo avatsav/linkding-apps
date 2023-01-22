@@ -11,8 +11,8 @@ import dev.avatsav.linkding.android.ui.screens.destinations.BookmarksScreenDesti
 import dev.avatsav.linkding.ui.onFail
 import dev.avatsav.linkding.ui.onLoading
 import dev.avatsav.linkding.ui.onSuccess
-import dev.avatsav.linkding.ui.viewmodel.HomeViewModel
-import dev.avatsav.linkding.ui.viewmodel.HomeViewState
+import dev.avatsav.linkding.ui.home.HomeViewModel
+import dev.avatsav.linkding.ui.home.HomeViewState
 import org.koin.androidx.compose.koinViewModel
 
 @Composable

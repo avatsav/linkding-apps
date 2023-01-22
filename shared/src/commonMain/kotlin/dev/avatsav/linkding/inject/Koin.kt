@@ -1,10 +1,10 @@
 package dev.avatsav.linkding.inject
 
-import dev.avatsav.linkding.bookmark.adapter.out.LinkdingBookmarkRepository
-import dev.avatsav.linkding.bookmark.application.ports.`in`.BookmarkService
-import dev.avatsav.linkding.bookmark.application.ports.out.BookmarkRepository
-import dev.avatsav.linkding.bookmark.application.services.LinkdingBookmarkService
-import dev.avatsav.linkding.data.ConfigurationStore
+import dev.avatsav.linkding.data.configuration.ConfigurationStore
+import dev.avatsav.linkding.data.bookmarks.BookmarksDataSource
+import dev.avatsav.linkding.data.bookmarks.LinkdingBookmarksDataSource
+import dev.avatsav.linkding.data.bookmarks.BookmarksRepository
+import dev.avatsav.linkding.data.bookmarks.LinkdingBookmarksRepository
 import io.github.aakira.napier.DebugAntilog
 import io.github.aakira.napier.Napier
 import org.koin.core.context.startKoin
@@ -20,8 +20,8 @@ fun initKoin(enableNetworkLogs: Boolean, appDeclaration: KoinAppDeclaration = {}
 }
 
 private val repositoryModule = module {
-    single<BookmarkService> { LinkdingBookmarkService(get(), get()) }
-    single<BookmarkRepository> { LinkdingBookmarkRepository(get()) }
+    single<BookmarksRepository> { LinkdingBookmarksRepository(get(), get()) }
+    single<BookmarksDataSource> { LinkdingBookmarksDataSource(get()) }
 }
 
 private fun networkModule(enableNetworkLogs: Boolean) = module {

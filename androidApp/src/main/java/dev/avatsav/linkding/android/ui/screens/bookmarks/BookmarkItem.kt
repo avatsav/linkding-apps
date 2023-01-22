@@ -26,7 +26,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.avatsav.linkding.android.R
 import dev.avatsav.linkding.android.ui.theme.LinkdingTheme
-import dev.avatsav.linkding.ui.viewmodel.BookmarkViewItem
+import dev.avatsav.linkding.ui.bookmarks.BookmarkViewItem
 
 
 @Composable

@@ -1,8 +1,8 @@
 package dev.avatsav.linkding.inject
 
-import dev.avatsav.linkding.ui.viewmodel.AddBookmarkViewModel
-import dev.avatsav.linkding.ui.viewmodel.BookmarksViewModel
-import dev.avatsav.linkding.ui.viewmodel.HomeViewModel
+import dev.avatsav.linkding.ui.bookmarks.AddBookmarkViewModel
+import dev.avatsav.linkding.ui.bookmarks.BookmarksViewModel
+import dev.avatsav.linkding.ui.home.HomeViewModel
 import org.koin.core.Koin
 import org.koin.dsl.module
 

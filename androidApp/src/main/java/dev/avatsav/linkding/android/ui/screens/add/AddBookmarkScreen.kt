@@ -44,16 +44,16 @@ import dev.avatsav.linkding.android.ui.components.SmallCircularProgressIndicator
 import dev.avatsav.linkding.android.ui.components.TagsTextFieldValue
 import dev.avatsav.linkding.android.ui.extensions.composableOnSuccess
 import dev.avatsav.linkding.android.ui.theme.LinkdingTheme
-import dev.avatsav.linkding.bookmark.domain.Bookmark
+import dev.avatsav.linkding.domain.Bookmark
 import dev.avatsav.linkding.ui.AsyncState
 import dev.avatsav.linkding.ui.Content
 import dev.avatsav.linkding.ui.Fail
 import dev.avatsav.linkding.ui.onFail
 import dev.avatsav.linkding.ui.onLoading
 import dev.avatsav.linkding.ui.onSuccess
-import dev.avatsav.linkding.ui.viewmodel.AddBookmarkViewModel
-import dev.avatsav.linkding.ui.viewmodel.AddBookmarkViewState.*
-import dev.avatsav.linkding.ui.viewmodel.UnfurlData
+import dev.avatsav.linkding.ui.bookmarks.AddBookmarkViewModel
+import dev.avatsav.linkding.ui.bookmarks.AddBookmarkViewState.*
+import dev.avatsav.linkding.ui.bookmarks.UnfurlData
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
