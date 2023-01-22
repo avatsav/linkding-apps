@@ -13,9 +13,9 @@ import dev.avatsav.linkding.data.ConfigurationNotSetup
 import dev.avatsav.linkding.data.ConfigurationStore
 import dev.avatsav.linkding.data.Setup
 import dev.avatsav.linkding.ui.AsyncState
+import dev.avatsav.linkding.ui.Content
 import dev.avatsav.linkding.ui.Fail
 import dev.avatsav.linkding.ui.Loading
-import dev.avatsav.linkding.ui.Success
 import dev.avatsav.linkding.ui.Uninitialized
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -35,7 +35,7 @@ open class HomeViewModel(
         configurationStore.state.transform { state ->
             when (state) {
                 is ConfigurationNotSetup -> emit(Fail(HomeViewState.NotSetup))
-                is Setup -> emit(Success(state.configuration))
+                is Setup -> emit(Content(state.configuration))
             }
         }
 
@@ -57,7 +57,7 @@ open class HomeViewModel(
                 withContext(Dispatchers.Default) {
                     configurationStore.set(configuration)
                 }
-                saveConfigurationFlow.emit(Success(configuration))
+                saveConfigurationFlow.emit(Content(configuration))
             }.mapLeft { error ->
                 saveConfigurationFlow.emit(Fail(error))
             }

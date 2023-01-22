@@ -13,8 +13,8 @@ import dev.avatsav.linkding.data.Configuration
 
 interface BookmarkService {
     suspend fun get(
-        startIndex: Int = 0,
-        limit: Int = 50,
+        offset: Int = 0,
+        limit: Int = 10,
         filter: BookmarkFilter = BookmarkFilter.None,
         query: String = ""
     ): Either<BookmarkError, BookmarkList>

@@ -2,17 +2,18 @@ package dev.avatsav.linkding.android.ui.screens.bookmarks
 
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -27,14 +28,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import dev.avatsav.linkding.android.ui.extensions.OnEndReached
 import dev.avatsav.linkding.android.ui.screens.destinations.AddBookmarkScreenDestination
 import dev.avatsav.linkding.android.ui.theme.LinkdingTheme
+import dev.avatsav.linkding.ui.Loading
+import dev.avatsav.linkding.ui.PageStatus
+import dev.avatsav.linkding.ui.onPagedContent
 import dev.avatsav.linkding.ui.viewmodel.BookmarkViewItem
 import dev.avatsav.linkding.ui.viewmodel.BookmarksViewModel
+import dev.avatsav.linkding.ui.viewmodel.BookmarksViewState
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -46,16 +51,17 @@ fun BookmarksScreen(navigator: DestinationsNavigator) {
     })
 }
 
-@OptIn(ExperimentalLifecycleComposeApi::class)
 @Composable
 fun BookmarksScreen(
     viewModel: BookmarksViewModel,
     onAddBookmark: () -> Unit,
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
-    BookmarksScreen(
-        state = state, onRefresh = { viewModel.refresh() }, onAddBookmark = onAddBookmark
-    )
+    BookmarksScreen(viewState = state,
+        onRefresh = { viewModel.load() },
+        onEndReached = { viewModel.loadMore() },
+        onAddBookmark = onAddBookmark,
+        onQueryChanged = { })
 }
 
 @OptIn(
@@ -64,11 +70,22 @@ fun BookmarksScreen(
 @Composable
 fun BookmarksScreen(
     modifier: Modifier = Modifier,
-    state: BookmarksViewModel.ViewState,
+    viewState: BookmarksViewState,
     onRefresh: () -> Unit,
+    onEndReached: () -> Unit,
     onAddBookmark: () -> Unit,
+    onQueryChanged: (String) -> Unit,
 ) {
-    val pullRefreshState = rememberPullRefreshState(state.loading, onRefresh)
+    val bookmarksState = viewState.bookmarksState
+    var contentStatus = PageStatus.HasMore
+    var bookmarkItems = emptyList<BookmarkViewItem>()
+    bookmarksState onPagedContent { pagedContent ->
+        contentStatus = pagedContent.status
+        bookmarkItems = pagedContent.value
+    }
+
+    val listState = rememberLazyListState()
+    val pullRefreshState = rememberPullRefreshState(bookmarksState is Loading, onRefresh)
 
     Scaffold(
         modifier = modifier,
@@ -82,8 +99,7 @@ fun BookmarksScreen(
         floatingActionButton = {
             FloatingActionButton(onClick = onAddBookmark) {
                 Icon(
-                    imageVector = Icons.Filled.Add,
-                    contentDescription = "Add Bookmark"
+                    imageVector = Icons.Filled.Add, contentDescription = "Add Bookmark"
                 )
             }
         },
@@ -94,19 +110,34 @@ fun BookmarksScreen(
                 .pullRefresh(pullRefreshState)
                 .fillMaxSize(),
         ) {
-            LazyColumn(modifier = Modifier.fillMaxSize()) {
-                items(items = state.bookmarks, key = { it.id }) { bookmark ->
-                    BookmarkItem(bookmark = bookmark, onClicked = {}, onTagClicked = {})
-                    Divider(thickness = 0.5.dp)
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize(),
+                state = listState,
+                contentPadding = PaddingValues(bottom = 88.dp) // 56dp(FAB) + 32(Top+Bottom Padding)
+            ) {
+                items(items = bookmarkItems, key = { it.id }) { bookmark ->
+                    BookmarkItem(
+                        bookmark = bookmark,
+                        onClicked = {},
+                        onTagClicked = {})
+                }
+                if (contentStatus == PageStatus.HasMore || contentStatus == PageStatus.LoadingMore) {
+                    item {
+                        LoadingMoreItem()
+                    }
                 }
             }
             PullRefreshIndicator(
-                refreshing = state.loading,
+                refreshing = bookmarksState is Loading,
                 state = pullRefreshState,
                 modifier = Modifier.align(Alignment.TopCenter),
                 backgroundColor = MaterialTheme.colorScheme.surfaceColorAtElevation(4.dp),
                 contentColor = MaterialTheme.colorScheme.contentColorFor(MaterialTheme.colorScheme.surface)
             )
+            listState.OnEndReached {
+                onEndReached()
+            }
         }
     }
 }
@@ -157,9 +188,11 @@ fun BookmarkScreenPreview() {
     )
     LinkdingTheme {
         Surface {
-            BookmarksScreen(state = BookmarksViewModel.ViewState(false, sampleBookmarkList),
+            BookmarksScreen(viewState = BookmarksViewState.Initial,
                 onRefresh = {},
-                onAddBookmark = {})
+                onEndReached = {},
+                onAddBookmark = {},
+                onQueryChanged = {})
         }
     }
 }

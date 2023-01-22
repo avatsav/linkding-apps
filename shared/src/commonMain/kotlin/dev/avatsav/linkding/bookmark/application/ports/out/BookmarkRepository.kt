@@ -12,7 +12,7 @@ interface BookmarkRepository {
     suspend fun fetch(
         baseUrl: String,
         token: String,
-        startIndex: Int,
+        offset: Int,
         limit: Int,
         filter: BookmarkFilter,
         query: String

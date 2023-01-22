@@ -20,14 +20,14 @@ class LinkdingBookmarkService(
 ) : BookmarkService {
 
     override suspend fun get(
-        startIndex: Int,
+        offset: Int,
         limit: Int,
         filter: BookmarkFilter,
         query: String
     ): Either<BookmarkError, BookmarkList> {
         return configurationStore.get().toEither().map { credentials ->
             return bookmarkRepository.fetch(
-                credentials.url, credentials.apiKey, startIndex, limit, filter, query
+                credentials.url, credentials.apiKey, offset, limit, filter, query
             )
         }.mapLeft { return@get BookmarkError.ConfigurationNotSetup.left() }
     }

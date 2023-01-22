@@ -28,7 +28,7 @@ class LinkdingBookmarkRepository(private val httpClient: HttpClient) : BookmarkR
     override suspend fun fetch(
         baseUrl: String,
         token: String,
-        startIndex: Int,
+        offset: Int,
         limit: Int,
         filter: BookmarkFilter,
         query: String
@@ -45,7 +45,7 @@ class LinkdingBookmarkRepository(private val httpClient: HttpClient) : BookmarkR
                     protocol = url.protocol
                     host = url.host
                     encodedPath = "api/bookmarks" + filter.urlSuffix
-                    parameters.append("startIndex", startIndex.toString())
+                    parameters.append("offset", offset.toString())
                     parameters.append("limit", limit.toString())
 
                     val filterQuery = when (filter) {

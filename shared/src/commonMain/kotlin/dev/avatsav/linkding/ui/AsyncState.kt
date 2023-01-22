@@ -8,7 +8,9 @@ import kotlin.contracts.contract
 // and https://github.com/michaelbull/kotlin-result
 
 sealed class AsyncState<out V : Any, out E : Any>(
-    val complete: Boolean, val shouldLoad: Boolean, private val value: V?,
+    open val complete: Boolean,
+    val shouldLoad: Boolean,
+    private val value: V?,
 ) {
     open operator fun invoke(): V? = value
 }
@@ -19,21 +21,63 @@ object Uninitialized :
 data class Loading<out V : Any>(val value: V? = null) :
     AsyncState<V, Nothing>(complete = false, shouldLoad = false, value = value)
 
-data class Success<out V : Any>(val value: V) :
-    AsyncState<V, Nothing>(complete = true, shouldLoad = false, value = value) {
+abstract class Success<out V : Any>(
+    open val value: V
+) : AsyncState<V, Nothing>(complete = true, shouldLoad = false, value = value) {
+
     override operator fun invoke(): V = value
+
+    companion object {
+        fun <V : Any> content(value: V): Content<V> {
+            return Content(value)
+        }
+
+        fun <V : Any> pagedContent(value: V, pageStatus: PageStatus): PagedContent<V> {
+            return PagedContent(value, pageStatus)
+        }
+    }
+}
+
+data class Content<out V : Any>(
+    override val value: V
+) : Success<V>(value)
+
+data class PagedContent<out V : Any>(
+    override val value: V,
+    val status: PageStatus,
+) : Success<V>(value)
+
+enum class PageStatus {
+    HasMore, Complete, LoadingMore, ErrorLoadingMore
 }
 
 data class Fail<out E : Any>(
     val error: E,
 ) : AsyncState<Nothing, E>(complete = true, shouldLoad = true, value = null)
 
-
 @OptIn(ExperimentalContracts::class)
 inline infix fun <V : Any, E : Any> AsyncState<V, E>.onSuccess(action: (V) -> Unit): AsyncState<V, E> {
     contract { callsInPlace(action, InvocationKind.AT_MOST_ONCE) }
     if (this is Success) {
         action(value)
+    }
+    return this
+}
+
+@OptIn(ExperimentalContracts::class)
+inline infix fun <V : Any, E : Any> AsyncState<V, E>.onContent(action: (Content<V>) -> Unit): AsyncState<V, E> {
+    contract { callsInPlace(action, InvocationKind.AT_MOST_ONCE) }
+    if (this is Content) {
+        action(this)
+    }
+    return this
+}
+
+@OptIn(ExperimentalContracts::class)
+inline infix fun <V : Any, E : Any> AsyncState<V, E>.onPagedContent(action: (PagedContent<V>) -> Unit): AsyncState<V, E> {
+    contract { callsInPlace(action, InvocationKind.AT_MOST_ONCE) }
+    if (this is PagedContent) {
+        action(this)
     }
     return this
 }
@@ -87,18 +131,5 @@ fun <V : Any, E : Any> AsyncState<V, E>.getError(): E? {
         is Success -> null
         is Fail -> error
         Uninitialized -> null
-    }
-}
-
-@OptIn(ExperimentalContracts::class)
-inline infix fun <V : Any, E : Any, U : Any> AsyncState<V, E>.mapSuccess(transform: (V) -> U): AsyncState<U, E> {
-    contract {
-        callsInPlace(transform, InvocationKind.AT_MOST_ONCE)
-    }
-    return when (this) {
-        is Loading -> Loading()
-        is Success -> Success(transform(value))
-        is Fail -> this
-        Uninitialized -> Uninitialized
     }
 }

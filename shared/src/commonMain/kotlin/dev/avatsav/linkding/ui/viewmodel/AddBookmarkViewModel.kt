@@ -9,9 +9,9 @@ import dev.avatsav.linkding.bookmark.domain.Bookmark
 import dev.avatsav.linkding.bookmark.domain.BookmarkSaveError
 import dev.avatsav.linkding.bookmark.domain.SaveBookmark
 import dev.avatsav.linkding.ui.AsyncState
+import dev.avatsav.linkding.ui.Content
 import dev.avatsav.linkding.ui.Fail
 import dev.avatsav.linkding.ui.Loading
-import dev.avatsav.linkding.ui.Success
 import dev.avatsav.linkding.ui.Uninitialized
 import dev.avatsav.linkding.ui.viewmodel.AddBookmarkViewState.*
 import io.github.aakira.napier.Napier
@@ -79,7 +79,7 @@ class AddBookmarkViewModel(
             saveStateFlow.emit(Loading())
             val saveBookmark = SaveBookmark(url, title, description, tags.toSet())
             bookmarkService.save(saveBookmark).map { bookmark ->
-                saveStateFlow.emit(Success(bookmark))
+                saveStateFlow.emit(Content(bookmark))
             }.mapLeft { error ->
                 val failure: Fail<SaveError> = when (error) {
                     BookmarkSaveError.ConfigurationNotSetup -> Fail(SaveError("Linkding not configured"))
@@ -92,7 +92,7 @@ class AddBookmarkViewModel(
 }
 
 private fun UnfurlResult.toAsyncState(): AsyncState<UnfurlData, UnfurlError> = when (this) {
-    is UnfurlResult.Data -> Success(UnfurlData(url, title, description))
+    is UnfurlResult.Data -> Content(UnfurlData(url, title, description))
     is UnfurlResult.Error -> Fail(UnfurlError)
 }
 

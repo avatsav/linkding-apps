@@ -35,7 +35,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -47,8 +46,8 @@ import dev.avatsav.linkding.android.ui.extensions.composableOnSuccess
 import dev.avatsav.linkding.android.ui.theme.LinkdingTheme
 import dev.avatsav.linkding.bookmark.domain.Bookmark
 import dev.avatsav.linkding.ui.AsyncState
+import dev.avatsav.linkding.ui.Content
 import dev.avatsav.linkding.ui.Fail
-import dev.avatsav.linkding.ui.Success
 import dev.avatsav.linkding.ui.onFail
 import dev.avatsav.linkding.ui.onLoading
 import dev.avatsav.linkding.ui.onSuccess
@@ -108,7 +107,6 @@ private fun AddBookmarkScreen(
     )
 }
 
-@OptIn(ExperimentalLifecycleComposeApi::class)
 @Composable
 private fun AddBookmarkScreen(
     modifier: Modifier,
@@ -268,7 +266,7 @@ fun SetupConfigurationScreen_Preview() {
     LinkdingTheme {
         AddBookmarkScreen(modifier = Modifier,
             sharedUrl = "https://staffeng.com/guides/work-on-what-matters",
-            unfurlState = Success(
+            unfurlState = Content(
                 UnfurlData(
                     unfurledUrl = "https://staffeng.com/guides/work-on-what-matters",
                     unfurledTitle = "Work on what matters",
