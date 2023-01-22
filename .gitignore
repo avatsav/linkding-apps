@@ -1,10 +1,39 @@
-*.iml
-.gradle
-.idea
-.DS_Store
 build
-captures
+
+# Gradle
+.gradle
+build/
+local.properties
+/local.properties
+
+# IntelliJ .idea folder
+.idea/workspace.xml
+.idea/misc.xml
+.idea/libraries
+.idea/caches
+.idea/navEditor.xml
+.idea/tasks.xml
+.idea/modules.xml
+.idea/compiler.xml
+.idea/jarRepositories.xml
+.idea/deploymentTargetDropDown.xml
+.idea/androidTestResultsUserPreferences.xml
+gradle.xml
+*.iml
+
+# General
+.DS_Store
 .externalNativeBuild
 .cxx
-local.properties
+
+# Release Keys
+keys
+
+# Android Studio
+captures
+
+# Firebase
+google-services.json
+
+# Xcode
 xcuserdata
