@@ -7,5 +7,5 @@ data class TagList(
     val count: Long,
     val next: String?,
     val previous: String?,
-    val results: List<Tag>
+    val results: List<Tag>,
 )

@@ -49,7 +49,8 @@ import dev.avatsav.linkding.ui.AsyncState
 import dev.avatsav.linkding.ui.Content
 import dev.avatsav.linkding.ui.Fail
 import dev.avatsav.linkding.ui.bookmarks.AddBookmarkViewModel
-import dev.avatsav.linkding.ui.bookmarks.AddBookmarkViewState.*
+import dev.avatsav.linkding.ui.bookmarks.AddBookmarkViewState
+import dev.avatsav.linkding.ui.bookmarks.AddBookmarkViewState.SaveError
 import dev.avatsav.linkding.ui.bookmarks.UnfurlData
 import dev.avatsav.linkding.ui.onFail
 import dev.avatsav.linkding.ui.onLoading
@@ -59,7 +60,8 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 @Destination
 fun AddBookmarkScreen(
-    sharedUrl: String?, navigator: DestinationsNavigator
+    sharedUrl: String?,
+    navigator: DestinationsNavigator,
 ) {
     val viewModel: AddBookmarkViewModel = koinViewModel()
 
@@ -68,9 +70,11 @@ fun AddBookmarkScreen(
         viewModel = viewModel,
         onBookmarkSaved = {
             navigator.popBackStack()
-        }, onClose = {
+        },
+        onClose = {
             navigator.popBackStack()
-        })
+        },
+    )
 }
 
 /**
@@ -78,7 +82,9 @@ fun AddBookmarkScreen(
  */
 @Composable
 fun AddBookmarkScreen(
-    sharedUrl: String?, onBookmarkSaved: () -> Unit = {}, onClose: () -> Unit = {}
+    sharedUrl: String?,
+    onBookmarkSaved: () -> Unit = {},
+    onClose: () -> Unit = {},
 ) {
     val viewModel: AddBookmarkViewModel = koinViewModel()
 
@@ -86,7 +92,7 @@ fun AddBookmarkScreen(
         sharedUrl = sharedUrl,
         viewModel = viewModel,
         onBookmarkSaved = onBookmarkSaved,
-        onClose = onClose
+        onClose = onClose,
     )
 }
 
@@ -95,7 +101,7 @@ private fun AddBookmarkScreen(
     sharedUrl: String?,
     viewModel: AddBookmarkViewModel,
     onBookmarkSaved: () -> Unit = {},
-    onClose: () -> Unit = {}
+    onClose: () -> Unit = {},
 ) {
     if (sharedUrl != null) viewModel.urlChanged(sharedUrl)
     AddBookmarkScreen(
@@ -103,7 +109,7 @@ private fun AddBookmarkScreen(
         sharedUrl = sharedUrl,
         viewModel = viewModel,
         onBookmarkSaved = onBookmarkSaved,
-        onClose = onClose
+        onClose = onClose,
     )
 }
 
@@ -113,7 +119,7 @@ private fun AddBookmarkScreen(
     sharedUrl: String?,
     viewModel: AddBookmarkViewModel,
     onBookmarkSaved: () -> Unit,
-    onClose: () -> Unit
+    onClose: () -> Unit,
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
@@ -128,7 +134,7 @@ private fun AddBookmarkScreen(
         saveState = state.saveState,
         onClose = onClose,
         onUrlChanged = viewModel::urlChanged,
-        onSave = viewModel::save
+        onSave = viewModel::save,
     )
 }
 
@@ -137,11 +143,11 @@ private fun AddBookmarkScreen(
 private fun AddBookmarkScreen(
     modifier: Modifier,
     sharedUrl: String?,
-    unfurlState: AsyncState<UnfurlData, UnfurlError>,
+    unfurlState: AsyncState<UnfurlData, AddBookmarkViewState.UnfurlError>,
     saveState: AsyncState<Bookmark, SaveError>,
     onClose: () -> Unit,
     onUrlChanged: (String) -> Unit,
-    onSave: (url: String, title: String?, description: String?, tags: List<String>) -> Unit
+    onSave: (url: String, title: String?, description: String?, tags: List<String>) -> Unit,
 ) {
     val scrollBehavior =
         TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
@@ -153,23 +159,27 @@ private fun AddBookmarkScreen(
 
     Scaffold(
         topBar = {
-            LargeTopAppBar(title = { Text(text = "Add Bookmark") },
+            LargeTopAppBar(
+                title = { Text(text = "Add Bookmark") },
                 scrollBehavior = scrollBehavior,
                 navigationIcon = {
                     IconButton(onClick = { onClose() }) {
                         Icon(imageVector = Icons.Default.Close, contentDescription = "Close")
                     }
-                })
-        }, modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
+                },
+            )
+        },
+        modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
     ) { padding ->
         Column(
             modifier = modifier
                 .padding(padding)
                 .padding(horizontal = 16.dp)
                 .fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
-            OutlinedTextField(modifier = Modifier.fillMaxWidth(),
+            OutlinedTextField(
+                modifier = Modifier.fillMaxWidth(),
                 value = url,
                 label = { Text(text = "URL") },
                 keyboardOptions = KeyboardOptions(
@@ -180,14 +190,18 @@ private fun AddBookmarkScreen(
                 onValueChange = { value ->
                     url = value
                     onUrlChanged(url)
-                })
-            OutlinedTagsTextField(modifier = Modifier.fillMaxWidth(),
+                },
+            )
+            OutlinedTagsTextField(
+                modifier = Modifier.fillMaxWidth(),
                 value = tagsValue,
                 label = { Text(text = "Tags") },
                 supportingText = {
                     Text(text = "Enter any number of tags separated by space and without the hash (#). If a tag does not exist it will be automatically created.")
-                })
-            OutlinedPlaceholderTextField(modifier = Modifier.fillMaxWidth(),
+                },
+            )
+            OutlinedPlaceholderTextField(
+                modifier = Modifier.fillMaxWidth(),
                 value = title,
                 label = { Text(text = "Title") },
                 supportingText = {
@@ -204,13 +218,15 @@ private fun AddBookmarkScreen(
                             Text(
                                 text = data.unfurledTitle ?: "",
                                 maxLines = 4,
-                                overflow = TextOverflow.Ellipsis
+                                overflow = TextOverflow.Ellipsis,
                             )
                         }
                     }
                 },
-                onValueChange = { value -> title = value })
-            OutlinedPlaceholderTextField(modifier = Modifier.fillMaxWidth(),
+                onValueChange = { value -> title = value },
+            )
+            OutlinedPlaceholderTextField(
+                modifier = Modifier.fillMaxWidth(),
                 value = description,
                 label = { Text(text = "Description") },
                 placeholder = unfurlState composableOnSuccess { data: UnfurlData ->
@@ -221,7 +237,7 @@ private fun AddBookmarkScreen(
                             Text(
                                 text = data.unfurledDescription ?: "",
                                 maxLines = 4,
-                                overflow = TextOverflow.Ellipsis
+                                overflow = TextOverflow.Ellipsis,
                             )
                         }
                     }
@@ -232,16 +248,22 @@ private fun AddBookmarkScreen(
                 supportingText = {
                     Text(text = "Optional, leave empty to use description from website.")
                 },
-                onValueChange = { value -> description = value })
+                onValueChange = { value -> description = value },
+            )
             Row(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
             ) {
-                Button(onClick = {
-                    onSave(
-                        url, title, description, tagsValue.tags.map { it.value }.toList()
-                    )
-                }) {
+                Button(
+                    onClick = {
+                        onSave(
+                            url,
+                            title,
+                            description,
+                            tagsValue.tags.map { it.value }.toList(),
+                        )
+                    },
+                ) {
                     Text("Save")
                 }
                 saveState onLoading {
@@ -252,7 +274,7 @@ private fun AddBookmarkScreen(
                 Text(
                     text = error.message,
                     fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.error
+                    color = MaterialTheme.colorScheme.error,
                 )
             }
         }
@@ -264,18 +286,20 @@ private fun AddBookmarkScreen(
 @Composable
 fun SetupConfigurationScreen_Preview() {
     LinkdingTheme {
-        AddBookmarkScreen(modifier = Modifier,
+        AddBookmarkScreen(
+            modifier = Modifier,
             sharedUrl = "https://staffeng.com/guides/work-on-what-matters",
             unfurlState = Content(
                 UnfurlData(
                     unfurledUrl = "https://staffeng.com/guides/work-on-what-matters",
                     unfurledTitle = "Work on what matters",
-                    unfurledDescription = "Stories of folks reaching Staff Engineer roles."
-                )
+                    unfurledDescription = "Stories of folks reaching Staff Engineer roles.",
+                ),
             ),
             saveState = Fail(SaveError("Error saving bookmark")),
             onClose = {},
             onUrlChanged = {},
-            onSave = { _, _, _, _ -> })
+            onSave = { _, _, _, _ -> },
+        )
     }
 }

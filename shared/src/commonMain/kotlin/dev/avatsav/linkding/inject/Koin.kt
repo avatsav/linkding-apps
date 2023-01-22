@@ -1,10 +1,10 @@
 package dev.avatsav.linkding.inject
 
-import dev.avatsav.linkding.data.configuration.ConfigurationStore
 import dev.avatsav.linkding.data.bookmarks.BookmarksDataSource
-import dev.avatsav.linkding.data.bookmarks.LinkdingBookmarksDataSource
 import dev.avatsav.linkding.data.bookmarks.BookmarksRepository
+import dev.avatsav.linkding.data.bookmarks.LinkdingBookmarksDataSource
 import dev.avatsav.linkding.data.bookmarks.LinkdingBookmarksRepository
+import dev.avatsav.linkding.data.configuration.ConfigurationStore
 import io.github.aakira.napier.DebugAntilog
 import io.github.aakira.napier.Napier
 import org.koin.core.context.startKoin

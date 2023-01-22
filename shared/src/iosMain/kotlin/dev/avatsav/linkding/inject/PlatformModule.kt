@@ -9,7 +9,6 @@ import org.koin.dsl.module
 import platform.Foundation.NSUserDefaults
 import platform.LinkPresentation.LPMetadataProvider
 
-
 actual fun platformModule() = module {
     single { flowSettings() }
     single { LinkUnfurler(LPMetadataProvider()) }

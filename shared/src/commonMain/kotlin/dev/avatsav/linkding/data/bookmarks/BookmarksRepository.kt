@@ -17,7 +17,7 @@ interface BookmarksRepository {
         offset: Int = 0,
         limit: Int = 10,
         filter: BookmarkFilter = BookmarkFilter.None,
-        query: String = ""
+        query: String = "",
     ): Either<BookmarkError, BookmarkList>
 
     suspend fun testConnection(configuration: Configuration): Either<TestConnectionError, Configuration>
@@ -25,7 +25,8 @@ interface BookmarksRepository {
     suspend fun save(saveBookmark: SaveBookmark): Either<BookmarkSaveError, Bookmark>
 
     suspend fun update(
-        bookmarkId: Long, updatedBookmark: Bookmark
+        bookmarkId: Long,
+        updatedBookmark: Bookmark,
     ): Either<BookmarkSaveError, Bookmark>
 
     suspend fun get(bookmarkId: Long): Either<BookmarkError, Bookmark>
@@ -39,27 +40,33 @@ interface BookmarksRepository {
 
 class LinkdingBookmarksRepository(
     private val bookmarksDataSource: BookmarksDataSource,
-    private val configurationStore: ConfigurationStore
+    private val configurationStore: ConfigurationStore,
 ) : BookmarksRepository {
 
     override suspend fun get(
         offset: Int,
         limit: Int,
         filter: BookmarkFilter,
-        query: String
+        query: String,
     ): Either<BookmarkError, BookmarkList> {
         return configurationStore.get().toEither().map { credentials ->
             return bookmarksDataSource.fetch(
-                credentials.url, credentials.apiKey, offset, limit, filter, query
+                credentials.url,
+                credentials.apiKey,
+                offset,
+                limit,
+                filter,
+                query,
             )
         }.mapLeft { return@get BookmarkError.ConfigurationNotSetup.left() }
     }
 
-
     override suspend fun get(bookmarkId: Long): Either<BookmarkError, Bookmark> {
         return configurationStore.get().toEither().map { credentials ->
             return bookmarksDataSource.fetch(
-                credentials.url, credentials.apiKey, bookmarkId
+                credentials.url,
+                credentials.apiKey,
+                bookmarkId,
             )
         }.mapLeft { return@get BookmarkError.ConfigurationNotSetup.left() }
     }
@@ -70,21 +77,27 @@ class LinkdingBookmarksRepository(
             configuration.apiKey,
             0,
             1,
-            BookmarkFilter.None, ""
-        ).fold(ifLeft = { Either.Left(TestConnectionError) },
-            ifRight = { Either.Right(configuration) })
+            BookmarkFilter.None,
+            "",
+        ).fold(
+            ifLeft = { Either.Left(TestConnectionError) },
+            ifRight = { Either.Right(configuration) },
+        )
     }
 
     override suspend fun save(saveBookmark: SaveBookmark): Either<BookmarkSaveError, Bookmark> {
         return configurationStore.get().toEither().map { configuration ->
             return bookmarksDataSource.save(
-                configuration.url, configuration.apiKey, saveBookmark
+                configuration.url,
+                configuration.apiKey,
+                saveBookmark,
             )
         }.mapLeft { return@save BookmarkSaveError.ConfigurationNotSetup.left() }
     }
 
     override suspend fun update(
-        bookmarkId: Long, updatedBookmark: Bookmark
+        bookmarkId: Long,
+        updatedBookmark: Bookmark,
     ): Either<BookmarkSaveError, Bookmark> {
         TODO("Not yet implemented")
     }

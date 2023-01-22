@@ -7,5 +7,5 @@ data class BookmarkList(
     val count: Long,
     val next: String? = null,
     val previous: String? = null,
-    val results: List<Bookmark>
+    val results: List<Bookmark>,
 )

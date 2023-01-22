@@ -46,7 +46,7 @@ fun SetupConfigurationScreen(
     modifier: Modifier = Modifier,
     state: AsyncState<Configuration, SaveConfigurationError>,
     onSaveSuccess: () -> Unit,
-    onConfigurationSubmitted: (String, String) -> Unit
+    onConfigurationSubmitted: (String, String) -> Unit,
 ) {
     var url by remember { mutableStateOf("") }
     var apiKey by remember { mutableStateOf("") }
@@ -67,11 +67,12 @@ fun SetupConfigurationScreen(
                 .padding(padding)
                 .padding(horizontal = 16.dp)
                 .fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             Text(text = "Configure settings, so that the app can communicate with your linkding installation.")
             Spacer(modifier = Modifier.size(8.dp))
-            OutlinedTextField(modifier = Modifier.fillMaxWidth(),
+            OutlinedTextField(
+                modifier = Modifier.fillMaxWidth(),
                 value = url,
                 enabled = state !is Loading,
                 label = { Text(text = "Linkding Host URL") },
@@ -88,8 +89,10 @@ fun SetupConfigurationScreen(
                 ),
                 onValueChange = { value ->
                     url = value
-                })
-            OutlinedTextField(modifier = Modifier.fillMaxWidth(),
+                },
+            )
+            OutlinedTextField(
+                modifier = Modifier.fillMaxWidth(),
                 value = apiKey,
                 enabled = state !is Loading,
                 label = { Text(text = "API Key") },
@@ -101,32 +104,34 @@ fun SetupConfigurationScreen(
                 },
                 onValueChange = { value ->
                     apiKey = value
-                })
+                },
+            )
             Spacer(modifier = Modifier.size(24.dp))
             Row(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 Button(
                     enabled = state !is Loading,
-                    onClick = { onConfigurationSubmitted(url, apiKey) })
-                {
+                    onClick = { onConfigurationSubmitted(url, apiKey) },
+                ) {
                     Text("Save")
                 }
                 state onLoading {
                     CircularProgressIndicator()
                 }
                 AnimatedVisibility(visible = cannotConnectError != null) {
-                    if (cannotConnectError != null) Text(
-                        text = cannotConnectError.message,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.error
-                    )
+                    if (cannotConnectError != null) {
+                        Text(
+                            text = cannotConnectError.message,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.error,
+                        )
+                    }
                 }
             }
         }
     }
-
 }
 
 @Preview(showBackground = true)
@@ -134,8 +139,10 @@ fun SetupConfigurationScreen(
 @Composable
 fun SetupConfigurationScreen_Preview() {
     LinkdingTheme {
-        SetupConfigurationScreen(state = Uninitialized,
+        SetupConfigurationScreen(
+            state = Uninitialized,
             onSaveSuccess = {},
-            onConfigurationSubmitted = { _, _ -> })
+            onConfigurationSubmitted = { _, _ -> },
+        )
     }
 }

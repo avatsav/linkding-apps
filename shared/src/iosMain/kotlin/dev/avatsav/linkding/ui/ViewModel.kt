@@ -19,5 +19,4 @@ actual abstract class ViewModel {
         viewModelScope.cancel()
         onCleared()
     }
-
 }

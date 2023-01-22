@@ -12,7 +12,6 @@ import me.saket.unfurl.Unfurler
 import org.koin.android.ext.koin.androidApplication
 import org.koin.dsl.module
 
-
 actual fun platformModule() = module {
     single { flowSettings(androidApplication()) }
     single { LinkUnfurler(Unfurler()) }

@@ -16,5 +16,4 @@ class LinkdingApplication : Application() {
             Timber.plant(Timber.DebugTree())
         }
     }
-
 }

@@ -30,7 +30,7 @@ import kotlinx.coroutines.launch
 
 data class AddBookmarkViewState(
     val unfurlState: AsyncState<UnfurlData, UnfurlError> = Uninitialized,
-    val saveState: AsyncState<Bookmark, SaveError> = Uninitialized
+    val saveState: AsyncState<Bookmark, SaveError> = Uninitialized,
 ) {
     object UnfurlError
     data class SaveError(val message: String)
@@ -39,7 +39,7 @@ data class AddBookmarkViewState(
 data class UnfurlData(
     val unfurledUrl: String,
     val unfurledTitle: String? = null,
-    val unfurledDescription: String? = null
+    val unfurledDescription: String? = null,
 )
 
 @OptIn(FlowPreview::class)
@@ -85,8 +85,8 @@ class AddBookmarkViewModel(
                     BookmarkSaveError.ConfigurationNotSetup -> Fail(AddBookmarkViewState.SaveError("Linkding not configured"))
                     is BookmarkSaveError.CouldNotSaveBookmark -> Fail(
                         AddBookmarkViewState.SaveError(
-                            error.message
-                        )
+                            error.message,
+                        ),
                     )
                 }
                 saveStateFlow.emit(failure)
@@ -100,4 +100,3 @@ private fun UnfurlResult.toAsyncState(): AsyncState<UnfurlData, AddBookmarkViewS
         is UnfurlResult.Data -> Content(UnfurlData(url, title, description))
         is UnfurlResult.Error -> Fail(AddBookmarkViewState.UnfurlError)
     }
-

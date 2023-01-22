@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.filter
 
 @Composable
 fun LazyListState.OnEndReached(
-    loadMore: () -> Unit
+    loadMore: () -> Unit,
 ) {
     val shouldLoadMore = remember {
         derivedStateOf {
@@ -22,8 +22,10 @@ fun LazyListState.OnEndReached(
             } else {
                 val lastVisibleItem = visibleItemsInfo.last()
                 val viewportHeight = layoutInfo.viewportEndOffset + layoutInfo.viewportStartOffset
-                (lastVisibleItem.index + 1 == layoutInfo.totalItemsCount &&
-                        lastVisibleItem.offset + lastVisibleItem.size <= viewportHeight)
+                (
+                    lastVisibleItem.index + 1 == layoutInfo.totalItemsCount &&
+                        lastVisibleItem.offset + lastVisibleItem.size <= viewportHeight
+                    )
             }
         }
     }

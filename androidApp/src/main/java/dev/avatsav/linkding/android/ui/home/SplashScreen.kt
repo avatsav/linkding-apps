@@ -36,7 +36,7 @@ fun SplashScreen() {
             modifier = Modifier
                 .padding(padding)
                 .background(MaterialTheme.colorScheme.background)
-                .fillMaxSize()
+                .fillMaxSize(),
         ) {
             Box(
                 modifier = Modifier
@@ -44,7 +44,7 @@ fun SplashScreen() {
                     .width(200.dp)
                     .clip(CircleShape)
                     .background(color = MaterialTheme.colorScheme.primary),
-                contentAlignment = Alignment.Center
+                contentAlignment = Alignment.Center,
 
             ) {
                 Icon(
@@ -53,15 +53,15 @@ fun SplashScreen() {
                         .height(120.dp)
                         .width(120.dp),
                     contentDescription = "",
-                    tint = MaterialTheme.colorScheme.onPrimary
+                    tint = MaterialTheme.colorScheme.onPrimary,
                 )
             }
             CircularProgressIndicator(
-                modifier = Modifier.padding(vertical = 36.dp)
+                modifier = Modifier.padding(vertical = 36.dp),
             )
             Text(
                 text = "Linkding",
-                style = MaterialTheme.typography.titleLarge
+                style = MaterialTheme.typography.titleLarge,
             )
         }
     })

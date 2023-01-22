@@ -19,11 +19,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import dev.avatsav.linkding.android.theme.LinkdingTheme
 import dev.avatsav.linkding.android.ui.common.OutlinedPlaceholderTextField
 import dev.avatsav.linkding.android.ui.common.OutlinedTagsTextField
 import dev.avatsav.linkding.android.ui.common.Tag
 import dev.avatsav.linkding.android.ui.common.TagsTextFieldValue
-import dev.avatsav.linkding.android.theme.LinkdingTheme
 
 class PlaygroundActivity : ComponentActivity() {
 
@@ -39,13 +39,16 @@ class PlaygroundActivity : ComponentActivity() {
 @Composable
 fun PlaygroundScreen() {
     LinkdingTheme {
-        Scaffold(modifier = Modifier.fillMaxSize(),
-            topBar = { TopAppBar(title = { Text(text = "Playground") }) }) { paddingValues ->
+        Scaffold(
+            modifier = Modifier.fillMaxSize(),
+            topBar = { TopAppBar(title = { Text(text = "Playground") }) },
+        ) { paddingValues ->
             Column(
                 modifier = Modifier
                     .padding(paddingValues)
                     .padding(horizontal = 16.dp)
-                    .fillMaxSize(), verticalArrangement = Arrangement.spacedBy(36.dp)
+                    .fillMaxSize(),
+                verticalArrangement = Arrangement.spacedBy(36.dp),
             ) {
                 val tagsValue = remember { TagsTextFieldValue(tags = defaultTags) }
                 var text by remember { mutableStateOf("") }
@@ -54,16 +57,21 @@ fun PlaygroundScreen() {
                     value = tagsValue,
                     label = { Text(text = "Tags") },
                 )
-                OutlinedPlaceholderTextField(modifier = Modifier.fillMaxWidth(),
+                OutlinedPlaceholderTextField(
+                    modifier = Modifier.fillMaxWidth(),
                     value = text,
                     onValueChange = { value -> text = value },
                     label = { Text(text = "Description") },
-                    placeholder = { Text(text = "Stories of folks reaching Staff Engineer roles.") })
+                    placeholder = { Text(text = "Stories of folks reaching Staff Engineer roles.") },
+                )
             }
         }
     }
 }
 
 val defaultTags = listOf(
-    Tag("staff-eng"), Tag("engineering-mgmt"), Tag("kotlin"), Tag("multiplatform")
+    Tag("staff-eng"),
+    Tag("engineering-mgmt"),
+    Tag("kotlin"),
+    Tag("multiplatform"),
 )

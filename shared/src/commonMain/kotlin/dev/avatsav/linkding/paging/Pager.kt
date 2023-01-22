@@ -114,12 +114,16 @@ private class DefaultPager<V : Any>(
     }
 
     private inline fun hasMoreOrComplete(nextPageIndex: Int?) =
-        if (nextPageIndex == null) PageStatus.Complete
-        else PageStatus.HasMore
+        if (nextPageIndex == null) {
+            PageStatus.Complete
+        } else {
+            PageStatus.HasMore
+        }
 
     @OptIn(ExperimentalContracts::class)
     private inline fun <V : Any> canLoadMore(
-        state: AsyncState<V, PagingError>, action: (PagedContent<V>) -> Unit
+        state: AsyncState<V, PagingError>,
+        action: (PagedContent<V>) -> Unit,
     ) {
         contract { callsInPlace(action, InvocationKind.AT_MOST_ONCE) }
         when (state) {
@@ -131,6 +135,3 @@ private class DefaultPager<V : Any>(
         }
     }
 }
-
-
-

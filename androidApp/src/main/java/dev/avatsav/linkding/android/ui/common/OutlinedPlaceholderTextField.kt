@@ -88,27 +88,30 @@ private fun OutlinedPlaceholderTextField(
     val textFieldFocusRequester = remember { FocusRequester() }
     val placeholderVisible = value.isBlank() && placeholder != null
     decorationBox {
-        Box(modifier = modifier
-            .fillMaxWidth()
-            .pointerInput(value) {
-                detectTapGestures(
-                    onTap = {
-                        textFieldFocusRequester.requestFocus()
-                    },
-                )
-            }) {
+        Box(
+            modifier = modifier
+                .fillMaxWidth()
+                .pointerInput(value) {
+                    detectTapGestures(
+                        onTap = {
+                            textFieldFocusRequester.requestFocus()
+                        },
+                    )
+                },
+        ) {
             AnimatedVisibility(
                 visible = placeholderVisible,
                 enter = fadeIn(keyframes { durationMillis = 400 }),
                 exit = fadeOut(keyframes { durationMillis = 400 }),
             ) {
-                if (placeholder != null) Decoration(
-                    contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                    typography = MaterialTheme.typography.bodyLarge,
-                    content = placeholder
-                )
+                if (placeholder != null) {
+                    Decoration(
+                        contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                        typography = MaterialTheme.typography.bodyLarge,
+                        content = placeholder,
+                    )
+                }
             }
-
         }
         BasicTextField(
             modifier = Modifier.focusRequester(textFieldFocusRequester),
@@ -122,15 +125,17 @@ private fun OutlinedPlaceholderTextField(
     }
 }
 
-
 // Taken from Material3
 @Composable
 internal fun Decoration(
-    contentColor: Color, typography: TextStyle? = null, content: @Composable () -> Unit
+    contentColor: Color,
+    typography: TextStyle? = null,
+    content: @Composable () -> Unit,
 ) {
     val contentWithColor: @Composable () -> Unit = @Composable {
         CompositionLocalProvider(
-            LocalContentColor provides contentColor, content = content
+            LocalContentColor provides contentColor,
+            content = content,
         )
     }
     if (typography != null) ProvideTextStyle(typography, contentWithColor) else contentWithColor()
@@ -142,16 +147,17 @@ internal fun Decoration(
 fun OutlinedPlaceholderTextField_Preview() {
     LinkdingTheme {
         Surface {
-            OutlinedPlaceholderTextField(value = "",
+            OutlinedPlaceholderTextField(
+                value = "",
                 onValueChange = {},
                 label = { Text("Title") },
                 placeholder = {
                     Text(
-                        "Placeholder text", color = MaterialTheme.colorScheme.onSurfaceVariant
+                        "Placeholder text",
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
-                })
+                },
+            )
         }
     }
 }
-
-

@@ -13,14 +13,16 @@ import kotlinx.serialization.json.Json
 
 internal fun httpClient(enableNetworkLogs: Boolean) = HttpClient {
     install(ContentNegotiation) {
-        val jsonConverter = KotlinxSerializationConverter(Json {
-            explicitNulls = false
-            isLenient = true
-            ignoreUnknownKeys = true
-            coerceInputValues = true
-            encodeDefaults = true
-            prettyPrint = enableNetworkLogs
-        })
+        val jsonConverter = KotlinxSerializationConverter(
+            Json {
+                explicitNulls = false
+                isLenient = true
+                ignoreUnknownKeys = true
+                coerceInputValues = true
+                encodeDefaults = true
+                prettyPrint = enableNetworkLogs
+            },
+        )
         register(ContentType.Application.Json, jsonConverter)
         register(ContentType.Application.Any, jsonConverter)
     }
@@ -36,7 +38,9 @@ internal fun httpClient(enableNetworkLogs: Boolean) = HttpClient {
 internal class KtorNapierLogger : Logger {
     override fun log(message: String) {
         Napier.log(
-            priority = NapierLogLevel.DEBUG, tag = "Ktor", message = message
+            priority = NapierLogLevel.DEBUG,
+            tag = "Ktor",
+            message = message,
         )
     }
 }

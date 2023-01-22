@@ -3,7 +3,6 @@ package dev.avatsav.linkding.data.unfurl
 expect class LinkUnfurler {
 
     suspend fun unfurl(url: String): UnfurlResult
-
 }
 
 sealed interface UnfurlResult {
@@ -15,5 +14,3 @@ sealed interface UnfurlResult {
 
     data class Error(val message: String) : UnfurlResult
 }
-
-

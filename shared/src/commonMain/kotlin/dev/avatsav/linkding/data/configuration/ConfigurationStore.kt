@@ -6,9 +6,6 @@ import com.russhwolf.settings.coroutines.FlowSettings
 import dev.avatsav.linkding.domain.Configuration
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
-import kotlinx.serialization.Serializable
-
-@Serializable
 
 sealed class ConfigurationState
 data class Setup(val configuration: Configuration) : ConfigurationState()
@@ -23,8 +20,11 @@ class ConfigurationStore(private val settings: FlowSettings) {
         settings.getStringOrNullFlow(HostUrlConfigurationKey),
         settings.getStringOrNullFlow(ApiKeyConfigurationKey),
     ) { hostUrl: String?, apiKey: String? ->
-        if (hostUrl == null || apiKey == null) ConfigurationNotSetup
-        else Setup(Configuration(hostUrl, apiKey))
+        if (hostUrl == null || apiKey == null) {
+            ConfigurationNotSetup
+        } else {
+            Setup(Configuration(hostUrl, apiKey))
+        }
     }
 
     fun get(): Effect<ConfigurationNotSetup, Configuration> = effect {

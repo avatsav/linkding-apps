@@ -8,7 +8,7 @@ import dev.avatsav.linkding.ui.Success
 
 @Composable
 inline infix fun <V : Any, E : Any> AsyncState<V, E>.composableOnSuccess(
-    transform: @Composable (V) -> (@Composable (() -> Unit)?)
+    transform: @Composable (V) -> (@Composable (() -> Unit)?),
 ): (@Composable () -> Unit)? {
     if (this is Success) {
         return transform(value)
@@ -16,10 +16,9 @@ inline infix fun <V : Any, E : Any> AsyncState<V, E>.composableOnSuccess(
     return null
 }
 
-
 @Composable
 inline infix fun <V : Any, E : Any> AsyncState<V, E>.composableOnLoading(
-    transform: @Composable () -> (@Composable (() -> Unit)?)
+    transform: @Composable () -> (@Composable (() -> Unit)?),
 ): (@Composable () -> Unit)? {
     if (this is Loading) {
         return transform()
@@ -27,10 +26,9 @@ inline infix fun <V : Any, E : Any> AsyncState<V, E>.composableOnLoading(
     return null
 }
 
-
 @Composable
 inline infix fun <V : Any, E : Any> AsyncState<V, E>.composableOnFail(
-    transform: @Composable (E) -> (@Composable (() -> Unit)?)
+    transform: @Composable (E) -> (@Composable (() -> Unit)?),
 ): (@Composable () -> Unit)? {
     if (this is Fail) {
         return transform(error)

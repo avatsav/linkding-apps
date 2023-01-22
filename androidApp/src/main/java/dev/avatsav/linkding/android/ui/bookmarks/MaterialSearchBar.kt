@@ -28,7 +28,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.avatsav.linkding.android.theme.LinkdingTheme
 
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MaterialSearchBar(
@@ -62,29 +61,33 @@ fun MaterialSearchBar(
                     ) { isActive ->
                         if (isActive) {
                             Icon(
-                                imageVector = Icons.Default.ArrowBack, contentDescription = "Back"
+                                imageVector = Icons.Default.ArrowBack,
+                                contentDescription = "Back",
                             )
                         } else {
                             Icon(
-                                imageVector = Icons.Default.Search, contentDescription = "Search"
+                                imageVector = Icons.Default.Search,
+                                contentDescription = "Search",
                             )
                         }
                     }
                 }
-
             },
             trailingIcon = {
-                if (!active) IconButton(onClick = { active = false }) {
-                    Icon(
-                        imageVector = Icons.Default.MoreVert,
-                        tint = MaterialTheme.colorScheme.onSurface,
-                        contentDescription = "Search"
-                    )
+                if (!active) {
+                    IconButton(onClick = { active = false }) {
+                        Icon(
+                            imageVector = Icons.Default.MoreVert,
+                            tint = MaterialTheme.colorScheme.onSurface,
+                            contentDescription = "Search",
+                        )
+                    }
                 }
             },
             placeholder = {
                 Text("Search for words or #tags")
-            }) {
+            },
+        ) {
             LazyColumn {
                 items(200) {
                     Text(text = it.toString(), modifier = Modifier.padding(12.dp))
@@ -94,7 +97,6 @@ fun MaterialSearchBar(
         }
     }
 }
-
 
 @Preview
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)

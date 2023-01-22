@@ -30,19 +30,19 @@ interface BookmarksDataSource {
         offset: Int,
         limit: Int,
         filter: BookmarkFilter,
-        query: String
+        query: String,
     ): Either<BookmarkError, BookmarkList>
 
     suspend fun fetch(
         baseUrl: String,
         token: String,
-        id: Long
+        id: Long,
     ): Either<BookmarkError, Bookmark>
 
     suspend fun save(
         baseUrl: String,
         token: String,
-        saveBookmark: SaveBookmark
+        saveBookmark: SaveBookmark,
     ): Either<BookmarkSaveError, Bookmark>
 }
 
@@ -55,9 +55,8 @@ internal class LinkdingBookmarksDataSource(private val httpClient: HttpClient) :
         offset: Int,
         limit: Int,
         filter: BookmarkFilter,
-        query: String
+        query: String,
     ): Either<BookmarkError, BookmarkList> {
-
         val apiResponse: ApiResponse<BookmarkList, LinkdingErrorResponse> =
             httpClient.requestApiResponse {
                 method = HttpMethod.Get
@@ -97,7 +96,7 @@ internal class LinkdingBookmarksDataSource(private val httpClient: HttpClient) :
     override suspend fun fetch(
         baseUrl: String,
         token: String,
-        id: Long
+        id: Long,
     ): Either<BookmarkError, Bookmark> {
         val apiResponse = httpClient.requestApiResponse<Bookmark, LinkdingErrorResponse> {
             method = HttpMethod.Get
@@ -108,7 +107,7 @@ internal class LinkdingBookmarksDataSource(private val httpClient: HttpClient) :
                 val url = Url(baseUrl)
                 protocol = url.protocol
                 host = url.host
-                encodedPath = "api/bookmarks/${id}/"
+                encodedPath = "api/bookmarks/$id/"
             }
             contentType(ContentType.Application.Json)
         }
@@ -125,7 +124,7 @@ internal class LinkdingBookmarksDataSource(private val httpClient: HttpClient) :
     override suspend fun save(
         baseUrl: String,
         token: String,
-        saveBookmark: SaveBookmark
+        saveBookmark: SaveBookmark,
     ): Either<BookmarkSaveError, Bookmark> {
         val apiResponse = httpClient.requestApiResponse<Bookmark, LinkdingErrorResponse> {
             method = HttpMethod.Post

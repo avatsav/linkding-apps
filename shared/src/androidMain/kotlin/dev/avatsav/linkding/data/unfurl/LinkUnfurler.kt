@@ -12,5 +12,4 @@ actual class LinkUnfurler(private val unfurler: Unfurler) {
             UnfurlResult.Error(e.message ?: "Error getting link metadata")
         }
     }
-
 }

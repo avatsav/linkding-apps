@@ -57,15 +57,18 @@ fun BookmarksScreen(
     onAddBookmark: () -> Unit,
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
-    BookmarksScreen(viewState = state,
+    BookmarksScreen(
+        viewState = state,
         onRefresh = { viewModel.load() },
         onEndReached = { viewModel.loadMore() },
         onAddBookmark = onAddBookmark,
-        onQueryChanged = { })
+        onQueryChanged = { },
+    )
 }
 
 @OptIn(
-    ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class
+    ExperimentalMaterial3Api::class,
+    ExperimentalMaterialApi::class,
 )
 @Composable
 fun BookmarksScreen(
@@ -99,7 +102,8 @@ fun BookmarksScreen(
         floatingActionButton = {
             FloatingActionButton(onClick = onAddBookmark) {
                 Icon(
-                    imageVector = Icons.Filled.Add, contentDescription = "Add Bookmark"
+                    imageVector = Icons.Filled.Add,
+                    contentDescription = "Add Bookmark",
                 )
             }
         },
@@ -114,13 +118,14 @@ fun BookmarksScreen(
                 modifier = Modifier
                     .fillMaxSize(),
                 state = listState,
-                contentPadding = PaddingValues(bottom = 88.dp) // 56dp(FAB) + 32(Top+Bottom Padding)
+                contentPadding = PaddingValues(bottom = 88.dp), // 56dp(FAB) + 32(Top+Bottom Padding)
             ) {
                 items(items = bookmarkItems, key = { it.id }) { bookmark ->
                     BookmarkItem(
                         bookmark = bookmark,
                         onClicked = {},
-                        onTagClicked = {})
+                        onTagClicked = {},
+                    )
                 }
                 if (contentStatus == PageStatus.HasMore || contentStatus == PageStatus.LoadingMore) {
                     item {
@@ -133,7 +138,7 @@ fun BookmarksScreen(
                 state = pullRefreshState,
                 modifier = Modifier.align(Alignment.TopCenter),
                 backgroundColor = MaterialTheme.colorScheme.surfaceColorAtElevation(4.dp),
-                contentColor = MaterialTheme.colorScheme.contentColorFor(MaterialTheme.colorScheme.surface)
+                contentColor = MaterialTheme.colorScheme.contentColorFor(MaterialTheme.colorScheme.surface),
             )
             listState.OnEndReached {
                 onEndReached()
@@ -141,7 +146,6 @@ fun BookmarksScreen(
         }
     }
 }
-
 
 @Preview(showBackground = true, showSystemUi = true)
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
@@ -153,46 +157,53 @@ fun BookmarkScreenPreview() {
             title = "The Road to Success",
             description = "A step by step tutorial in how to navigate your way to the road to success!",
             url = "www.roadtosuccess.com",
-            urlHostName = "www.roadtosuccess.com"
-        ), BookmarkViewItem(
+            urlHostName = "www.roadtosuccess.com",
+        ),
+        BookmarkViewItem(
             id = 1,
             title = "From Darkness to Light",
             description = "Darkness is just the beginning.",
             url = "www.darkness2light.com",
-            urlHostName = "www.roadtosuccess.com"
-        ), BookmarkViewItem(
+            urlHostName = "www.roadtosuccess.com",
+        ),
+        BookmarkViewItem(
             id = 1,
             title = "The Power of Perseverance",
             url = "www.perseverancepower.com",
             description = "",
-            urlHostName = "www.roadtosuccess.com"
-        ), BookmarkViewItem(
+            urlHostName = "www.roadtosuccess.com",
+        ),
+        BookmarkViewItem(
             id = 1,
             title = "The Art of Courage",
             url = "www.courageart.com",
             description = "",
-            urlHostName = "www.roadtosuccess.com"
-        ), BookmarkViewItem(
+            urlHostName = "www.roadtosuccess.com",
+        ),
+        BookmarkViewItem(
             id = 1,
             title = "The Journey Within",
             url = "www.journeywithin.com",
             description = "",
-            urlHostName = "www.roadtosuccess.com"
-        ), BookmarkViewItem(
+            urlHostName = "www.roadtosuccess.com",
+        ),
+        BookmarkViewItem(
             id = 1,
             title = "Finding Your Way",
             url = "www.findingyourway.com",
             description = "",
-            urlHostName = "www.roadtosuccess.com"
-        )
+            urlHostName = "www.roadtosuccess.com",
+        ),
     )
     LinkdingTheme {
         Surface {
-            BookmarksScreen(viewState = BookmarksViewState.Initial,
+            BookmarksScreen(
+                viewState = BookmarksViewState.Initial,
                 onRefresh = {},
                 onEndReached = {},
                 onAddBookmark = {},
-                onQueryChanged = {})
+                onQueryChanged = {},
+            )
         }
     }
 }

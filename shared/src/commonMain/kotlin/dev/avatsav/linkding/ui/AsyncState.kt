@@ -22,7 +22,7 @@ data class Loading<out V : Any>(val value: V? = null) :
     AsyncState<V, Nothing>(complete = false, shouldLoad = false, value = value)
 
 abstract class Success<out V : Any>(
-    open val value: V
+    open val value: V,
 ) : AsyncState<V, Nothing>(complete = true, shouldLoad = false, value = value) {
 
     override operator fun invoke(): V = value
@@ -39,7 +39,7 @@ abstract class Success<out V : Any>(
 }
 
 data class Content<out V : Any>(
-    override val value: V
+    override val value: V,
 ) : Success<V>(value)
 
 data class PagedContent<out V : Any>(
@@ -107,7 +107,6 @@ fun <V : Any, E : Any> AsyncState<V, E>.get(): V? {
         returns(null) implies (this@get is Fail<E>)
         returns(null) implies (this@get is Loading)
         returns(null) implies (this@get is Uninitialized)
-
     }
     return when (this) {
         is Loading -> null
@@ -124,7 +123,6 @@ fun <V : Any, E : Any> AsyncState<V, E>.getError(): E? {
         returns(null) implies (this@getError is Success<V>)
         returns(null) implies (this@getError is Loading)
         returns(null) implies (this@getError is Uninitialized)
-
     }
     return when (this) {
         is Loading -> null

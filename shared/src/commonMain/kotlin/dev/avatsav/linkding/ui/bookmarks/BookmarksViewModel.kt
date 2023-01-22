@@ -1,7 +1,6 @@
 package dev.avatsav.linkding.ui.bookmarks
 
 import com.rickclephas.kmp.nativecoroutines.NativeCoroutinesState
-import dev.avatsav.linkding.ui.ViewModel
 import dev.avatsav.linkding.data.bookmarks.BookmarksRepository
 import dev.avatsav.linkding.domain.Bookmark
 import dev.avatsav.linkding.domain.BookmarkError
@@ -11,6 +10,7 @@ import dev.avatsav.linkding.paging.PagerConfig
 import dev.avatsav.linkding.paging.PagingError
 import dev.avatsav.linkding.ui.AsyncState
 import dev.avatsav.linkding.ui.Uninitialized
+import dev.avatsav.linkding.ui.ViewModel
 import io.ktor.http.Url
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -23,7 +23,7 @@ data class BookmarkViewItem(
     val description: String,
     val urlHostName: String,
     val url: String,
-    val tagNames: Set<String> = emptySet()
+    val tagNames: Set<String> = emptySet(),
 ) {
     companion object {
         fun fromBookmark(bookmark: Bookmark) = BookmarkViewItem(
@@ -32,13 +32,13 @@ data class BookmarkViewItem(
             description = bookmark.getDescriptionForUi(),
             url = bookmark.url,
             urlHostName = Url(bookmark.url).host,
-            tagNames = bookmark.tagNames
+            tagNames = bookmark.tagNames,
         )
     }
 }
 
 data class BookmarksViewState(
-    val bookmarksState: AsyncState<List<BookmarkViewItem>, PagingError>
+    val bookmarksState: AsyncState<List<BookmarkViewItem>, PagingError>,
 ) {
     companion object {
         val Initial = BookmarksViewState(Uninitialized)
@@ -48,7 +48,8 @@ data class BookmarksViewState(
 class BookmarksViewModel(private val bookmarksRepository: BookmarksRepository) : ViewModel() {
 
     private var bookmarksPager = Pager(
-        coroutineScope = viewModelScope, pagerConfig = PagerConfig(limit = 10)
+        coroutineScope = viewModelScope,
+        pagerConfig = PagerConfig(limit = 10),
     ) { offset, limit ->
         bookmarksRepository.get(offset, limit).fold(ifLeft = { error ->
             val message = when (error) {
@@ -78,7 +79,9 @@ class BookmarksViewModel(private val bookmarksRepository: BookmarksRepository) :
 
     @NativeCoroutinesState
     val state: StateFlow<BookmarksViewState> = pagedState.map { BookmarksViewState(it) }.stateIn(
-        viewModelScope, SharingStarted.WhileSubscribed(5_000), BookmarksViewState.Initial
+        viewModelScope,
+        SharingStarted.WhileSubscribed(5_000),
+        BookmarksViewState.Initial,
     )
 
     init {

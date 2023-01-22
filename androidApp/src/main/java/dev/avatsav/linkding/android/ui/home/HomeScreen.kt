@@ -24,7 +24,8 @@ fun HomeScreen(navigator: DestinationsNavigator) {
         onSetupSuccess = {
             navigator.popBackStack()
             navigator.navigate(BookmarksScreenDestination)
-        })
+        },
+    )
 }
 
 @Composable
@@ -33,29 +34,30 @@ private fun HomeScreen(
     onSetupSuccess: () -> Unit,
 ) {
     val state by viewModel.state.collectAsState()
-    HomeScreen(state = state,
+    HomeScreen(
+        state = state,
         onSetupSuccess = onSetupSuccess,
         onConfigurationSubmitted = { url, apiKey ->
             viewModel.setConfiguration(url, apiKey)
-        })
+        },
+    )
 }
 
 @Composable
 private fun HomeScreen(
     state: HomeViewState,
     onSetupSuccess: () -> Unit,
-    onConfigurationSubmitted: (String, String) -> Unit
+    onConfigurationSubmitted: (String, String) -> Unit,
 ) {
     state.configuration onLoading {
         SplashScreen()
     } onSuccess {
         onSetupSuccess()
-
     } onFail {
         SetupConfigurationScreen(
             state = state.saveConfigurationState,
             onSaveSuccess = onSetupSuccess,
-            onConfigurationSubmitted = onConfigurationSubmitted
+            onConfigurationSubmitted = onConfigurationSubmitted,
         )
     }
 }

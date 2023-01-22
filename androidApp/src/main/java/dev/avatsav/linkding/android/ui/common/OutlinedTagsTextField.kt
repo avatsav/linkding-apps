@@ -73,13 +73,12 @@ fun OutlinedTagsTextField(
                     interactionSource = interactionSource,
                     isError = false,
                     label = label,
-                    supportingText = supportingText
+                    supportingText = supportingText,
                 )
             },
         )
     }
 }
-
 
 @OptIn(
     ExperimentalComposeUiApi::class,
@@ -96,7 +95,6 @@ private fun OutlinedTagsTextField(
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     decorationBox: @Composable (innerTextField: @Composable () -> Unit) -> Unit = @Composable { innerTextField -> innerTextField() },
 ) {
-
     val textFieldFocusRequester = remember { FocusRequester() }
 
     decorationBox {
@@ -109,20 +107,24 @@ private fun OutlinedTagsTextField(
                             textFieldFocusRequester.requestFocus()
                         },
                     )
-                }, mainAxisSpacing = 4.dp, crossAxisAlignment = FlowCrossAxisAlignment.Center
+                },
+            mainAxisSpacing = 4.dp,
+            crossAxisAlignment = FlowCrossAxisAlignment.Center,
         ) {
-
             for (tag in tagsValue.tags) {
-                InputChip(selected = false,
+                InputChip(
+                    selected = false,
                     onClick = { /*TODO*/ },
                     label = { Text(tag.value) },
                     trailingIcon = {
                         IconButton(
                             modifier = Modifier.size(16.dp),
-                            onClick = { tagsValue.removeTag(tag) }) {
+                            onClick = { tagsValue.removeTag(tag) },
+                        ) {
                             Icon(imageVector = Icons.Default.Close, contentDescription = "")
                         }
-                    })
+                    },
+                )
             }
             BasicTextField(
                 value = textValue,
@@ -140,7 +142,8 @@ private fun OutlinedTagsTextField(
                 onValueChange = tagValueChange(
                     onTag = { tagText ->
                         tagsValue.addTag(Tag(tagText))
-                    }, onValueChange = onTextValueChange
+                    },
+                    onValueChange = onTextValueChange,
                 ),
                 textStyle = textStyle.copy(color = MaterialTheme.colorScheme.onSurface),
                 keyboardOptions = keyboardOptions.copy(imeAction = ImeAction.Done),
@@ -156,7 +159,6 @@ private fun OutlinedTagsTextField(
             )
         }
     }
-
 }
 
 @Stable
@@ -219,4 +221,3 @@ private fun String.hasNewLine(): Boolean {
 private fun String.hasSpace(): Boolean {
     return indexOf(' ') != -1
 }
-

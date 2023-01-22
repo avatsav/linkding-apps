@@ -43,7 +43,8 @@ fun SearchBar(
     tagsClicked: () -> Unit,
 ) {
     Column {
-        BasicTextField(value = "",
+        BasicTextField(
+            value = "",
             enabled = false,
             onValueChange = {},
             modifier = Modifier
@@ -51,26 +52,28 @@ fun SearchBar(
                 .height(48.dp)
                 .background(
                     color = MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp),
-                    shape = RoundedCornerShape(50)
+                    shape = RoundedCornerShape(50),
                 )
                 .fillMaxWidth(),
             singleLine = true,
             decorationBox = { innerTextField ->
                 Row(
-                    modifier = modifier, verticalAlignment = Alignment.CenterVertically
+                    modifier = modifier,
+                    verticalAlignment = Alignment.CenterVertically,
                 ) {
                     IconButton(onClick = { /*TODO*/ }) {
                         Icon(
                             imageVector = Icons.Default.Search,
                             tint = MaterialTheme.colorScheme.onSurface,
-                            contentDescription = "Search"
+                            contentDescription = "Search",
                         )
                     }
                     Box(Modifier.weight(1f)) {
                         Text(
-                            "Search for words or #tags", style = LocalTextStyle.current.copy(
+                            "Search for words or #tags",
+                            style = LocalTextStyle.current.copy(
                                 color = MaterialTheme.colorScheme.onSurface,
-                            )
+                            ),
                         )
                         innerTextField()
                     }
@@ -78,13 +81,14 @@ fun SearchBar(
                         Icon(
                             imageVector = Icons.Default.MoreVert,
                             tint = MaterialTheme.colorScheme.onSurface,
-                            contentDescription = "Menu"
+                            contentDescription = "Menu",
                         )
                     }
                 }
-            })
+            },
+        )
         LazyRow(
-            contentPadding = PaddingValues(start = 12.dp)
+            contentPadding = PaddingValues(start = 12.dp),
         ) {
             item(key = "tag") {
                 ElevatedAssistChip(
@@ -94,7 +98,7 @@ fun SearchBar(
                         Icon(
                             painter = painterResource(id = R.drawable.ic_arrow_drop_down_20),
                             contentDescription = "Tags",
-                            tint = MaterialTheme.colorScheme.onSurface
+                            tint = MaterialTheme.colorScheme.onSurface,
                         )
                     },
                     onClick = { tagsClicked() },
@@ -116,7 +120,6 @@ fun SearchBar(
             }
         }
     }
-
 }
 
 @Preview

@@ -8,5 +8,5 @@ import kotlinx.serialization.Serializable
 data class Tag(
     val id: Long,
     val name: String,
-    @SerialName("date_added") val dateAdded: Instant
+    @SerialName("date_added") val dateAdded: Instant,
 )

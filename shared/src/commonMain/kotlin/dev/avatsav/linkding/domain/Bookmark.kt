@@ -20,14 +20,22 @@ data class Bookmark(
     @SerialName("date_modified") val dateModified: Instant? = null,
 ) {
     fun getTitleForUi(): String {
-        return if (title.isNotBlank()) title
-        else if (websiteTitle.isNotBlank()) websiteTitle
-        else ""
+        return if (title.isNotBlank()) {
+            title
+        } else if (websiteTitle.isNotBlank()) {
+            websiteTitle
+        } else {
+            ""
+        }
     }
 
     fun getDescriptionForUi(): String {
-        return if (description.isNotBlank()) description
-        else if (websiteDescription.isNotBlank()) websiteDescription
-        else ""
+        return if (description.isNotBlank()) {
+            description
+        } else if (websiteDescription.isNotBlank()) {
+            websiteDescription
+        } else {
+            ""
+        }
     }
 }

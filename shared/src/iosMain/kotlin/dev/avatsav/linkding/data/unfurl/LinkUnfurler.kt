@@ -11,30 +11,33 @@ actual class LinkUnfurler(private val metadataProvider: LPMetadataProvider) {
         val nsUrl = NSURL(string = url)
         return suspendCoroutine { continuation ->
             try {
-                metadataProvider.startFetchingMetadataForURL(nsUrl,
+                metadataProvider.startFetchingMetadataForURL(
+                    nsUrl,
                     completionHandler = { lpLinkMetadata, nsError ->
                         if (lpLinkMetadata != null) {
                             continuation.resume(
                                 UnfurlResult.Data(
-                                    url, lpLinkMetadata.title, lpLinkMetadata.description
-                                )
+                                    url,
+                                    lpLinkMetadata.title,
+                                    lpLinkMetadata.description,
+                                ),
                             )
                         } else if (nsError != null) {
                             continuation.resume(
                                 UnfurlResult.Error(
-                                    nsError.description ?: "Error getting link metadata"
-                                )
+                                    nsError.description ?: "Error getting link metadata",
+                                ),
                             )
                         }
-                    })
+                    },
+                )
             } catch (e: Throwable) {
                 continuation.resume(
                     UnfurlResult.Error(
-                        e.message ?: "Error getting link metadata"
-                    )
+                        e.message ?: "Error getting link metadata",
+                    ),
                 )
             }
         }
-
     }
 }
