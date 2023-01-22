@@ -1,4 +1,4 @@
-package dev.avatsav.linkding.android.ui.screens.home
+package dev.avatsav.linkding.android.ui.home
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.animation.AnimatedVisibility
@@ -30,15 +30,15 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import dev.avatsav.linkding.android.ui.theme.LinkdingTheme
+import dev.avatsav.linkding.android.theme.LinkdingTheme
 import dev.avatsav.linkding.domain.Configuration
 import dev.avatsav.linkding.ui.AsyncState
 import dev.avatsav.linkding.ui.Loading
 import dev.avatsav.linkding.ui.Uninitialized
 import dev.avatsav.linkding.ui.getError
+import dev.avatsav.linkding.ui.home.SaveConfigurationError
 import dev.avatsav.linkding.ui.onLoading
 import dev.avatsav.linkding.ui.onSuccess
-import dev.avatsav.linkding.ui.home.SaveConfigurationError
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

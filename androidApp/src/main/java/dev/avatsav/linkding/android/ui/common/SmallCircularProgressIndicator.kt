@@ -1,4 +1,4 @@
-package dev.avatsav.linkding.android.ui.components
+package dev.avatsav.linkding.android.ui.common
 
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.CircularProgressIndicator

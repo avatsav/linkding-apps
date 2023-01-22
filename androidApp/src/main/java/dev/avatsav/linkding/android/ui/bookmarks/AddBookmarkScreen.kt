@@ -1,4 +1,4 @@
-package dev.avatsav.linkding.android.ui.screens.add
+package dev.avatsav.linkding.android.ui.bookmarks
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.layout.Arrangement
@@ -38,22 +38,22 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
-import dev.avatsav.linkding.android.ui.components.OutlinedPlaceholderTextField
-import dev.avatsav.linkding.android.ui.components.OutlinedTagsTextField
-import dev.avatsav.linkding.android.ui.components.SmallCircularProgressIndicator
-import dev.avatsav.linkding.android.ui.components.TagsTextFieldValue
-import dev.avatsav.linkding.android.ui.extensions.composableOnSuccess
-import dev.avatsav.linkding.android.ui.theme.LinkdingTheme
+import dev.avatsav.linkding.android.extensions.composableOnSuccess
+import dev.avatsav.linkding.android.theme.LinkdingTheme
+import dev.avatsav.linkding.android.ui.common.OutlinedPlaceholderTextField
+import dev.avatsav.linkding.android.ui.common.OutlinedTagsTextField
+import dev.avatsav.linkding.android.ui.common.SmallCircularProgressIndicator
+import dev.avatsav.linkding.android.ui.common.TagsTextFieldValue
 import dev.avatsav.linkding.domain.Bookmark
 import dev.avatsav.linkding.ui.AsyncState
 import dev.avatsav.linkding.ui.Content
 import dev.avatsav.linkding.ui.Fail
-import dev.avatsav.linkding.ui.onFail
-import dev.avatsav.linkding.ui.onLoading
-import dev.avatsav.linkding.ui.onSuccess
 import dev.avatsav.linkding.ui.bookmarks.AddBookmarkViewModel
 import dev.avatsav.linkding.ui.bookmarks.AddBookmarkViewState.*
 import dev.avatsav.linkding.ui.bookmarks.UnfurlData
+import dev.avatsav.linkding.ui.onFail
+import dev.avatsav.linkding.ui.onLoading
+import dev.avatsav.linkding.ui.onSuccess
 import org.koin.androidx.compose.koinViewModel
 
 @Composable

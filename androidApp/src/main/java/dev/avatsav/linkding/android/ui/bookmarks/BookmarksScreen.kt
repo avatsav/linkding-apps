@@ -1,4 +1,4 @@
-package dev.avatsav.linkding.android.ui.screens.bookmarks
+package dev.avatsav.linkding.android.ui.bookmarks
 
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.Box
@@ -31,15 +31,15 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
-import dev.avatsav.linkding.android.ui.extensions.OnEndReached
-import dev.avatsav.linkding.android.ui.screens.destinations.AddBookmarkScreenDestination
-import dev.avatsav.linkding.android.ui.theme.LinkdingTheme
+import dev.avatsav.linkding.android.extensions.OnEndReached
+import dev.avatsav.linkding.android.theme.LinkdingTheme
+import dev.avatsav.linkding.android.ui.destinations.AddBookmarkScreenDestination
 import dev.avatsav.linkding.ui.Loading
 import dev.avatsav.linkding.ui.PageStatus
-import dev.avatsav.linkding.ui.onPagedContent
 import dev.avatsav.linkding.ui.bookmarks.BookmarkViewItem
 import dev.avatsav.linkding.ui.bookmarks.BookmarksViewModel
 import dev.avatsav.linkding.ui.bookmarks.BookmarksViewState
+import dev.avatsav.linkding.ui.onPagedContent
 import org.koin.androidx.compose.koinViewModel
 
 @Composable

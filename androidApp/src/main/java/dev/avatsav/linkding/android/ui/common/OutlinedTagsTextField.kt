@@ -1,4 +1,4 @@
-package dev.avatsav.linkding.android.ui.components
+package dev.avatsav.linkding.android.ui.common
 
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -43,7 +43,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.flowlayout.FlowCrossAxisAlignment
 import com.google.accompanist.flowlayout.FlowRow
-import dev.avatsav.linkding.android.ui.extensions.onCondition
+import dev.avatsav.linkding.android.extensions.onCondition
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

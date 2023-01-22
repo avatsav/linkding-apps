@@ -1,4 +1,4 @@
-package dev.avatsav.linkding.android.ui.screens.bookmarks
+package dev.avatsav.linkding.android.ui.bookmarks
 
 import android.content.res.Configuration
 import androidx.compose.foundation.background
@@ -32,7 +32,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.avatsav.linkding.android.R
-import dev.avatsav.linkding.android.ui.theme.LinkdingTheme
+import dev.avatsav.linkding.android.theme.LinkdingTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

@@ -1,4 +1,4 @@
-package dev.avatsav.linkding.android.ui.components
+package dev.avatsav.linkding.android.ui.common
 
 import android.content.res.Configuration
 import androidx.compose.animation.AnimatedVisibility
@@ -33,8 +33,8 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import dev.avatsav.linkding.android.ui.extensions.onCondition
-import dev.avatsav.linkding.android.ui.theme.LinkdingTheme
+import dev.avatsav.linkding.android.extensions.onCondition
+import dev.avatsav.linkding.android.theme.LinkdingTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

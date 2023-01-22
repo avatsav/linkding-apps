@@ -1,4 +1,4 @@
-package dev.avatsav.linkding.android.ui.extensions
+package dev.avatsav.linkding.android.extensions
 
 import androidx.compose.runtime.Composable
 import dev.avatsav.linkding.ui.AsyncState

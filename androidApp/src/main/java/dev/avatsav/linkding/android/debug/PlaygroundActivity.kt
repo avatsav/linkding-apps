@@ -19,11 +19,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import dev.avatsav.linkding.android.ui.components.OutlinedPlaceholderTextField
-import dev.avatsav.linkding.android.ui.components.OutlinedTagsTextField
-import dev.avatsav.linkding.android.ui.components.Tag
-import dev.avatsav.linkding.android.ui.components.TagsTextFieldValue
-import dev.avatsav.linkding.android.ui.theme.LinkdingTheme
+import dev.avatsav.linkding.android.ui.common.OutlinedPlaceholderTextField
+import dev.avatsav.linkding.android.ui.common.OutlinedTagsTextField
+import dev.avatsav.linkding.android.ui.common.Tag
+import dev.avatsav.linkding.android.ui.common.TagsTextFieldValue
+import dev.avatsav.linkding.android.theme.LinkdingTheme
 
 class PlaygroundActivity : ComponentActivity() {
 

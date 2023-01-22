@@ -1,4 +1,4 @@
-package dev.avatsav.linkding.android.ui.screens.add
+package dev.avatsav.linkding.android.ui.bookmarks
 
 import android.content.Intent
 import android.os.Bundle
@@ -9,7 +9,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import dev.avatsav.linkding.android.ui.theme.LinkdingTheme
+import dev.avatsav.linkding.android.theme.LinkdingTheme
 
 class AddBookmarkActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

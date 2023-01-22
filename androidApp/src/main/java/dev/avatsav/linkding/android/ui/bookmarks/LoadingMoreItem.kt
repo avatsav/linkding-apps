@@ -1,4 +1,4 @@
-package dev.avatsav.linkding.android.ui.screens.bookmarks
+package dev.avatsav.linkding.android.ui.bookmarks
 
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.Box
@@ -11,8 +11,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import dev.avatsav.linkding.android.ui.components.SmallCircularProgressIndicator
-import dev.avatsav.linkding.android.ui.theme.LinkdingTheme
+import dev.avatsav.linkding.android.ui.common.SmallCircularProgressIndicator
+import dev.avatsav.linkding.android.theme.LinkdingTheme
 
 @Composable
 fun LoadingMoreItem(

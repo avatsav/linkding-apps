@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalMaterial3Api::class)
 
-package dev.avatsav.linkding.android.ui.screens.bookmarks
+package dev.avatsav.linkding.android.ui.bookmarks
 
 import android.content.res.Configuration
 import androidx.compose.foundation.clickable
@@ -25,7 +25,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.avatsav.linkding.android.R
-import dev.avatsav.linkding.android.ui.theme.LinkdingTheme
+import dev.avatsav.linkding.android.theme.LinkdingTheme
 import dev.avatsav.linkding.ui.bookmarks.BookmarkViewItem
 
 
