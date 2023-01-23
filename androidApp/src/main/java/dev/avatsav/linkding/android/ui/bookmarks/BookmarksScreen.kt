@@ -36,6 +36,7 @@ import dev.avatsav.linkding.android.theme.LinkdingTheme
 import dev.avatsav.linkding.android.ui.destinations.AddBookmarkScreenDestination
 import dev.avatsav.linkding.ui.Loading
 import dev.avatsav.linkding.ui.PageStatus
+import dev.avatsav.linkding.ui.Success
 import dev.avatsav.linkding.ui.bookmarks.BookmarkViewItem
 import dev.avatsav.linkding.ui.bookmarks.BookmarksViewModel
 import dev.avatsav.linkding.ui.bookmarks.BookmarksViewState
@@ -46,23 +47,28 @@ import org.koin.androidx.compose.koinViewModel
 @Destination
 fun BookmarksScreen(navigator: DestinationsNavigator) {
     val viewModel: BookmarksViewModel = koinViewModel()
-    BookmarksScreen(viewModel = viewModel, onAddBookmark = {
-        navigator.navigate(AddBookmarkScreenDestination(sharedUrl = null))
-    })
+    BookmarksScreen(
+        viewModel = viewModel,
+        addBookmark = { navigator.navigate(AddBookmarkScreenDestination(null)) },
+        openBookmark = { /** Open chrome custom tab **/ },
+    )
 }
 
 @Composable
 fun BookmarksScreen(
     viewModel: BookmarksViewModel,
-    onAddBookmark: () -> Unit,
+    addBookmark: () -> Unit,
+    openBookmark: (BookmarkViewItem) -> Unit,
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     BookmarksScreen(
         viewState = state,
-        onRefresh = { viewModel.load() },
-        onEndReached = { viewModel.loadMore() },
-        onAddBookmark = onAddBookmark,
-        onQueryChanged = { },
+        refresh = { viewModel.load() },
+        loadMore = { viewModel.loadMore() },
+        addBookmark = addBookmark,
+        openBookmark = openBookmark,
+        toggleArchive = { viewModel.toggleArchive(it) },
+        toggleUnread = { viewModel.toggleUnread(it) },
     )
 }
 
@@ -74,10 +80,12 @@ fun BookmarksScreen(
 fun BookmarksScreen(
     modifier: Modifier = Modifier,
     viewState: BookmarksViewState,
-    onRefresh: () -> Unit,
-    onEndReached: () -> Unit,
-    onAddBookmark: () -> Unit,
-    onQueryChanged: (String) -> Unit,
+    refresh: () -> Unit,
+    loadMore: () -> Unit,
+    addBookmark: () -> Unit,
+    openBookmark: (BookmarkViewItem) -> Unit,
+    toggleArchive: (Long) -> Unit,
+    toggleUnread: (Long) -> Unit,
 ) {
     val bookmarksState = viewState.bookmarksState
     var contentStatus = PageStatus.HasMore
@@ -88,7 +96,7 @@ fun BookmarksScreen(
     }
 
     val listState = rememberLazyListState()
-    val pullRefreshState = rememberPullRefreshState(bookmarksState is Loading, onRefresh)
+    val pullRefreshState = rememberPullRefreshState(bookmarksState is Loading, refresh)
 
     Scaffold(
         modifier = modifier,
@@ -100,7 +108,7 @@ fun BookmarksScreen(
             )
         },
         floatingActionButton = {
-            FloatingActionButton(onClick = onAddBookmark) {
+            FloatingActionButton(onClick = addBookmark) {
                 Icon(
                     imageVector = Icons.Filled.Add,
                     contentDescription = "Add Bookmark",
@@ -115,16 +123,16 @@ fun BookmarksScreen(
                 .fillMaxSize(),
         ) {
             LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize(),
+                modifier = Modifier.fillMaxSize(),
                 state = listState,
                 contentPadding = PaddingValues(bottom = 88.dp), // 56dp(FAB) + 32(Top+Bottom Padding)
             ) {
                 items(items = bookmarkItems, key = { it.id }) { bookmark ->
-                    BookmarkItem(
+                    BookmarkListItem(
                         bookmark = bookmark,
-                        onClicked = {},
-                        onTagClicked = {},
+                        openBookmark = openBookmark,
+                        toggleArchive = toggleArchive,
+                        toggleUnread = toggleUnread,
                     )
                 }
                 if (contentStatus == PageStatus.HasMore || contentStatus == PageStatus.LoadingMore) {
@@ -141,7 +149,7 @@ fun BookmarksScreen(
                 contentColor = MaterialTheme.colorScheme.contentColorFor(MaterialTheme.colorScheme.surface),
             )
             listState.OnEndReached {
-                onEndReached()
+                loadMore()
             }
         }
     }
@@ -173,36 +181,22 @@ fun BookmarkScreenPreview() {
             description = "",
             urlHostName = "www.roadtosuccess.com",
         ),
-        BookmarkViewItem(
-            id = 1,
-            title = "The Art of Courage",
-            url = "www.courageart.com",
-            description = "",
-            urlHostName = "www.roadtosuccess.com",
-        ),
-        BookmarkViewItem(
-            id = 1,
-            title = "The Journey Within",
-            url = "www.journeywithin.com",
-            description = "",
-            urlHostName = "www.roadtosuccess.com",
-        ),
-        BookmarkViewItem(
-            id = 1,
-            title = "Finding Your Way",
-            url = "www.findingyourway.com",
-            description = "",
-            urlHostName = "www.roadtosuccess.com",
-        ),
     )
     LinkdingTheme {
         Surface {
             BookmarksScreen(
-                viewState = BookmarksViewState.Initial,
-                onRefresh = {},
-                onEndReached = {},
-                onAddBookmark = {},
-                onQueryChanged = {},
+                viewState = BookmarksViewState(
+                    Success.pagedContent(
+                        sampleBookmarkList,
+                        PageStatus.HasMore,
+                    ),
+                ),
+                refresh = {},
+                loadMore = {},
+                addBookmark = {},
+                openBookmark = {},
+                toggleArchive = {},
+                toggleUnread = {},
             )
         }
     }
