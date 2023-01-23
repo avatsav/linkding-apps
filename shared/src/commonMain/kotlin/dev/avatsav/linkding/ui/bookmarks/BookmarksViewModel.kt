@@ -51,17 +51,20 @@ class BookmarksViewModel(private val bookmarksRepository: BookmarksRepository) :
         coroutineScope = viewModelScope,
         pagerConfig = PagerConfig(limit = 10),
     ) { offset, limit ->
-        bookmarksRepository.get(offset, limit).fold(ifLeft = { error ->
-            val message = when (error) {
-                is BookmarkError.CouldNotGetBookmark -> error.message
-                BookmarkError.ConfigurationNotSetup -> "Config not setup"
-            }
-            Page.Error(PagingError(message))
-        }, ifRight = { bookmarksList ->
-            val bookmarkItems = bookmarksList.results.map { BookmarkViewItem.fromBookmark(it) }
-            val nextOffset = getNextOffset(bookmarksList.next)
-            Page.Data(bookmarkItems, nextOffset)
-        })
+        bookmarksRepository.get(offset, limit).fold(
+            ifLeft = { error ->
+                val message = when (error) {
+                    is BookmarkError.CouldNotGetBookmark -> error.message
+                    BookmarkError.ConfigurationNotSetup -> "Config not setup"
+                }
+                Page.Error(PagingError(message))
+            },
+            ifRight = { bookmarksList ->
+                val bookmarkItems = bookmarksList.results.map { BookmarkViewItem.fromBookmark(it) }
+                val nextOffset = getNextOffset(bookmarksList.next)
+                Page.Data(bookmarkItems, nextOffset)
+            },
+        )
     }
 
     private inline fun getNextOffset(nextUrl: String?): Int? {
@@ -94,5 +97,11 @@ class BookmarksViewModel(private val bookmarksRepository: BookmarksRepository) :
 
     fun loadMore() {
         bookmarksPager.loadMore()
+    }
+
+    fun toggleArchive(bookmarkId: Long) {
+    }
+
+    fun toggleUnread(bookmarkId: Long) {
     }
 }
