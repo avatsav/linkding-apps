@@ -26,6 +26,7 @@ data class BookmarkViewItem(
     val description: String,
     val urlHostName: String,
     val url: String,
+    val archived: Boolean,
     val tagNames: Set<String> = emptySet(),
 ) {
     companion object {
@@ -35,6 +36,7 @@ data class BookmarkViewItem(
             description = bookmark.getDescriptionForUi(),
             url = bookmark.url,
             urlHostName = Url(bookmark.url).host,
+            archived = bookmark.isArchived,
             tagNames = bookmark.tagNames,
         )
     }
