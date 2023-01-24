@@ -18,6 +18,7 @@ local.properties
 .idea/jarRepositories.xml
 .idea/deploymentTargetDropDown.xml
 .idea/androidTestResultsUserPreferences.xml
+.idea/assetWizardSettings.xml
 gradle.xml
 *.iml
 

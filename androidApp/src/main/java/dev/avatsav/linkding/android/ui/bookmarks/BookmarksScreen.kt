@@ -172,6 +172,7 @@ fun BookmarkScreenPreview() {
             description = "A step by step tutorial in how to navigate your way to the road to success!",
             url = "www.roadtosuccess.com",
             urlHostName = "www.roadtosuccess.com",
+            archived = false,
         ),
         BookmarkViewItem(
             id = 1,
@@ -179,6 +180,7 @@ fun BookmarkScreenPreview() {
             description = "Darkness is just the beginning.",
             url = "www.darkness2light.com",
             urlHostName = "www.roadtosuccess.com",
+            archived = false,
         ),
         BookmarkViewItem(
             id = 1,
@@ -186,6 +188,7 @@ fun BookmarkScreenPreview() {
             url = "www.perseverancepower.com",
             description = "",
             urlHostName = "www.roadtosuccess.com",
+            archived = false,
         ),
     )
     LinkdingTheme {
