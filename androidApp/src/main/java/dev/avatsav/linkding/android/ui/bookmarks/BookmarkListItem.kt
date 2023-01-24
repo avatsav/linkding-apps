@@ -51,6 +51,7 @@ fun BookmarkListItem(
     Column(modifier = Modifier.fillMaxWidth()) {
         SwipeableListItem(
             modifier = modifier,
+            background = MaterialTheme.colorScheme.primaryContainer,
             startAction = SwipeAction(
                 onSwipe = { toggleUnread(bookmark.id) },
                 background = MaterialTheme.colorScheme.primary,
@@ -106,7 +107,7 @@ private fun BoxScope.BookmarkSwipeActionContent(
     )
     Column(
         modifier = Modifier
-            .padding(horizontal = 16.dp)
+            .padding(horizontal =20.dp)
             .align(Alignment.Center),
         verticalArrangement = Arrangement.spacedBy(4.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
