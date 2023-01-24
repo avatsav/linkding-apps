@@ -50,7 +50,7 @@ fun SwipeableListItem(
     modifier: Modifier = Modifier,
     startAction: SwipeAction,
     endAction: SwipeAction,
-    threshold: Dp = 64.dp,
+    threshold: Dp = 96.dp,
     background: Color = Color.Transparent,
     content: @Composable (dismissState: DismissState) -> Unit,
 ) {
@@ -107,7 +107,7 @@ fun SwipeableListItem(
                         .circularReveal(
                             progress = revealSize.asState(),
                             centerOffset = Offset(
-                                x = if (dismissDirection == DismissDirection.StartToEnd) 0f else 1f,
+                                x = if (dismissDirection == DismissDirection.StartToEnd) 0.1f else 0.9f,
                                 y = 0.5f,
                             ),
                         )
