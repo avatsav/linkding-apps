@@ -15,9 +15,11 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.ElevatedAssistChip
-import androidx.compose.material3.ElevatedFilterChip
+import androidx.compose.material3.AssistChip
+import androidx.compose.material3.AssistChipDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilterChip
+import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalTextStyle
@@ -33,14 +35,17 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.avatsav.linkding.android.R
 import dev.avatsav.linkding.android.theme.LinkdingTheme
+import dev.avatsav.linkding.ui.bookmarks.SearchState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchBar(
     modifier: Modifier = Modifier,
+    searchState: SearchState,
     searchClicked: () -> Unit,
     menuClicked: () -> Unit,
     tagsClicked: () -> Unit,
+    archivedFilter: (Boolean) -> Unit,
 ) {
     Column {
         BasicTextField(
@@ -90,8 +95,8 @@ fun SearchBar(
         LazyRow(
             contentPadding = PaddingValues(start = 12.dp),
         ) {
-            item(key = "tag") {
-                ElevatedAssistChip(
+            item(key = "tags") {
+                AssistChip(
                     modifier = Modifier.padding(start = 4.dp),
                     label = { Text("Tags") },
                     trailingIcon = {
@@ -102,20 +107,19 @@ fun SearchBar(
                         )
                     },
                     onClick = { tagsClicked() },
+                    border = AssistChipDefaults.assistChipBorder(borderWidth = 0.5.dp),
                 )
             }
-            item(key = "filter-group") {
-                ElevatedFilterChip(
-                    modifier = Modifier.padding(start = 4.dp),
-                    label = { Text("Unread") },
-                    onClick = { /*TODO*/ },
-                    selected = false,
-                )
-                ElevatedFilterChip(
-                    modifier = Modifier.padding(start = 4.dp),
+            item(key = "archiveFilter") {
+                FilterChip(
+                    modifier = Modifier.padding(start = 8.dp),
                     label = { Text("Archived") },
-                    onClick = { /*TODO*/ },
-                    selected = false,
+                    selected = searchState.archivedFilterSelected,
+                    onClick = {
+                        val newValue = !searchState.archivedFilterSelected
+                        archivedFilter(newValue)
+                    },
+                    border = FilterChipDefaults.filterChipBorder(borderWidth = 0.5.dp),
                 )
             }
         }
@@ -128,7 +132,16 @@ fun SearchBar(
 fun SearchBar_Preview() {
     LinkdingTheme {
         Surface {
-            SearchBar(searchClicked = {}, menuClicked = {}, tagsClicked = {})
+            SearchBar(
+                searchState = SearchState(
+                    query = "Staff",
+                    archivedFilterSelected = false,
+                ),
+                searchClicked = {},
+                menuClicked = {},
+                tagsClicked = {},
+                archivedFilter = {},
+            )
         }
     }
 }

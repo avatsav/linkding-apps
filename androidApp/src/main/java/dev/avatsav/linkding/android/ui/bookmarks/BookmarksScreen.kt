@@ -40,6 +40,7 @@ import dev.avatsav.linkding.ui.Success
 import dev.avatsav.linkding.ui.bookmarks.BookmarkViewItem
 import dev.avatsav.linkding.ui.bookmarks.BookmarksViewModel
 import dev.avatsav.linkding.ui.bookmarks.BookmarksViewState
+import dev.avatsav.linkding.ui.bookmarks.SearchState
 import dev.avatsav.linkding.ui.onPagedContent
 import org.koin.androidx.compose.koinViewModel
 
@@ -69,6 +70,7 @@ fun BookmarksScreen(
         openBookmark = openBookmark,
         toggleArchive = { viewModel.toggleArchive(it) },
         toggleUnread = { viewModel.toggleUnread(it) },
+        archivedFilter = { viewModel.setArchivedFilter(it) },
     )
 }
 
@@ -86,10 +88,12 @@ fun BookmarksScreen(
     openBookmark: (BookmarkViewItem) -> Unit,
     toggleArchive: (Long) -> Unit,
     toggleUnread: (Long) -> Unit,
+    archivedFilter: (Boolean) -> Unit,
 ) {
     val bookmarksState = viewState.bookmarksState
     var contentStatus = PageStatus.HasMore
     var bookmarkItems = emptyList<BookmarkViewItem>()
+
     bookmarksState onPagedContent { pagedContent ->
         contentStatus = pagedContent.status
         bookmarkItems = pagedContent.value
@@ -102,9 +106,11 @@ fun BookmarksScreen(
         modifier = modifier,
         topBar = {
             SearchBar(
+                searchState = viewState.searchState,
                 searchClicked = { /*TODO*/ },
                 menuClicked = { /*TODO*/ },
                 tagsClicked = { /*TODO*/ },
+                archivedFilter = archivedFilter,
             )
         },
         floatingActionButton = {
@@ -186,6 +192,7 @@ fun BookmarkScreenPreview() {
         Surface {
             BookmarksScreen(
                 viewState = BookmarksViewState(
+                    SearchState("Keycloak", archivedFilterSelected = false),
                     Success.pagedContent(
                         sampleBookmarkList,
                         PageStatus.HasMore,
@@ -197,6 +204,7 @@ fun BookmarkScreenPreview() {
                 openBookmark = {},
                 toggleArchive = {},
                 toggleUnread = {},
+                archivedFilter = {},
             )
         }
     }
