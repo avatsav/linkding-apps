@@ -68,7 +68,7 @@ class LinkdingBookmarksRepository(
                 credentials.apiKey,
                 bookmarkId,
             )
-        }.mapLeft { return@get BookmarkError.ConfigurationNotSetup.left() }
+        }.mapLeft { return BookmarkError.ConfigurationNotSetup.left() }
     }
 
     override suspend fun testConnection(configuration: Configuration): Either<TestConnectionError, Configuration> {
@@ -92,7 +92,7 @@ class LinkdingBookmarksRepository(
                 configuration.apiKey,
                 saveBookmark,
             )
-        }.mapLeft { return@save BookmarkSaveError.ConfigurationNotSetup.left() }
+        }.mapLeft { return BookmarkSaveError.ConfigurationNotSetup.left() }
     }
 
     override suspend fun update(
@@ -103,14 +103,32 @@ class LinkdingBookmarksRepository(
     }
 
     override suspend fun archive(bookmarkId: Long): Either<BookmarkError, Unit> {
-        TODO("Not yet implemented")
+        return configurationStore.get().toEither().map { credentials ->
+            return bookmarksDataSource.archive(
+                credentials.url,
+                credentials.apiKey,
+                bookmarkId,
+            )
+        }.mapLeft { return BookmarkError.ConfigurationNotSetup.left() }
     }
 
     override suspend fun unarchive(bookmarkId: Long): Either<BookmarkError, Unit> {
-        TODO("Not yet implemented")
+        return configurationStore.get().toEither().map { credentials ->
+            return bookmarksDataSource.unarchive(
+                credentials.url,
+                credentials.apiKey,
+                bookmarkId,
+            )
+        }.mapLeft { return BookmarkError.ConfigurationNotSetup.left() }
     }
 
     override suspend fun delete(bookmarkId: Long): Either<BookmarkError, Unit> {
-        TODO("Not yet implemented")
+        return configurationStore.get().toEither().map { credentials ->
+            return bookmarksDataSource.delete(
+                credentials.url,
+                credentials.apiKey,
+                bookmarkId,
+            )
+        }.mapLeft { return BookmarkError.ConfigurationNotSetup.left() }
     }
 }

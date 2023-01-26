@@ -12,6 +12,7 @@ import dev.avatsav.linkding.paging.PagingError
 import dev.avatsav.linkding.ui.AsyncState
 import dev.avatsav.linkding.ui.Uninitialized
 import dev.avatsav.linkding.ui.ViewModel
+import io.github.aakira.napier.Napier
 import io.ktor.http.Url
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -84,9 +85,11 @@ class BookmarksViewModel(private val bookmarksRepository: BookmarksRepository) :
         )
     }
 
+    private val bookmarksState = bookmarksPager.stateFlow
+
     @NativeCoroutinesState
     val state: StateFlow<BookmarksViewState> =
-        combine(bookmarksPager.stateFlow, searchState) { bookmarksState, searchState ->
+        combine(bookmarksState, searchState) { bookmarksState, searchState ->
             BookmarksViewState(searchState, bookmarksState)
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), BookmarksViewState.Initial)
 
@@ -109,12 +112,64 @@ class BookmarksViewModel(private val bookmarksRepository: BookmarksRepository) :
         }
     }
 
-    fun toggleArchive(bookmarkId: Long) {
-
+    fun toggleArchive(bookmark: BookmarkViewItem) {
+        viewModelScope.launch {
+            if (bookmark.archived) {
+                unarchiveBookmark(bookmark)
+            } else {
+                archiveBookmark(bookmark)
+            }
+        }
     }
 
-    fun toggleUnread(bookmarkId: Long) {
+    private suspend fun archiveBookmark(bookmark: BookmarkViewItem) {
+        bookmarksRepository.archive(bookmark.id).fold(
+            ifLeft = { error ->
+                Napier.e {
+                    when (error) {
+                        BookmarkError.ConfigurationNotSetup -> "Config.error"
+                        is BookmarkError.CouldNotGetBookmark -> error.message
+                    }
+                }
+            },
+            ifRight = {
+                bookmarksPager.remove(bookmark)
+            },
+        )
+    }
 
+    private suspend fun unarchiveBookmark(bookmark: BookmarkViewItem) {
+        bookmarksRepository.unarchive(bookmark.id).fold(
+            ifLeft = { error ->
+                Napier.e {
+                    when (error) {
+                        BookmarkError.ConfigurationNotSetup -> "Config.error"
+                        is BookmarkError.CouldNotGetBookmark -> error.message
+                    }
+                }
+            },
+            ifRight = {
+                bookmarksPager.remove(bookmark)
+            },
+        )
+    }
+
+    fun deleteBookmark(bookmark: BookmarkViewItem) {
+        viewModelScope.launch {
+            bookmarksRepository.delete(bookmark.id).fold(
+                ifLeft = { error ->
+                    Napier.e {
+                        when (error) {
+                            BookmarkError.ConfigurationNotSetup -> "Config.error"
+                            is BookmarkError.CouldNotGetBookmark -> error.message
+                        }
+                    }
+                },
+                ifRight = {
+                    bookmarksPager.remove(bookmark)
+                },
+            )
+        }
     }
 
     private inline fun getNextOffset(nextUrl: String?): Int? {

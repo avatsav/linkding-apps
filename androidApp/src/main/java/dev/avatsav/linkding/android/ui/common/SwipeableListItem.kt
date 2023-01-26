@@ -40,7 +40,7 @@ import kotlinx.coroutines.launch
 data class SwipeAction(
     val onSwipe: () -> Unit,
     val background: Color,
-    val canDismiss: Boolean = false,
+    val canDismiss: Boolean,
     val content: @Composable BoxScope.(dismissing: Boolean) -> Unit,
 )
 
@@ -55,8 +55,20 @@ fun SwipeableListItem(
     content: @Composable (dismissState: DismissState) -> Unit,
 ) {
     val dismissState = rememberDismissState(
-        confirmValueChange = { false },
-        positionalThreshold = { threshold.toPx() },
+        confirmValueChange = { dismissValue ->
+            when (dismissValue) {
+                DismissValue.Default -> false
+                DismissValue.DismissedToEnd -> {
+                    startAction.onSwipe()
+                    startAction.canDismiss
+                }
+                DismissValue.DismissedToStart -> {
+                    endAction.onSwipe()
+                    endAction.canDismiss
+                }
+            }
+        },
+        positionalThreshold = { totalDistance -> 0.35f * totalDistance },
     )
     var dismissing: Boolean by remember { mutableStateOf(false) }
     LaunchedEffect(

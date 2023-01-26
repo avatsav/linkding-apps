@@ -11,6 +11,7 @@ import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
 import kotlin.coroutines.cancellation.CancellationException
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -30,6 +31,7 @@ internal interface Pager<V : Any> {
     val stateFlow: StateFlow<AsyncState<List<V>, PagingError>>
     fun loadFirst()
     fun loadMore()
+    fun remove(item: V)
     fun cancel()
 }
 
@@ -109,16 +111,25 @@ private class DefaultPager<V : Any>(
         }
     }
 
+    override fun remove(item: V) {
+        coroutineScope.launch(Dispatchers.Default) {
+            val currentState = state.value
+            if (currentState is PagedContent && currentState.status != PageStatus.LoadingMore) {
+                val newList = currentState.value.filterNot { it == item }
+                state.emit(PagedContent(newList, currentState.status))
+            }
+        }
+    }
+
     override fun cancel() {
         loadingJob?.cancel()
     }
 
-    private inline fun hasMoreOrComplete(nextPageIndex: Int?) =
-        if (nextPageIndex == null) {
-            PageStatus.Complete
-        } else {
-            PageStatus.HasMore
-        }
+    private inline fun hasMoreOrComplete(nextPageIndex: Int?) = if (nextPageIndex == null) {
+        PageStatus.Complete
+    } else {
+        PageStatus.HasMore
+    }
 
     @OptIn(ExperimentalContracts::class)
     private inline fun <V : Any> canLoadMore(
@@ -134,4 +145,5 @@ private class DefaultPager<V : Any>(
             else -> return
         }
     }
+
 }
