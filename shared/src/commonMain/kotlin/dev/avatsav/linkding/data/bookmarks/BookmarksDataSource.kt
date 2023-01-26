@@ -44,6 +44,25 @@ interface BookmarksDataSource {
         token: String,
         saveBookmark: SaveBookmark,
     ): Either<BookmarkSaveError, Bookmark>
+
+    suspend fun archive(
+        baseUrl: String,
+        token: String,
+        id: Long,
+    ): Either<BookmarkError, Unit>
+
+    suspend fun unarchive(
+        baseUrl: String,
+        token: String,
+        id: Long,
+    ): Either<BookmarkError, Unit>
+
+    suspend fun delete(
+        baseUrl: String,
+        token: String,
+        id: Long,
+    ): Either<BookmarkError, Unit>
+
 }
 
 internal class LinkdingBookmarksDataSource(private val httpClient: HttpClient) :
@@ -146,6 +165,87 @@ internal class LinkdingBookmarksDataSource(private val httpClient: HttpClient) :
                 val errorMessage =
                     apiResponse.body?.detail ?: apiResponse.message ?: "No error message"
                 BookmarkSaveError.CouldNotSaveBookmark(errorMessage).left()
+            }
+        }
+    }
+
+    override suspend fun archive(
+        baseUrl: String,
+        token: String,
+        id: Long,
+    ): Either<BookmarkError, Unit> {
+        val apiResponse = httpClient.requestApiResponse<Unit, LinkdingErrorResponse> {
+            method = HttpMethod.Post
+            headers {
+                append(HttpHeaders.Authorization, "Token $token")
+            }
+            url {
+                val url = Url(baseUrl)
+                protocol = url.protocol
+                host = url.host
+                encodedPath = "/api/bookmarks/$id/archive/"
+            }
+        }
+        return when (apiResponse) {
+            is ApiResponse.Success -> return apiResponse.body.right()
+            is ApiResponse.Error -> {
+                val errorMessage =
+                    apiResponse.body?.detail ?: apiResponse.message ?: "No error message"
+                BookmarkError.CouldNotGetBookmark(errorMessage).left()
+            }
+        }
+    }
+
+    override suspend fun unarchive(
+        baseUrl: String,
+        token: String,
+        id: Long,
+    ): Either<BookmarkError, Unit> {
+        val apiResponse = httpClient.requestApiResponse<Unit, LinkdingErrorResponse> {
+            method = HttpMethod.Post
+            headers {
+                append(HttpHeaders.Authorization, "Token $token")
+            }
+            url {
+                val url = Url(baseUrl)
+                protocol = url.protocol
+                host = url.host
+                encodedPath = "/api/bookmarks/$id/unarchive/"
+            }
+        }
+        return when (apiResponse) {
+            is ApiResponse.Success -> return apiResponse.body.right()
+            is ApiResponse.Error -> {
+                val errorMessage =
+                    apiResponse.body?.detail ?: apiResponse.message ?: "No error message"
+                BookmarkError.CouldNotGetBookmark(errorMessage).left()
+            }
+        }
+    }
+
+    override suspend fun delete(
+        baseUrl: String,
+        token: String,
+        id: Long,
+    ): Either<BookmarkError, Unit> {
+        val apiResponse = httpClient.requestApiResponse<Unit, LinkdingErrorResponse> {
+            method = HttpMethod.Delete
+            headers {
+                append(HttpHeaders.Authorization, "Token $token")
+            }
+            url {
+                val url = Url(baseUrl)
+                protocol = url.protocol
+                host = url.host
+                encodedPath = "/api/bookmarks/$id/"
+            }
+        }
+        return when (apiResponse) {
+            is ApiResponse.Success -> return apiResponse.body.right()
+            is ApiResponse.Error -> {
+                val errorMessage =
+                    apiResponse.body?.detail ?: apiResponse.message ?: "No error message"
+                BookmarkError.CouldNotGetBookmark(errorMessage).left()
             }
         }
     }

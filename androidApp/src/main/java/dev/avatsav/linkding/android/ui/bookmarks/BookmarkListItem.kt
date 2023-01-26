@@ -45,17 +45,17 @@ fun BookmarkListItem(
     modifier: Modifier = Modifier,
     bookmark: BookmarkViewItem,
     openBookmark: (BookmarkViewItem) -> Unit,
-    toggleArchive: (Long) -> Unit,
-    toggleUnread: (Long) -> Unit,
+    toggleArchive: (BookmarkViewItem) -> Unit,
+    deleteBookmark: (BookmarkViewItem) -> Unit,
 ) {
-    Column(modifier = Modifier.fillMaxWidth()) {
+    Column(modifier = modifier) {
         SwipeableListItem(
-            modifier = modifier,
+            modifier = Modifier,
             background = MaterialTheme.colorScheme.primaryContainer,
             startAction = SwipeAction(
-                onSwipe = { toggleUnread(bookmark.id) },
+                onSwipe = { deleteBookmark(bookmark) },
                 background = MaterialTheme.colorScheme.primary,
-                canDismiss = false,
+                canDismiss = true,
                 content = { dismissing ->
                     BookmarkSwipeActionContent(
                         painter = painterResource(R.drawable.delete_24),
@@ -65,9 +65,9 @@ fun BookmarkListItem(
                 },
             ),
             endAction = SwipeAction(
-                onSwipe = { toggleArchive(bookmark.id) },
+                onSwipe = { toggleArchive(bookmark) },
                 background = MaterialTheme.colorScheme.primary,
-                canDismiss = false,
+                canDismiss = true,
                 content = { dismissing ->
                     BookmarkSwipeActionContent(
                         painter = painterResource(
@@ -107,7 +107,7 @@ private fun BoxScope.BookmarkSwipeActionContent(
     )
     Column(
         modifier = Modifier
-            .padding(horizontal =20.dp)
+            .padding(horizontal = 20.dp)
             .align(Alignment.Center),
         verticalArrangement = Arrangement.spacedBy(4.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -202,7 +202,7 @@ fun BookmarkItem_Preview() {
                 ),
                 openBookmark = {},
                 toggleArchive = {},
-                toggleUnread = {},
+                deleteBookmark = {},
             )
         }
     }

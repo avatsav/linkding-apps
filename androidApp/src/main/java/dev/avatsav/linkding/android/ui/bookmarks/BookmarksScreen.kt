@@ -1,6 +1,7 @@
 package dev.avatsav.linkding.android.ui.bookmarks
 
 import android.content.res.Configuration
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -69,14 +70,14 @@ fun BookmarksScreen(
         addBookmark = addBookmark,
         openBookmark = openBookmark,
         toggleArchive = { viewModel.toggleArchive(it) },
-        toggleUnread = { viewModel.toggleUnread(it) },
+        deleteBookmark = { viewModel.deleteBookmark(it) },
         archivedFilter = { viewModel.setArchivedFilter(it) },
     )
 }
 
 @OptIn(
     ExperimentalMaterial3Api::class,
-    ExperimentalMaterialApi::class,
+    ExperimentalMaterialApi::class, ExperimentalFoundationApi::class,
 )
 @Composable
 fun BookmarksScreen(
@@ -86,8 +87,8 @@ fun BookmarksScreen(
     loadMore: () -> Unit,
     addBookmark: () -> Unit,
     openBookmark: (BookmarkViewItem) -> Unit,
-    toggleArchive: (Long) -> Unit,
-    toggleUnread: (Long) -> Unit,
+    toggleArchive: (BookmarkViewItem) -> Unit,
+    deleteBookmark: (BookmarkViewItem) -> Unit,
     archivedFilter: (Boolean) -> Unit,
 ) {
     val bookmarksState = viewState.bookmarksState
@@ -135,10 +136,11 @@ fun BookmarksScreen(
             ) {
                 items(items = bookmarkItems, key = { it.id }) { bookmark ->
                     BookmarkListItem(
+                        modifier = Modifier.animateItemPlacement(),
                         bookmark = bookmark,
                         openBookmark = openBookmark,
                         toggleArchive = toggleArchive,
-                        toggleUnread = toggleUnread,
+                        deleteBookmark = deleteBookmark,
                     )
                 }
                 if (contentStatus == PageStatus.HasMore || contentStatus == PageStatus.LoadingMore) {
@@ -206,7 +208,7 @@ fun BookmarkScreenPreview() {
                 addBookmark = {},
                 openBookmark = {},
                 toggleArchive = {},
-                toggleUnread = {},
+                deleteBookmark = {},
                 archivedFilter = {},
             )
         }
