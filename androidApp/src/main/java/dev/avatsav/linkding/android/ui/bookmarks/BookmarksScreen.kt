@@ -25,6 +25,8 @@ import androidx.compose.material3.contentColorFor
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -102,6 +104,23 @@ fun BookmarksScreen(
 
     val listState = rememberLazyListState()
     val pullRefreshState = rememberPullRefreshState(bookmarksState is Loading, refresh)
+
+    val showDeleteBookmarkDialog = remember { mutableStateOf<BookmarkViewItem?>(null) }
+
+    val bookmarkToDelete = showDeleteBookmarkDialog.value
+    if (bookmarkToDelete != null) {
+        DeleteBookmarkDialog(
+            bookmark = bookmarkToDelete,
+            onDismissRequest = {
+                // TODO: Reset dismissState of the item
+                showDeleteBookmarkDialog.value = null
+            },
+            onConfirm = {
+                showDeleteBookmarkDialog.value = null
+                deleteBookmark(bookmarkToDelete)
+            },
+        )
+    }
 
     Scaffold(
         modifier = modifier,
