@@ -15,6 +15,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
+import androidx.compose.material3.DismissState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -24,9 +25,11 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.contentColorFor
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -45,6 +48,7 @@ import dev.avatsav.linkding.ui.bookmarks.BookmarksViewModel
 import dev.avatsav.linkding.ui.bookmarks.BookmarksViewState
 import dev.avatsav.linkding.ui.bookmarks.SearchState
 import dev.avatsav.linkding.ui.onPagedContent
+import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -58,6 +62,7 @@ fun BookmarksScreen(navigator: DestinationsNavigator) {
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BookmarksScreen(
     viewModel: BookmarksViewModel,
@@ -65,13 +70,16 @@ fun BookmarksScreen(
     openBookmark: (BookmarkViewItem) -> Unit,
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+
     BookmarksScreen(
         viewState = state,
         refresh = { viewModel.load() },
         loadMore = { viewModel.loadMore() },
         addBookmark = addBookmark,
         openBookmark = openBookmark,
-        toggleArchive = { viewModel.toggleArchive(it) },
+        toggleArchive = { bookmark, dismissState ->
+            viewModel.toggleArchive(bookmark)
+        },
         deleteBookmark = { viewModel.deleteBookmark(it) },
         archivedFilter = { viewModel.setArchivedFilter(it) },
     )
@@ -89,7 +97,7 @@ fun BookmarksScreen(
     loadMore: () -> Unit,
     addBookmark: () -> Unit,
     openBookmark: (BookmarkViewItem) -> Unit,
-    toggleArchive: (BookmarkViewItem) -> Unit,
+    toggleArchive: (BookmarkViewItem, DismissState) -> Unit,
     deleteBookmark: (BookmarkViewItem) -> Unit,
     archivedFilter: (Boolean) -> Unit,
 ) {
@@ -102,22 +110,24 @@ fun BookmarksScreen(
         bookmarkItems = pagedContent.value
     }
 
+    val coroutineScope = rememberCoroutineScope()
     val listState = rememberLazyListState()
     val pullRefreshState = rememberPullRefreshState(bookmarksState is Loading, refresh)
 
-    val showDeleteBookmarkDialog = remember { mutableStateOf<BookmarkViewItem?>(null) }
+    val bookmarkDeleteState = remember { mutableStateOf<BookmarkDeleteState?>(null) }
 
-    val bookmarkToDelete = showDeleteBookmarkDialog.value
-    if (bookmarkToDelete != null) {
+    bookmarkDeleteState.value?.let { deleteState ->
         DeleteBookmarkDialog(
-            bookmark = bookmarkToDelete,
+            bookmark = deleteState.bookmark,
             onDismissRequest = {
-                // TODO: Reset dismissState of the item
-                showDeleteBookmarkDialog.value = null
+                coroutineScope.launch {
+                    deleteState.dismissState.reset()
+                }
+                bookmarkDeleteState.value = null
             },
             onConfirm = {
-                showDeleteBookmarkDialog.value = null
-                deleteBookmark(bookmarkToDelete)
+                bookmarkDeleteState.value = null
+                deleteBookmark(deleteState.bookmark)
             },
         )
     }
@@ -153,13 +163,17 @@ fun BookmarksScreen(
                 state = listState,
                 contentPadding = PaddingValues(bottom = 88.dp), // 56dp(FAB) + 32(Top+Bottom Padding)
             ) {
-                items(items = bookmarkItems, key = { it.id }) { bookmark ->
+                items(items = bookmarkItems, key = { it.id }) { bookmarkItem ->
                     BookmarkListItem(
                         modifier = Modifier.animateItemPlacement(),
-                        bookmark = bookmark,
+                        bookmark = bookmarkItem,
                         openBookmark = openBookmark,
-                        toggleArchive = toggleArchive,
-                        deleteBookmark = { showDeleteBookmarkDialog.value = it },
+                        toggleArchive = { bookmark, dismissState ->
+                            toggleArchive(bookmark, dismissState)
+                        },
+                        deleteBookmark = { bookmark, dismissState ->
+                            bookmarkDeleteState.value = BookmarkDeleteState(bookmark, dismissState)
+                        },
                     )
                 }
                 if (contentStatus == PageStatus.HasMore || contentStatus == PageStatus.LoadingMore) {
@@ -182,6 +196,7 @@ fun BookmarksScreen(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Preview(showBackground = true, showSystemUi = true)
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
@@ -226,10 +241,17 @@ fun BookmarkScreenPreview() {
                 loadMore = {},
                 addBookmark = {},
                 openBookmark = {},
-                toggleArchive = {},
+                toggleArchive = { _, _ -> },
                 deleteBookmark = {},
                 archivedFilter = {},
             )
         }
     }
 }
+
+@Stable
+@OptIn(ExperimentalMaterial3Api::class)
+data class BookmarkDeleteState(
+    val bookmark: BookmarkViewItem,
+    val dismissState: DismissState,
+)
