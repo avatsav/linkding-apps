@@ -159,7 +159,7 @@ fun BookmarksScreen(
                         bookmark = bookmark,
                         openBookmark = openBookmark,
                         toggleArchive = toggleArchive,
-                        deleteBookmark = deleteBookmark,
+                        deleteBookmark = { showDeleteBookmarkDialog.value = it },
                     )
                 }
                 if (contentStatus == PageStatus.HasMore || contentStatus == PageStatus.LoadingMore) {
