@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.DismissState
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -45,15 +46,17 @@ fun BookmarkListItem(
     modifier: Modifier = Modifier,
     bookmark: BookmarkViewItem,
     openBookmark: (BookmarkViewItem) -> Unit,
-    toggleArchive: (BookmarkViewItem) -> Unit,
-    deleteBookmark: (BookmarkViewItem) -> Unit,
+    toggleArchive: (BookmarkViewItem, DismissState) -> Unit,
+    deleteBookmark: (BookmarkViewItem, DismissState) -> Unit,
 ) {
+    var dismissState: DismissState? = null
+
     Column(modifier = modifier) {
         SwipeableListItem(
             modifier = Modifier,
             background = MaterialTheme.colorScheme.primaryContainer,
             startAction = SwipeAction(
-                onSwipe = { deleteBookmark(bookmark) },
+                onSwipe = { dismissState?.let { deleteBookmark(bookmark, it) } },
                 background = MaterialTheme.colorScheme.primary,
                 canDismiss = true,
                 content = { dismissing ->
@@ -65,7 +68,7 @@ fun BookmarkListItem(
                 },
             ),
             endAction = SwipeAction(
-                onSwipe = { toggleArchive(bookmark) },
+                onSwipe = { dismissState?.let { toggleArchive(bookmark, it) } },
                 background = MaterialTheme.colorScheme.primary,
                 canDismiss = true,
                 content = { dismissing ->
@@ -80,6 +83,7 @@ fun BookmarkListItem(
                 },
             ),
         ) {
+            dismissState = it
             BookmarkContent(
                 modifier = Modifier.clickable { openBookmark(bookmark) },
                 bookmark = bookmark,
@@ -184,6 +188,7 @@ private fun BookmarkContent(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Preview(showBackground = true)
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
@@ -201,8 +206,8 @@ fun BookmarkItem_Preview() {
                     tagNames = setOf("java", "null checks", "kotlin", "blogpost"),
                 ),
                 openBookmark = {},
-                toggleArchive = {},
-                deleteBookmark = {},
+                toggleArchive = { _, _ -> },
+                deleteBookmark = { _, _ -> },
             )
         }
     }
