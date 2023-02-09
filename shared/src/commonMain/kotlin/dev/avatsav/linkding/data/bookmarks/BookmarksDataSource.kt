@@ -62,7 +62,6 @@ interface BookmarksDataSource {
         token: String,
         id: Long,
     ): Either<BookmarkError, Unit>
-
 }
 
 internal class LinkdingBookmarksDataSource(private val httpClient: HttpClient) :

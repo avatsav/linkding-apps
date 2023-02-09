@@ -87,7 +87,8 @@ fun BookmarksScreen(
 
 @OptIn(
     ExperimentalMaterial3Api::class,
-    ExperimentalMaterialApi::class, ExperimentalFoundationApi::class,
+    ExperimentalMaterialApi::class,
+    ExperimentalFoundationApi::class,
 )
 @Composable
 fun BookmarksScreen(

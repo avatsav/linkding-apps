@@ -74,8 +74,11 @@ fun BookmarkListItem(
                 content = { dismissing ->
                     BookmarkSwipeActionContent(
                         painter = painterResource(
-                            if (bookmark.archived) R.drawable.unarchive_24
-                            else R.drawable.archive_24,
+                            if (bookmark.archived) {
+                                R.drawable.unarchive_24
+                            } else {
+                                R.drawable.archive_24
+                            },
                         ),
                         text = if (bookmark.archived) "Unarchive" else "Archive",
                         dismissing = dismissing,
@@ -212,7 +215,6 @@ fun BookmarkItem_Preview() {
         }
     }
 }
-
 
 @Preview(showBackground = true)
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
