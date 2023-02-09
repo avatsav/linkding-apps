@@ -32,6 +32,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -40,6 +41,7 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import dev.avatsav.linkding.android.extensions.OnEndReached
 import dev.avatsav.linkding.android.theme.LinkdingTheme
 import dev.avatsav.linkding.android.ui.destinations.AddBookmarkScreenDestination
+import dev.avatsav.linkding.android.ui.launchUrl
 import dev.avatsav.linkding.ui.Loading
 import dev.avatsav.linkding.ui.PageStatus
 import dev.avatsav.linkding.ui.Success
@@ -55,10 +57,11 @@ import org.koin.androidx.compose.koinViewModel
 @Destination
 fun BookmarksScreen(navigator: DestinationsNavigator) {
     val viewModel: BookmarksViewModel = koinViewModel()
+    val context = LocalContext.current
     BookmarksScreen(
         viewModel = viewModel,
         addBookmark = { navigator.navigate(AddBookmarkScreenDestination(null)) },
-        openBookmark = { /** Open chrome custom tab **/ },
+        openBookmark = { launchUrl(context, it.url) },
     )
 }
 
