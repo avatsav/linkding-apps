@@ -3,5 +3,5 @@ target 'iosApp' do
   pod 'shared', :path => '../shared'
   pod 'KMPNativeCoroutinesAsync', '1.0.0-ALPHA-5'
   pod 'KMPNativeCoroutinesCombine', '1.0.0-ALPHA-5'
-  pod 'Factory', '1.3.6'
+  pod 'Factory', '1.3.7'
 end
