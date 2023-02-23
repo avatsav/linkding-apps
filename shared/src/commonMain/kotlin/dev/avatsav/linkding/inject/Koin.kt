@@ -5,6 +5,10 @@ import dev.avatsav.linkding.data.bookmarks.BookmarksRepository
 import dev.avatsav.linkding.data.bookmarks.LinkdingBookmarksDataSource
 import dev.avatsav.linkding.data.bookmarks.LinkdingBookmarksRepository
 import dev.avatsav.linkding.data.configuration.ConfigurationStore
+import dev.avatsav.linkding.data.tags.LinkdingTagsDataSource
+import dev.avatsav.linkding.data.tags.LinkdingTagsRepository
+import dev.avatsav.linkding.data.tags.TagsDataSource
+import dev.avatsav.linkding.data.tags.TagsRepository
 import io.github.aakira.napier.DebugAntilog
 import io.github.aakira.napier.Napier
 import org.koin.core.context.startKoin
@@ -19,9 +23,14 @@ fun initKoin(enableNetworkLogs: Boolean, appDeclaration: KoinAppDeclaration = {}
     modules(sharedModule(enableNetworkLogs))
 }
 
+private val dataSourceModules = module {
+    single<BookmarksDataSource> { LinkdingBookmarksDataSource(get()) }
+    single<TagsDataSource> { LinkdingTagsDataSource(get()) }
+}
+
 private val repositoryModule = module {
     single<BookmarksRepository> { LinkdingBookmarksRepository(get(), get()) }
-    single<BookmarksDataSource> { LinkdingBookmarksDataSource(get()) }
+    single<TagsRepository> { LinkdingTagsRepository(get(), get()) }
 }
 
 private fun networkModule(enableNetworkLogs: Boolean) = module {
@@ -40,6 +49,7 @@ fun sharedModule(enableNetworkLogs: Boolean) = listOf(
     networkModule(enableNetworkLogs),
     platformModule(),
     storageModule,
+    dataSourceModules,
     repositoryModule,
     viewModelsModule(),
 )

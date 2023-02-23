@@ -1,22 +1,44 @@
 package dev.avatsav.linkding.data.tags
 
 import arrow.core.Either
-import dev.avatsav.linkding.domain.BookmarkError
+import arrow.core.left
+import dev.avatsav.linkding.data.configuration.ConfigurationStore
 import dev.avatsav.linkding.domain.Tag
 import dev.avatsav.linkding.domain.TagError
 import dev.avatsav.linkding.domain.TagList
 
-interface TagService {
-    suspend fun get(limit: Int = 50, offset: Int): Either<BookmarkError, TagList>
+interface TagsRepository {
+
+    suspend fun get(
+        offset: Int = 0,
+        limit: Int = 50,
+        query: String = "",
+    ): Either<TagError, TagList>
 
     suspend fun save(tag: Tag): Either<TagError, Tag>
 
     suspend fun get(tagId: Long): Either<TagError, Tag>
 }
 
-class LinkdingTagService : TagService {
-    override suspend fun get(limit: Int, offset: Int): Either<BookmarkError, TagList> {
-        TODO("Not yet implemented")
+class LinkdingTagsRepository(
+    private val tagsDataSource: TagsDataSource,
+    private val configurationStore: ConfigurationStore,
+) : TagsRepository {
+
+    override suspend fun get(
+        offset: Int,
+        limit: Int,
+        query: String,
+    ): Either<TagError, TagList> {
+        return configurationStore.get().toEither().map { credentials ->
+            return tagsDataSource.fetch(
+                credentials.url,
+                credentials.apiKey,
+                offset,
+                limit,
+                query,
+            )
+        }.mapLeft { return@get TagError.ConfigurationNotSetup.left() }
     }
 
     override suspend fun get(tagId: Long): Either<TagError, Tag> {
