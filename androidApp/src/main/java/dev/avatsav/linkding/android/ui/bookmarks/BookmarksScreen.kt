@@ -1,5 +1,6 @@
 package dev.avatsav.linkding.android.ui.bookmarks
 
+import TagsBottomSheet
 import android.content.res.Configuration
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Box
@@ -30,6 +31,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -117,7 +120,7 @@ fun BookmarksScreen(
     val coroutineScope = rememberCoroutineScope()
     val listState = rememberLazyListState()
     val pullRefreshState = rememberPullRefreshState(bookmarksState is Loading, refresh)
-
+    var showTagsBottomSheet by rememberSaveable { mutableStateOf(false) }
     val bookmarkDeleteState = remember { mutableStateOf<BookmarkDeleteState?>(null) }
 
     bookmarkDeleteState.value?.let { deleteState ->
@@ -143,7 +146,7 @@ fun BookmarksScreen(
                 searchState = viewState.searchState,
                 searchClicked = { /*TODO*/ },
                 menuClicked = { /*TODO*/ },
-                tagsClicked = { /*TODO*/ },
+                tagsClicked = { showTagsBottomSheet = true },
                 archivedFilter = archivedFilter,
             )
         },
@@ -197,6 +200,9 @@ fun BookmarksScreen(
                 loadMore()
             }
         }
+    }
+    if (showTagsBottomSheet) {
+        TagsBottomSheet(onDismissRequest = { showTagsBottomSheet = false })
     }
 }
 
