@@ -25,6 +25,19 @@ kotlin {
         }
     }
 
+    // See https://youtrack.jetbrains.com/issue/KT-55751
+    val uniqueAttribute = Attribute.of("uniqueAttribute", String::class.java)
+    configurations.named("podReleaseFrameworkIosFat").configure {
+        attributes {
+            attribute(uniqueAttribute, "release")
+        }
+    }
+    configurations.named("podDebugFrameworkIosFat").configure {
+        attributes {
+            attribute(uniqueAttribute, "debug")
+        }
+    }
+
     sourceSets {
         all {
             languageSettings.optIn("com.russhwolf.settings.ExperimentalSettingsApi")
