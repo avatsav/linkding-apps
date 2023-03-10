@@ -1,5 +1,5 @@
 PODS:
-  - Factory (1.3.7)
+  - Factory (2.0.2)
   - KMPNativeCoroutinesAsync (1.0.0-ALPHA-5):
     - KMPNativeCoroutinesCore (= 1.0.0-ALPHA-5)
   - KMPNativeCoroutinesCombine (1.0.0-ALPHA-5):
@@ -8,7 +8,7 @@ PODS:
   - shared (1.0)
 
 DEPENDENCIES:
-  - Factory (= 1.3.7)
+  - Factory (= 2.0.2)
   - KMPNativeCoroutinesAsync (= 1.0.0-ALPHA-5)
   - KMPNativeCoroutinesCombine (= 1.0.0-ALPHA-5)
   - shared (from `../shared`)
@@ -25,12 +25,12 @@ EXTERNAL SOURCES:
     :path: "../shared"
 
 SPEC CHECKSUMS:
-  Factory: 66a2f463af85017d321cc6e43d768d1a522a2518
+  Factory: dd4e2a6f1163e7a6705b8d9b9f1805ba6c459a7c
   KMPNativeCoroutinesAsync: 68068b8f4d5841cf136d52b618f981b5c273ef27
   KMPNativeCoroutinesCombine: 64ad489a46585ef25f7b4d81d27fdb96e669847b
   KMPNativeCoroutinesCore: ac553bc11d77f385cdf78f32d56501a3d5d3eef8
   shared: 9b957afbd926773fa106f9e4d7314c864b0e9179
 
-PODFILE CHECKSUM: 3920b42ca20c9116713ad3af6f3d53ed00b3c7d7
+PODFILE CHECKSUM: 755f621d8af3f4af8b81046acd342d33e9c6b772
 
 COCOAPODS: 1.11.3
