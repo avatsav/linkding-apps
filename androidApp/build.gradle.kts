@@ -24,7 +24,11 @@ android {
         kotlinCompilerExtensionVersion = libs.versions.compose.compiler.get()
     }
     packagingOptions {
-        resources.excludes += "/META-INF/{AL2.0,LGPL2.1}"
+        resources {
+            excludes += "/META-INF/{AL2.0,LGPL2.1}"
+            // See https://github.com/Kotlin/kotlinx.coroutines/issues/3668
+            excludes += "META-INF/versions/9/previous-compilation-data.bin"
+        }
     }
     buildTypes {
         getByName("release") {

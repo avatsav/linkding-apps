@@ -18,6 +18,7 @@ import dev.avatsav.linkding.ui.Loading
 import dev.avatsav.linkding.ui.Uninitialized
 import dev.avatsav.linkding.ui.ViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -55,7 +56,7 @@ open class HomeViewModel(
         viewModelScope.launch {
             saveConfigurationFlow.emit(Loading())
             ValidateInput(bookmarksRepository).invoke(url.trimEnd('/'), apiKey).map { configuration ->
-                withContext(Dispatchers.Default) {
+                withContext(Dispatchers.IO) {
                     configurationStore.set(configuration)
                 }
                 saveConfigurationFlow.emit(Content(configuration))
