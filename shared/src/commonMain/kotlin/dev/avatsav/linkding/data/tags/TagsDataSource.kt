@@ -26,7 +26,6 @@ interface TagsDataSource {
         limit: Int,
         query: String,
     ): Either<TagError, TagList>
-
 }
 
 internal class LinkdingTagsDataSource(private val httpClient: HttpClient) : TagsDataSource {
@@ -66,7 +65,4 @@ internal class LinkdingTagsDataSource(private val httpClient: HttpClient) : Tags
             }
         }
     }
-
 }
-
-
