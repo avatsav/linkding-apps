@@ -19,7 +19,7 @@ ktor = "2.2.4"
 kmpNativeCoroutines = "1.0.0-ALPHA-5"
 androidxDatastore = "1.0.0"
 datetime = "0.4.0"
-accompanist = "0.30.0"
+accompanist = "0.30.1"
 compose-destinations = "1.8.36-beta"
 
 compileSdk = "33"
