@@ -2,7 +2,7 @@
 agp = "8.0.0"
 kotlin = "1.8.20"
 coroutines = "1.7.0-Beta"
-ksp = "1.8.20-1.0.10"
+ksp = "1.8.20-1.0.11"
 spotless = "6.18.0"
 ktlint = "0.48.1"
 compose = "1.4.1"
