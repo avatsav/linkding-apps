@@ -12,6 +12,7 @@ import dev.avatsav.linkding.paging.PagingError
 import dev.avatsav.linkding.ui.AsyncState
 import dev.avatsav.linkding.ui.Uninitialized
 import dev.avatsav.linkding.ui.ViewModel
+import dev.avatsav.linkding.ui.bookmarks.BookmarksViewState.Companion.Initial
 import io.github.aakira.napier.Napier
 import io.ktor.http.Url
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -63,7 +64,7 @@ class BookmarksViewModel(private val bookmarksRepository: BookmarksRepository) :
 
     private var bookmarksPager = Pager(
         coroutineScope = viewModelScope,
-        pagerConfig = PagerConfig(limit = 10),
+        pagerConfig = PagerConfig(limit = 30),
     ) { offset, limit ->
         val searchState = searchState.value
         val bookmarkFilter =
@@ -91,7 +92,7 @@ class BookmarksViewModel(private val bookmarksRepository: BookmarksRepository) :
     val state: StateFlow<BookmarksViewState> =
         combine(bookmarksState, searchState) { bookmarksState, searchState ->
             BookmarksViewState(searchState, bookmarksState)
-        }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), BookmarksViewState.Initial)
+        }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), Initial)
 
     init {
         load()
@@ -172,7 +173,7 @@ class BookmarksViewModel(private val bookmarksRepository: BookmarksRepository) :
         }
     }
 
-    private inline fun getNextOffset(nextUrl: String?): Int? {
+    private fun getNextOffset(nextUrl: String?): Int? {
         if (nextUrl == null) return null
         return try {
             val url = Url(nextUrl)

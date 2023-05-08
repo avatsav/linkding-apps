@@ -82,7 +82,6 @@ private val DarkColorScheme = darkColorScheme(
 @Composable
 fun LinkdingTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    // Dynamic color is available on Android 12+
     dynamicColor: Boolean = true,
     content: @Composable () -> Unit,
 ) {
@@ -98,11 +97,13 @@ fun LinkdingTheme(
     val view = LocalView.current
     if (!view.isInEditMode) {
         SideEffect {
-            (view.context as Activity).window.statusBarColor = colorScheme.surface.toArgb()
-            WindowCompat.getInsetsController(
-                (view.context as Activity).window,
-                view,
-            ).isAppearanceLightStatusBars = !darkTheme
+            val window = (view.context as Activity).window ?: return@SideEffect
+            window.statusBarColor = colorScheme.surface.toArgb()
+            window.navigationBarColor = colorScheme.surface.toArgb()
+
+            val windowInsertsController = WindowCompat.getInsetsController(window, view)
+            windowInsertsController.isAppearanceLightStatusBars = !darkTheme
+            windowInsertsController.isAppearanceLightNavigationBars = !darkTheme
         }
     }
 
