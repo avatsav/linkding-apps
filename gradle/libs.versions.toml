@@ -45,7 +45,7 @@ kmpNativeCoroutines = { id = "com.rickclephas.kmp.nativecoroutines", version.ref
 androidx-activity-compose = "androidx.activity:activity-compose:1.7.1"
 androidx-navigation-compose = "androidx.navigation:navigation-compose:2.5.3"
 androidx-archCoreTesting = "androidx.arch.core:core-testing:2.2.0"
-androidx-core = "androidx.core:core-ktx:1.10.0"
+androidx-core = "androidx.core:core-ktx:1.10.1"
 
 androidx-lifecycle-runtime-ktx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "androidxlifecycle" }
 androidx-lifecycle-runtime-compose = { module = "androidx.lifecycle:lifecycle-runtime-compose", version.ref = "androidxlifecycle" }
