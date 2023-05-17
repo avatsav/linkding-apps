@@ -1,6 +1,5 @@
 package dev.avatsav.linkding.ui.bookmarks
 
-import com.rickclephas.kmp.nativecoroutines.NativeCoroutinesState
 import dev.avatsav.linkding.data.bookmarks.BookmarksRepository
 import dev.avatsav.linkding.data.unfurl.LinkUnfurler
 import dev.avatsav.linkding.data.unfurl.UnfurlResult
@@ -59,7 +58,6 @@ class AddBookmarkViewModel(
     private val saveStateFlow =
         MutableStateFlow<AsyncState<Bookmark, AddBookmarkViewState.SaveError>>(Uninitialized)
 
-    @NativeCoroutinesState
     val state: StateFlow<AddBookmarkViewState> =
         combine(unfurlStateFlow, saveStateFlow) { unfurlState, saveState ->
             val state = AddBookmarkViewState(unfurlState, saveState)

@@ -5,7 +5,6 @@ import arrow.core.Validated
 import arrow.core.continuations.either
 import arrow.core.invalid
 import arrow.core.valid
-import com.rickclephas.kmp.nativecoroutines.NativeCoroutinesState
 import dev.avatsav.linkding.data.bookmarks.BookmarksRepository
 import dev.avatsav.linkding.data.configuration.ConfigurationNotSetup
 import dev.avatsav.linkding.data.configuration.ConfigurationStore
@@ -44,7 +43,6 @@ open class HomeViewModel(
     private val saveConfigurationFlow =
         MutableStateFlow<AsyncState<Configuration, SaveConfigurationError>>(Uninitialized)
 
-    @NativeCoroutinesState
     val state = combine(
         setupStateFlow,
         saveConfigurationFlow,

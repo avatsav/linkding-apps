@@ -1,6 +1,5 @@
 package dev.avatsav.linkding.ui.bookmarks
 
-import com.rickclephas.kmp.nativecoroutines.NativeCoroutinesState
 import dev.avatsav.linkding.data.tags.TagsRepository
 import dev.avatsav.linkding.domain.Tag
 import dev.avatsav.linkding.domain.TagError
@@ -53,7 +52,6 @@ class TagsViewModel(private val tagsRepository: TagsRepository) : ViewModel() {
 
     private val tagsState = tagsPager.stateFlow
 
-    @NativeCoroutinesState
     val state: StateFlow<TagsViewState> =
         combine(tagsState, searchQueryState) { bookmarksState, searchState ->
             TagsViewState(searchState, bookmarksState)

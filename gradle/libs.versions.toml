@@ -16,7 +16,6 @@ koinAndroid = "3.4.0"
 koinCompose = "3.4.4"
 arrow = "1.1.5"
 ktor = "2.3.0"
-kmpNativeCoroutines = "1.0.0-ALPHA-9"
 androidxDatastore = "1.0.0"
 datetime = "0.4.0"
 accompanist = "0.30.1"
@@ -39,7 +38,6 @@ kotlin-native-cocoapods = { id = "org.jetbrains.kotlin.native.cocoapods", versio
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "dagger" }
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
-kmpNativeCoroutines = { id = "com.rickclephas.kmp.nativecoroutines", version.ref = "kmpNativeCoroutines" }
 
 [libraries]
 androidx-activity-compose = "androidx.activity:activity-compose:1.7.1"

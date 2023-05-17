@@ -1,6 +1,5 @@
 package dev.avatsav.linkding.ui.bookmarks
 
-import com.rickclephas.kmp.nativecoroutines.NativeCoroutinesState
 import dev.avatsav.linkding.data.bookmarks.BookmarksRepository
 import dev.avatsav.linkding.domain.Bookmark
 import dev.avatsav.linkding.domain.BookmarkError
@@ -88,7 +87,6 @@ class BookmarksViewModel(private val bookmarksRepository: BookmarksRepository) :
 
     private val bookmarksState = bookmarksPager.stateFlow
 
-    @NativeCoroutinesState
     val state: StateFlow<BookmarksViewState> =
         combine(bookmarksState, searchState) { bookmarksState, searchState ->
             BookmarksViewState(searchState, bookmarksState)
