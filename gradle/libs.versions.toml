@@ -87,7 +87,7 @@ ktor-client-logging = { module = "io.ktor:ktor-client-logging", version.ref = "k
 ktor-client-contentNegotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor" }
 ktor-serialization-json = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor" }
 
-leakCanary = "com.squareup.leakcanary:leakcanary-android:2.10"
+leakCanary = "com.squareup.leakcanary:leakcanary-android:2.11"
 timber = "com.jakewharton.timber:timber:5.0.1"
 napier = "io.github.aakira:napier:2.6.1"
 truth = "com.google.truth:truth:1.1.3"
