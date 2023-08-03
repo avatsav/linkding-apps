@@ -11,6 +11,7 @@ local.properties
 .idea/misc.xml
 .idea/libraries
 .idea/caches
+.idea/shelf
 .idea/navEditor.xml
 .idea/tasks.xml
 .idea/modules.xml
@@ -39,3 +40,4 @@ google-services.json
 
 # Xcode
 xcuserdata
+/.idea/kotlinScripting.xml
