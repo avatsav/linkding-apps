@@ -1,5 +1,7 @@
 @file:Suppress("UnstableApiUsage", "DSL_SCOPE_VIOLATION")
 
+import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
+
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.ksp)
@@ -8,8 +10,11 @@ plugins {
     alias(libs.plugins.kotlin.native.cocoapods)
 }
 
+@OptIn(ExperimentalKotlinGradlePluginApi::class)
 kotlin {
-    android()
+    targetHierarchy.default()
+
+    androidTarget()
     iosArm64()
     iosSimulatorArm64()
 
@@ -81,22 +86,10 @@ kotlin {
                 implementation(libs.multiplatform.settings.test)
             }
         }
-        val iosArm64Main by getting
-        val iosSimulatorArm64Main by getting
-        val iosMain by creating {
-            dependsOn(commonMain)
-            iosArm64Main.dependsOn(this)
-            iosSimulatorArm64Main.dependsOn(this)
+        val iosMain by getting {
             dependencies {
                 implementation(libs.ktor.client.darwin)
             }
-        }
-        val iosArm64Test by getting
-        val iosSimulatorArm64Test by getting
-        val iosTest by creating {
-            dependsOn(commonTest)
-            iosArm64Test.dependsOn(this)
-            iosSimulatorArm64Test.dependsOn(this)
         }
     }
 }
