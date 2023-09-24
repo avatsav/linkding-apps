@@ -7,21 +7,7 @@ local.properties
 /local.properties
 
 # IntelliJ .idea folder
-.idea/workspace.xml
-.idea/misc.xml
-.idea/libraries
-.idea/caches
-.idea/shelf
-.idea/navEditor.xml
-.idea/tasks.xml
-.idea/modules.xml
-.idea/compiler.xml
-.idea/jarRepositories.xml
-.idea/deploymentTargetDropDown.xml
-.idea/androidTestResultsUserPreferences.xml
-.idea/assetWizardSettings.xml
-.idea/kotlinc.xml
-.idea/migrations.xml
+.idea
 gradle.xml
 *.iml
 
