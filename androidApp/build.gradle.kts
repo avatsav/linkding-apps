@@ -1,13 +1,13 @@
 @file:Suppress("UnstableApiUsage", "DSL_SCOPE_VIOLATION")
 
 plugins {
-    alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
+    id("convention.android.application")
     alias(libs.plugins.ksp)
 }
 
 android {
     namespace = "dev.avatsav.linkding.android"
+    compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {
         applicationId = "dev.avatsav.linkding.android"
