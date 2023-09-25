@@ -20,6 +20,9 @@ androidxDatastore = "1.0.0"
 datetime = "0.4.1"
 accompanist = "0.32.0"
 compose-destinations = "1.9.53"
+jetbrains-compose = "1.5.1"
+jetbrains-compose-compiler = "1.5.2"
+kotlin-inject = "0.6.3"
 
 compileSdk = "34"
 minSdk = "26"
@@ -33,13 +36,17 @@ android-test = { id = "com.android.test", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlin" }
 kotlin-native-cocoapods = { id = "org.jetbrains.kotlin.native.cocoapods", version.ref = "kotlin" }
+jetbrains-compose = { id = "org.jetbrains.compose", version.ref = "jetbrains-compose" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "dagger" }
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
 
 [libraries]
 androidx-activity-compose = "androidx.activity:activity-compose:1.7.2"
+androidx-appcompat = "androidx.appcompat:appcompat:1.6.1"
+
 androidx-navigation-compose = "androidx.navigation:navigation-compose:2.7.3"
 androidx-archCoreTesting = "androidx.arch.core:core-testing:2.2.0"
 androidx-core = "androidx.core:core-ktx:1.12.0"
@@ -99,6 +106,9 @@ multiplatform-settings-serialization = { module = "com.russhwolf:multiplatform-s
 multiplatform-settings-datastore = { module = "com.russhwolf:multiplatform-settings-datastore", version.ref = "multiplatform-settings" }
 multiplatform-settings-test = { module = "com.russhwolf:multiplatform-settings-test", version.ref = "multiplatform-settings" }
 
+kotlin-inject-compiler = { module= "me.tatarka.inject:kotlin-inject-compiler-ksp", version.ref ="kotlin-inject" }
+kotlin-inject = {module = "me.tatarka.inject:kotlin-inject-runtime", version.ref="kotlin-inject"}
+
 koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
 koin-annotations = { module = "io.insert-koin:koin-core", version.ref = "koin" }
 koin-compiler = { module = "io.insert-koin:koin-ksp-compiler", version.ref = "koin" }
@@ -118,3 +128,10 @@ androidx-test-junit = "androidx.test.ext:junit-ktx:1.1.5"
 androidx-test-rules = "androidx.test:rules:1.5.0"
 androidx-test-runner = "androidx.test:runner:1.5.2"
 androidx-test-espresso = "androidx.test.espresso:espresso-core:3.5.1"
+
+
+# Build logic dependencies
+android-gradlePlugin = { module = "com.android.tools.build:gradle", version.ref = "agp" }
+kotlin-gradlePlugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
+spotless-gradlePlugin = { module = "com.diffplug.spotless:spotless-plugin-gradle", version.ref = "spotless" }
+jetbrains-compose-gradlePlugin = { module = "org.jetbrains.compose:compose-gradle-plugin", version.ref = "jetbrains-compose" }
