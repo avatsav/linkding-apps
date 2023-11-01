@@ -77,7 +77,7 @@ compose-destinations-compiler = { module = "io.github.raamcosta.compose-destinat
 
 hilt-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "dagger" }
 hilt-library = { module = "com.google.dagger:hilt-android", version.ref = "dagger" }
-hilt-compose = "androidx.hilt:hilt-navigation-compose:1.0.0"
+hilt-compose = "androidx.hilt:hilt-navigation-compose:1.1.0"
 hilt-testing = { module = "com.google.dagger:hilt-android-testing", version.ref = "dagger" }
 
 kotlin-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "coroutines" }
