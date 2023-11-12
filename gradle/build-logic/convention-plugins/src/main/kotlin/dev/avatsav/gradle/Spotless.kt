@@ -1,4 +1,4 @@
-package dev.avatsav.conventions
+package dev.avatsav.gradle
 
 import com.diffplug.gradle.spotless.SpotlessExtension
 import com.diffplug.spotless.LineEnding

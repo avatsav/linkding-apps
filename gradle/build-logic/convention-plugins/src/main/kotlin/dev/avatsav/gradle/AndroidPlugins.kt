@@ -1,4 +1,4 @@
-package dev.avatsav.conventions
+package dev.avatsav.gradle
 
 import com.android.build.gradle.BaseExtension
 import org.gradle.api.Plugin
@@ -26,7 +26,6 @@ class AndroidLibraryPlugin : Plugin<Project> {
         }
         configureAndroid()
         configureJavaToolchain()
-        configureSpotless()
     }
 }
 
@@ -40,7 +39,7 @@ private fun Project.configureAndroid() {
     }
 }
 
-private fun Project.configureJavaToolchain() {
+fun Project.configureJavaToolchain() {
     extensions.configure<JavaPluginExtension> {
         toolchain {
             languageVersion.set(JavaLanguageVersion.of(17))

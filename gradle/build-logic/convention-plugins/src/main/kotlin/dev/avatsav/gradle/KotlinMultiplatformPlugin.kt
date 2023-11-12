@@ -1,14 +1,12 @@
-package dev.avatsav.conventions
+package dev.avatsav.gradle
 
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.withType
-import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 
-@OptIn(ExperimentalKotlinGradlePluginApi::class)
 class KotlinMultiplatformPlugin : Plugin<Project> {
     override fun apply(target: Project) = with(target) {
         with(pluginManager) {
@@ -16,9 +14,12 @@ class KotlinMultiplatformPlugin : Plugin<Project> {
         }
 
         extensions.configure<KotlinMultiplatformExtension> {
-            targetHierarchy.default()
+            applyDefaultHierarchyTemplate()
 
-            androidTarget()
+            jvm()
+            if (pluginManager.hasPlugin("com.android.library")) {
+                androidTarget()
+            }
 
             listOf(
                 iosX64(),
@@ -27,7 +28,6 @@ class KotlinMultiplatformPlugin : Plugin<Project> {
             ).forEach { target ->
                 target.binaries.framework {
                     baseName = path.substring(1).replace(':', '-')
-                    isStatic = true
                 }
             }
             targets.withType<KotlinNativeTarget>().configureEach {
@@ -39,10 +39,30 @@ class KotlinMultiplatformPlugin : Plugin<Project> {
                         freeCompilerArgs.addAll(
                             "-Xallocator=custom",
                             "-XXLanguage:+ImplicitSignedToUnsignedIntegerConversion",
+                            "-opt-in=kotlinx.cinterop.ExperimentalForeignApi",
+                            "-opt-in=kotlinx.cinterop.BetaInteropApi",
+                            "-Xadd-light-debug=enable",
                         )
                     }
                 }
             }
+
+            targets.configureEach {
+                compilations.configureEach {
+                    compilerOptions.configure {
+                        freeCompilerArgs.add("-Xexpect-actual-classes")
+                    }
+                }
+            }
+
+            configureKotlin()
+            configureSpotless()
         }
     }
 }
+
+internal fun Project.configureKotlin() {
+    // Java toolchain configuration is picked up by Kotlin
+    configureJavaToolchain()
+}
+

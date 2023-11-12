@@ -20,5 +20,12 @@ enableFeaturePreview("STABLE_CONFIGURATION_CACHE")
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 rootProject.name = "linkding-apps"
-include(":androidApp")
-include(":shared")
+
+
+include(
+    ":androidApp",
+    ":shared",
+    ":api",
+    ":core:base",
+    ":core:preferences",
+)

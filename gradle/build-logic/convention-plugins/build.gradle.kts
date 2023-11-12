@@ -29,28 +29,27 @@ gradlePlugin {
     plugins {
         register("kotlinMultiplatform") {
             id = "convention.kotlin.multiplatform"
-            implementationClass = "dev.avatsav.conventions.KotlinMultiplatformPlugin"
+            implementationClass = "dev.avatsav.gradle.KotlinMultiplatformPlugin"
         }
 
         register("composeMultiplatform") {
             id = "convention.compose"
-            implementationClass = "dev.avatsav.conventions.ComposePlugin"
+            implementationClass = "dev.avatsav.gradle.ComposePlugin"
         }
 
         register("androidApplication") {
             id = "convention.android.application"
-            implementationClass = "dev.avatsav.conventions.AndroidApplicationPlugin"
+            implementationClass = "dev.avatsav.gradle.AndroidApplicationPlugin"
         }
 
         register("androidLibrary") {
             id = "convention.android.library"
-            implementationClass = "dev.avatsav.conventions.AndroidLibraryPlugin"
+            implementationClass = "dev.avatsav.gradle.AndroidLibraryPlugin"
         }
 
         register("androidTest") {
             id = "convention.android.test"
-            implementationClass = "dev.avatsav.conventions.AndroidTestPlugin"
+            implementationClass = "dev.avatsav.gradle.AndroidTestPlugin"
         }
-
     }
 }

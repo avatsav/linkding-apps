@@ -1,4 +1,4 @@
-package dev.avatsav.conventions
+package dev.avatsav.gradle
 
 import org.gradle.api.Project
 import org.gradle.api.artifacts.VersionCatalog
