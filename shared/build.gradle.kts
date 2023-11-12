@@ -63,7 +63,6 @@ kotlin {
             implementation(libs.multiplatform.settings.datastore)
             implementation(libs.androidx.datastore.preferences)
             implementation(libs.unfurl)
-
         }
 
         androidInstrumentedTest.dependencies {

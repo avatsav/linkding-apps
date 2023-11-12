@@ -22,6 +22,7 @@ accompanist = "0.32.0"
 compose-destinations = "1.9.54"
 jetbrains-compose = "1.5.10"
 kotlin-inject = "0.6.3"
+kermit = "2.0.2"
 
 compileSdk = "34"
 minSdk = "26"
@@ -97,6 +98,7 @@ timber = "com.jakewharton.timber:timber:5.0.1"
 napier = "io.github.aakira:napier:2.6.1"
 truth = "com.google.truth:truth:1.1.5"
 unfurl = "me.saket.unfurl:unfurl:1.7.0"
+kermit = { module = "co.touchlab:kermit", version.ref = "kermit" }
 
 multiplatform-settings = { module = "com.russhwolf:multiplatform-settings", version.ref = "multiplatform-settings" }
 multiplatform-settings-noarg = { module = "com.russhwolf:multiplatform-settings-no-arg", version.ref = "multiplatform-settings" }
