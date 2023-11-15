@@ -24,6 +24,10 @@ kotlin {
             implementation(libs.arrow.core)
         }
 
+        androidMain.dependencies {
+            implementation(libs.ktor.client.okhttp)
+        }
+
         jvmMain.dependencies {
             implementation(libs.ktor.client.okhttp)
         }

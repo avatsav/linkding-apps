@@ -6,8 +6,9 @@ import dev.avatsav.linkding.api.models.LinkdingBookmark
 import dev.avatsav.linkding.api.models.LinkdingBookmarksResponse
 import dev.avatsav.linkding.api.models.LinkdingErrorResponse
 import dev.avatsav.linkding.api.models.LinkdingSaveBookmarkRequest
+import io.ktor.client.HttpClient
 
-class DefaultLinkdingBookmarksApi : LinkdingBookmarksApi {
+class DefaultLinkdingBookmarksApi(private val httpClient: HttpClient) : LinkdingBookmarksApi {
     override suspend fun getBookmarks(
         offset: Int,
         limit: Int,

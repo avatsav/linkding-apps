@@ -10,11 +10,7 @@ import dev.avatsav.linkding.api.extensions.toEither
 import dev.avatsav.linkding.api.models.LinkdingErrorResponse
 import dev.avatsav.linkding.api.models.LinkdingTagsResponse
 import io.ktor.client.HttpClient
-import io.ktor.http.ContentType
-import io.ktor.http.contentType
-import me.tatarka.inject.annotations.Inject
 
-@Inject
 class DefaultLinkdingTagsApi(private val httpClient: HttpClient) : LinkdingTagsApi {
     override suspend fun getTags(
         offset: Int,

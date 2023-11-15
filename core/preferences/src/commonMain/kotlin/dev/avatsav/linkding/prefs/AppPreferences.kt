@@ -65,8 +65,8 @@ private class ApiConfigurationDelegate :
     ) {
         when (value) {
             is ApiConfiguration.Linkding -> {
-                thisRef.settings.putString(HOST_URL_CONFIGURATION_KEY, value.host)
-                thisRef.settings.putString(API_KEY_CONFIGURATION_KEY, value.host)
+                thisRef.settings.putString(HOST_URL_CONFIGURATION_KEY, value.hostUrl)
+                thisRef.settings.putString(API_KEY_CONFIGURATION_KEY, value.hostUrl)
             }
 
             ApiConfiguration.NotSet -> {
