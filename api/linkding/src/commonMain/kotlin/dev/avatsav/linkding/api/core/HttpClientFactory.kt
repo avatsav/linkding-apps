@@ -23,9 +23,9 @@ internal object HttpClientFactory {
     fun buildHttpClient(config: LinkdingClientConfig): HttpClient {
         val defaultHttpConfig: HttpClientConfig<*>.() -> Unit = {
             defaultRequest {
-                header(HttpHeaders.Authorization, "Token ${config.apiKey}")
+                header(HttpHeaders.Authorization, "Token ${config.apiConfig.apiKey}")
                 url {
-                    takeFrom(Url(config.hostUrl!!))
+                    takeFrom(Url(config.apiConfig.hostUrl))
                 }
                 contentType(ContentType.Application.Json)
             }

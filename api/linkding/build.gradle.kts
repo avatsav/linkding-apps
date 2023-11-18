@@ -1,5 +1,4 @@
 plugins {
-    id("convention.android.library")
     id("convention.kotlin.multiplatform")
     alias(libs.plugins.kotlin.serialization)
 }
@@ -24,10 +23,6 @@ kotlin {
             implementation(libs.arrow.core)
         }
 
-        androidMain.dependencies {
-            implementation(libs.ktor.client.okhttp)
-        }
-
         jvmMain.dependencies {
             implementation(libs.ktor.client.okhttp)
         }
@@ -36,9 +31,4 @@ kotlin {
             implementation(libs.ktor.client.darwin)
         }
     }
-}
-
-
-android {
-    namespace = "dev.avatsav.linkding.api"
 }

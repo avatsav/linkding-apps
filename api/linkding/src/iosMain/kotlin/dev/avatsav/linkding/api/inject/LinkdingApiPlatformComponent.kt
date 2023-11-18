@@ -4,6 +4,7 @@ import io.ktor.client.plugins.logging.Logger as KtorLogger
 import dev.avatsav.linkding.AppInfo
 import dev.avatsav.linkding.Logger
 import dev.avatsav.linkding.api.Linkding
+import dev.avatsav.linkding.api.LinkdingApiConfig
 import dev.avatsav.linkding.prefs.ApiConfiguration
 import io.ktor.client.engine.darwin.Darwin
 import io.ktor.client.plugins.logging.LogLevel
@@ -17,12 +18,9 @@ actual interface LinkdingApiPlatformComponent {
         appLogger: Logger,
         apiConfig: ApiConfiguration.Linkding,
     ): Linkding {
-        return Linkding {
-            hostUrl = apiConfig.hostUrl
-            apiKey = apiConfig.apiKey
-
+        val linkdingApiConfig = LinkdingApiConfig(apiConfig.hostUrl, apiConfig.apiKey)
+        return Linkding(linkdingApiConfig) {
             httpClient(Darwin)
-
             logging {
                 logger = object : KtorLogger {
                     override fun log(message: String) {
