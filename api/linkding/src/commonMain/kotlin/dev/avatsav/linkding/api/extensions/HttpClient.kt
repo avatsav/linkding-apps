@@ -15,15 +15,23 @@ import io.ktor.utils.io.errors.IOException
 import kotlinx.serialization.SerializationException
 
 
-internal suspend inline fun <reified T, reified E> HttpClient.getApiResponse(
+internal suspend inline fun <reified T, reified E> HttpClient.get(
     block: HttpRequestBuilder.() -> Unit,
-) = requestApiResponse<T, E>(HttpMethod.Get, block)
+) = request<T, E>(HttpMethod.Get, block)
 
-internal suspend inline fun <reified T, reified E> HttpClient.requestApiResponse(
+internal suspend inline fun <reified T, reified E> HttpClient.post(
+    block: HttpRequestBuilder.() -> Unit,
+) = request<T, E>(HttpMethod.Post, block)
+
+internal suspend inline fun <reified T, reified E> HttpClient.delete(
+    block: HttpRequestBuilder.() -> Unit,
+) = request<T, E>(HttpMethod.Delete, block)
+
+internal suspend inline fun <reified T, reified E> HttpClient.request(
     httpMethod: HttpMethod,
     block: HttpRequestBuilder.() -> Unit,
 ): ApiResponse<T, E> = try {
-    val response = request {
+    val response = this@request.request {
         method = httpMethod
         block()
     }

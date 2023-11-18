@@ -3,7 +3,7 @@ package dev.avatsav.linkding.api
 import arrow.core.Either
 import dev.avatsav.linkding.api.extensions.ApiResponse
 import dev.avatsav.linkding.api.extensions.endpointTags
-import dev.avatsav.linkding.api.extensions.getApiResponse
+import dev.avatsav.linkding.api.extensions.get
 import dev.avatsav.linkding.api.extensions.parameterPage
 import dev.avatsav.linkding.api.extensions.parameterQuery
 import dev.avatsav.linkding.api.extensions.toEither
@@ -17,12 +17,11 @@ class DefaultLinkdingTagsApi(private val httpClient: HttpClient) : LinkdingTagsA
         limit: Int,
         query: String,
     ): Either<LinkdingErrorResponse, LinkdingTagsResponse> {
-        val apiResponse: ApiResponse<LinkdingTagsResponse, LinkdingErrorResponse> =
-            httpClient.getApiResponse {
-                endpointTags()
-                parameterPage(offset, limit)
-                parameterQuery(query)
-            }
+        val apiResponse: ApiResponse<LinkdingTagsResponse, LinkdingErrorResponse> = httpClient.get {
+            endpointTags()
+            parameterPage(offset, limit)
+            parameterQuery(query)
+        }
         return apiResponse.toEither(LinkdingErrorResponse.DEFAULT)
     }
 }
