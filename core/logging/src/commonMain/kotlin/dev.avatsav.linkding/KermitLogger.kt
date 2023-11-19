@@ -36,5 +36,4 @@ internal class KermitLogger(appInfo: AppInfo) : Logger {
     override fun w(throwable: Throwable?, message: () -> String) {
         Kermit.w(throwable = throwable, message = message)
     }
-
 }

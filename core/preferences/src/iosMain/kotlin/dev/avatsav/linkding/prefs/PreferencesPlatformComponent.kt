@@ -9,5 +9,4 @@ actual interface PreferencesPlatformComponent {
     @Provides
     fun provideSettings(delegate: NSUserDefaults): ObservableSettings =
         NSUserDefaultsSettings(delegate)
-
 }

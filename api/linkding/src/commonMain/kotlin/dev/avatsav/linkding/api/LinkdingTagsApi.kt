@@ -10,5 +10,4 @@ interface LinkdingTagsApi {
         limit: Int,
         query: String,
     ): Either<LinkdingErrorResponse, LinkdingTagsResponse>
-
 }

@@ -15,7 +15,6 @@ interface AppPreferences {
     var apiConfiguration: ApiConfiguration
 
     fun observeApiConfiguration(): Flow<ApiConfiguration>
-
 }
 
 @OptIn(ExperimentalSettingsApi::class)
@@ -76,7 +75,6 @@ private class ApiConfigurationDelegate :
         }
     }
 }
-
 
 private const val HOST_URL_CONFIGURATION_KEY = "hostUrl"
 private const val API_KEY_CONFIGURATION_KEY = "apiKey"

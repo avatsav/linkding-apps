@@ -5,7 +5,6 @@ import me.tatarka.inject.annotations.Provides
 
 expect interface LinkdingApiPlatformComponent
 
-
 // TODO: Scoping
 interface LinkdingApiComponent {
 
@@ -14,5 +13,4 @@ interface LinkdingApiComponent {
 
     @Provides
     fun provideTagsApi(linkding: Linkding) = linkding.tags
-
 }

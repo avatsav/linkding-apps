@@ -14,7 +14,6 @@ import io.ktor.http.HttpMethod
 import io.ktor.utils.io.errors.IOException
 import kotlinx.serialization.SerializationException
 
-
 internal suspend inline fun <reified T, reified E> HttpClient.get(
     block: HttpRequestBuilder.() -> Unit,
 ) = request<T, E>(HttpMethod.Get, block)

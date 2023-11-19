@@ -33,5 +33,4 @@ actual interface LinkdingApiPlatformComponent {
             }
         }
     }
-
 }

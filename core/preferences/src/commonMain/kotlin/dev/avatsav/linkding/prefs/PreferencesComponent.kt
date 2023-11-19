@@ -12,6 +12,4 @@ interface PreferencesComponent : PreferencesPlatformComponent {
     @ApplicationScope
     @Provides
     fun appPreferences(fromPlatform: DefaultAppPreferences): AppPreferences = fromPlatform
-
-
 }

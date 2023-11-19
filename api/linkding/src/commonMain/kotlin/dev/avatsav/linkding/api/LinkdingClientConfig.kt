@@ -5,7 +5,6 @@ import io.ktor.client.engine.HttpClientEngineConfig
 import io.ktor.client.engine.HttpClientEngineFactory
 import io.ktor.client.plugins.logging.Logging
 
-
 typealias LinkdingHostUrl = String
 typealias LinkdingApiKey = String
 
@@ -32,5 +31,4 @@ class LinkdingClientConfig(internal val apiConfig: LinkdingApiConfig) {
     fun logging(block: Logging.Config.() -> Unit) {
         httpClientLoggingBlock = block
     }
-
 }

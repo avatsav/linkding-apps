@@ -73,5 +73,4 @@ class DefaultLinkdingBookmarksApi(private val httpClient: HttpClient) : Linkding
             endpointBookmarks(id.toString())
         }.toEither(LinkdingErrorResponse.DEFAULT)
     }
-
 }

@@ -39,5 +39,3 @@ internal fun HttpRequestBuilder.parameterQueryWithFilter(
  */
 private fun buildPaths(vararg paths: String): String =
     paths.joinToString(separator = "/", postfix = "/")
-
-

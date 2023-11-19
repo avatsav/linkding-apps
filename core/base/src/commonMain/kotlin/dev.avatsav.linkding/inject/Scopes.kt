@@ -7,5 +7,3 @@ annotation class ApplicationScope
 
 @Scope
 annotation class ActivityScope
-
-
