@@ -30,4 +30,6 @@ include(
     ":core:preferences",
     ":api:linkding",
     ":data:models",
+    ":data:db",
+    ":data:bookmarks",
 )
