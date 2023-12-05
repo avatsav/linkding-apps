@@ -24,6 +24,7 @@ jetbrains-compose = "1.5.11"
 kotlin-inject = "0.6.3"
 kermit = "2.0.2"
 paging-kmp = "3.3.0-alpha02-0.4.0"
+circuit = "0.17.0"
 
 compileSdk = "34"
 minSdk = "26"
@@ -129,6 +130,12 @@ androidx-test-rules = "androidx.test:rules:1.5.0"
 androidx-test-runner = "androidx.test:runner:1.5.2"
 androidx-test-espresso = "androidx.test.espresso:espresso-core:3.5.1"
 
+circuit-foundation = { module = "com.slack.circuit:circuit-foundation", version.ref = "circuit" }
+circuit-runtime = { module = "com.slack.circuit:circuit-runtime", version.ref = "circuit" }
+circuit-overlay = { module = "com.slack.circuit:circuit-overlay", version.ref = "circuit" }
+circuit-retained = { module = "com.slack.circuit:circuit-retained", version.ref = "circuit" }
+circuitx-effects = { module = "com.slack.circuit:circuitx-effects", version.ref = "circuit" }
+circuitx-android = { module = "com.slack.circuit:circuitx-android", version.ref = "circuit" }
 
 # Build logic dependencies
 android-gradlePlugin = { module = "com.android.tools.build:gradle", version.ref = "agp" }

@@ -32,4 +32,7 @@ include(
     ":data:models",
     ":data:db",
     ":data:bookmarks",
+    ":ui:common",
+    ":ui:home",
+    ":ui:setup",
 )

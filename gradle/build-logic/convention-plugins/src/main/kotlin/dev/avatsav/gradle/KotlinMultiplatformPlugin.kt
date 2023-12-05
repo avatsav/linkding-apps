@@ -14,6 +14,7 @@ class KotlinMultiplatformPlugin : Plugin<Project> {
         }
 
         extensions.configure<KotlinMultiplatformExtension> {
+            jvmToolchain(17)
             applyDefaultHierarchyTemplate()
 
             jvm()

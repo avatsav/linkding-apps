@@ -21,7 +21,7 @@ java { toolchain { languageVersion.set(JavaLanguageVersion.of(17)) } }
 
 tasks.withType<KotlinCompile>().configureEach {
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_17.toString()
+        jvmTarget = "17"
     }
 }
 
