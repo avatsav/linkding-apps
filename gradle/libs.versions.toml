@@ -1,8 +1,8 @@
 [versions]
 agp = "8.2.0"
-kotlin = "1.9.20"
+kotlin = "1.9.21"
 coroutines = "1.7.3"
-ksp = "1.9.20-1.0.14"
+ksp = "1.9.21-1.0.15"
 spotless = "6.23.3"
 ktlint = "0.48.1"
 compose = "1.5.4"
@@ -17,7 +17,7 @@ koinCompose = "3.5.0"
 arrow = "1.2.1"
 ktor = "2.3.7"
 androidxDatastore = "1.0.0"
-datetime = "0.4.1"
+datetime = "0.5.0"
 accompanist = "0.32.0"
 compose-destinations = "1.9.55"
 jetbrains-compose = "1.5.11"
@@ -83,7 +83,7 @@ hilt-testing = { module = "com.google.dagger:hilt-android-testing", version.ref 
 kotlin-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "coroutines" }
 kotlin-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
 kotlin-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutines" }
-kotlin-serialization-json = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.1"
+kotlin-serialization-json = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.2"
 kotlin-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "datetime" }
 
 ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
