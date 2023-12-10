@@ -70,7 +70,6 @@ kotlin {
             implementation(libs.androidx.test.core)
             implementation(libs.androidx.test.rules)
             implementation(libs.androidx.test.runner)
-            implementation(libs.truth)
             implementation(libs.multiplatform.settings.test)
         }
 
