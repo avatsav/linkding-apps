@@ -95,7 +95,7 @@ ktor-serialization-json = { module = "io.ktor:ktor-serialization-kotlinx-json", 
 
 leakCanary = "com.squareup.leakcanary:leakcanary-android:2.13"
 timber = "com.jakewharton.timber:timber:5.0.1"
-napier = "io.github.aakira:napier:2.7.0"
+napier = "io.github.aakira:napier:2.7.1"
 unfurl = "me.saket.unfurl:unfurl:1.7.0"
 kermit = { module = "co.touchlab:kermit", version.ref = "kermit" }
 
