@@ -9,10 +9,6 @@ kotlin {
         commonMain.dependencies {
             implementation(projects.ui.common.theme)
             implementation(projects.ui.common.screens)
-            implementation(projects.ui.common.shared)
-
-            implementation(projects.data.models)
-
             implementation(compose.foundation)
             implementation(compose.material)
             implementation(compose.material3)

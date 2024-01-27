@@ -28,12 +28,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import dev.avatsav.linkding.domain.Configuration
 import dev.avatsav.linkding.ui.AsyncState
 import dev.avatsav.linkding.ui.Loading
 import dev.avatsav.linkding.ui.Uninitialized
 import dev.avatsav.linkding.ui.getError
-import dev.avatsav.linkding.ui.home.SaveConfigurationError
 import dev.avatsav.linkding.ui.onLoading
 import dev.avatsav.linkding.ui.onSuccess
 
@@ -41,7 +39,7 @@ import dev.avatsav.linkding.ui.onSuccess
 @Composable
 fun SetupConfigurationScreen(
     modifier: Modifier = Modifier,
-    state: AsyncState<Configuration, SaveConfigurationError>,
+    state: AsyncState<Unit, SaveConfigurationError>,
     onSaveSuccess: () -> Unit,
     onConfigurationSubmitted: (String, String) -> Unit,
 ) {

@@ -6,7 +6,6 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             api(projects.data.models)
-            implementation(projects.data.db)
             implementation(projects.api.linkding)
         }
     }
