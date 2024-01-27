@@ -11,6 +11,6 @@ data class Bookmark(
     val archived: Boolean = false,
     val unread: Boolean = false,
     val tags: Set<String> = emptySet(),
-    val added: Instant,
-    val modified: Instant,
+    val added: Instant? = null,
+    val modified: Instant? = null,
 )

@@ -31,6 +31,7 @@ include(
     ":api:linkding",
     ":data:models",
     ":data:bookmarks",
+    "domain",
     ":ui:common:theme",
     ":ui:common:screens",
     ":ui:common:shared",

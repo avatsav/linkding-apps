@@ -18,9 +18,7 @@ kotlin {
             implementation(libs.ktor.client.logging)
             implementation(libs.ktor.client.contentNegotiation)
             implementation(libs.ktor.serialization.json)
-
-            implementation(project.dependencies.platform(libs.arrow.bom))
-            implementation(libs.arrow.core)
+            implementation(libs.kotlinResult)
         }
 
         jvmMain.dependencies {

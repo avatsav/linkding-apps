@@ -7,6 +7,7 @@ kotlin {
         commonMain.dependencies {
             api(projects.data.models)
             implementation(projects.api.linkding)
+            implementation(libs.kotlinResult)
         }
     }
 }

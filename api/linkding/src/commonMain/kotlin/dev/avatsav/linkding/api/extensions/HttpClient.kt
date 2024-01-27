@@ -1,8 +1,8 @@
 package dev.avatsav.linkding.api.extensions
 
-import arrow.core.Either
-import arrow.core.left
-import arrow.core.right
+import com.github.michaelbull.result.Err
+import com.github.michaelbull.result.Ok
+import com.github.michaelbull.result.Result
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.plugins.ClientRequestException
@@ -67,9 +67,9 @@ internal suspend inline fun <reified E> ResponseException.errorBody(): E? = try 
     null
 }
 
-internal inline fun <T, E> ApiResponse<T, E>.toEither(defaultError: E): Either<E, T> {
+internal inline fun <T, E> ApiResponse<T, E>.toResult(defaultError: E): Result<T, E> {
     return when (this) {
-        is ApiResponse.Success -> body.right()
-        is ApiResponse.Error -> body?.left() ?: defaultError.left()
+        is ApiResponse.Success -> Ok(body)
+        is ApiResponse.Error -> Err(body ?: defaultError)
     }
 }

@@ -1,6 +1,6 @@
 package dev.avatsav.linkding.api
 
-import arrow.core.Either
+import com.github.michaelbull.result.Result
 import dev.avatsav.linkding.api.extensions.delete
 import dev.avatsav.linkding.api.extensions.endpointBookmarks
 import dev.avatsav.linkding.api.extensions.get
@@ -8,7 +8,7 @@ import dev.avatsav.linkding.api.extensions.parameterPage
 import dev.avatsav.linkding.api.extensions.parameterQuery
 import dev.avatsav.linkding.api.extensions.parameterQueryWithFilter
 import dev.avatsav.linkding.api.extensions.post
-import dev.avatsav.linkding.api.extensions.toEither
+import dev.avatsav.linkding.api.extensions.toResult
 import dev.avatsav.linkding.api.models.LinkdingBookmark
 import dev.avatsav.linkding.api.models.LinkdingBookmarkFilter
 import dev.avatsav.linkding.api.models.LinkdingBookmarksResponse
@@ -23,54 +23,54 @@ class DefaultLinkdingBookmarksApi(private val httpClient: HttpClient) : Linkding
         limit: Int,
         filter: LinkdingBookmarkFilter,
         query: String,
-    ): Either<LinkdingErrorResponse, LinkdingBookmarksResponse> {
+    ): Result<LinkdingBookmarksResponse, LinkdingErrorResponse> {
         return httpClient.get<LinkdingBookmarksResponse, LinkdingErrorResponse> {
             endpointBookmarks()
             parameterPage(offset, limit)
             parameterQueryWithFilter(query, filter)
-        }.toEither(LinkdingErrorResponse.DEFAULT)
+        }.toResult(LinkdingErrorResponse.DEFAULT)
     }
 
     override suspend fun getArchived(
         offset: Int,
         limit: Int,
         query: String,
-    ): Either<LinkdingErrorResponse, LinkdingBookmarksResponse> {
+    ): Result<LinkdingBookmarksResponse, LinkdingErrorResponse> {
         return httpClient.get<LinkdingBookmarksResponse, LinkdingErrorResponse> {
             endpointBookmarks("archived")
             parameterPage(offset, limit)
             parameterQuery(query)
-        }.toEither(LinkdingErrorResponse.DEFAULT)
+        }.toResult(LinkdingErrorResponse.DEFAULT)
     }
 
-    override suspend fun getBookmark(id: Long): Either<LinkdingErrorResponse, LinkdingBookmark> {
+    override suspend fun getBookmark(id: Long): Result<LinkdingBookmark, LinkdingErrorResponse> {
         return httpClient.get<LinkdingBookmark, LinkdingErrorResponse> {
             endpointBookmarks(id.toString())
-        }.toEither(LinkdingErrorResponse.DEFAULT)
+        }.toResult(LinkdingErrorResponse.DEFAULT)
     }
 
-    override suspend fun saveBookmark(saveBookmark: LinkdingSaveBookmarkRequest): Either<LinkdingErrorResponse, LinkdingBookmark> {
+    override suspend fun saveBookmark(saveBookmark: LinkdingSaveBookmarkRequest): Result<LinkdingBookmark, LinkdingErrorResponse> {
         return httpClient.post<LinkdingBookmark, LinkdingErrorResponse> {
             endpointBookmarks()
             setBody(saveBookmark)
-        }.toEither(LinkdingErrorResponse.DEFAULT)
+        }.toResult(LinkdingErrorResponse.DEFAULT)
     }
 
-    override suspend fun archiveBookmark(id: Long): Either<LinkdingErrorResponse, Unit> {
+    override suspend fun archiveBookmark(id: Long): Result<Unit, LinkdingErrorResponse> {
         return httpClient.post<Unit, LinkdingErrorResponse> {
             endpointBookmarks(id.toString(), "archive")
-        }.toEither(LinkdingErrorResponse.DEFAULT)
+        }.toResult(LinkdingErrorResponse.DEFAULT)
     }
 
-    override suspend fun unarchiveBookmark(id: Long): Either<LinkdingErrorResponse, Unit> {
+    override suspend fun unarchiveBookmark(id: Long): Result<Unit, LinkdingErrorResponse> {
         return httpClient.post<Unit, LinkdingErrorResponse> {
             endpointBookmarks(id.toString(), "unarchive")
-        }.toEither(LinkdingErrorResponse.DEFAULT)
+        }.toResult(LinkdingErrorResponse.DEFAULT)
     }
 
-    override suspend fun deleteBookmark(id: Long): Either<LinkdingErrorResponse, Unit> {
+    override suspend fun deleteBookmark(id: Long): Result<Unit, LinkdingErrorResponse> {
         return httpClient.delete<Unit, LinkdingErrorResponse> {
             endpointBookmarks(id.toString())
-        }.toEither(LinkdingErrorResponse.DEFAULT)
+        }.toResult(LinkdingErrorResponse.DEFAULT)
     }
 }

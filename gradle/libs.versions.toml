@@ -24,7 +24,8 @@ jetbrains-compose = "1.5.11"
 kotlin-inject = "0.6.3"
 kermit = "2.0.2"
 paging-kmp = "3.3.0-alpha02-0.4.0"
-circuit = "0.17.0"
+circuit = "0.18.2"
+kotlinResult = "1.1.18"
 
 compileSdk = "34"
 minSdk = "26"
@@ -83,6 +84,7 @@ kotlin-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-co
 kotlin-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutines" }
 kotlin-serialization-json = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.2"
 kotlin-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "datetime" }
+kotlin-atomicfu = "org.jetbrains.kotlinx:atomicfu:0.23.1"
 
 ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
 ktor-client-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor" }
@@ -115,6 +117,9 @@ arrow-bom = { module = "io.arrow-kt:arrow-stack", version.ref = "arrow" }
 arrow-core = { module = "io.arrow-kt:arrow-core" }
 arrow-fx-coroutines = { module = "io.arrow-kt:arrow-fx-coroutines" }
 arrow-fx-stm = { module = "io.arrow-kt:arrow-fx-stm" }
+
+kotlinResult = { module = "com.michael-bull.kotlin-result:kotlin-result", version.ref = "kotlinResult" }
+kotlinResultCoroutines = { module = "com.michael-bull.kotlin-result:kotlin-result-coroutines", version.ref = "kotlinResult" }
 
 sqldelight-android = { module = "app.cash.sqldelight:android-driver", version.ref = "sqldelight" }
 sqldelight-native = { module = "app.cash.sqldelight:native-driver", version.ref = "sqldelight" }
