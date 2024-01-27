@@ -7,8 +7,8 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             api(projects.core.base)
-            api(projects.core.preferences)
             api(projects.core.logging)
+            api(projects.data.models)
 
             implementation(libs.kotlin.coroutines.core)
             implementation(libs.kotlin.serialization.json)

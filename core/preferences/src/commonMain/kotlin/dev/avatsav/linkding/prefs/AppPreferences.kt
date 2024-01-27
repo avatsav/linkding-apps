@@ -4,6 +4,7 @@ import com.russhwolf.settings.ExperimentalSettingsApi
 import com.russhwolf.settings.ObservableSettings
 import com.russhwolf.settings.coroutines.toFlowSettings
 import dev.avatsav.linkding.AppCoroutineDispatchers
+import dev.avatsav.linkding.data.model.ApiConfiguration
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 import kotlinx.coroutines.flow.Flow
@@ -19,7 +20,7 @@ interface AppPreferences {
 
 @OptIn(ExperimentalSettingsApi::class)
 @Inject
-class DefaultAppPreferences(
+internal class DefaultAppPreferences(
     internal val settings: ObservableSettings,
     dispatchers: AppCoroutineDispatchers,
 ) : AppPreferences {

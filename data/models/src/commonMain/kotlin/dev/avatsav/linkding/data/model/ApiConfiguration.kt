@@ -1,4 +1,4 @@
-package dev.avatsav.linkding.prefs
+package dev.avatsav.linkding.data.model
 
 sealed interface ApiConfiguration {
     data class Linkding(val hostUrl: String, val apiKey: String) : ApiConfiguration

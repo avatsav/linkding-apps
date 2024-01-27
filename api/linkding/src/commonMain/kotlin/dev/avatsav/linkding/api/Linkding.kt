@@ -8,13 +8,16 @@ fun Linkding(
     apiConfig: LinkdingApiConfig,
     block: LinkdingClientConfig.() -> Unit,
 ): Linkding {
-    val config = LinkdingClientConfig(apiConfig).apply(block)
-    return Linkding(config)
+    val clientConfig = LinkdingClientConfig().apply(block)
+    return Linkding(apiConfig, clientConfig)
 }
 
-class Linkding internal constructor(config: LinkdingClientConfig) {
+class Linkding internal constructor(
+    apiConfig: LinkdingApiConfig,
+    clientConfig: LinkdingClientConfig,
+) {
 
-    private val client: HttpClient = HttpClientFactory.buildHttpClient(config)
+    private val client: HttpClient = HttpClientFactory.buildHttpClient(clientConfig, apiConfig)
 
     val bookmarks: LinkdingBookmarksApi by buildApi(::DefaultLinkdingBookmarksApi)
     val tags: LinkdingTagsApi by buildApi(::DefaultLinkdingTagsApi)

@@ -1,5 +1,6 @@
 package dev.avatsav.linkding.api.core
 
+import dev.avatsav.linkding.api.LinkdingApiConfig
 import dev.avatsav.linkding.api.LinkdingClientConfig
 import io.ktor.client.HttpClient
 import io.ktor.client.HttpClientConfig
@@ -20,12 +21,17 @@ import kotlinx.serialization.json.Json
 internal object HttpClientFactory {
 
     @OptIn(ExperimentalSerializationApi::class)
-    fun buildHttpClient(config: LinkdingClientConfig): HttpClient {
+    fun buildHttpClient(
+        clientConfig: LinkdingClientConfig,
+        apiConfig: LinkdingApiConfig? = null,
+    ): HttpClient {
         val defaultHttpConfig: HttpClientConfig<*>.() -> Unit = {
             defaultRequest {
-                header(HttpHeaders.Authorization, "Token ${config.apiConfig.apiKey}")
-                url {
-                    takeFrom(Url(config.apiConfig.hostUrl))
+                if (apiConfig != null) {
+                    header(HttpHeaders.Authorization, "Token ${apiConfig.apiKey}")
+                    url {
+                        takeFrom(Url(apiConfig.hostUrl))
+                    }
                 }
                 contentType(ContentType.Application.Json)
             }
@@ -45,12 +51,12 @@ internal object HttpClientFactory {
 
             install(HttpCache)
 
-            config.httpClientLoggingBlock?.let {
+            clientConfig.httpClientLoggingBlock?.let {
                 Logging(it)
             }
         }
-        return config.httpClientBuilder?.invoke()?.config(defaultHttpConfig) ?: HttpClient(
-            defaultHttpConfig,
-        )
+        return clientConfig.httpClientBuilder?.invoke()?.config(defaultHttpConfig)
+            ?: HttpClient(defaultHttpConfig)
     }
+
 }
