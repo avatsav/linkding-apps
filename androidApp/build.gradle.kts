@@ -46,7 +46,6 @@ android {
 
 dependencies {
     implementation(projects.shared)
-
     implementation(libs.androidx.core)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.lifecycle.runtime.compose)
@@ -59,22 +58,9 @@ dependencies {
     implementation(libs.compose.ui.ui)
     implementation(libs.compose.foundation)
     implementation(libs.compose.foundation.layout)
-    implementation(libs.compose.animation)
-    implementation(libs.compose.material)
-    implementation(libs.compose.material3)
-    implementation(libs.compose.material3.windowSizeClass)
-    implementation(libs.compose.ui.tooling)
     implementation(libs.compose.ui.tooling.preview)
-    implementation(libs.accompanist.flowlayout)
-    implementation(libs.compose.destinations)
-    ksp(libs.compose.destinations.compiler)
 
     implementation(libs.kotlin.coroutines.android)
-    implementation(libs.kotlin.datetime)
-    implementation(libs.koin.android)
-    implementation(libs.koin.android.compose)
-    implementation(libs.timber)
-
     debugImplementation(libs.compose.ui.test.mainfest)
     debugImplementation(libs.leakCanary)
 

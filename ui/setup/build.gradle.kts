@@ -7,15 +7,22 @@ plugins {
 kotlin {
     sourceSets {
         commonMain.dependencies {
+            implementation(projects.core.base)
+            implementation(projects.domain)
             implementation(projects.ui.common.theme)
-            implementation(projects.ui.common.screens)
-            implementation(projects.ui.common.shared)
-
             implementation(projects.data.models)
 
+            api(projects.ui.common.screens)
+            api(projects.ui.common.screens)
+            api(libs.circuit.foundation)
+
+            implementation(libs.circuit.retained)
+            api(libs.kotlinResult)
+            api(libs.kotlinResultCoroutines)
+
             implementation(compose.foundation)
-            implementation(compose.material)
             implementation(compose.material3)
+            implementation(compose.components.resources)
 
         }
         androidMain.dependencies {

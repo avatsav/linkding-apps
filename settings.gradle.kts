@@ -31,10 +31,11 @@ include(
     ":api:linkding",
     ":data:models",
     ":data:bookmarks",
-    "domain",
+    ":domain",
     ":ui:common:theme",
     ":ui:common:screens",
     ":ui:common:shared",
     ":ui:bookmarks",
     ":ui:setup",
+    ":unfurl"
 )

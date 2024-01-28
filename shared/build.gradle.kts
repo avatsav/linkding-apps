@@ -7,74 +7,22 @@ plugins {
     id("convention.kotlin.multiplatform")
     id("convention.compose")
     alias(libs.plugins.ksp)
-    alias(libs.plugins.kotlin.serialization)
+}
+
+android {
+    namespace = "dev.avatsav.linkding.shared"
 }
 
 kotlin {
     sourceSets {
-        all {
-            languageSettings.optIn("com.russhwolf.settings.ExperimentalSettingsApi")
-            languageSettings.optIn("com.russhwolf.settings.ExperimentalSettingsImplementation")
-            languageSettings.optIn("kotlinx.serialization.ExperimentalSerializationApi")
-            languageSettings.optIn("kotlin.experimental.ExperimentalObjCName")
-        }
-
         commonMain.dependencies {
-            implementation(compose.runtime)
-            implementation(compose.runtimeSaveable)
-            implementation(compose.foundation)
-            implementation(compose.material)
-            implementation(compose.material3)
-            @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
-            implementation(compose.components.resources)
-            implementation(compose.materialIconsExtended)
-            implementation(libs.kotlin.coroutines.core)
-            implementation(libs.kotlin.serialization.json)
-            implementation(libs.kotlin.datetime)
-            implementation(project.dependencies.platform(libs.arrow.bom))
-            implementation(libs.arrow.core)
-            implementation(libs.arrow.fx.coroutines)
-            implementation(libs.arrow.fx.stm)
-            implementation(libs.multiplatform.settings)
-            implementation(libs.multiplatform.settings.noarg)
-            implementation(libs.multiplatform.settings.coroutines)
-            implementation(libs.multiplatform.settings.serialization)
-            implementation(libs.koin.core)
-            implementation(libs.ktor.client.core)
-            implementation(libs.ktor.client.logging)
-            implementation(libs.ktor.client.contentNegotiation)
-            implementation(libs.ktor.serialization.json)
-            implementation(libs.napier)
-        }
+            api(projects.core.base)
+            api(projects.core.logging)
+            api(projects.core.preferences)
+            api(projects.api.linkding)
 
-        commonTest.dependencies {
-            implementation(kotlin("test"))
-            implementation(libs.kotlin.coroutines.test)
-            implementation(libs.multiplatform.settings.test)
-        }
-
-        androidMain.dependencies {
-            api(libs.androidx.activity.compose)
-            api(libs.androidx.core)
-            implementation(libs.androidx.lifecycle.viewmodel.ktx)
-            implementation(libs.koin.android)
-            implementation(libs.ktor.client.okhttp)
-            implementation(libs.multiplatform.settings.datastore)
-            implementation(libs.androidx.datastore.preferences)
-            implementation(libs.unfurl)
-        }
-
-        androidInstrumentedTest.dependencies {
-            implementation(kotlin("test"))
-            implementation(libs.kotlin.coroutines.test)
-            implementation(libs.androidx.test.core)
-            implementation(libs.androidx.test.rules)
-            implementation(libs.androidx.test.runner)
-            implementation(libs.multiplatform.settings.test)
-        }
-
-        iosMain.dependencies {
-            implementation(libs.ktor.client.darwin)
+            api(projects.ui.common.theme)
+            api(projects.ui.setup)
         }
     }
 }
@@ -85,6 +33,3 @@ ksp {
 
 addKspDependencyForAllTargets(libs.kotlin.inject.compiler)
 
-android {
-    namespace = "dev.avatsav.linkding.shared"
-}

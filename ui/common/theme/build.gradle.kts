@@ -9,7 +9,6 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             api(compose.foundation)
-            api(compose.material)
             api(compose.material3)
             api(libs.circuit.runtime)
         }
