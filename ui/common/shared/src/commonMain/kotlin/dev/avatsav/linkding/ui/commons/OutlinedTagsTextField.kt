@@ -43,7 +43,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
-import dev.avatsav.linkding.android.extensions.onCondition
+import dev.avatsav.linkding.ui.extensions.onCondition
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
