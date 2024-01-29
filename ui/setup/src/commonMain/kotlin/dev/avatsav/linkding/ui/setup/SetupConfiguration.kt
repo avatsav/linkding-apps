@@ -28,12 +28,32 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import com.slack.circuit.runtime.CircuitContext
+import com.slack.circuit.runtime.screen.Screen
+import com.slack.circuit.runtime.ui.Ui
+import com.slack.circuit.runtime.ui.ui
+import dev.avatsav.linkding.ui.SetupScreen
+import me.tatarka.inject.annotations.Inject
+
+
+@Inject
+class SetupUiFactory : Ui.Factory {
+    override fun create(screen: Screen, context: CircuitContext): Ui<*>? = when (screen) {
+        is SetupScreen -> {
+            ui<SetupUiState> { state, modifier ->
+                SetupConfiguration(state, modifier)
+            }
+        }
+        else -> null
+    }
+}
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SetupConfiguration(
-    modifier: Modifier = Modifier,
     state: SetupUiState,
+    modifier: Modifier = Modifier,
 ) {
     var url by remember { mutableStateOf("") }
     var apiKey by remember { mutableStateOf("") }

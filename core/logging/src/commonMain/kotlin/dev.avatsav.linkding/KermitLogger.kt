@@ -2,11 +2,9 @@ package dev.avatsav.linkding
 
 import co.touchlab.kermit.Logger as Kermit
 import co.touchlab.kermit.Severity
-import dev.avatsav.linkding.inject.ApplicationScope
 import me.tatarka.inject.annotations.Inject
 
 @Inject
-@ApplicationScope
 internal class KermitLogger(appInfo: AppInfo) : Logger {
     init {
         Kermit.setMinSeverity(

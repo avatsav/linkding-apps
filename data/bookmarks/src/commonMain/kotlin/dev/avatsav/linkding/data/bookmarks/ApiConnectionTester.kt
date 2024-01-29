@@ -4,9 +4,9 @@ import com.github.michaelbull.result.Result
 import com.github.michaelbull.result.mapError
 import dev.avatsav.linkding.api.LinkdingConnectionTester
 import dev.avatsav.linkding.data.model.InvalidApiConfiguration
-import dev.avatsav.linkding.inject.ApplicationScope
+import dev.avatsav.linkding.inject.AppScope
 
-@ApplicationScope
+@AppScope
 class ApiConnectionTester(private val linkdingConnectionTester: LinkdingConnectionTester) {
     suspend fun test(
         hostUrl: String,

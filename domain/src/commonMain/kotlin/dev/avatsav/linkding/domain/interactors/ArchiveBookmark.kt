@@ -6,7 +6,9 @@ import dev.avatsav.linkding.data.bookmarks.BookmarksRepository
 import dev.avatsav.linkding.data.model.BookmarkError
 import dev.avatsav.linkding.domain.Interactor
 import kotlinx.coroutines.withContext
+import me.tatarka.inject.annotations.Inject
 
+@Inject
 class ArchiveBookmark(
     private val repository: BookmarksRepository,
     private val dispatchers: AppCoroutineDispatchers,

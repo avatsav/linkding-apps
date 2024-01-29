@@ -6,12 +6,14 @@ import dev.avatsav.linkding.Logger
 import dev.avatsav.linkding.api.Linkding
 import dev.avatsav.linkding.api.LinkdingApiConfig
 import dev.avatsav.linkding.data.model.ApiConfiguration
+import dev.avatsav.linkding.inject.LinkdingScope
 import io.ktor.client.engine.darwin.Darwin
 import io.ktor.client.plugins.logging.LogLevel
 import me.tatarka.inject.annotations.Provides
 
 actual interface LinkdingApiPlatformComponent {
 
+    @LinkdingScope
     @Provides
     fun provideLinkding(
         appInfo: AppInfo,

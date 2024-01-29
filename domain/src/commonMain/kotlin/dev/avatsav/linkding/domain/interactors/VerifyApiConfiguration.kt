@@ -9,10 +9,10 @@ import com.github.michaelbull.result.mapError
 import dev.avatsav.linkding.AppCoroutineDispatchers
 import dev.avatsav.linkding.data.bookmarks.ApiConnectionTester
 import dev.avatsav.linkding.domain.Interactor
-import dev.avatsav.linkding.inject.ApplicationScope
+import dev.avatsav.linkding.inject.AppScope
 import kotlinx.coroutines.withContext
 
-@ApplicationScope
+@AppScope
 class VerifyApiConfiguration(
     private val apiConnectionTester: ApiConnectionTester,
     private val dispatchers: AppCoroutineDispatchers,

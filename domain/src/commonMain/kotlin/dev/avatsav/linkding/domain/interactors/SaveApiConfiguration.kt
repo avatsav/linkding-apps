@@ -5,10 +5,10 @@ import com.github.michaelbull.result.coroutines.runSuspendCatching
 import com.github.michaelbull.result.mapError
 import dev.avatsav.linkding.data.model.ApiConfiguration
 import dev.avatsav.linkding.domain.Interactor
-import dev.avatsav.linkding.inject.ApplicationScope
+import dev.avatsav.linkding.inject.AppScope
 import dev.avatsav.linkding.prefs.AppPreferences
 
-@ApplicationScope
+@AppScope
 class SaveApiConfiguration(private val prefs: AppPreferences) :
     Interactor<ApiConfiguration, Unit, SaveApiConfiguration.Error>() {
 

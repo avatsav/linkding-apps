@@ -4,22 +4,15 @@ kotlin = "1.9.21"
 coroutines = "1.8.0-RC"
 ksp = "1.9.21-1.0.16"
 spotless = "6.25.0"
-sqldelight = "2.0.0"
 ktlint = "0.48.1"
 compose = "1.6.0"
 compose-compiler = "1.5.8"
 compose-material3 = "1.1.2"
 androidxlifecycle = "2.7.0"
 multiplatform-settings = "1.1.1"
-koin = "3.5.3"
-koinAndroid = "3.5.3"
-koinCompose = "3.5.3"
-arrow = "1.2.1"
 ktor = "2.3.7"
 androidxDatastore = "1.0.0"
 datetime = "0.5.0"
-accompanist = "0.34.0"
-compose-destinations = "1.10.0"
 jetbrains-compose = "1.6.0-beta01"
 kotlin-inject = "0.6.3"
 kermit = "2.0.2"
@@ -44,7 +37,6 @@ kotlin-native-cocoapods = { id = "org.jetbrains.kotlin.native.cocoapods", versio
 jetbrains-compose = { id = "org.jetbrains.compose", version.ref = "jetbrains-compose" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
-sqldelight = { id = "app.cash.sqldelight", version.ref = "sqldelight" }
 
 [libraries]
 androidx-activity-compose = "androidx.activity:activity-compose:1.8.2"
@@ -71,13 +63,9 @@ compose-ui-ui = { module = "androidx.compose.ui:ui", version.ref = "compose" }
 compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling", version.ref = "compose" }
 compose-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview", version.ref = "compose" }
 compose-ui-test-mainfest = { module = "androidx.compose.ui:ui-test-manifest", version.ref = "compose" }
-accompanist-flowlayout = { module = "com.google.accompanist:accompanist-flowlayout", version.ref = "accompanist" }
 
 paging-common = { module = "app.cash.paging:paging-common", version.ref = "paging-kmp" }
 paging-compose = { module = "app.cash.paging:paging-compose-common", version.ref = "paging-kmp" }
-
-compose-destinations = { module = "io.github.raamcosta.compose-destinations:animations-core", version.ref = "compose-destinations" }
-compose-destinations-compiler = { module = "io.github.raamcosta.compose-destinations:ksp", version.ref = "compose-destinations" }
 
 kotlin-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "coroutines" }
 kotlin-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
@@ -94,39 +82,18 @@ ktor-client-contentNegotiation = { module = "io.ktor:ktor-client-content-negotia
 ktor-serialization-json = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor" }
 
 leakCanary = "com.squareup.leakcanary:leakcanary-android:2.13"
-timber = "com.jakewharton.timber:timber:5.0.1"
-napier = "io.github.aakira:napier:2.7.1"
 unfurl = "me.saket.unfurl:unfurl:1.7.0"
 kermit = { module = "co.touchlab:kermit", version.ref = "kermit" }
 
 multiplatform-settings = { module = "com.russhwolf:multiplatform-settings", version.ref = "multiplatform-settings" }
-multiplatform-settings-noarg = { module = "com.russhwolf:multiplatform-settings-no-arg", version.ref = "multiplatform-settings" }
 multiplatform-settings-coroutines = { module = "com.russhwolf:multiplatform-settings-coroutines", version.ref = "multiplatform-settings" }
-multiplatform-settings-serialization = { module = "com.russhwolf:multiplatform-settings-serialization", version.ref = "multiplatform-settings" }
-multiplatform-settings-datastore = { module = "com.russhwolf:multiplatform-settings-datastore", version.ref = "multiplatform-settings" }
-multiplatform-settings-test = { module = "com.russhwolf:multiplatform-settings-test", version.ref = "multiplatform-settings" }
 
 kotlin-inject-compiler = { module = "me.tatarka.inject:kotlin-inject-compiler-ksp", version.ref = "kotlin-inject" }
 kotlin-inject-runtime = { module = "me.tatarka.inject:kotlin-inject-runtime", version.ref = "kotlin-inject" }
 
-koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
-koin-android = { module = "io.insert-koin:koin-android", version.ref = "koinAndroid" }
-koin-android-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koinCompose" }
-
-arrow-bom = { module = "io.arrow-kt:arrow-stack", version.ref = "arrow" }
-arrow-core = { module = "io.arrow-kt:arrow-core" }
-arrow-fx-coroutines = { module = "io.arrow-kt:arrow-fx-coroutines" }
-arrow-fx-stm = { module = "io.arrow-kt:arrow-fx-stm" }
 
 kotlinResult = { module = "com.michael-bull.kotlin-result:kotlin-result", version.ref = "kotlinResult" }
 kotlinResultCoroutines = { module = "com.michael-bull.kotlin-result:kotlin-result-coroutines", version.ref = "kotlinResult" }
-
-sqldelight-android = { module = "app.cash.sqldelight:android-driver", version.ref = "sqldelight" }
-sqldelight-native = { module = "app.cash.sqldelight:native-driver", version.ref = "sqldelight" }
-sqldelight-sqlite = { module = "app.cash.sqldelight:sqlite-driver", version.ref = "sqldelight" }
-sqldelight-coroutines = { module = "app.cash.sqldelight:coroutines-extensions", version.ref = "sqldelight" }
-sqldelight-paging = { module = "app.cash.sqldelight:androidx-paging3-extensions", version.ref = "sqldelight" }
-sqldelight-primitive = { module = "app.cash.sqldelight:primitive-adapters", version.ref = "sqldelight" }
 
 junit = "junit:junit:4.13.2"
 androidx-test-core = "androidx.test:core-ktx:1.5.0"

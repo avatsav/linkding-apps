@@ -10,6 +10,7 @@ kotlin {
             implementation(projects.core.preferences)
             implementation(projects.data.models)
             implementation(projects.data.bookmarks)
+            implementation(libs.paging.common)
 
             implementation(libs.kotlin.atomicfu)
             implementation(libs.paging.common)

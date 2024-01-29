@@ -1,6 +1,5 @@
 package dev.avatsav.linkding.ui.commons
 
-import android.content.res.Configuration
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.keyframes
 import androidx.compose.animation.fadeIn
@@ -17,8 +16,6 @@ import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ProvideTextStyle
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -31,10 +28,8 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.avatsav.linkding.android.extensions.onCondition
-import dev.avatsav.linkding.android.theme.LinkdingTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -139,25 +134,4 @@ internal fun Decoration(
         )
     }
     if (typography != null) ProvideTextStyle(typography, contentWithColor) else contentWithColor()
-}
-
-@Preview(showBackground = true)
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Composable
-fun OutlinedPlaceholderTextField_Preview() {
-    LinkdingTheme {
-        Surface {
-            OutlinedPlaceholderTextField(
-                value = "",
-                onValueChange = {},
-                label = { Text("Title") },
-                placeholder = {
-                    Text(
-                        "Placeholder text",
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
-                },
-            )
-        }
-    }
 }

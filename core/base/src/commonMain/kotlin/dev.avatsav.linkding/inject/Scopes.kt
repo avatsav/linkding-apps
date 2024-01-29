@@ -3,7 +3,12 @@ package dev.avatsav.linkding.inject
 import me.tatarka.inject.annotations.Scope
 
 @Scope
-annotation class ApplicationScope
+annotation class AppScope
 
 @Scope
-annotation class ActivityScope
+annotation class LinkdingScope
+
+@Scope
+annotation class UiScope
+
+

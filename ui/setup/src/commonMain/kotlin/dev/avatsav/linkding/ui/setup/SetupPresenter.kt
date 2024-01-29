@@ -9,16 +9,35 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import com.github.michaelbull.result.onFailure
 import com.github.michaelbull.result.onSuccess
+import com.slack.circuit.runtime.CircuitContext
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
+import com.slack.circuit.runtime.screen.Screen
 import dev.avatsav.linkding.data.model.ApiConfiguration
 import dev.avatsav.linkding.domain.interactors.SaveApiConfiguration
 import dev.avatsav.linkding.domain.interactors.VerifyApiConfiguration
 import dev.avatsav.linkding.ui.BookmarkListScreen
+import dev.avatsav.linkding.ui.SetupScreen
 import kotlinx.coroutines.launch
 import me.tatarka.inject.annotations.Assisted
 import me.tatarka.inject.annotations.Inject
 import org.jetbrains.skia.skottie.Logger
+
+@Inject
+class SetupUiPresenterFactory(
+    private val presenterFactory: (Navigator) -> SetupPresenter,
+) : Presenter.Factory {
+    override fun create(
+        screen: Screen,
+        navigator: Navigator,
+        context: CircuitContext,
+    ): Presenter<*>? {
+        return when (screen) {
+            is SetupScreen -> presenterFactory(navigator)
+            else -> null
+        }
+    }
+}
 
 @Inject
 class SetupPresenter(

@@ -1,6 +1,5 @@
 package dev.avatsav.linkding.api.inject
 
-import dev.avatsav.linkding.inject.ApplicationScope
+expect interface LinkdingConnectionTesterComponent {
 
-@ApplicationScope
-expect interface LinkdingConnectionTesterComponent
+}

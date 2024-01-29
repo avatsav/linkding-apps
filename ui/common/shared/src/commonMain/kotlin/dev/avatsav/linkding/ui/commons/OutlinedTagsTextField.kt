@@ -2,7 +2,10 @@ package dev.avatsav.linkding.ui.commons
 
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -25,7 +28,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
@@ -41,8 +43,6 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
-import com.google.accompanist.flowlayout.FlowCrossAxisAlignment
-import com.google.accompanist.flowlayout.FlowRow
 import dev.avatsav.linkding.android.extensions.onCondition
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -81,8 +81,8 @@ fun OutlinedTagsTextField(
 }
 
 @OptIn(
-    ExperimentalComposeUiApi::class,
     ExperimentalMaterial3Api::class,
+    ExperimentalLayoutApi::class,
 )
 @Composable
 private fun OutlinedTagsTextField(
@@ -108,8 +108,7 @@ private fun OutlinedTagsTextField(
                         },
                     )
                 },
-            mainAxisSpacing = 4.dp,
-            crossAxisAlignment = FlowCrossAxisAlignment.Center,
+            horizontalArrangement = Arrangement.Center,
         ) {
             for (tag in tagsValue.tags) {
                 InputChip(
@@ -147,13 +146,15 @@ private fun OutlinedTagsTextField(
                 ),
                 textStyle = textStyle.copy(color = MaterialTheme.colorScheme.onSurface),
                 keyboardOptions = keyboardOptions.copy(imeAction = ImeAction.Done),
-                keyboardActions = KeyboardActions(onDone = {
-                    val tagText = textValue.text
-                    if (tagText.isNotEmpty()) {
-                        tagsValue.addTag(Tag(tagText))
-                        onTextValueChange(TextFieldValue())
-                    }
-                }),
+                keyboardActions = KeyboardActions(
+                    onDone = {
+                        val tagText = textValue.text
+                        if (tagText.isNotEmpty()) {
+                            tagsValue.addTag(Tag(tagText))
+                            onTextValueChange(TextFieldValue())
+                        }
+                    },
+                ),
                 cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
                 interactionSource = interactionSource,
             )

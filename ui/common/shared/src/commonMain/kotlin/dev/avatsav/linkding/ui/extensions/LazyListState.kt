@@ -1,4 +1,4 @@
-package dev.avatsav.linkding.android.extensions
+package dev.avatsav.linkding.ui.extensions
 
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.runtime.Composable
