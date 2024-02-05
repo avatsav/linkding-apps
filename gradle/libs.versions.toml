@@ -6,11 +6,10 @@ ksp = "1.9.22-1.0.17"
 spotless = "6.25.0"
 ktlint = "0.48.1"
 multiplatform-settings = "1.1.1"
-ktor = "2.3.7"
+ktor = "2.3.8"
 datetime = "0.5.0"
 jetbrains-compose = "1.6.0-beta01"
 kotlin-inject = "0.6.3"
-kermit = "2.0.2"
 paging-kmp = "3.3.0-alpha02-0.4.0"
 circuit = "0.18.2"
 kotlinResult = "1.1.18"
@@ -60,7 +59,7 @@ ktor-serialization-json = { module = "io.ktor:ktor-serialization-kotlinx-json", 
 
 leakCanary = "com.squareup.leakcanary:leakcanary-android:2.13"
 unfurl = "me.saket.unfurl:unfurl:1.7.0"
-kermit = { module = "co.touchlab:kermit", version.ref = "kermit" }
+kermit = "co.touchlab:kermit:2.0.3"
 
 multiplatform-settings = { module = "com.russhwolf:multiplatform-settings", version.ref = "multiplatform-settings" }
 multiplatform-settings-coroutines = { module = "com.russhwolf:multiplatform-settings-coroutines", version.ref = "multiplatform-settings" }
