@@ -5,8 +5,6 @@ import me.tatarka.inject.annotations.Provides
 
 expect interface PreferencesPlatformComponent
 
-const val AppPreferencesStorageKey = "app-preferences"
-
 interface PreferencesComponent : PreferencesPlatformComponent {
 
     @AppScope

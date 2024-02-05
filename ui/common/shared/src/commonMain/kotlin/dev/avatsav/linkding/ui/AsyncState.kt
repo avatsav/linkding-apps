@@ -48,7 +48,10 @@ data class PagedContent<out V : Any>(
 ) : Success<V>(value)
 
 enum class PageStatus {
-    HasMore, Complete, LoadingMore, ErrorLoadingMore
+    HasMore,
+    Complete,
+    LoadingMore,
+    ErrorLoadingMore,
 }
 
 data class Fail<out E : Any>(
