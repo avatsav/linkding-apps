@@ -15,7 +15,7 @@ data class LinkdingApiConfig(
 )
 
 @LinkdingDsl
-class LinkdingClientConfig(internal val apiConfig: LinkdingApiConfig) {
+class LinkdingClientConfig {
 
     internal var httpClientBuilder: (() -> HttpClient)? = null
     internal var httpClientLoggingBlock: (Logging.Config.() -> Unit)? = null

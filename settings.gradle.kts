@@ -30,4 +30,13 @@ include(
     ":core:preferences",
     ":api:linkding",
     ":data:models",
+    ":data:bookmarks",
+    ":domain",
+    ":ui:common:compose",
+    ":ui:common:screens",
+    ":ui:common:shared",
+    ":ui:bookmarks",
+    ":ui:setup",
+    ":ui:root",
+    ":unfurl"
 )

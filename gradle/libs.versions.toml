@@ -1,28 +1,20 @@
 [versions]
 agp = "8.2.2"
-kotlin = "1.9.21"
-coroutines = "1.8.0-RC"
-ksp = "1.9.21-1.0.16"
+kotlin = "1.9.22"
+coroutines = "1.8.0-RC2"
+ksp = "1.9.22-1.0.17"
 spotless = "6.25.0"
 ktlint = "0.48.1"
-compose = "1.6.0"
-compose-compiler = "1.5.6"
-compose-material3 = "1.1.2"
-dagger = "2.50"
-androidxlifecycle = "2.7.0"
 multiplatform-settings = "1.1.1"
-koin = "3.5.3"
-koinAndroid = "3.5.3"
-koinCompose = "3.5.3"
-arrow = "1.2.1"
-ktor = "2.3.8"
-androidxDatastore = "1.0.0"
+ktor = "2.3.7"
 datetime = "0.5.0"
-accompanist = "0.34.0"
-compose-destinations = "1.10.0"
-jetbrains-compose = "1.5.12"
+jetbrains-compose = "1.6.0-beta01"
 kotlin-inject = "0.6.3"
-kermit = "2.0.3"
+kermit = "2.0.2"
+paging-kmp = "3.3.0-alpha02-0.4.0"
+circuit = "0.18.2"
+kotlinResult = "1.1.18"
+androidxActivity = "1.8.2"
 
 compileSdk = "34"
 minSdk = "26"
@@ -40,51 +32,24 @@ kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref =
 kotlin-native-cocoapods = { id = "org.jetbrains.kotlin.native.cocoapods", version.ref = "kotlin" }
 jetbrains-compose = { id = "org.jetbrains.compose", version.ref = "jetbrains-compose" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
-hilt = { id = "com.google.dagger.hilt.android", version.ref = "dagger" }
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
 
 [libraries]
-androidx-activity-compose = "androidx.activity:activity-compose:1.8.2"
-androidx-appcompat = "androidx.appcompat:appcompat:1.6.1"
-
-androidx-navigation-compose = "androidx.navigation:navigation-compose:2.7.6"
-androidx-archCoreTesting = "androidx.arch.core:core-testing:2.2.0"
+androidx-activity = { module = "androidx.activity:activity", version.ref = "androidxActivity" }
+androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidxActivity" }
 androidx-core = "androidx.core:core-ktx:1.12.0"
-
-androidx-lifecycle-runtime-ktx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "androidxlifecycle" }
-androidx-lifecycle-runtime-compose = { module = "androidx.lifecycle:lifecycle-runtime-compose", version.ref = "androidxlifecycle" }
-androidx-lifecycle-viewmodel-ktx = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "androidxlifecycle" }
-androidx-lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "androidxlifecycle" }
-
-androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "androidxDatastore" }
+androidx-splashscreen = "androidx.core:core-splashscreen:1.0.1"
 androidx-browser = "androidx.browser:browser:1.7.0"
-compose-animation = { module = "androidx.compose.animation:animation", version.ref = "compose" }
-compose-foundation = { module = "androidx.compose.foundation:foundation", version.ref = "compose" }
-compose-foundation-layout = { module = "androidx.compose.foundation:foundation-layout", version.ref = "compose" }
-compose-material = { module = "androidx.compose.material:material", version.ref = "compose" }
-compose-material3 = { module = "androidx.compose.material3:material3", version.ref = "compose-material3" }
-compose-material3-windowSizeClass = { module = "androidx.compose.material3:material3-window-size-class", version.ref = "compose-material3" }
-compose-ui-ui = { module = "androidx.compose.ui:ui", version.ref = "compose" }
-compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling", version.ref = "compose" }
-compose-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview", version.ref = "compose" }
-compose-ui-test-mainfest = { module = "androidx.compose.ui:ui-test-manifest", version.ref = "compose" }
-compose-ui-util = { module = "androidx.compose.ui:ui-util", version.ref = "compose" }
-accompanist-flowlayout = { module = "com.google.accompanist:accompanist-flowlayout", version.ref = "accompanist" }
-accompanist-navAnimation = { module = "com.google.accompanist:accompanist-navigation-animation", version.ref = "accompanist" }
 
-compose-destinations = { module = "io.github.raamcosta.compose-destinations:animations-core", version.ref = "compose-destinations" }
-compose-destinations-compiler = { module = "io.github.raamcosta.compose-destinations:ksp", version.ref = "compose-destinations" }
-
-hilt-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "dagger" }
-hilt-library = { module = "com.google.dagger:hilt-android", version.ref = "dagger" }
-hilt-compose = "androidx.hilt:hilt-navigation-compose:1.1.0"
-hilt-testing = { module = "com.google.dagger:hilt-android-testing", version.ref = "dagger" }
+paging-common = { module = "app.cash.paging:paging-common", version.ref = "paging-kmp" }
+paging-compose = { module = "app.cash.paging:paging-compose-common", version.ref = "paging-kmp" }
 
 kotlin-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "coroutines" }
 kotlin-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
 kotlin-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutines" }
 kotlin-serialization-json = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.2"
 kotlin-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "datetime" }
+kotlin-atomicfu = "org.jetbrains.kotlinx:atomicfu:0.23.2"
 
 ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
 ktor-client-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor" }
@@ -94,29 +59,17 @@ ktor-client-contentNegotiation = { module = "io.ktor:ktor-client-content-negotia
 ktor-serialization-json = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor" }
 
 leakCanary = "com.squareup.leakcanary:leakcanary-android:2.13"
-timber = "com.jakewharton.timber:timber:5.0.1"
-napier = "io.github.aakira:napier:2.7.1"
 unfurl = "me.saket.unfurl:unfurl:1.7.0"
 kermit = { module = "co.touchlab:kermit", version.ref = "kermit" }
 
 multiplatform-settings = { module = "com.russhwolf:multiplatform-settings", version.ref = "multiplatform-settings" }
-multiplatform-settings-noarg = { module = "com.russhwolf:multiplatform-settings-no-arg", version.ref = "multiplatform-settings" }
 multiplatform-settings-coroutines = { module = "com.russhwolf:multiplatform-settings-coroutines", version.ref = "multiplatform-settings" }
-multiplatform-settings-serialization = { module = "com.russhwolf:multiplatform-settings-serialization", version.ref = "multiplatform-settings" }
-multiplatform-settings-datastore = { module = "com.russhwolf:multiplatform-settings-datastore", version.ref = "multiplatform-settings" }
-multiplatform-settings-test = { module = "com.russhwolf:multiplatform-settings-test", version.ref = "multiplatform-settings" }
 
 kotlin-inject-compiler = { module = "me.tatarka.inject:kotlin-inject-compiler-ksp", version.ref = "kotlin-inject" }
 kotlin-inject-runtime = { module = "me.tatarka.inject:kotlin-inject-runtime", version.ref = "kotlin-inject" }
 
-koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
-koin-android = { module = "io.insert-koin:koin-android", version.ref = "koinAndroid" }
-koin-android-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koinCompose" }
-
-arrow-bom = { module = "io.arrow-kt:arrow-stack", version.ref = "arrow" }
-arrow-core = { module = "io.arrow-kt:arrow-core" }
-arrow-fx-coroutines = { module = "io.arrow-kt:arrow-fx-coroutines" }
-arrow-fx-stm = { module = "io.arrow-kt:arrow-fx-stm" }
+kotlinResult = { module = "com.michael-bull.kotlin-result:kotlin-result", version.ref = "kotlinResult" }
+kotlinResultCoroutines = { module = "com.michael-bull.kotlin-result:kotlin-result-coroutines", version.ref = "kotlinResult" }
 
 junit = "junit:junit:4.13.2"
 androidx-test-core = "androidx.test:core-ktx:1.5.0"
@@ -124,6 +77,14 @@ androidx-test-junit = "androidx.test.ext:junit-ktx:1.1.5"
 androidx-test-rules = "androidx.test:rules:1.5.0"
 androidx-test-runner = "androidx.test:runner:1.5.2"
 androidx-test-espresso = "androidx.test.espresso:espresso-core:3.5.1"
+
+circuit-foundation = { module = "com.slack.circuit:circuit-foundation", version.ref = "circuit" }
+circuit-runtime = { module = "com.slack.circuit:circuit-runtime", version.ref = "circuit" }
+circuit-overlay = { module = "com.slack.circuit:circuit-overlay", version.ref = "circuit" }
+circuit-retained = { module = "com.slack.circuit:circuit-retained", version.ref = "circuit" }
+circuitx-effects = { module = "com.slack.circuit:circuitx-effects", version.ref = "circuit" }
+circuitx-android = { module = "com.slack.circuit:circuitx-android", version.ref = "circuit" }
+circuitx-gestureNavigation = { module = "com.slack.circuit:circuitx-gesture-navigation", version.ref = "circuit" }
 
 
 # Build logic dependencies

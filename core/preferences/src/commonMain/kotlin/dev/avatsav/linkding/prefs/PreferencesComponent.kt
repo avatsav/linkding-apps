@@ -1,6 +1,6 @@
 package dev.avatsav.linkding.prefs
 
-import dev.avatsav.linkding.inject.ApplicationScope
+import dev.avatsav.linkding.inject.AppScope
 import me.tatarka.inject.annotations.Provides
 
 expect interface PreferencesPlatformComponent
@@ -9,7 +9,7 @@ const val AppPreferencesStorageKey = "app-preferences"
 
 interface PreferencesComponent : PreferencesPlatformComponent {
 
-    @ApplicationScope
+    @AppScope
     @Provides
-    fun appPreferences(fromPlatform: DefaultAppPreferences): AppPreferences = fromPlatform
+    fun providePreferences(impl: DefaultAppPreferences): AppPreferences = impl
 }

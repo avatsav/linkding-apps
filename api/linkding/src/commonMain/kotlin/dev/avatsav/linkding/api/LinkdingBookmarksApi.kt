@@ -1,6 +1,6 @@
 package dev.avatsav.linkding.api
 
-import arrow.core.Either
+import com.github.michaelbull.result.Result
 import dev.avatsav.linkding.api.models.LinkdingBookmark
 import dev.avatsav.linkding.api.models.LinkdingBookmarkFilter
 import dev.avatsav.linkding.api.models.LinkdingBookmarksResponse
@@ -13,21 +13,21 @@ interface LinkdingBookmarksApi {
         limit: Int,
         filter: LinkdingBookmarkFilter,
         query: String,
-    ): Either<LinkdingErrorResponse, LinkdingBookmarksResponse>
+    ): Result<LinkdingBookmarksResponse, LinkdingErrorResponse>
 
     suspend fun getArchived(
         offset: Int,
         limit: Int,
         query: String,
-    ): Either<LinkdingErrorResponse, LinkdingBookmarksResponse>
+    ): Result<LinkdingBookmarksResponse, LinkdingErrorResponse>
 
-    suspend fun getBookmark(id: Long): Either<LinkdingErrorResponse, LinkdingBookmark>
+    suspend fun getBookmark(id: Long): Result<LinkdingBookmark, LinkdingErrorResponse>
 
-    suspend fun saveBookmark(saveBookmark: LinkdingSaveBookmarkRequest): Either<LinkdingErrorResponse, LinkdingBookmark>
+    suspend fun saveBookmark(saveBookmark: LinkdingSaveBookmarkRequest): Result<LinkdingBookmark, LinkdingErrorResponse>
 
-    suspend fun archiveBookmark(id: Long): Either<LinkdingErrorResponse, Unit>
+    suspend fun archiveBookmark(id: Long): Result<Unit, LinkdingErrorResponse>
 
-    suspend fun unarchiveBookmark(id: Long): Either<LinkdingErrorResponse, Unit>
+    suspend fun unarchiveBookmark(id: Long): Result<Unit, LinkdingErrorResponse>
 
-    suspend fun deleteBookmark(id: Long): Either<LinkdingErrorResponse, Unit>
+    suspend fun deleteBookmark(id: Long): Result<Unit, LinkdingErrorResponse>
 }

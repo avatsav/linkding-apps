@@ -1,12 +1,12 @@
 package dev.avatsav.linkding.api
 
-import arrow.core.Either
+import com.github.michaelbull.result.Result
 import dev.avatsav.linkding.api.extensions.ApiResponse
 import dev.avatsav.linkding.api.extensions.endpointTags
 import dev.avatsav.linkding.api.extensions.get
 import dev.avatsav.linkding.api.extensions.parameterPage
 import dev.avatsav.linkding.api.extensions.parameterQuery
-import dev.avatsav.linkding.api.extensions.toEither
+import dev.avatsav.linkding.api.extensions.toResult
 import dev.avatsav.linkding.api.models.LinkdingErrorResponse
 import dev.avatsav.linkding.api.models.LinkdingTagsResponse
 import io.ktor.client.HttpClient
@@ -16,12 +16,12 @@ class DefaultLinkdingTagsApi(private val httpClient: HttpClient) : LinkdingTagsA
         offset: Int,
         limit: Int,
         query: String,
-    ): Either<LinkdingErrorResponse, LinkdingTagsResponse> {
+    ): Result<LinkdingTagsResponse, LinkdingErrorResponse> {
         val apiResponse: ApiResponse<LinkdingTagsResponse, LinkdingErrorResponse> = httpClient.get {
             endpointTags()
             parameterPage(offset, limit)
             parameterQuery(query)
         }
-        return apiResponse.toEither(LinkdingErrorResponse.DEFAULT)
+        return apiResponse.toResult(LinkdingErrorResponse.DEFAULT)
     }
 }
