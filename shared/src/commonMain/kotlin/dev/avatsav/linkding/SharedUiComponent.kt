@@ -18,5 +18,4 @@ interface SharedUiComponent : SetupComponent {
         .addUiFactories(uiFactories)
         .addPresenterFactories(presenterFactories)
         .build()
-
 }

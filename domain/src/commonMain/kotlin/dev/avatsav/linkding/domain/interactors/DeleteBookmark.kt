@@ -17,5 +17,4 @@ class DeleteBookmark(
         withContext(dispatchers.io) {
             repository.deleteBookmark(param)
         }
-
 }

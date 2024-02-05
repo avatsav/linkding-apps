@@ -14,4 +14,3 @@ kotlin {
 android {
     namespace = "dev.avatsav.linkding.unfurl"
 }
-

@@ -1,55 +1,55 @@
-//package dev.avatsav.linkding.ui.bookmarks
+// package dev.avatsav.linkding.ui.bookmarks
 //
-//import android.content.res.Configuration
-//import androidx.compose.animation.core.Animatable
-//import androidx.compose.animation.core.Spring
-//import androidx.compose.animation.core.spring
-//import androidx.compose.foundation.background
-//import androidx.compose.foundation.clickable
-//import androidx.compose.foundation.layout.Arrangement
-//import androidx.compose.foundation.layout.Box
-//import androidx.compose.foundation.layout.BoxScope
-//import androidx.compose.foundation.layout.Column
-//import androidx.compose.foundation.layout.Row
-//import androidx.compose.foundation.layout.fillMaxWidth
-//import androidx.compose.foundation.layout.padding
-//import androidx.compose.foundation.layout.size
-//import androidx.compose.foundation.lazy.LazyRow
-//import androidx.compose.foundation.lazy.items
-//import androidx.compose.material3.DismissState
-//import androidx.compose.material3.Divider
-//import androidx.compose.material3.ExperimentalMaterial3Api
-//import androidx.compose.material3.Icon
-//import androidx.compose.material3.MaterialTheme
-//import androidx.compose.material3.Surface
-//import androidx.compose.material3.Text
-//import androidx.compose.runtime.Composable
-//import androidx.compose.runtime.LaunchedEffect
-//import androidx.compose.runtime.remember
-//import androidx.compose.ui.Alignment
-//import androidx.compose.ui.Modifier
-//import androidx.compose.ui.draw.scale
-//import androidx.compose.ui.graphics.painter.Painter
-//import androidx.compose.ui.res.painterResource
-//import androidx.compose.ui.text.style.TextOverflow
-//import androidx.compose.ui.tooling.preview.Preview
-//import androidx.compose.ui.unit.dp
-//import dev.avatsav.linkding.android.R
-//import dev.avatsav.linkding.android.theme.LinkdingTheme
-//import dev.avatsav.linkding.android.ui.common.SwipeAction
-//import dev.avatsav.linkding.android.ui.common.SwipeableListItem
-//import dev.avatsav.linkding.ui.bookmarks.BookmarkViewItem
-//import dev.avatsav.linkding.ui.bookmarks.vm.BookmarkViewItem
+// import android.content.res.Configuration
+// import androidx.compose.animation.core.Animatable
+// import androidx.compose.animation.core.Spring
+// import androidx.compose.animation.core.spring
+// import androidx.compose.foundation.background
+// import androidx.compose.foundation.clickable
+// import androidx.compose.foundation.layout.Arrangement
+// import androidx.compose.foundation.layout.Box
+// import androidx.compose.foundation.layout.BoxScope
+// import androidx.compose.foundation.layout.Column
+// import androidx.compose.foundation.layout.Row
+// import androidx.compose.foundation.layout.fillMaxWidth
+// import androidx.compose.foundation.layout.padding
+// import androidx.compose.foundation.layout.size
+// import androidx.compose.foundation.lazy.LazyRow
+// import androidx.compose.foundation.lazy.items
+// import androidx.compose.material3.DismissState
+// import androidx.compose.material3.Divider
+// import androidx.compose.material3.ExperimentalMaterial3Api
+// import androidx.compose.material3.Icon
+// import androidx.compose.material3.MaterialTheme
+// import androidx.compose.material3.Surface
+// import androidx.compose.material3.Text
+// import androidx.compose.runtime.Composable
+// import androidx.compose.runtime.LaunchedEffect
+// import androidx.compose.runtime.remember
+// import androidx.compose.ui.Alignment
+// import androidx.compose.ui.Modifier
+// import androidx.compose.ui.draw.scale
+// import androidx.compose.ui.graphics.painter.Painter
+// import androidx.compose.ui.res.painterResource
+// import androidx.compose.ui.text.style.TextOverflow
+// import androidx.compose.ui.tooling.preview.Preview
+// import androidx.compose.ui.unit.dp
+// import dev.avatsav.linkding.android.R
+// import dev.avatsav.linkding.android.theme.LinkdingTheme
+// import dev.avatsav.linkding.android.ui.common.SwipeAction
+// import dev.avatsav.linkding.android.ui.common.SwipeableListItem
+// import dev.avatsav.linkding.ui.bookmarks.BookmarkViewItem
+// import dev.avatsav.linkding.ui.bookmarks.vm.BookmarkViewItem
 //
-//@OptIn(ExperimentalMaterial3Api::class)
-//@Composable
-//fun BookmarkListItem(
+// @OptIn(ExperimentalMaterial3Api::class)
+// @Composable
+// fun BookmarkListItem(
 //    modifier: Modifier = Modifier,
 //    bookmark: BookmarkViewItem,
 //    openBookmark: (BookmarkViewItem) -> Unit,
 //    toggleArchive: (BookmarkViewItem, DismissState) -> Unit,
 //    deleteBookmark: (BookmarkViewItem, DismissState) -> Unit,
-//) {
+// ) {
 //    var dismissState: DismissState? = null
 //
 //    Column(modifier = modifier) {
@@ -95,14 +95,14 @@
 //        }
 //        Divider(thickness = 0.5.dp)
 //    }
-//}
+// }
 //
-//@Composable
-//private fun BoxScope.BookmarkSwipeActionContent(
+// @Composable
+// private fun BoxScope.BookmarkSwipeActionContent(
 //    painter: Painter,
 //    text: String,
 //    dismissing: Boolean,
-//) {
+// ) {
 //    val iconAnimatable = remember { Animatable(if (dismissing) .7f else 1f) }
 //    LaunchedEffect(
 //        key1 = Unit,
@@ -134,13 +134,13 @@
 //            color = if (dismissing) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.primary,
 //        )
 //    }
-//}
+// }
 //
-//@Composable
-//private fun BookmarkContent(
+// @Composable
+// private fun BookmarkContent(
 //    modifier: Modifier = Modifier,
 //    bookmark: BookmarkViewItem,
-//) {
+// ) {
 //    Column(
 //        modifier = modifier
 //            .background(MaterialTheme.colorScheme.surface)
@@ -190,13 +190,13 @@
 //            }
 //        }
 //    }
-//}
+// }
 //
-//@OptIn(ExperimentalMaterial3Api::class)
-//@Preview(showBackground = true)
-//@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
-//@Composable
-//fun BookmarkItem_Preview() {
+// @OptIn(ExperimentalMaterial3Api::class)
+// @Preview(showBackground = true)
+// @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
+// @Composable
+// fun BookmarkItem_Preview() {
 //    LinkdingTheme {
 //        Surface {
 //            BookmarkListItem(
@@ -215,12 +215,12 @@
 //            )
 //        }
 //    }
-//}
+// }
 //
-//@Preview(showBackground = true)
-//@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
-//@Composable
-//fun BookmarkSwipeActionContent_Preview() {
+// @Preview(showBackground = true)
+// @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
+// @Composable
+// fun BookmarkSwipeActionContent_Preview() {
 //    LinkdingTheme {
 //        Surface {
 //            Box {
@@ -232,4 +232,4 @@
 //            }
 //        }
 //    }
-//}
+// }

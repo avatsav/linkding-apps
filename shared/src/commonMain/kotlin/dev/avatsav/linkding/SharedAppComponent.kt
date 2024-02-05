@@ -22,5 +22,4 @@ interface SharedAppComponent :
         computation = Dispatchers.Default,
         main = Dispatchers.Main,
     )
-
 }

@@ -35,7 +35,6 @@ import com.slack.circuit.runtime.ui.ui
 import dev.avatsav.linkding.ui.SetupScreen
 import me.tatarka.inject.annotations.Inject
 
-
 @Inject
 class SetupUiFactory : Ui.Factory {
     override fun create(screen: Screen, context: CircuitContext): Ui<*>? = when (screen) {
@@ -47,7 +46,6 @@ class SetupUiFactory : Ui.Factory {
         else -> null
     }
 }
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

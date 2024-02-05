@@ -1,48 +1,48 @@
-//package dev.avatsav.linkding.ui.bookmarks.vm
+// package dev.avatsav.linkding.ui.bookmarks.vm
 //
-//import dev.avatsav.linkding.data.bookmarks.BookmarksRepository
-//import dev.avatsav.linkding.data.unfurl.LinkUnfurler
-//import dev.avatsav.linkding.data.unfurl.UnfurlResult
-//import dev.avatsav.linkding.ui.AsyncState
-//import dev.avatsav.linkding.ui.Content
-//import dev.avatsav.linkding.ui.Fail
-//import dev.avatsav.linkding.ui.Loading
-//import dev.avatsav.linkding.ui.Uninitialized
-//import dev.avatsav.linkding.ui.ViewModel
-//import io.github.aakira.napier.Napier
-//import kotlinx.coroutines.Dispatchers
-//import kotlinx.coroutines.FlowPreview
-//import kotlinx.coroutines.flow.Flow
-//import kotlinx.coroutines.flow.MutableStateFlow
-//import kotlinx.coroutines.flow.SharingStarted
-//import kotlinx.coroutines.flow.StateFlow
-//import kotlinx.coroutines.flow.combine
-//import kotlinx.coroutines.flow.debounce
-//import kotlinx.coroutines.flow.distinctUntilChanged
-//import kotlinx.coroutines.flow.flowOn
-//import kotlinx.coroutines.flow.stateIn
-//import kotlinx.coroutines.flow.transform
-//import kotlinx.coroutines.launch
+// import dev.avatsav.linkding.data.bookmarks.BookmarksRepository
+// import dev.avatsav.linkding.data.unfurl.LinkUnfurler
+// import dev.avatsav.linkding.data.unfurl.UnfurlResult
+// import dev.avatsav.linkding.ui.AsyncState
+// import dev.avatsav.linkding.ui.Content
+// import dev.avatsav.linkding.ui.Fail
+// import dev.avatsav.linkding.ui.Loading
+// import dev.avatsav.linkding.ui.Uninitialized
+// import dev.avatsav.linkding.ui.ViewModel
+// import io.github.aakira.napier.Napier
+// import kotlinx.coroutines.Dispatchers
+// import kotlinx.coroutines.FlowPreview
+// import kotlinx.coroutines.flow.Flow
+// import kotlinx.coroutines.flow.MutableStateFlow
+// import kotlinx.coroutines.flow.SharingStarted
+// import kotlinx.coroutines.flow.StateFlow
+// import kotlinx.coroutines.flow.combine
+// import kotlinx.coroutines.flow.debounce
+// import kotlinx.coroutines.flow.distinctUntilChanged
+// import kotlinx.coroutines.flow.flowOn
+// import kotlinx.coroutines.flow.stateIn
+// import kotlinx.coroutines.flow.transform
+// import kotlinx.coroutines.launch
 //
-//data class AddBookmarkViewState(
+// data class AddBookmarkViewState(
 //    val unfurlState: AsyncState<UnfurlData, UnfurlError> = Uninitialized,
 //    val saveState: AsyncState<Bookmark, SaveError> = Uninitialized,
-//) {
+// ) {
 //    object UnfurlError
 //    data class SaveError(val message: String)
-//}
+// }
 //
-//data class UnfurlData(
+// data class UnfurlData(
 //    val unfurledUrl: String,
 //    val unfurledTitle: String? = null,
 //    val unfurledDescription: String? = null,
-//)
+// )
 //
-//@OptIn(FlowPreview::class)
-//class AddBookmarkViewModel(
+// @OptIn(FlowPreview::class)
+// class AddBookmarkViewModel(
 //    private val bookmarksRepository: BookmarksRepository,
 //    private val linkUnfurler: LinkUnfurler,
-//) : ViewModel() {
+// ) : ViewModel() {
 //
 //    private val urlFlow = MutableStateFlow("")
 //
@@ -88,9 +88,9 @@
 //            }
 //        }
 //    }
-//}
+// }
 //
-//private fun UnfurlResult.toAsyncState(): AsyncState<UnfurlData, AddBookmarkViewState.UnfurlError> =
+// private fun UnfurlResult.toAsyncState(): AsyncState<UnfurlData, AddBookmarkViewState.UnfurlError> =
 //    when (this) {
 //        is UnfurlResult.Data -> Content(UnfurlData(url, title, description))
 //        is UnfurlResult.Error -> Fail(dev.avatsav.linkding.ui.bookmarks.vm.AddBookmarkViewState.UnfurlError)

@@ -1,35 +1,35 @@
-//package dev.avatsav.linkding.ui.bookmarks
+// package dev.avatsav.linkding.ui.bookmarks
 //
-//import androidx.compose.foundation.layout.PaddingValues
-//import androidx.compose.foundation.layout.fillMaxWidth
-//import androidx.compose.foundation.lazy.LazyColumn
-//import androidx.compose.foundation.lazy.items
-//import androidx.compose.foundation.lazy.rememberLazyListState
-//import androidx.compose.material3.Divider
-//import androidx.compose.material3.ExperimentalMaterial3Api
-//import androidx.compose.material3.ListItem
-//import androidx.compose.material3.ModalBottomSheet
-//import androidx.compose.material3.Text
-//import androidx.compose.material3.TopAppBar
-//import androidx.compose.material3.rememberModalBottomSheetState
-//import androidx.compose.runtime.Composable
-//import androidx.compose.runtime.getValue
-//import androidx.compose.ui.Modifier
-//import androidx.compose.ui.unit.dp
-//import androidx.lifecycle.compose.collectAsStateWithLifecycle
-//import dev.avatsav.linkding.android.extensions.OnEndReached
-//import dev.avatsav.linkding.domain.Tag
-//import dev.avatsav.linkding.ui.PageStatus
-//import dev.avatsav.linkding.ui.bookmarks.TagsViewModel
-//import dev.avatsav.linkding.ui.onPagedContent
-//import org.koin.androidx.compose.koinViewModel
+// import androidx.compose.foundation.layout.PaddingValues
+// import androidx.compose.foundation.layout.fillMaxWidth
+// import androidx.compose.foundation.lazy.LazyColumn
+// import androidx.compose.foundation.lazy.items
+// import androidx.compose.foundation.lazy.rememberLazyListState
+// import androidx.compose.material3.Divider
+// import androidx.compose.material3.ExperimentalMaterial3Api
+// import androidx.compose.material3.ListItem
+// import androidx.compose.material3.ModalBottomSheet
+// import androidx.compose.material3.Text
+// import androidx.compose.material3.TopAppBar
+// import androidx.compose.material3.rememberModalBottomSheetState
+// import androidx.compose.runtime.Composable
+// import androidx.compose.runtime.getValue
+// import androidx.compose.ui.Modifier
+// import androidx.compose.ui.unit.dp
+// import androidx.lifecycle.compose.collectAsStateWithLifecycle
+// import dev.avatsav.linkding.android.extensions.OnEndReached
+// import dev.avatsav.linkding.domain.Tag
+// import dev.avatsav.linkding.ui.PageStatus
+// import dev.avatsav.linkding.ui.bookmarks.TagsViewModel
+// import dev.avatsav.linkding.ui.onPagedContent
+// import org.koin.androidx.compose.koinViewModel
 //
-//@OptIn(ExperimentalMaterial3Api::class)
-//@Composable
-//fun TagsBottomSheet(
+// @OptIn(ExperimentalMaterial3Api::class)
+// @Composable
+// fun TagsBottomSheet(
 //    onDismissRequest: () -> Unit,
 //    modifier: Modifier = Modifier,
-//) {
+// ) {
 //    val viewModel: TagsViewModel = koinViewModel()
 //
 //    val state by viewModel.state.collectAsStateWithLifecycle()
@@ -69,4 +69,4 @@
 //        }
 //        listState.OnEndReached { viewModel.loadMore() }
 //    }
-//}
+// }

@@ -7,5 +7,4 @@ class BookmarkErrorMapper {
 
     fun map(linkdingBookmarkError: LinkdingErrorResponse) =
         BookmarkError(linkdingBookmarkError.detail)
-
 }

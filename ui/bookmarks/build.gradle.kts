@@ -12,7 +12,6 @@ kotlin {
             implementation(compose.foundation)
             implementation(compose.material)
             implementation(compose.material3)
-
         }
         androidMain.dependencies {
             implementation(libs.androidx.activity.compose)

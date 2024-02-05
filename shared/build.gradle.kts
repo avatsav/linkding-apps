@@ -35,4 +35,3 @@ ksp {
 }
 
 addKspDependencyForAllTargets(libs.kotlin.inject.compiler)
-

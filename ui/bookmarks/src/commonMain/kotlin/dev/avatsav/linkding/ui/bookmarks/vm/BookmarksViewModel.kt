@@ -1,24 +1,24 @@
-//package dev.avatsav.linkding.ui.bookmarks.vm
+// package dev.avatsav.linkding.ui.bookmarks.vm
 //
-//import dev.avatsav.linkding.data.bookmarks.BookmarksRepository
-//import dev.avatsav.linkding.paging.Page
-//import dev.avatsav.linkding.paging.Pager
-//import dev.avatsav.linkding.paging.PagerConfig
-//import dev.avatsav.linkding.paging.PagingError
-//import dev.avatsav.linkding.ui.AsyncState
-//import dev.avatsav.linkding.ui.Uninitialized
-//import dev.avatsav.linkding.ui.ViewModel
-//import dev.avatsav.linkding.ui.bookmarks.vm.BookmarksViewState.Companion.Initial
-//import io.github.aakira.napier.Napier
-//import io.ktor.http.Url
-//import kotlinx.coroutines.flow.MutableStateFlow
-//import kotlinx.coroutines.flow.SharingStarted
-//import kotlinx.coroutines.flow.StateFlow
-//import kotlinx.coroutines.flow.combine
-//import kotlinx.coroutines.flow.stateIn
-//import kotlinx.coroutines.launch
+// import dev.avatsav.linkding.data.bookmarks.BookmarksRepository
+// import dev.avatsav.linkding.paging.Page
+// import dev.avatsav.linkding.paging.Pager
+// import dev.avatsav.linkding.paging.PagerConfig
+// import dev.avatsav.linkding.paging.PagingError
+// import dev.avatsav.linkding.ui.AsyncState
+// import dev.avatsav.linkding.ui.Uninitialized
+// import dev.avatsav.linkding.ui.ViewModel
+// import dev.avatsav.linkding.ui.bookmarks.vm.BookmarksViewState.Companion.Initial
+// import io.github.aakira.napier.Napier
+// import io.ktor.http.Url
+// import kotlinx.coroutines.flow.MutableStateFlow
+// import kotlinx.coroutines.flow.SharingStarted
+// import kotlinx.coroutines.flow.StateFlow
+// import kotlinx.coroutines.flow.combine
+// import kotlinx.coroutines.flow.stateIn
+// import kotlinx.coroutines.launch
 //
-//data class BookmarkViewItem(
+// data class BookmarkViewItem(
 //    val id: Long,
 //    val title: String,
 //    val description: String,
@@ -26,7 +26,7 @@
 //    val url: String,
 //    val archived: Boolean,
 //    val tagNames: Set<String> = emptySet(),
-//) {
+// ) {
 //    companion object {
 //        fun fromBookmark(bookmark: Bookmark) = BookmarkViewItem(
 //            id = bookmark.id,
@@ -38,23 +38,23 @@
 //            tagNames = bookmark.tagNames,
 //        )
 //    }
-//}
+// }
 //
-//data class SearchState(
+// data class SearchState(
 //    val query: String = "",
 //    val archivedFilterSelected: Boolean = false,
-//)
+// )
 //
-//data class BookmarksViewState(
+// data class BookmarksViewState(
 //    val searchState: SearchState,
 //    val bookmarksState: AsyncState<List<BookmarkViewItem>, PagingError>,
-//) {
+// ) {
 //    companion object {
 //        val Initial = BookmarksViewState(SearchState(), Uninitialized)
 //    }
-//}
+// }
 //
-//class BookmarksViewModel(private val bookmarksRepository: BookmarksRepository) : ViewModel() {
+// class BookmarksViewModel(private val bookmarksRepository: BookmarksRepository) : ViewModel() {
 //
 //    private val searchState = MutableStateFlow(SearchState())
 //
@@ -177,4 +177,4 @@
 //            null
 //        }
 //    }
-//}
+// }

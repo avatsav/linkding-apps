@@ -5,7 +5,6 @@ import android.content.pm.ApplicationInfo
 import dev.avatsav.linkding.inject.AppScope
 import me.tatarka.inject.annotations.Provides
 
-
 actual interface SharedPlatformAppComponent {
 
     @AppScope
@@ -21,5 +20,4 @@ actual interface SharedPlatformAppComponent {
             version = packageInfo.versionName,
         )
     }
-
 }

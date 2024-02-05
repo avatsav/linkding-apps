@@ -17,5 +17,4 @@ class ArchiveBookmark(
         withContext(dispatchers.io) {
             repository.archiveBookmark(param)
         }
-
 }

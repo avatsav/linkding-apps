@@ -27,7 +27,6 @@ abstract class Observer<P : Any, R> {
     }
 
     protected abstract fun createObservable(params: P): Flow<R>
-
 }
 
 abstract class PagedObserver<P : PagedObserver.Parameters<T>, T : Any> :

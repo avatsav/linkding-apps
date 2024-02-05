@@ -20,5 +20,4 @@ class SaveApiConfiguration(private val prefs: AppPreferences) :
         }
 
     data class Error(val message: String)
-
 }

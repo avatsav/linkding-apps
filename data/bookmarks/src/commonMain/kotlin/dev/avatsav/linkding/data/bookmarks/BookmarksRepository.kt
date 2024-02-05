@@ -65,5 +65,4 @@ class BookmarksRepository(
     suspend fun deleteBookmark(id: Long): Result<Unit, BookmarkError> {
         return bookmarksApi.deleteBookmark(id).mapError { errorMapper.map(it) }
     }
-
 }

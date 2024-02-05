@@ -1,52 +1,52 @@
-//package dev.avatsav.linkding.ui.bookmarks
+// package dev.avatsav.linkding.ui.bookmarks
 //
-//import androidx.compose.foundation.background
-//import androidx.compose.foundation.layout.Box
-//import androidx.compose.foundation.layout.Column
-//import androidx.compose.foundation.layout.PaddingValues
-//import androidx.compose.foundation.layout.Row
-//import androidx.compose.foundation.layout.fillMaxWidth
-//import androidx.compose.foundation.layout.height
-//import androidx.compose.foundation.layout.padding
-//import androidx.compose.foundation.lazy.LazyRow
-//import androidx.compose.foundation.shape.RoundedCornerShape
-//import androidx.compose.foundation.text.BasicTextField
-//import androidx.compose.material.icons.Icons
-//import androidx.compose.material.icons.filled.MoreVert
-//import androidx.compose.material.icons.filled.Search
-//import androidx.compose.material3.AssistChip
-//import androidx.compose.material3.AssistChipDefaults
-//import androidx.compose.material3.ExperimentalMaterial3Api
-//import androidx.compose.material3.FilterChip
-//import androidx.compose.material3.FilterChipDefaults
-//import androidx.compose.material3.Icon
-//import androidx.compose.material3.IconButton
-//import androidx.compose.material3.LocalTextStyle
-//import androidx.compose.material3.MaterialTheme
-//import androidx.compose.material3.Surface
-//import androidx.compose.material3.Text
-//import androidx.compose.material3.surfaceColorAtElevation
-//import androidx.compose.runtime.Composable
-//import androidx.compose.ui.Alignment
-//import androidx.compose.ui.Modifier
-//import androidx.compose.ui.res.painterResource
-//import androidx.compose.ui.tooling.preview.Preview
-//import androidx.compose.ui.unit.dp
-//import dev.avatsav.linkding.android.R
-//import dev.avatsav.linkding.android.theme.LinkdingTheme
-//import dev.avatsav.linkding.ui.bookmarks.SearchState
-//import dev.avatsav.linkding.ui.bookmarks.vm.SearchState
+// import androidx.compose.foundation.background
+// import androidx.compose.foundation.layout.Box
+// import androidx.compose.foundation.layout.Column
+// import androidx.compose.foundation.layout.PaddingValues
+// import androidx.compose.foundation.layout.Row
+// import androidx.compose.foundation.layout.fillMaxWidth
+// import androidx.compose.foundation.layout.height
+// import androidx.compose.foundation.layout.padding
+// import androidx.compose.foundation.lazy.LazyRow
+// import androidx.compose.foundation.shape.RoundedCornerShape
+// import androidx.compose.foundation.text.BasicTextField
+// import androidx.compose.material.icons.Icons
+// import androidx.compose.material.icons.filled.MoreVert
+// import androidx.compose.material.icons.filled.Search
+// import androidx.compose.material3.AssistChip
+// import androidx.compose.material3.AssistChipDefaults
+// import androidx.compose.material3.ExperimentalMaterial3Api
+// import androidx.compose.material3.FilterChip
+// import androidx.compose.material3.FilterChipDefaults
+// import androidx.compose.material3.Icon
+// import androidx.compose.material3.IconButton
+// import androidx.compose.material3.LocalTextStyle
+// import androidx.compose.material3.MaterialTheme
+// import androidx.compose.material3.Surface
+// import androidx.compose.material3.Text
+// import androidx.compose.material3.surfaceColorAtElevation
+// import androidx.compose.runtime.Composable
+// import androidx.compose.ui.Alignment
+// import androidx.compose.ui.Modifier
+// import androidx.compose.ui.res.painterResource
+// import androidx.compose.ui.tooling.preview.Preview
+// import androidx.compose.ui.unit.dp
+// import dev.avatsav.linkding.android.R
+// import dev.avatsav.linkding.android.theme.LinkdingTheme
+// import dev.avatsav.linkding.ui.bookmarks.SearchState
+// import dev.avatsav.linkding.ui.bookmarks.vm.SearchState
 //
-//@OptIn(ExperimentalMaterial3Api::class)
-//@Composable
-//fun SearchBar(
+// @OptIn(ExperimentalMaterial3Api::class)
+// @Composable
+// fun SearchBar(
 //    modifier: Modifier = Modifier,
 //    searchState: SearchState,
 //    searchClicked: () -> Unit,
 //    menuClicked: () -> Unit,
 //    tagsClicked: () -> Unit,
 //    archivedFilter: (Boolean) -> Unit,
-//) {
+// ) {
 //    Column {
 //        BasicTextField(
 //            value = "",
@@ -124,12 +124,12 @@
 //            }
 //        }
 //    }
-//}
+// }
 //
-//@Preview
-//@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
-//@Composable
-//fun SearchBar_Preview() {
+// @Preview
+// @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
+// @Composable
+// fun SearchBar_Preview() {
 //    LinkdingTheme {
 //        Surface {
 //            SearchBar(
@@ -144,4 +144,4 @@
 //            )
 //        }
 //    }
-//}
+// }

@@ -31,5 +31,3 @@ class LinkdingConnectionTester internal constructor(clientConfig: LinkdingClient
         }.toResult(LinkdingErrorResponse.DEFAULT).map { }
     }
 }
-
-

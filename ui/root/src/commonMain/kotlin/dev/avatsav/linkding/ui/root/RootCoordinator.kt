@@ -20,5 +20,4 @@ class RootCoordinator(
 
     val apiConfiguration = observeApiConfiguration.flow
         .stateIn(coroutineScope, WhileSubscribed(), ApiConfiguration.NotSet)
-
 }

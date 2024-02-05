@@ -1,11 +1,11 @@
 package dev.avatsav.linkding
 
-//@LinkdingScope
-//@Component
-//abstract class LinkdingComponent(
+// @LinkdingScope
+// @Component
+// abstract class LinkdingComponent(
 //    private val apiConfiguration: ApiConfiguration.Linkding,
 //    @Component val appComponent: SharedAppComponent,
-//) : LinkdingApiPlatformComponent {
+// ) : LinkdingApiPlatformComponent {
 //
 //    @LinkdingScope
 //    @Provides
@@ -13,4 +13,4 @@ package dev.avatsav.linkding
 //
 //    companion object
 //
-//}
+// }

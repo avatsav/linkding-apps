@@ -1,20 +1,20 @@
-//package dev.avatsav.linkding.ui.bookmarks
+// package dev.avatsav.linkding.ui.bookmarks
 //
-//import androidx.compose.material3.AlertDialog
-//import androidx.compose.material3.Icon
-//import androidx.compose.material3.Text
-//import androidx.compose.material3.TextButton
-//import androidx.compose.runtime.Composable
-//import androidx.compose.ui.res.painterResource
-//import dev.avatsav.linkding.android.R
-//import dev.avatsav.linkding.ui.bookmarks.BookmarkViewItem
+// import androidx.compose.material3.AlertDialog
+// import androidx.compose.material3.Icon
+// import androidx.compose.material3.Text
+// import androidx.compose.material3.TextButton
+// import androidx.compose.runtime.Composable
+// import androidx.compose.ui.res.painterResource
+// import dev.avatsav.linkding.android.R
+// import dev.avatsav.linkding.ui.bookmarks.BookmarkViewItem
 //
-//@Composable
-//fun DeleteBookmarkDialog(
+// @Composable
+// fun DeleteBookmarkDialog(
 //    bookmark: BookmarkViewItem,
 //    onDismissRequest: () -> Unit,
 //    onConfirm: (BookmarkViewItem) -> Unit,
-//) {
+// ) {
 //    AlertDialog(
 //        onDismissRequest = onDismissRequest,
 //        icon = { Icon(painterResource(id = R.drawable.delete_24), contentDescription = "Delete") },
@@ -35,4 +35,4 @@
 //            }
 //        },
 //    )
-//}
+// }

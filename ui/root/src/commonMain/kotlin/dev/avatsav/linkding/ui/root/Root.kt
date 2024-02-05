@@ -29,5 +29,4 @@ fun Root(
         ApiConfiguration.NotSet -> navigator.goTo(SetupScreen)
             .also { navigator.resetRoot(SetupScreen) }
     }
-
 }

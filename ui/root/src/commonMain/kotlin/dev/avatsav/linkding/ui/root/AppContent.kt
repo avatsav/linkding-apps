@@ -58,7 +58,6 @@ fun AppContent(
     }
 }
 
-
 private class LinkdingNavigator(
     private val navigator: Navigator,
     private val backStack: SaveableBackStack,
@@ -84,4 +83,3 @@ private class LinkdingNavigator(
         return navigator.resetRoot(newRoot)
     }
 }
-

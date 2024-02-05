@@ -17,5 +17,4 @@ abstract class IosHomeUiControllerComponent(
     @Provides
     @UiScope
     fun uiViewController(impl: MainUIViewController): UIViewController = impl()
-
 }

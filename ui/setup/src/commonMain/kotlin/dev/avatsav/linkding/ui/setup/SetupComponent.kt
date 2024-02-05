@@ -17,5 +17,4 @@ interface SetupComponent {
     @Provides
     @UiScope
     fun bindSetupUiFactoryFactory(factory: SetupUiFactory): Ui.Factory = factory
-
 }

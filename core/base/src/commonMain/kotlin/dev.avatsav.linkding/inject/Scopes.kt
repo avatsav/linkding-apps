@@ -10,5 +10,3 @@ annotation class LinkdingScope
 
 @Scope
 annotation class UiScope
-
-

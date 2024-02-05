@@ -17,5 +17,4 @@ class ApiConnectionTester(
         return linkdingConnectionTester.test(hostUrl, apiKey)
             .mapError { InvalidApiConfiguration(it.detail) }
     }
-
 }

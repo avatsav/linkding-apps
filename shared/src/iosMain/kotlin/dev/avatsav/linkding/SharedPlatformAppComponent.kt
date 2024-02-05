@@ -21,5 +21,4 @@ actual interface SharedPlatformAppComponent {
     @AppScope
     @Provides
     fun provideNsUserDefaults(): NSUserDefaults = NSUserDefaults.standardUserDefaults
-
 }

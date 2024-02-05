@@ -6,7 +6,7 @@ import me.tatarka.inject.annotations.Provides
 
 expect interface LinkdingApiPlatformComponent
 
-interface LinkdingApiComponent: LinkdingApiPlatformComponent {
+interface LinkdingApiComponent : LinkdingApiPlatformComponent {
 
     @LinkdingScope
     @Provides

@@ -58,5 +58,4 @@ internal object HttpClientFactory {
         return clientConfig.httpClientBuilder?.invoke()?.config(defaultHttpConfig)
             ?: HttpClient(defaultHttpConfig)
     }
-
 }

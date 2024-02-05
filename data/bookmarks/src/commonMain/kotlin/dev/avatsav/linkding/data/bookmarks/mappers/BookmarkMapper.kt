@@ -36,4 +36,3 @@ class BookmarkMapper {
         shared = saveBookmark.shared,
     )
 }
-

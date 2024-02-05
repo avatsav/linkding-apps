@@ -39,7 +39,6 @@ androidx-activity = { module = "androidx.activity:activity", version.ref = "andr
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidxActivity" }
 androidx-core = "androidx.core:core-ktx:1.12.0"
 androidx-splashscreen = "androidx.core:core-splashscreen:1.0.1"
-
 androidx-browser = "androidx.browser:browser:1.7.0"
 
 paging-common = { module = "app.cash.paging:paging-common", version.ref = "paging-kmp" }
@@ -68,7 +67,6 @@ multiplatform-settings-coroutines = { module = "com.russhwolf:multiplatform-sett
 
 kotlin-inject-compiler = { module = "me.tatarka.inject:kotlin-inject-compiler-ksp", version.ref = "kotlin-inject" }
 kotlin-inject-runtime = { module = "me.tatarka.inject:kotlin-inject-runtime", version.ref = "kotlin-inject" }
-
 
 kotlinResult = { module = "com.michael-bull.kotlin-result:kotlin-result", version.ref = "kotlinResult" }
 kotlinResultCoroutines = { module = "com.michael-bull.kotlin-result:kotlin-result-coroutines", version.ref = "kotlinResult" }

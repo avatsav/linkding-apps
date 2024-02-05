@@ -52,5 +52,3 @@ class VerifyApiConfiguration(
         data object CannotConnect : Error("Cannot connect.")
     }
 }
-
-

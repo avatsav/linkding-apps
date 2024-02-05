@@ -44,7 +44,7 @@ fun SplashScreen() {
                         .background(color = MaterialTheme.colorScheme.primary),
                     contentAlignment = Alignment.Center,
 
-                    ) {
+                ) {
                     Icon(
                         painter = painterResource(Res.drawable.ic_android),
                         modifier = Modifier

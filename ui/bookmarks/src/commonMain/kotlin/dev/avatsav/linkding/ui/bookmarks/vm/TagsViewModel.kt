@@ -1,31 +1,31 @@
-//package dev.avatsav.linkding.ui.bookmarks.vm
+// package dev.avatsav.linkding.ui.bookmarks.vm
 //
-//import dev.avatsav.linkding.data.tags.TagsRepository
-//import dev.avatsav.linkding.paging.Page
-//import dev.avatsav.linkding.paging.Pager
-//import dev.avatsav.linkding.paging.PagerConfig
-//import dev.avatsav.linkding.paging.PagingError
-//import dev.avatsav.linkding.ui.AsyncState
-//import dev.avatsav.linkding.ui.Uninitialized
-//import dev.avatsav.linkding.ui.ViewModel
-//import dev.avatsav.linkding.ui.bookmarks.vm.TagsViewState.Companion.Initial
-//import io.ktor.http.Url
-//import kotlinx.coroutines.flow.MutableStateFlow
-//import kotlinx.coroutines.flow.SharingStarted
-//import kotlinx.coroutines.flow.StateFlow
-//import kotlinx.coroutines.flow.combine
-//import kotlinx.coroutines.flow.stateIn
+// import dev.avatsav.linkding.data.tags.TagsRepository
+// import dev.avatsav.linkding.paging.Page
+// import dev.avatsav.linkding.paging.Pager
+// import dev.avatsav.linkding.paging.PagerConfig
+// import dev.avatsav.linkding.paging.PagingError
+// import dev.avatsav.linkding.ui.AsyncState
+// import dev.avatsav.linkding.ui.Uninitialized
+// import dev.avatsav.linkding.ui.ViewModel
+// import dev.avatsav.linkding.ui.bookmarks.vm.TagsViewState.Companion.Initial
+// import io.ktor.http.Url
+// import kotlinx.coroutines.flow.MutableStateFlow
+// import kotlinx.coroutines.flow.SharingStarted
+// import kotlinx.coroutines.flow.StateFlow
+// import kotlinx.coroutines.flow.combine
+// import kotlinx.coroutines.flow.stateIn
 //
-//data class TagsViewState(
+// data class TagsViewState(
 //    val searchQuery: String = "",
 //    val tagsState: AsyncState<List<Tag>, PagingError>,
-//) {
+// ) {
 //    companion object {
 //        val Initial = TagsViewState("", Uninitialized)
 //    }
-//}
+// }
 //
-//class TagsViewModel(private val tagsRepository: TagsRepository) : ViewModel() {
+// class TagsViewModel(private val tagsRepository: TagsRepository) : ViewModel() {
 //
 //    private var tagsPager = Pager(
 //        coroutineScope = viewModelScope,
@@ -76,4 +76,4 @@
 //            null
 //        }
 //    }
-//}
+// }

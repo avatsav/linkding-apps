@@ -88,6 +88,4 @@ class SetupPresenter(
             eventSink = ::eventSink,
         )
     }
-
-
 }
