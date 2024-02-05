@@ -2,12 +2,11 @@
 
 plugins {
     id("convention.android.application")
-    alias(libs.plugins.ksp)
+    id("convention.compose")
 }
 
 android {
     namespace = "dev.avatsav.linkding.android"
-    compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {
         applicationId = "dev.avatsav.linkding.android"
@@ -16,52 +15,45 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
+
     buildFeatures {
         buildConfig = true
-        compose = true
     }
-    composeOptions {
-        kotlinCompilerExtensionVersion = libs.versions.compose.compiler.get()
-    }
+
     packaging {
-        resources {
-            excludes += "/META-INF/{AL2.0,LGPL2.1}"
-            // See https://github.com/Kotlin/kotlinx.coroutines/issues/3668
-            excludes += "META-INF/versions/9/previous-compilation-data.bin"
-        }
+        resources.excludes += setOf(
+            "META-INF/*.version",
+            "META-INF/proguard/*",
+            "/*.properties",
+            "fabric/*.properties",
+            "META-INF/*.properties",
+            "LICENSE*",
+            "META-INF/**/previous-compilation-data.bin",
+        )
     }
+
     buildTypes {
-        getByName("release") {
-            isMinifyEnabled = false
+        debug {
+            versionNameSuffix = "-dev"
+            applicationIdSuffix = ".debug"
         }
-    }
-    applicationVariants.all {
-        sourceSets {
-            getByName(name) {
-                kotlin.srcDir("build/generated/ksp/$name/kotlin")
-            }
+        release {
+            isShrinkResources = true
+            isMinifyEnabled = true
+            proguardFiles("proguard-rules.pro")
         }
     }
 }
 
 dependencies {
     implementation(projects.shared)
-    implementation(libs.androidx.core)
-    implementation(libs.androidx.lifecycle.runtime.ktx)
-    implementation(libs.androidx.lifecycle.runtime.compose)
-    implementation(libs.androidx.lifecycle.viewmodel.ktx)
-    implementation(libs.androidx.lifecycle.viewmodel.compose)
+
+    implementation(libs.androidx.activity)
     implementation(libs.androidx.activity.compose)
-    implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.browser)
-
-    implementation(libs.compose.ui.ui)
-    implementation(libs.compose.foundation)
-    implementation(libs.compose.foundation.layout)
-    implementation(libs.compose.ui.tooling.preview)
-
+    implementation(libs.androidx.splashscreen)
     implementation(libs.kotlin.coroutines.android)
-    debugImplementation(libs.compose.ui.test.mainfest)
+
     debugImplementation(libs.leakCanary)
 
     testImplementation(libs.junit)

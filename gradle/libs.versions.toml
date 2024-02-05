@@ -1,17 +1,12 @@
 [versions]
 agp = "8.2.2"
-kotlin = "1.9.21"
-coroutines = "1.8.0-RC"
-ksp = "1.9.21-1.0.16"
+kotlin = "1.9.22"
+coroutines = "1.8.0-RC2"
+ksp = "1.9.22-1.0.17"
 spotless = "6.25.0"
 ktlint = "0.48.1"
-compose = "1.6.0"
-compose-compiler = "1.5.8"
-compose-material3 = "1.1.2"
-androidxlifecycle = "2.7.0"
 multiplatform-settings = "1.1.1"
 ktor = "2.3.7"
-androidxDatastore = "1.0.0"
 datetime = "0.5.0"
 jetbrains-compose = "1.6.0-beta01"
 kotlin-inject = "0.6.3"
@@ -19,6 +14,7 @@ kermit = "2.0.2"
 paging-kmp = "3.3.0-alpha02-0.4.0"
 circuit = "0.18.2"
 kotlinResult = "1.1.18"
+androidxActivity = "1.8.2"
 
 compileSdk = "34"
 minSdk = "26"
@@ -39,30 +35,12 @@ ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
 
 [libraries]
-androidx-activity-compose = "androidx.activity:activity-compose:1.8.2"
-androidx-appcompat = "androidx.appcompat:appcompat:1.6.1"
-
-androidx-navigation-compose = "androidx.navigation:navigation-compose:2.7.6"
-androidx-archCoreTesting = "androidx.arch.core:core-testing:2.2.0"
+androidx-activity = { module = "androidx.activity:activity", version.ref = "androidxActivity" }
+androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidxActivity" }
 androidx-core = "androidx.core:core-ktx:1.12.0"
+androidx-splashscreen = "androidx.core:core-splashscreen:1.0.1"
 
-androidx-lifecycle-runtime-ktx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "androidxlifecycle" }
-androidx-lifecycle-runtime-compose = { module = "androidx.lifecycle:lifecycle-runtime-compose", version.ref = "androidxlifecycle" }
-androidx-lifecycle-viewmodel-ktx = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "androidxlifecycle" }
-androidx-lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "androidxlifecycle" }
-
-androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "androidxDatastore" }
 androidx-browser = "androidx.browser:browser:1.7.0"
-compose-animation = { module = "androidx.compose.animation:animation", version.ref = "compose" }
-compose-foundation = { module = "androidx.compose.foundation:foundation", version.ref = "compose" }
-compose-foundation-layout = { module = "androidx.compose.foundation:foundation-layout", version.ref = "compose" }
-compose-material = { module = "androidx.compose.material:material", version.ref = "compose" }
-compose-material3 = { module = "androidx.compose.material3:material3", version.ref = "compose-material3" }
-compose-material3-windowSizeClass = { module = "androidx.compose.material3:material3-window-size-class", version.ref = "compose-material3" }
-compose-ui-ui = { module = "androidx.compose.ui:ui", version.ref = "compose" }
-compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling", version.ref = "compose" }
-compose-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview", version.ref = "compose" }
-compose-ui-test-mainfest = { module = "androidx.compose.ui:ui-test-manifest", version.ref = "compose" }
 
 paging-common = { module = "app.cash.paging:paging-common", version.ref = "paging-kmp" }
 paging-compose = { module = "app.cash.paging:paging-compose-common", version.ref = "paging-kmp" }
@@ -72,7 +50,7 @@ kotlin-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-co
 kotlin-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutines" }
 kotlin-serialization-json = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.2"
 kotlin-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "datetime" }
-kotlin-atomicfu = "org.jetbrains.kotlinx:atomicfu:0.23.1"
+kotlin-atomicfu = "org.jetbrains.kotlinx:atomicfu:0.23.2"
 
 ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
 ktor-client-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor" }
@@ -108,6 +86,8 @@ circuit-overlay = { module = "com.slack.circuit:circuit-overlay", version.ref = 
 circuit-retained = { module = "com.slack.circuit:circuit-retained", version.ref = "circuit" }
 circuitx-effects = { module = "com.slack.circuit:circuitx-effects", version.ref = "circuit" }
 circuitx-android = { module = "com.slack.circuit:circuitx-android", version.ref = "circuit" }
+circuitx-gestureNavigation = { module = "com.slack.circuit:circuitx-gesture-navigation", version.ref = "circuit" }
+
 
 # Build logic dependencies
 android-gradlePlugin = { module = "com.android.tools.build:gradle", version.ref = "agp" }

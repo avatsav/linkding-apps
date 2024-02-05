@@ -13,15 +13,15 @@ import com.slack.circuit.runtime.CircuitContext
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
 import com.slack.circuit.runtime.screen.Screen
+import dev.avatsav.linkding.Logger
 import dev.avatsav.linkding.data.model.ApiConfiguration
 import dev.avatsav.linkding.domain.interactors.SaveApiConfiguration
 import dev.avatsav.linkding.domain.interactors.VerifyApiConfiguration
-import dev.avatsav.linkding.ui.BookmarkListScreen
+import dev.avatsav.linkding.ui.BookmarksScreen
 import dev.avatsav.linkding.ui.SetupScreen
 import kotlinx.coroutines.launch
 import me.tatarka.inject.annotations.Assisted
 import me.tatarka.inject.annotations.Inject
-import org.jetbrains.skia.skottie.Logger
 
 @Inject
 class SetupUiPresenterFactory(
@@ -72,8 +72,8 @@ class SetupPresenter(
                                     event.apiKey,
                                 ),
                             ).onSuccess {
-                                navigator.goTo(BookmarkListScreen)
-                                navigator.resetRoot(BookmarkListScreen)
+                                navigator.goTo(BookmarksScreen)
+                                navigator.resetRoot(BookmarksScreen)
                             }.onFailure {
                                 errorMessage = it.message
                             }

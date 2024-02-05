@@ -20,7 +20,7 @@ interface AppPreferences {
 
 @OptIn(ExperimentalSettingsApi::class)
 @Inject
-internal class DefaultAppPreferences(
+class DefaultAppPreferences(
     internal val settings: ObservableSettings,
     dispatchers: AppCoroutineDispatchers,
 ) : AppPreferences {

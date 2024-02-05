@@ -5,10 +5,13 @@ import com.slack.circuit.runtime.screen.Screen
 abstract class LinkdingScreen(val name: String) : Screen
 
 @CommonParcelize
+data object RootScreen : LinkdingScreen("Root")
+
+@CommonParcelize
 data object SetupScreen : LinkdingScreen("Setup")
 
 @CommonParcelize
-data object BookmarkListScreen : LinkdingScreen("BookmarkList")
+data object BookmarksScreen : LinkdingScreen("Bookmarks")
 
 @CommonParcelize
-data class BookmarkDetailScreen(val id: String) : LinkdingScreen("BookmarkDetail")
+data class UrlScreen(val url: String) : LinkdingScreen("UrlScreen")

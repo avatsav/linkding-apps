@@ -20,8 +20,11 @@ kotlin {
             api(projects.core.logging)
             api(projects.core.preferences)
             api(projects.api.linkding)
+            api(projects.domain)
+            api(projects.data.bookmarks)
 
-            api(projects.ui.common.theme)
+            api(projects.ui.common.compose)
+            api(projects.ui.root)
             api(projects.ui.setup)
         }
     }

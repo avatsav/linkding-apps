@@ -8,11 +8,11 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             implementation(projects.core.base)
+            implementation(projects.core.logging)
             implementation(projects.domain)
-            implementation(projects.ui.common.theme)
+            implementation(projects.ui.common.compose)
             implementation(projects.data.models)
 
-            api(projects.ui.common.screens)
             api(projects.ui.common.screens)
             api(libs.circuit.foundation)
 

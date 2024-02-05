@@ -30,9 +30,9 @@
         "patch",
         "digest"
       ],
-      "automerge": true,
+      "automerge": false,
       "automergeType": "pr",
-      "platformAutomerge": true
+      "platformAutomerge": false
     }
   ]
 }

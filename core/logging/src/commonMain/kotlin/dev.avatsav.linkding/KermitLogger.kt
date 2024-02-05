@@ -5,7 +5,7 @@ import co.touchlab.kermit.Severity
 import me.tatarka.inject.annotations.Inject
 
 @Inject
-internal class KermitLogger(appInfo: AppInfo) : Logger {
+class KermitLogger(appInfo: AppInfo) : Logger {
     init {
         Kermit.setMinSeverity(
             when {
