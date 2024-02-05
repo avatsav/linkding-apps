@@ -9,7 +9,6 @@ import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
-import me.tatarka.inject.annotations.Inject
 
 interface AppPreferences {
 
@@ -19,8 +18,7 @@ interface AppPreferences {
 }
 
 @OptIn(ExperimentalSettingsApi::class)
-@Inject
-class DefaultAppPreferences(
+internal class DefaultAppPreferences(
     internal val settings: ObservableSettings,
     dispatchers: AppCoroutineDispatchers,
 ) : AppPreferences {

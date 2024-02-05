@@ -39,6 +39,7 @@ androidx-activity-compose = { module = "androidx.activity:activity-compose", ver
 androidx-core = "androidx.core:core-ktx:1.12.0"
 androidx-splashscreen = "androidx.core:core-splashscreen:1.0.1"
 androidx-browser = "androidx.browser:browser:1.7.0"
+androidx-preference = "androidx.preference:preference-ktx:1.2.1"
 
 paging-common = { module = "app.cash.paging:paging-common", version.ref = "paging-kmp" }
 paging-compose = { module = "app.cash.paging:paging-compose-common", version.ref = "paging-kmp" }

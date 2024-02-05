@@ -2,7 +2,8 @@ package dev.avatsav.linkding
 
 import dev.avatsav.linkding.api.inject.LinkdingConnectionTesterComponent
 import dev.avatsav.linkding.inject.AppScope
-import dev.avatsav.linkding.prefs.PreferencesComponent
+import dev.avatsav.linkding.inject.LoggerComponent
+import dev.avatsav.linkding.prefs.inject.PreferencesComponent
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import me.tatarka.inject.annotations.Provides

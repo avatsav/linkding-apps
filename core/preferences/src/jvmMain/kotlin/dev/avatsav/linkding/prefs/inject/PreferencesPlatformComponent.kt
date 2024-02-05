@@ -1,4 +1,4 @@
-package dev.avatsav.linkding.prefs
+package dev.avatsav.linkding.prefs.inject
 
 import com.russhwolf.settings.ObservableSettings
 import com.russhwolf.settings.PreferencesSettings

@@ -1,8 +1,8 @@
-package dev.avatsav.linkding.prefs
+package dev.avatsav.linkding.prefs.inject
 
 import android.app.Application
 import android.content.SharedPreferences
-import android.preference.PreferenceManager
+import androidx.preference.PreferenceManager
 import com.russhwolf.settings.ObservableSettings
 import com.russhwolf.settings.SharedPreferencesSettings
 import dev.avatsav.linkding.inject.AppScope
@@ -15,7 +15,6 @@ actual interface PreferencesPlatformComponent {
         return SharedPreferencesSettings(sharedPrefs)
     }
 
-    @Suppress("DEPRECATION")
     @Provides
     @AppScope
     fun provideSharedPreferences(

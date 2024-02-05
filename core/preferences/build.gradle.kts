@@ -15,6 +15,7 @@ kotlin {
 
         androidMain.dependencies {
             implementation(libs.androidx.core)
+            implementation(libs.androidx.preference)
             implementation(libs.kotlin.inject.runtime)
         }
     }
