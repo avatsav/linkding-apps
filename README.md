@@ -17,9 +17,9 @@ patterns, API design, and more.
 ## Colophon
 
 - Kotlin Multiplatform + Compose Multiplatform.
-- [Circuit](https://slackhq.github.io/circuit/) for compose powered UI state management.
-- [Kotlin Inject](https://github.com/evant/kotlin-inject) for DI.
-- [Arrow Kt](https://github.com/evant/kotlin-inject) for functional types.
+- [circuit](https://slackhq.github.io/circuit/) for compose powered UI state management.
+- [kotlin-inject](https://github.com/evant/kotlin-inject) for DI.
+- [kotlin-result](https://github.com/michaelbull/kotlin-result) for result types.
 
 ## License
 
