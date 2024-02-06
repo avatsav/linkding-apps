@@ -9,10 +9,8 @@ bookmarking service.
 
 ## Motivation
 
-It’s an app that I built for myself to use to quickly bookmark and access them from my
-phone. [Linkding](https://github.com/sissbruecker/linkding)
-The repository is very much a playground to play around with architecture, Gradle, libraries,
-patterns, API design, and more.
+This is an app that I built for myself to add and access bookmarks from my Linkding instance.
+It is very much a playground to experiment with architecture, Gradle, libraries, patterns, API design, and more.
 
 ## Colophon
 
