@@ -12,12 +12,14 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.DismissDirection
-import androidx.compose.material3.DismissState
-import androidx.compose.material3.DismissValue
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.SwipeToDismiss
-import androidx.compose.material3.rememberDismissState
+import androidx.compose.material3.SwipeToDismissBox
+import androidx.compose.material3.SwipeToDismissBoxState
+import androidx.compose.material3.SwipeToDismissBoxValue
+import androidx.compose.material3.SwipeToDismissBoxValue.EndToStart
+import androidx.compose.material3.SwipeToDismissBoxValue.Settled
+import androidx.compose.material3.SwipeToDismissBoxValue.StartToEnd
+import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -52,24 +54,27 @@ fun SwipeableListItem(
     endAction: SwipeAction,
     threshold: Dp = 96.dp,
     background: Color = Color.Transparent,
-    content: @Composable (dismissState: DismissState) -> Unit,
+    content: @Composable (dismissState: SwipeToDismissBoxState) -> Unit,
 ) {
-    val dismissState = rememberDismissState(
+    val dismissState = rememberSwipeToDismissBoxState(
         confirmValueChange = { dismissValue ->
             when (dismissValue) {
-                DismissValue.Default -> false
-                DismissValue.DismissedToEnd -> {
-                    startAction.onSwipe()
+                StartToEnd -> {
+                    startAction.onSwipe
                     startAction.canDismiss
                 }
-                DismissValue.DismissedToStart -> {
+
+                EndToStart -> {
                     endAction.onSwipe()
                     endAction.canDismiss
                 }
+
+                Settled -> false
             }
         },
         positionalThreshold = { totalDistance -> 0.35f * totalDistance },
     )
+
     var dismissing: Boolean by remember { mutableStateOf(false) }
     LaunchedEffect(
         key1 = Unit,
@@ -78,6 +83,7 @@ fun SwipeableListItem(
                 .collect { dismissing = it }
         },
     )
+
     val haptics = LocalHapticFeedback.current
     LaunchedEffect(
         key1 = dismissing,
@@ -88,10 +94,9 @@ fun SwipeableListItem(
         },
     )
 
-    SwipeToDismiss(
-        modifier = modifier,
+    SwipeToDismissBox(
         state = dismissState,
-        background = {
+        backgroundContent = {
             AnimatedContent(
                 targetState = Pair(dismissState.dismissDirection, dismissing),
                 transitionSpec = {
@@ -119,41 +124,44 @@ fun SwipeableListItem(
                         .circularReveal(
                             progress = revealSize.asState(),
                             centerOffset = Offset(
-                                x = if (dismissDirection == DismissDirection.StartToEnd) 0.1f else 0.9f,
+                                x = if (dismissDirection == StartToEnd) 0.1f else 0.9f,
                                 y = 0.5f,
                             ),
                         )
                         .background(
                             color = when (dismissDirection) {
-                                DismissDirection.StartToEnd -> if (dismissing) startAction.background else background
-                                DismissDirection.EndToStart -> if (dismissing) endAction.background else background
+                                StartToEnd -> if (dismissing) startAction.background else background
+                                EndToStart -> if (dismissing) endAction.background else background
                                 else -> background
                             },
                         ),
                 ) {
                     val alignment: Alignment =
-                        if (dismissDirection == DismissDirection.StartToEnd) Alignment.CenterStart else Alignment.CenterEnd
+                        if (dismissDirection == StartToEnd) Alignment.CenterStart else Alignment.CenterEnd
                     Box(
                         modifier = Modifier
                             .fillMaxHeight()
                             .align(alignment),
                     ) {
                         when (dismissDirection) {
-                            DismissDirection.StartToEnd -> startAction.content(this, dismissing)
-                            DismissDirection.EndToStart -> endAction.content(this, dismissing)
+                            StartToEnd -> startAction.content(this, dismissing)
+                            EndToStart -> endAction.content(this, dismissing)
                             else -> {}
                         }
                     }
                 }
             }
         },
-        dismissContent = {
+        modifier = modifier,
+        enableDismissFromStartToEnd = true,
+        enableDismissFromEndToStart = true,
+        content = {
             content(dismissState)
         },
     )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
-private fun DismissValue.willDismiss(): Boolean {
-    return this == DismissValue.DismissedToStart || this == DismissValue.DismissedToEnd
+private fun SwipeToDismissBoxValue.willDismiss(): Boolean {
+    return this == StartToEnd || this == EndToStart
 }
