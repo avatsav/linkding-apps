@@ -8,6 +8,8 @@ import com.slack.circuit.runtime.CircuitUiState
 data class SetupUiState(
     val verifying: Boolean = false,
     val saving: Boolean = false,
+    val invalidHostUrl: Boolean = false,
+    val invalidApiKey: Boolean = false,
     val errorMessage: String? = null,
     val eventSink: (SetupUiEvent) -> Unit,
 ) : CircuitUiState {

@@ -36,6 +36,8 @@ internal object HttpClientFactory {
                 contentType(ContentType.Application.Json)
             }
 
+            expectSuccess = true
+
             install(ContentNegotiation) {
                 json(
                     Json {

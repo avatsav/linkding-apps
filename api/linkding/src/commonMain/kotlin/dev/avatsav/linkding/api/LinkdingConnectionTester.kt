@@ -6,10 +6,15 @@ import dev.avatsav.linkding.api.core.HttpClientFactory
 import dev.avatsav.linkding.api.extensions.endpointBookmarks
 import dev.avatsav.linkding.api.extensions.get
 import dev.avatsav.linkding.api.extensions.parameterPage
-import dev.avatsav.linkding.api.extensions.toResult
+import dev.avatsav.linkding.api.extensions.toLinkdingResult
 import dev.avatsav.linkding.api.models.LinkdingBookmarksResponse
+import dev.avatsav.linkding.api.models.LinkdingError
 import dev.avatsav.linkding.api.models.LinkdingErrorResponse
 import io.ktor.client.HttpClient
+import io.ktor.client.request.header
+import io.ktor.http.HttpHeaders
+import io.ktor.http.Url
+import io.ktor.http.takeFrom
 
 @LinkdingDsl
 fun LinkdingConnectionTester(
@@ -25,10 +30,14 @@ class LinkdingConnectionTester internal constructor(clientConfig: LinkdingClient
     suspend fun test(
         hostUrl: LinkdingHostUrl,
         apiKey: LinkdingApiKey,
-    ): Result<Unit, LinkdingErrorResponse> {
+    ): Result<Unit, LinkdingError> {
         return httpClient.get<LinkdingBookmarksResponse, LinkdingErrorResponse> {
+            header(HttpHeaders.Authorization, "Token $apiKey")
+            url {
+                takeFrom(Url(hostUrl))
+            }
             endpointBookmarks()
             parameterPage(0, 1)
-        }.toResult(LinkdingErrorResponse.DEFAULT).map { }
+        }.toLinkdingResult().map { }
     }
 }

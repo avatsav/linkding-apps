@@ -4,7 +4,7 @@ import com.github.michaelbull.result.Result
 import dev.avatsav.linkding.api.models.LinkdingBookmark
 import dev.avatsav.linkding.api.models.LinkdingBookmarkFilter
 import dev.avatsav.linkding.api.models.LinkdingBookmarksResponse
-import dev.avatsav.linkding.api.models.LinkdingErrorResponse
+import dev.avatsav.linkding.api.models.LinkdingError
 import dev.avatsav.linkding.api.models.LinkdingSaveBookmarkRequest
 
 interface LinkdingBookmarksApi {
@@ -13,21 +13,21 @@ interface LinkdingBookmarksApi {
         limit: Int,
         filter: LinkdingBookmarkFilter,
         query: String,
-    ): Result<LinkdingBookmarksResponse, LinkdingErrorResponse>
+    ): Result<LinkdingBookmarksResponse, LinkdingError>
 
     suspend fun getArchived(
         offset: Int,
         limit: Int,
         query: String,
-    ): Result<LinkdingBookmarksResponse, LinkdingErrorResponse>
+    ): Result<LinkdingBookmarksResponse, LinkdingError>
 
-    suspend fun getBookmark(id: Long): Result<LinkdingBookmark, LinkdingErrorResponse>
+    suspend fun getBookmark(id: Long): Result<LinkdingBookmark, LinkdingError>
 
-    suspend fun saveBookmark(saveBookmark: LinkdingSaveBookmarkRequest): Result<LinkdingBookmark, LinkdingErrorResponse>
+    suspend fun saveBookmark(saveBookmark: LinkdingSaveBookmarkRequest): Result<LinkdingBookmark, LinkdingError>
 
-    suspend fun archiveBookmark(id: Long): Result<Unit, LinkdingErrorResponse>
+    suspend fun archiveBookmark(id: Long): Result<Unit, LinkdingError>
 
-    suspend fun unarchiveBookmark(id: Long): Result<Unit, LinkdingErrorResponse>
+    suspend fun unarchiveBookmark(id: Long): Result<Unit, LinkdingError>
 
-    suspend fun deleteBookmark(id: Long): Result<Unit, LinkdingErrorResponse>
+    suspend fun deleteBookmark(id: Long): Result<Unit, LinkdingError>
 }

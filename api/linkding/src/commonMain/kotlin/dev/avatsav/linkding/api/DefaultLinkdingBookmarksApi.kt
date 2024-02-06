@@ -8,10 +8,11 @@ import dev.avatsav.linkding.api.extensions.parameterPage
 import dev.avatsav.linkding.api.extensions.parameterQuery
 import dev.avatsav.linkding.api.extensions.parameterQueryWithFilter
 import dev.avatsav.linkding.api.extensions.post
-import dev.avatsav.linkding.api.extensions.toResult
+import dev.avatsav.linkding.api.extensions.toLinkdingResult
 import dev.avatsav.linkding.api.models.LinkdingBookmark
 import dev.avatsav.linkding.api.models.LinkdingBookmarkFilter
 import dev.avatsav.linkding.api.models.LinkdingBookmarksResponse
+import dev.avatsav.linkding.api.models.LinkdingError
 import dev.avatsav.linkding.api.models.LinkdingErrorResponse
 import dev.avatsav.linkding.api.models.LinkdingSaveBookmarkRequest
 import io.ktor.client.HttpClient
@@ -23,54 +24,54 @@ class DefaultLinkdingBookmarksApi(private val httpClient: HttpClient) : Linkding
         limit: Int,
         filter: LinkdingBookmarkFilter,
         query: String,
-    ): Result<LinkdingBookmarksResponse, LinkdingErrorResponse> {
+    ): Result<LinkdingBookmarksResponse, LinkdingError> {
         return httpClient.get<LinkdingBookmarksResponse, LinkdingErrorResponse> {
             endpointBookmarks()
             parameterPage(offset, limit)
             parameterQueryWithFilter(query, filter)
-        }.toResult(LinkdingErrorResponse.DEFAULT)
+        }.toLinkdingResult()
     }
 
     override suspend fun getArchived(
         offset: Int,
         limit: Int,
         query: String,
-    ): Result<LinkdingBookmarksResponse, LinkdingErrorResponse> {
+    ): Result<LinkdingBookmarksResponse, LinkdingError> {
         return httpClient.get<LinkdingBookmarksResponse, LinkdingErrorResponse> {
             endpointBookmarks("archived")
             parameterPage(offset, limit)
             parameterQuery(query)
-        }.toResult(LinkdingErrorResponse.DEFAULT)
+        }.toLinkdingResult()
     }
 
-    override suspend fun getBookmark(id: Long): Result<LinkdingBookmark, LinkdingErrorResponse> {
+    override suspend fun getBookmark(id: Long): Result<LinkdingBookmark, LinkdingError> {
         return httpClient.get<LinkdingBookmark, LinkdingErrorResponse> {
             endpointBookmarks(id.toString())
-        }.toResult(LinkdingErrorResponse.DEFAULT)
+        }.toLinkdingResult()
     }
 
-    override suspend fun saveBookmark(saveBookmark: LinkdingSaveBookmarkRequest): Result<LinkdingBookmark, LinkdingErrorResponse> {
+    override suspend fun saveBookmark(saveBookmark: LinkdingSaveBookmarkRequest): Result<LinkdingBookmark, LinkdingError> {
         return httpClient.post<LinkdingBookmark, LinkdingErrorResponse> {
             endpointBookmarks()
             setBody(saveBookmark)
-        }.toResult(LinkdingErrorResponse.DEFAULT)
+        }.toLinkdingResult()
     }
 
-    override suspend fun archiveBookmark(id: Long): Result<Unit, LinkdingErrorResponse> {
+    override suspend fun archiveBookmark(id: Long): Result<Unit, LinkdingError> {
         return httpClient.post<Unit, LinkdingErrorResponse> {
             endpointBookmarks(id.toString(), "archive")
-        }.toResult(LinkdingErrorResponse.DEFAULT)
+        }.toLinkdingResult()
     }
 
-    override suspend fun unarchiveBookmark(id: Long): Result<Unit, LinkdingErrorResponse> {
+    override suspend fun unarchiveBookmark(id: Long): Result<Unit, LinkdingError> {
         return httpClient.post<Unit, LinkdingErrorResponse> {
             endpointBookmarks(id.toString(), "unarchive")
-        }.toResult(LinkdingErrorResponse.DEFAULT)
+        }.toLinkdingResult()
     }
 
-    override suspend fun deleteBookmark(id: Long): Result<Unit, LinkdingErrorResponse> {
+    override suspend fun deleteBookmark(id: Long): Result<Unit, LinkdingError> {
         return httpClient.delete<Unit, LinkdingErrorResponse> {
             endpointBookmarks(id.toString())
-        }.toResult(LinkdingErrorResponse.DEFAULT)
+        }.toLinkdingResult()
     }
 }

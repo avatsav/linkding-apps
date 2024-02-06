@@ -1,7 +1,7 @@
 package dev.avatsav.linkding.api
 
 import com.github.michaelbull.result.Result
-import dev.avatsav.linkding.api.models.LinkdingErrorResponse
+import dev.avatsav.linkding.api.models.LinkdingError
 import dev.avatsav.linkding.api.models.LinkdingTagsResponse
 
 interface LinkdingTagsApi {
@@ -9,5 +9,5 @@ interface LinkdingTagsApi {
         offset: Int,
         limit: Int,
         query: String,
-    ): Result<LinkdingTagsResponse, LinkdingErrorResponse>
+    ): Result<LinkdingTagsResponse, LinkdingError>
 }

@@ -59,10 +59,10 @@ fun AppContent(
         CircuitCompositionLocals(circuit) {
             LinkdingTheme {
                 NavigableCircuitContent(
-                    navigator = navigator,
+                    navigator = linkdingNavigator,
                     backstack = backstack,
                     decoration = remember(navigator) { GestureNavigationDecoration(onBackInvoked = navigator::pop) },
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = modifier.fillMaxSize(),
                 )
                 when (apiConfiguration) {
                     is ApiConfiguration.Linkding -> navigator.goTo(BookmarksScreen)

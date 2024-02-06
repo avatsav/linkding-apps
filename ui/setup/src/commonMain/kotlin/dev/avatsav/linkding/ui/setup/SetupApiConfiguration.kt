@@ -32,41 +32,38 @@ import com.slack.circuit.runtime.CircuitContext
 import com.slack.circuit.runtime.screen.Screen
 import com.slack.circuit.runtime.ui.Ui
 import com.slack.circuit.runtime.ui.ui
-import dev.avatsav.linkding.Logger
 import dev.avatsav.linkding.ui.SetupScreen
 import me.tatarka.inject.annotations.Inject
 
 @Inject
-class SetupUiFactory(private val logger: Logger) : Ui.Factory {
+class SetupUiFactory : Ui.Factory {
     override fun create(screen: Screen, context: CircuitContext): Ui<*>? {
-        logger.d { "SetupUiFactory for SetupScreen!" }
         return when (screen) {
             is SetupScreen -> {
-                logger.d { "Creating SetupScreen!" }
                 ui<SetupUiState> { state, modifier ->
-                    SetupConfiguration(state, logger, modifier)
+                    SetupApiConfiguration(state, modifier)
                 }
             }
 
-            else -> {
-                logger.d { "Creating NOTHING!" }
-                null
-            }
+            else -> null
         }
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SetupConfiguration(
+fun SetupApiConfiguration(
     state: SetupUiState,
-    logger: Logger,
     modifier: Modifier = Modifier,
 ) {
-    logger.d { "In the Setup configuration screen!" }
-
-    var url by remember { mutableStateOf("") }
+    var hostUrl by remember { mutableStateOf("") }
     var apiKey by remember { mutableStateOf("") }
+
+    var hostUrlErrorMessage by remember { mutableStateOf("") }
+    var apiKeyErrorMessage by remember { mutableStateOf("") }
+
+    if (state.invalidApiKey) apiKeyErrorMessage = "Invalid API Key"
+    if (state.invalidHostUrl) hostUrlErrorMessage = "Unable to reach host"
 
     Scaffold(
         topBar = {
@@ -84,35 +81,65 @@ fun SetupConfiguration(
             Spacer(modifier = Modifier.size(8.dp))
             OutlinedTextField(
                 modifier = Modifier.fillMaxWidth(),
-                value = url,
+                value = hostUrl,
                 enabled = !state.loading,
+                singleLine = true,
                 label = { Text(text = "Linkding Host URL") },
+                isError = hostUrlErrorMessage.isNotBlank(),
+                supportingText = {
+                    if (hostUrlErrorMessage.isNotBlank()) {
+                        Text(
+                            modifier = Modifier.fillMaxWidth(),
+                            text = hostUrlErrorMessage,
+                            color = MaterialTheme.colorScheme.error,
+                        )
+                    }
+                },
                 keyboardOptions = KeyboardOptions(
                     autoCorrect = false,
                     keyboardType = KeyboardType.Uri,
                     imeAction = ImeAction.Next,
                 ),
                 onValueChange = { value ->
-                    url = value
+                    if (value.isNotEmpty()) hostUrlErrorMessage = ""
+                    hostUrl = value
                 },
             )
             OutlinedTextField(
                 modifier = Modifier.fillMaxWidth(),
                 value = apiKey,
                 enabled = !state.loading,
+                singleLine = true,
                 label = { Text(text = "API Key") },
+                isError = apiKeyErrorMessage.isNotBlank(),
+                supportingText = {
+                    if (apiKeyErrorMessage.isNotBlank()) {
+                        Text(
+                            modifier = Modifier.fillMaxWidth(),
+                            text = apiKeyErrorMessage,
+                            color = MaterialTheme.colorScheme.error,
+                        )
+                    }
+                },
                 onValueChange = { value ->
+                    if (value.isNotEmpty()) apiKeyErrorMessage = ""
                     apiKey = value
                 },
             )
-            Spacer(modifier = Modifier.size(24.dp))
+            Spacer(modifier = Modifier.size(16.dp))
             Row(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Button(
                     enabled = !state.loading,
-                    onClick = { state.eventSink(SetupUiEvent.SaveConfiguration(url, apiKey)) },
+                    onClick = {
+                        if (hostUrl.isNotBlank() && apiKey.isNotBlank()) {
+                            state.eventSink(SetupUiEvent.SaveConfiguration(hostUrl, apiKey))
+                        }
+                        if (hostUrl.isEmpty()) hostUrlErrorMessage = "Cannot be empty."
+                        if (apiKey.isEmpty()) apiKeyErrorMessage = "Cannot be empty."
+                    },
                 ) {
                     Text("Save")
                 }
