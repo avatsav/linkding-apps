@@ -21,5 +21,4 @@ class VerifyApiConfiguration(
     }
 
     data class Param(val hostUrl: String, val apiKey: String)
-
 }

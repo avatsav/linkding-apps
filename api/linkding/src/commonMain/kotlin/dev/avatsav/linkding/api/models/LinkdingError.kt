@@ -9,5 +9,4 @@ sealed class LinkdingError(open val message: String) {
 
     data class Other(override val message: String) :
         LinkdingError(message)
-
 }

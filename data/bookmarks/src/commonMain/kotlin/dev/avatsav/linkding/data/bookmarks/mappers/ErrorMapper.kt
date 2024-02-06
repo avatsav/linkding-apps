@@ -17,5 +17,4 @@ class ConfigurationErrorMapper {
         is LinkdingError.Unauthorized -> ConfigurationError.InvalidApiKey(error.message)
         is LinkdingError.Other -> ConfigurationError.Other(error.message)
     }
-
 }
