@@ -15,7 +15,8 @@ import io.ktor.client.HttpClient
 fun LinkdingConnectionTester(
     block: LinkdingClientConfig.() -> Unit,
 ): LinkdingConnectionTester {
-    return LinkdingConnectionTester(block)
+    val clientConfig = LinkdingClientConfig().apply(block)
+    return LinkdingConnectionTester(clientConfig)
 }
 
 class LinkdingConnectionTester internal constructor(clientConfig: LinkdingClientConfig) {

@@ -26,12 +26,14 @@ import me.tatarka.inject.annotations.Inject
 @Inject
 class SetupUiPresenterFactory(
     private val presenterFactory: (Navigator) -> SetupPresenter,
+    private val logger: Logger,
 ) : Presenter.Factory {
     override fun create(
         screen: Screen,
         navigator: Navigator,
         context: CircuitContext,
     ): Presenter<*>? {
+        logger.w { "In the presenter factory!" }
         return when (screen) {
             is SetupScreen -> presenterFactory(navigator)
             else -> null
@@ -49,6 +51,7 @@ class SetupPresenter(
 
     @Composable
     override fun present(): SetupUiState {
+        logger.d { "Setup presenter in da house!" }
         val scope = rememberCoroutineScope()
         val verifying by verifyApiConfiguration.inProgress.collectAsState(false)
         val saving by saveApiConfiguration.inProgress.collectAsState(false)

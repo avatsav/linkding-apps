@@ -32,18 +32,27 @@ import com.slack.circuit.runtime.CircuitContext
 import com.slack.circuit.runtime.screen.Screen
 import com.slack.circuit.runtime.ui.Ui
 import com.slack.circuit.runtime.ui.ui
+import dev.avatsav.linkding.Logger
 import dev.avatsav.linkding.ui.SetupScreen
 import me.tatarka.inject.annotations.Inject
 
 @Inject
-class SetupUiFactory : Ui.Factory {
-    override fun create(screen: Screen, context: CircuitContext): Ui<*>? = when (screen) {
-        is SetupScreen -> {
-            ui<SetupUiState> { state, modifier ->
-                SetupConfiguration(state, modifier)
+class SetupUiFactory(private val logger: Logger) : Ui.Factory {
+    override fun create(screen: Screen, context: CircuitContext): Ui<*>? {
+        logger.d { "SetupUiFactory for SetupScreen!" }
+        return when (screen) {
+            is SetupScreen -> {
+                logger.d { "Creating SetupScreen!" }
+                ui<SetupUiState> { state, modifier ->
+                    SetupConfiguration(state, logger, modifier)
+                }
+            }
+
+            else -> {
+                logger.d { "Creating NOTHING!" }
+                null
             }
         }
-        else -> null
     }
 }
 
@@ -51,8 +60,11 @@ class SetupUiFactory : Ui.Factory {
 @Composable
 fun SetupConfiguration(
     state: SetupUiState,
+    logger: Logger,
     modifier: Modifier = Modifier,
 ) {
+    logger.d { "In the Setup configuration screen!" }
+
     var url by remember { mutableStateOf("") }
     var apiKey by remember { mutableStateOf("") }
 
