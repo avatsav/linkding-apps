@@ -5,9 +5,6 @@ import com.slack.circuit.runtime.screen.Screen
 abstract class LinkdingScreen(val name: String) : Screen
 
 @CommonParcelize
-data object RootScreen : LinkdingScreen("Root")
-
-@CommonParcelize
 data object SetupScreen : LinkdingScreen("Setup")
 
 @CommonParcelize

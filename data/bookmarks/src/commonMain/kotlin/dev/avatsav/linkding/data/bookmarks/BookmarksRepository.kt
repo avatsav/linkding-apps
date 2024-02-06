@@ -24,7 +24,7 @@ class BookmarksRepository(
     ): Result<List<Bookmark>, BookmarkError> {
         return bookmarksApi.getBookmarks(offset, limit, filter, query).mapEither(
             success = bookmarkMapper::map,
-            failure = { errorMapper.map(it) },
+            failure = errorMapper::map,
         )
     }
 
@@ -35,14 +35,14 @@ class BookmarksRepository(
     ): Result<List<Bookmark>, BookmarkError> {
         return bookmarksApi.getArchived(offset, limit, query).mapEither(
             success = bookmarkMapper::map,
-            failure = { errorMapper.map(it) },
+            failure = errorMapper::map,
         )
     }
 
     suspend fun getBookmark(id: Long): Result<Bookmark, BookmarkError> {
         return bookmarksApi.getBookmark(id).mapEither(
             success = bookmarkMapper::map,
-            failure = { errorMapper.map(it) },
+            failure = errorMapper::map,
         )
     }
 
@@ -50,19 +50,19 @@ class BookmarksRepository(
         val request = bookmarkMapper.map(saveBookmark)
         return bookmarksApi.saveBookmark(request).mapEither(
             success = bookmarkMapper::map,
-            failure = { errorMapper.map(it) },
+            failure = errorMapper::map,
         )
     }
 
     suspend fun archiveBookmark(id: Long): Result<Unit, BookmarkError> {
-        return bookmarksApi.archiveBookmark(id).mapError { errorMapper.map(it) }
+        return bookmarksApi.archiveBookmark(id).mapError(errorMapper::map)
     }
 
     suspend fun unarchiveBookmark(id: Long): Result<Unit, BookmarkError> {
-        return bookmarksApi.unarchiveBookmark(id).mapError { errorMapper.map(it) }
+        return bookmarksApi.unarchiveBookmark(id).mapError(errorMapper::map)
     }
 
     suspend fun deleteBookmark(id: Long): Result<Unit, BookmarkError> {
-        return bookmarksApi.deleteBookmark(id).mapError { errorMapper.map(it) }
+        return bookmarksApi.deleteBookmark(id).mapError(errorMapper::map)
     }
 }

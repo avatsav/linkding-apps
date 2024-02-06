@@ -15,8 +15,8 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.ProvideTextStyle
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.remember
@@ -52,17 +52,27 @@ fun OutlinedPlaceholderTextField(
             interactionSource = interactionSource,
             placeholder = placeholder,
             decorationBox = { innerTextField ->
-                TextFieldDefaults.OutlinedTextFieldDecorationBox(
+                OutlinedTextFieldDefaults.DecorationBox(
                     value = if (value.isBlank() && placeholder != null) " " else "",
+                    innerTextField = innerTextField,
                     enabled = true,
                     singleLine = false,
                     visualTransformation = VisualTransformation.None,
                     interactionSource = interactionSource,
                     isError = false,
-                    trailingIcon = trailingIcon,
                     label = label,
+                    trailingIcon = trailingIcon,
                     supportingText = supportingText,
-                    innerTextField = innerTextField,
+                    colors = OutlinedTextFieldDefaults.colors(),
+                    contentPadding = OutlinedTextFieldDefaults.contentPadding(),
+                    container = {
+                        OutlinedTextFieldDefaults.ContainerBox(
+                            enabled = true,
+                            isError = false,
+                            interactionSource = interactionSource,
+                            colors = OutlinedTextFieldDefaults.colors(),
+                        )
+                    },
                 )
             },
         )

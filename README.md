@@ -9,17 +9,15 @@ bookmarking service.
 
 ## Motivation
 
-It’s an app that I built for myself to use to quickly bookmark and access them from my
-phone. [Linkding](https://github.com/sissbruecker/linkding)
-The repository is very much a playground to play around with architecture, Gradle, libraries,
-patterns, API design, and more.
+This is an app that I built for myself to add and access bookmarks from my Linkding instance.
+It is very much a playground to experiment with architecture, Gradle, libraries, patterns, API design, and more.
 
 ## Colophon
 
 - Kotlin Multiplatform + Compose Multiplatform.
-- [Circuit](https://slackhq.github.io/circuit/) for compose powered UI state management.
-- [Kotlin Inject](https://github.com/evant/kotlin-inject) for DI.
-- [Arrow Kt](https://github.com/evant/kotlin-inject) for functional types.
+- [circuit](https://slackhq.github.io/circuit/) for compose powered UI state management.
+- [kotlin-inject](https://github.com/evant/kotlin-inject) for DI.
+- [kotlin-result](https://github.com/michaelbull/kotlin-result) for result types.
 
 ## License
 

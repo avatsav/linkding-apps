@@ -1,5 +1,6 @@
 package dev.avatsav.linkding.ui.root
 
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
@@ -9,12 +10,17 @@ import androidx.compose.ui.Modifier
 import com.slack.circuit.backstack.SaveableBackStack
 import com.slack.circuit.foundation.Circuit
 import com.slack.circuit.foundation.CircuitCompositionLocals
+import com.slack.circuit.foundation.NavigableCircuitContent
 import com.slack.circuit.retained.LocalRetainedStateRegistry
 import com.slack.circuit.retained.collectAsRetainedState
 import com.slack.circuit.retained.continuityRetainedStateRegistry
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.screen.Screen
+import com.slack.circuitx.gesturenavigation.GestureNavigationDecoration
 import dev.avatsav.linkding.Logger
+import dev.avatsav.linkding.data.model.ApiConfiguration
+import dev.avatsav.linkding.ui.BookmarksScreen
+import dev.avatsav.linkding.ui.SetupScreen
 import dev.avatsav.linkding.ui.UrlScreen
 import dev.avatsav.linkding.ui.theme.LinkdingTheme
 import kotlinx.coroutines.CoroutineScope
@@ -52,7 +58,19 @@ fun AppContent(
     ) {
         CircuitCompositionLocals(circuit) {
             LinkdingTheme {
-                Root(backstack, linkdingNavigator, apiConfiguration, modifier)
+                NavigableCircuitContent(
+                    navigator = linkdingNavigator,
+                    backstack = backstack,
+                    decoration = remember(navigator) { GestureNavigationDecoration(onBackInvoked = navigator::pop) },
+                    modifier = modifier.fillMaxSize(),
+                )
+                when (apiConfiguration) {
+                    is ApiConfiguration.Linkding -> navigator.goTo(BookmarksScreen)
+                        .also { navigator.resetRoot(BookmarksScreen) }
+
+                    ApiConfiguration.NotSet -> navigator.goTo(SetupScreen)
+                        .also { navigator.resetRoot(SetupScreen) }
+                }
             }
         }
     }

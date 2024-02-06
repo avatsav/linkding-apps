@@ -1,8 +1,6 @@
 package dev.avatsav.linkding.api.extensions
 
-import com.github.michaelbull.result.Err
-import com.github.michaelbull.result.Ok
-import com.github.michaelbull.result.Result
+import dev.avatsav.linkding.api.models.ApiResponse
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.plugins.ClientRequestException
@@ -47,29 +45,8 @@ internal suspend inline fun <reified T, reified E> HttpClient.request(
     ApiResponse.UnknownError(t)
 }
 
-internal sealed interface ApiResponse<out T, out E> {
-    data class Success<T>(val body: T) : ApiResponse<T, Nothing>
-    sealed class Error<E>(open val body: E?, open val message: String?) : ApiResponse<Nothing, E>
-    data class ClientError<E>(val code: Int, override val body: E?) : Error<E>(body, null)
-    data class ServerError<E>(val code: Int, override val body: E?) : Error<E>(body, null)
-    data class SerializationError(val exception: SerializationException) :
-        Error<Nothing>(null, exception.message)
-
-    data class ConnectivityError(val exception: IOException) :
-        Error<Nothing>(null, exception.message)
-
-    data class UnknownError(val throwable: Throwable) : Error<Nothing>(null, throwable.message)
-}
-
 internal suspend inline fun <reified E> ResponseException.errorBody(): E? = try {
     response.body()
 } catch (e: Exception) {
     null
-}
-
-internal inline fun <T, E> ApiResponse<T, E>.toResult(defaultError: E): Result<T, E> {
-    return when (this) {
-        is ApiResponse.Success -> Ok(body)
-        is ApiResponse.Error -> Err(body ?: defaultError)
-    }
 }

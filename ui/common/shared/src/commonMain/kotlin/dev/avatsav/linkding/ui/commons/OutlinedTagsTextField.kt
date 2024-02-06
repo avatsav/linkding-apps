@@ -20,8 +20,8 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.InputChip
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
@@ -64,7 +64,7 @@ fun OutlinedTagsTextField(
             keyboardOptions = keyboardOptions,
             interactionSource = interactionSource,
             decorationBox = { innerTextField ->
-                TextFieldDefaults.OutlinedTextFieldDecorationBox(
+                OutlinedTextFieldDefaults.DecorationBox(
                     value = if (value.tags.isEmpty() && textValue.text.isEmpty()) "" else " ",
                     innerTextField = innerTextField,
                     enabled = true,
@@ -74,6 +74,16 @@ fun OutlinedTagsTextField(
                     isError = false,
                     label = label,
                     supportingText = supportingText,
+                    colors = OutlinedTextFieldDefaults.colors(),
+                    contentPadding = OutlinedTextFieldDefaults.contentPadding(),
+                    container = {
+                        OutlinedTextFieldDefaults.ContainerBox(
+                            enabled = true,
+                            isError = false,
+                            interactionSource = interactionSource,
+                            colors = OutlinedTextFieldDefaults.colors(),
+                        )
+                    },
                 )
             },
         )
@@ -81,7 +91,6 @@ fun OutlinedTagsTextField(
 }
 
 @OptIn(
-    ExperimentalMaterial3Api::class,
     ExperimentalLayoutApi::class,
 )
 @Composable
