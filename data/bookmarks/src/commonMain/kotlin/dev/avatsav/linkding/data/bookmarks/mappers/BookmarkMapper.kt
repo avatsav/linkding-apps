@@ -4,12 +4,19 @@ import dev.avatsav.linkding.api.models.LinkdingBookmark
 import dev.avatsav.linkding.api.models.LinkdingBookmarksResponse
 import dev.avatsav.linkding.api.models.LinkdingSaveBookmarkRequest
 import dev.avatsav.linkding.data.model.Bookmark
+import dev.avatsav.linkding.data.model.BookmarksResult
 import dev.avatsav.linkding.data.model.SaveBookmark
+import me.tatarka.inject.annotations.Inject
 
+@Inject
 class BookmarkMapper {
 
-    fun map(response: LinkdingBookmarksResponse): List<Bookmark> {
-        return response.results.map { map(it) }
+    fun map(response: LinkdingBookmarksResponse): BookmarksResult {
+        return BookmarksResult(
+            bookmarks = response.results.map { map(it) },
+            previousPage = response.previous,
+            nextPage = response.next,
+        )
     }
 
     fun map(linkdingBookmark: LinkdingBookmark) =

@@ -8,6 +8,7 @@ kotlin {
             api(projects.data.models)
             implementation(projects.api.linkding)
             implementation(libs.kotlinResult)
+            implementation(libs.paging.common)
         }
     }
 }

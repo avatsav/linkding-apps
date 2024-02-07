@@ -9,8 +9,11 @@ import dev.avatsav.linkding.data.bookmarks.mappers.BookmarkErrorMapper
 import dev.avatsav.linkding.data.bookmarks.mappers.BookmarkMapper
 import dev.avatsav.linkding.data.model.Bookmark
 import dev.avatsav.linkding.data.model.BookmarkError
+import dev.avatsav.linkding.data.model.BookmarksResult
 import dev.avatsav.linkding.data.model.SaveBookmark
+import me.tatarka.inject.annotations.Inject
 
+@Inject
 class BookmarksRepository(
     private val bookmarksApi: LinkdingBookmarksApi,
     private val bookmarkMapper: BookmarkMapper,
@@ -19,9 +22,9 @@ class BookmarksRepository(
     suspend fun getBookmarks(
         offset: Int,
         limit: Int,
-        filter: LinkdingBookmarkFilter,
-        query: String,
-    ): Result<List<Bookmark>, BookmarkError> {
+        filter: LinkdingBookmarkFilter = LinkdingBookmarkFilter.None,
+        query: String = "",
+    ): Result<BookmarksResult, BookmarkError> {
         return bookmarksApi.getBookmarks(offset, limit, filter, query).mapEither(
             success = bookmarkMapper::map,
             failure = errorMapper::map,
@@ -32,7 +35,7 @@ class BookmarksRepository(
         offset: Int,
         limit: Int,
         query: String,
-    ): Result<List<Bookmark>, BookmarkError> {
+    ): Result<BookmarksResult, BookmarkError> {
         return bookmarksApi.getArchived(offset, limit, query).mapEither(
             success = bookmarkMapper::map,
             failure = errorMapper::map,
