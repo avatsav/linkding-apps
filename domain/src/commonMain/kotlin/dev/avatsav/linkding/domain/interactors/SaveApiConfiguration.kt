@@ -14,7 +14,7 @@ class SaveApiConfiguration(private val prefs: AppPreferences) :
 
     override suspend fun doWork(param: ApiConfig): Result<Unit, Error> =
         runSuspendCatching {
-            prefs.apiConfiguration = param
+            prefs.apiConfig = param
         }.mapError {
             Error(it.message ?: "Error saving api configuration")
         }

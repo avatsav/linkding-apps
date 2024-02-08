@@ -1,3 +1,0 @@
-package dev.avatsav.linkding
-
-expect interface LinkdingConnectionTesterComponent

@@ -12,5 +12,5 @@ class ObserveApiConfiguration(
 ) : Observer<Unit, ApiConfig?>() {
 
     override fun createObservable(params: Unit): Flow<ApiConfig?> =
-        prefs.observeApiConfiguration()
+        prefs.observeApiConfig()
 }

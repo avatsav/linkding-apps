@@ -17,17 +17,18 @@ import io.ktor.http.Url
 import io.ktor.http.takeFrom
 
 @LinkdingDsl
-fun LinkdingConnectionTester(
+fun LinkdingConnectionApi(
     block: LinkdingClientConfig.() -> Unit,
-): LinkdingConnectionTester {
+): LinkdingConnectionApi {
     val clientConfig = LinkdingClientConfig().apply(block)
-    return LinkdingConnectionTester(clientConfig)
+    return LinkdingConnectionApi(clientConfig)
 }
 
-class LinkdingConnectionTester internal constructor(clientConfig: LinkdingClientConfig) {
+class LinkdingConnectionApi internal constructor(clientConfig: LinkdingClientConfig) {
 
     private val httpClient: HttpClient = HttpClientFactory.buildHttpClient(clientConfig)
-    suspend fun test(
+
+    suspend fun connect(
         hostUrl: LinkdingHostUrl,
         apiKey: LinkdingApiKey,
     ): Result<Unit, LinkdingError> {

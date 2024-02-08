@@ -9,7 +9,9 @@ kotlin {
             api(projects.core.logging)
             api(projects.linkding)
             api(projects.data.models)
+            api(projects.data.configuration)
             api(libs.kotlin.coroutines.core)
+
             api(libs.ktor.client.core)
             api(libs.ktor.client.logging)
         }

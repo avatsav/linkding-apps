@@ -63,15 +63,15 @@ fun AppContent(
                     decoration = remember(navigator) { GestureNavigationDecoration(onBackInvoked = navigator::pop) },
                     modifier = modifier.fillMaxSize(),
                 )
-                if (apiConfig != null)
+                if (apiConfig != null) {
                     navigator.goTo(BookmarksScreen).also { navigator.resetRoot(BookmarksScreen) }
-                else
+                } else {
                     navigator.goTo(SetupScreen).also { navigator.resetRoot(SetupScreen) }
+                }
             }
         }
     }
 }
-
 
 private class LinkdingNavigator(
     private val navigator: Navigator,

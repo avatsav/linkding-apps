@@ -3,7 +3,7 @@ package dev.avatsav.linkding.data.bookmarks
 import com.github.michaelbull.result.Result
 import com.github.michaelbull.result.mapEither
 import com.github.michaelbull.result.mapError
-import dev.avatsav.linkding.api.LinkdingBookmarksApi
+import dev.avatsav.linkding.api.LinkdingApiProvider
 import dev.avatsav.linkding.api.models.LinkdingBookmarkFilter
 import dev.avatsav.linkding.data.bookmarks.mappers.BookmarkErrorMapper
 import dev.avatsav.linkding.data.bookmarks.mappers.BookmarkMapper
@@ -15,7 +15,7 @@ import me.tatarka.inject.annotations.Inject
 
 @Inject
 class BookmarksRepository(
-    private val bookmarksApi: LinkdingBookmarksApi,
+    private val apiProvider: Lazy<LinkdingApiProvider>,
     private val bookmarkMapper: BookmarkMapper,
     private val errorMapper: BookmarkErrorMapper,
 ) {
@@ -25,7 +25,7 @@ class BookmarksRepository(
         filter: LinkdingBookmarkFilter = LinkdingBookmarkFilter.None,
         query: String = "",
     ): Result<BookmarksResult, BookmarkError> {
-        return bookmarksApi.getBookmarks(offset, limit, filter, query).mapEither(
+        return apiProvider.value.bookmarksApi.getBookmarks(offset, limit, filter, query).mapEither(
             success = bookmarkMapper::map,
             failure = errorMapper::map,
         )
@@ -36,14 +36,14 @@ class BookmarksRepository(
         limit: Int,
         query: String,
     ): Result<BookmarksResult, BookmarkError> {
-        return bookmarksApi.getArchived(offset, limit, query).mapEither(
+        return apiProvider.value.bookmarksApi.getArchived(offset, limit, query).mapEither(
             success = bookmarkMapper::map,
             failure = errorMapper::map,
         )
     }
 
     suspend fun getBookmark(id: Long): Result<Bookmark, BookmarkError> {
-        return bookmarksApi.getBookmark(id).mapEither(
+        return apiProvider.value.bookmarksApi.getBookmark(id).mapEither(
             success = bookmarkMapper::map,
             failure = errorMapper::map,
         )
@@ -51,21 +51,21 @@ class BookmarksRepository(
 
     suspend fun saveBookmark(saveBookmark: SaveBookmark): Result<Bookmark, BookmarkError> {
         val request = bookmarkMapper.map(saveBookmark)
-        return bookmarksApi.saveBookmark(request).mapEither(
+        return apiProvider.value.bookmarksApi.saveBookmark(request).mapEither(
             success = bookmarkMapper::map,
             failure = errorMapper::map,
         )
     }
 
     suspend fun archiveBookmark(id: Long): Result<Unit, BookmarkError> {
-        return bookmarksApi.archiveBookmark(id).mapError(errorMapper::map)
+        return apiProvider.value.bookmarksApi.archiveBookmark(id).mapError(errorMapper::map)
     }
 
     suspend fun unarchiveBookmark(id: Long): Result<Unit, BookmarkError> {
-        return bookmarksApi.unarchiveBookmark(id).mapError(errorMapper::map)
+        return apiProvider.value.bookmarksApi.unarchiveBookmark(id).mapError(errorMapper::map)
     }
 
     suspend fun deleteBookmark(id: Long): Result<Unit, BookmarkError> {
-        return bookmarksApi.deleteBookmark(id).mapError(errorMapper::map)
+        return apiProvider.value.bookmarksApi.deleteBookmark(id).mapError(errorMapper::map)
     }
 }
