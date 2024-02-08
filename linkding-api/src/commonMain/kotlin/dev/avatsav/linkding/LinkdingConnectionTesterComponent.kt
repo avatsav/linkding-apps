@@ -1,3 +1,3 @@
-package dev.avatsav.linkding.api.inject
+package dev.avatsav.linkding
 
 expect interface LinkdingConnectionTesterComponent

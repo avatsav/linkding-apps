@@ -4,7 +4,7 @@ import com.russhwolf.settings.ExperimentalSettingsApi
 import com.russhwolf.settings.ObservableSettings
 import com.russhwolf.settings.coroutines.toFlowSettings
 import dev.avatsav.linkding.AppCoroutineDispatchers
-import dev.avatsav.linkding.data.model.ApiConfiguration
+import dev.avatsav.linkding.data.model.ApiConfig
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 import kotlinx.coroutines.flow.Flow
@@ -12,9 +12,9 @@ import kotlinx.coroutines.flow.combine
 
 interface AppPreferences {
 
-    var apiConfiguration: ApiConfiguration
+    var apiConfiguration: ApiConfig?
 
-    fun observeApiConfiguration(): Flow<ApiConfiguration>
+    fun observeApiConfiguration(): Flow<ApiConfig?>
 }
 
 @OptIn(ExperimentalSettingsApi::class)
@@ -23,54 +23,51 @@ internal class DefaultAppPreferences(
     dispatchers: AppCoroutineDispatchers,
 ) : AppPreferences {
 
+
     private val flowSettings by lazy { settings.toFlowSettings(dispatchers.io) }
 
-    override var apiConfiguration: ApiConfiguration by ApiConfigurationDelegate()
+    override var apiConfiguration: ApiConfig? by ApiConfigurationDelegate()
 
-    override fun observeApiConfiguration(): Flow<ApiConfiguration> {
+    override fun observeApiConfiguration(): Flow<ApiConfig?> {
         return combine(
             flowSettings.getStringOrNullFlow(HOST_URL_CONFIGURATION_KEY),
             flowSettings.getStringOrNullFlow(API_KEY_CONFIGURATION_KEY),
         ) { hostUrl: String?, apiKey: String? ->
             if (hostUrl == null || apiKey == null) {
-                ApiConfiguration.NotSet
+                null
             } else {
-                ApiConfiguration.Linkding(hostUrl, apiKey)
+                ApiConfig(hostUrl, apiKey)
             }
         }
     }
 }
 
-private class ApiConfigurationDelegate :
-    ReadWriteProperty<DefaultAppPreferences, ApiConfiguration> {
+private class ApiConfigurationDelegate : ReadWriteProperty<DefaultAppPreferences, ApiConfig?> {
     override fun getValue(
         thisRef: DefaultAppPreferences,
         property: KProperty<*>,
-    ): ApiConfiguration {
+    ): ApiConfig? {
         val host = thisRef.settings.getStringOrNull(HOST_URL_CONFIGURATION_KEY)
         val apiKey = thisRef.settings.getStringOrNull(API_KEY_CONFIGURATION_KEY)
         return if (host == null || apiKey == null) {
-            ApiConfiguration.NotSet
+            null
         } else {
-            ApiConfiguration.Linkding(host, apiKey)
+            ApiConfig(host, apiKey)
         }
     }
 
     override fun setValue(
         thisRef: DefaultAppPreferences,
         property: KProperty<*>,
-        value: ApiConfiguration,
+        value: ApiConfig?,
     ) {
-        when (value) {
-            is ApiConfiguration.Linkding -> {
-                thisRef.settings.putString(HOST_URL_CONFIGURATION_KEY, value.hostUrl)
-                thisRef.settings.putString(API_KEY_CONFIGURATION_KEY, value.hostUrl)
-            }
+        if (value != null) {
+            thisRef.settings.putString(HOST_URL_CONFIGURATION_KEY, value.hostUrl)
+            thisRef.settings.putString(API_KEY_CONFIGURATION_KEY, value.hostUrl)
+        } else {
 
-            ApiConfiguration.NotSet -> {
-                thisRef.settings.remove(HOST_URL_CONFIGURATION_KEY)
-                thisRef.settings.remove(API_KEY_CONFIGURATION_KEY)
-            }
+            thisRef.settings.remove(HOST_URL_CONFIGURATION_KEY)
+            thisRef.settings.remove(API_KEY_CONFIGURATION_KEY)
         }
     }
 }

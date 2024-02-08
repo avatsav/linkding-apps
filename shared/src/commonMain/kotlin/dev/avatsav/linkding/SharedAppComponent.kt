@@ -1,6 +1,5 @@
 package dev.avatsav.linkding
 
-import dev.avatsav.linkding.api.inject.LinkdingConnectionTesterComponent
 import dev.avatsav.linkding.inject.AppScope
 import dev.avatsav.linkding.inject.LoggerComponent
 import dev.avatsav.linkding.prefs.inject.PreferencesComponent

@@ -14,7 +14,7 @@ import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
 import com.slack.circuit.runtime.screen.Screen
 import dev.avatsav.linkding.Logger
-import dev.avatsav.linkding.data.model.ApiConfiguration
+import dev.avatsav.linkding.data.model.ApiConfig
 import dev.avatsav.linkding.data.model.ConfigurationError.InvalidApiKey
 import dev.avatsav.linkding.data.model.ConfigurationError.InvalidHostname
 import dev.avatsav.linkding.data.model.ConfigurationError.Other
@@ -81,10 +81,7 @@ class SetupPresenter(
                         }
                     }.onSuccess {
                         saveApiConfiguration(
-                            ApiConfiguration.Linkding(
-                                event.hostUrl,
-                                event.apiKey,
-                            ),
+                            ApiConfig(event.hostUrl, event.apiKey),
                         ).onSuccess {
                             navigator.goTo(BookmarksScreen)
                             navigator.resetRoot(BookmarksScreen)

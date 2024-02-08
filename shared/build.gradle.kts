@@ -19,7 +19,7 @@ kotlin {
             api(projects.core.base)
             api(projects.core.logging)
             api(projects.core.preferences)
-            api(projects.linkding)
+            api(projects.linkdingApi)
             api(projects.domain)
             api(projects.data.bookmarks)
 

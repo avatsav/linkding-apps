@@ -1,23 +1,25 @@
-package dev.avatsav.linkding.api.inject
+package dev.avatsav.linkding
 
-import dev.avatsav.linkding.AppInfo
-import dev.avatsav.linkding.Logger
-import dev.avatsav.linkding.api.LinkdingConnectionTester
+import dev.avatsav.linkding.api.Linkding
+import dev.avatsav.linkding.api.LinkdingApiConfig
+import dev.avatsav.linkding.data.model.ApiConfig
 import dev.avatsav.linkding.inject.AppScope
-import io.ktor.client.engine.okhttp.OkHttp
+import io.ktor.client.engine.darwin.Darwin
 import io.ktor.client.plugins.logging.LogLevel
 import me.tatarka.inject.annotations.Provides
 
-actual interface LinkdingConnectionTesterComponent {
+actual interface LinkdingApiPlatformComponent {
 
     @AppScope
     @Provides
-    fun provideLinkdingConnectionTester(
+    fun provideLinkding(
         appInfo: AppInfo,
         appLogger: Logger,
-    ): LinkdingConnectionTester {
-        return LinkdingConnectionTester {
-            httpClient(OkHttp)
+        apiConfig: ApiConfig.Linkding,
+    ): Linkding {
+        val linkdingApiConfig = LinkdingApiConfig(apiConfig.hostUrl, apiConfig.apiKey)
+        return Linkding(linkdingApiConfig) {
+            httpClient(Darwin)
             logging {
                 logger = object : io.ktor.client.plugins.logging.Logger {
                     override fun log(message: String) {

@@ -1,4 +1,4 @@
-package dev.avatsav.linkding.api.inject
+package dev.avatsav.linkding
 
 import dev.avatsav.linkding.api.Linkding
 import dev.avatsav.linkding.inject.LinkdingScope
