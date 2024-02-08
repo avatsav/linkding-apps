@@ -1,6 +1,5 @@
 package dev.avatsav.linkding.ui.setup
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -24,7 +23,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -33,6 +31,7 @@ import com.slack.circuit.runtime.screen.Screen
 import com.slack.circuit.runtime.ui.Ui
 import com.slack.circuit.runtime.ui.ui
 import dev.avatsav.linkding.ui.SetupScreen
+import dev.avatsav.linkding.ui.setup.SetupUiEvent.SaveConfiguration
 import me.tatarka.inject.annotations.Inject
 
 @Inject
@@ -59,24 +58,28 @@ fun SetupApiConfiguration(
     var hostUrl by remember { mutableStateOf("") }
     var apiKey by remember { mutableStateOf("") }
 
-    var hostUrlErrorMessage by remember { mutableStateOf("") }
-    var apiKeyErrorMessage by remember { mutableStateOf("") }
-
-    if (state.invalidApiKey) apiKeyErrorMessage = "Invalid API Key"
-    if (state.invalidHostUrl) hostUrlErrorMessage = "Unable to reach host"
+    val errorMessage =
+        if (state.invalidApiKey) {
+            "Invalid API Key"
+        } else if (state.invalidHostUrl) {
+            "Unable to reach host"
+        } else {
+            ""
+        }
 
     Scaffold(
-        topBar = {
-            LargeTopAppBar(title = { Text(text = "Setup Linkding") })
-        },
+        topBar = { LargeTopAppBar(title = { Text(text = "Setup Linkding") }) },
     ) { padding ->
+
         Column(
             modifier = modifier
                 .padding(padding)
                 .padding(horizontal = 16.dp)
                 .fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
+            val allFieldsFilledOut = hostUrl.isNotEmpty() && apiKey.isNotEmpty()
+
             Text(text = "Configure settings, so that the app can communicate with your linkding installation.")
             Spacer(modifier = Modifier.size(8.dp))
             OutlinedTextField(
@@ -84,13 +87,13 @@ fun SetupApiConfiguration(
                 value = hostUrl,
                 enabled = !state.loading,
                 singleLine = true,
-                label = { Text(text = "Linkding Host URL") },
-                isError = hostUrlErrorMessage.isNotBlank(),
+                label = { Text(text = "Host URL") },
+                isError = state.invalidHostUrl,
                 supportingText = {
-                    if (hostUrlErrorMessage.isNotBlank()) {
+                    if (errorMessage.isNotBlank() && state.invalidHostUrl) {
                         Text(
                             modifier = Modifier.fillMaxWidth(),
-                            text = hostUrlErrorMessage,
+                            text = errorMessage,
                             color = MaterialTheme.colorScheme.error,
                         )
                     }
@@ -100,10 +103,7 @@ fun SetupApiConfiguration(
                     keyboardType = KeyboardType.Uri,
                     imeAction = ImeAction.Next,
                 ),
-                onValueChange = { value ->
-                    if (value.isNotEmpty()) hostUrlErrorMessage = ""
-                    hostUrl = value
-                },
+                onValueChange = { hostUrl = it },
             )
             OutlinedTextField(
                 modifier = Modifier.fillMaxWidth(),
@@ -111,46 +111,30 @@ fun SetupApiConfiguration(
                 enabled = !state.loading,
                 singleLine = true,
                 label = { Text(text = "API Key") },
-                isError = apiKeyErrorMessage.isNotBlank(),
+                isError = state.invalidApiKey,
                 supportingText = {
-                    if (apiKeyErrorMessage.isNotBlank()) {
+                    if (errorMessage.isNotBlank() && state.invalidApiKey) {
                         Text(
                             modifier = Modifier.fillMaxWidth(),
-                            text = apiKeyErrorMessage,
+                            text = errorMessage,
                             color = MaterialTheme.colorScheme.error,
                         )
                     }
                 },
-                onValueChange = { value ->
-                    if (value.isNotEmpty()) apiKeyErrorMessage = ""
-                    apiKey = value
-                },
+                onValueChange = { apiKey = it },
             )
-            Spacer(modifier = Modifier.size(16.dp))
+            Spacer(modifier = Modifier.size(12.dp))
             Row(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Button(
-                    enabled = !state.loading,
-                    onClick = {
-                        if (hostUrl.isNotBlank() && apiKey.isNotBlank()) {
-                            state.eventSink(SetupUiEvent.SaveConfiguration(hostUrl, apiKey))
-                        }
-                        if (hostUrl.isEmpty()) hostUrlErrorMessage = "Cannot be empty."
-                        if (apiKey.isEmpty()) apiKeyErrorMessage = "Cannot be empty."
-                    },
+                    enabled = allFieldsFilledOut && !state.loading,
+                    onClick = { state.eventSink(SaveConfiguration(hostUrl, apiKey)) },
                 ) {
                     Text("Save")
                 }
                 if (state.loading) CircularProgressIndicator()
-            }
-            AnimatedVisibility(visible = state.errorMessage != null) {
-                Text(
-                    text = state.errorMessage!!,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.error,
-                )
             }
         }
     }
