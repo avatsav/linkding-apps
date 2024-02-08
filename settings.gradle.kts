@@ -28,7 +28,7 @@ include(
     ":core:base",
     ":core:logging",
     ":core:preferences",
-    ":api:linkding",
+    ":linkding",
     ":data:models",
     ":data:bookmarks",
     ":domain",

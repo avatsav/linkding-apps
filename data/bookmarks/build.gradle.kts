@@ -6,7 +6,7 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             api(projects.data.models)
-            implementation(projects.api.linkding)
+            implementation(projects.linkding)
             implementation(libs.kotlinResult)
             implementation(libs.paging.common)
         }
