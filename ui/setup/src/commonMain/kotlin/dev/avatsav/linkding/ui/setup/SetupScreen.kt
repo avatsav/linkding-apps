@@ -40,7 +40,7 @@ class SetupUiFactory : Ui.Factory {
         return when (screen) {
             is SetupScreen -> {
                 ui<SetupUiState> { state, modifier ->
-                    SetupApiConfiguration(state, modifier)
+                    SetupScreen(state, modifier)
                 }
             }
 
@@ -51,7 +51,7 @@ class SetupUiFactory : Ui.Factory {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SetupApiConfiguration(
+fun SetupScreen(
     state: SetupUiState,
     modifier: Modifier = Modifier,
 ) {

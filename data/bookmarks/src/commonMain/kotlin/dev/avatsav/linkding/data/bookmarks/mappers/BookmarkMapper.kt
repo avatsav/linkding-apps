@@ -6,6 +6,7 @@ import dev.avatsav.linkding.api.models.LinkdingSaveBookmarkRequest
 import dev.avatsav.linkding.data.model.Bookmark
 import dev.avatsav.linkding.data.model.BookmarksResult
 import dev.avatsav.linkding.data.model.SaveBookmark
+import io.ktor.http.Url
 import me.tatarka.inject.annotations.Inject
 
 @Inject
@@ -24,6 +25,7 @@ class BookmarkMapper {
             id = linkdingBookmark.id,
             externalId = linkdingBookmark.id,
             url = linkdingBookmark.url,
+            urlHost = Url(linkdingBookmark.url).host,
             title = linkdingBookmark.getSafeTitle(),
             description = linkdingBookmark.getSafeDescription(),
             archived = linkdingBookmark.isArchived,

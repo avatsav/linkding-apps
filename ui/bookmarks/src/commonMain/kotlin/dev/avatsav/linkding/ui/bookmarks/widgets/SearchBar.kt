@@ -1,5 +1,5 @@
-// package dev.avatsav.linkding.ui.bookmarks
-//
+package dev.avatsav.linkding.ui.bookmarks.widgets
+
 // import androidx.compose.foundation.background
 // import androidx.compose.foundation.layout.Box
 // import androidx.compose.foundation.layout.Column
@@ -12,6 +12,7 @@
 // import androidx.compose.foundation.shape.RoundedCornerShape
 // import androidx.compose.foundation.text.BasicTextField
 // import androidx.compose.material.icons.Icons
+// import androidx.compose.material.icons.filled.ArrowDropDown
 // import androidx.compose.material.icons.filled.MoreVert
 // import androidx.compose.material.icons.filled.Search
 // import androidx.compose.material3.AssistChip
@@ -29,23 +30,17 @@
 // import androidx.compose.runtime.Composable
 // import androidx.compose.ui.Alignment
 // import androidx.compose.ui.Modifier
-// import androidx.compose.ui.res.painterResource
-// import androidx.compose.ui.tooling.preview.Preview
 // import androidx.compose.ui.unit.dp
-// import dev.avatsav.linkding.android.R
-// import dev.avatsav.linkding.android.theme.LinkdingTheme
-// import dev.avatsav.linkding.ui.bookmarks.SearchState
-// import dev.avatsav.linkding.ui.bookmarks.vm.SearchState
 //
 // @OptIn(ExperimentalMaterial3Api::class)
 // @Composable
 // fun SearchBar(
-//    modifier: Modifier = Modifier,
-//    searchState: SearchState,
+//    state: SearchState,
 //    searchClicked: () -> Unit,
 //    menuClicked: () -> Unit,
 //    tagsClicked: () -> Unit,
 //    archivedFilter: (Boolean) -> Unit,
+//    modifier: Modifier = Modifier,
 // ) {
 //    Column {
 //        BasicTextField(
@@ -99,49 +94,21 @@
 //                AssistChip(
 //                    modifier = Modifier.padding(start = 4.dp),
 //                    label = { Text("Tags") },
-//                    trailingIcon = {
-//                        Icon(
-//                            painter = painterResource(id = R.drawable.ic_arrow_drop_down_20),
-//                            contentDescription = "Tags",
-//                            tint = MaterialTheme.colorScheme.onSurface,
-//                        )
-//                    },
+//                    trailingIcon = { Icons.Default.ArrowDropDown },
 //                    onClick = { tagsClicked() },
-//                    border = AssistChipDefaults.assistChipBorder(borderWidth = 0.5.dp),
 //                )
 //            }
 //            item(key = "archiveFilter") {
 //                FilterChip(
 //                    modifier = Modifier.padding(start = 8.dp),
 //                    label = { Text("Archived") },
-//                    selected = searchState.archivedFilterSelected,
+//                    selected = false,
 //                    onClick = {
-//                        val newValue = !searchState.archivedFilterSelected
 //                        archivedFilter(newValue)
 //                    },
 //                    border = FilterChipDefaults.filterChipBorder(borderWidth = 0.5.dp),
 //                )
 //            }
-//        }
-//    }
-// }
-//
-// @Preview
-// @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
-// @Composable
-// fun SearchBar_Preview() {
-//    LinkdingTheme {
-//        Surface {
-//            SearchBar(
-//                searchState = SearchState(
-//                    query = "Staff",
-//                    archivedFilterSelected = false,
-//                ),
-//                searchClicked = {},
-//                menuClicked = {},
-//                tagsClicked = {},
-//                archivedFilter = {},
-//            )
 //        }
 //    }
 // }

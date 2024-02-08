@@ -1,4 +1,4 @@
-// package dev.avatsav.linkding.ui.bookmarks
+package dev.avatsav.linkding.ui.bookmarks.widgets // package dev.avatsav.linkding.ui.bookmarks
 //
 // import android.content.res.Configuration
 // import androidx.compose.foundation.layout.Box

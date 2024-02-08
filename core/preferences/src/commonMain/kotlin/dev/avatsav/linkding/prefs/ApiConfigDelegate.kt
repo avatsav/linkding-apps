@@ -32,7 +32,7 @@ internal class ApiConfigDelegate : ReadWriteProperty<DefaultAppPreferences, ApiC
     ) {
         if (value != null) {
             thisRef.settings.putString(HOST_URL_CONFIGURATION_KEY, value.hostUrl)
-            thisRef.settings.putString(API_KEY_CONFIGURATION_KEY, value.hostUrl)
+            thisRef.settings.putString(API_KEY_CONFIGURATION_KEY, value.apiKey)
         } else {
             thisRef.settings.remove(HOST_URL_CONFIGURATION_KEY)
             thisRef.settings.remove(API_KEY_CONFIGURATION_KEY)

@@ -26,6 +26,7 @@ kotlin {
             api(projects.ui.common.compose)
             api(projects.ui.root)
             api(projects.ui.setup)
+            api(projects.ui.bookmarks)
         }
     }
 }

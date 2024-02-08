@@ -30,7 +30,10 @@ class LinkdingApiProvider(
 
     private val linkding: Linkding by lazy {
         val linkdingApiConfig =
-            LinkdingApiConfig(apiConfig.value!!.hostUrl, apiConfig.value!!.apiKey)
+            LinkdingApiConfig(
+                apiConfig.value!!.hostUrl,
+                apiConfig.value!!.apiKey,
+            )
         Linkding(linkdingApiConfig) {
             httpClient(httpClientEngine)
             logging {
