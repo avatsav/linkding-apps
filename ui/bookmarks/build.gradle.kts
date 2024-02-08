@@ -7,11 +7,24 @@ plugins {
 kotlin {
     sourceSets {
         commonMain.dependencies {
-            implementation(projects.ui.common.compose)
-            implementation(projects.ui.common.screens)
+            implementation(projects.core.base)
+            implementation(projects.core.logging)
+            implementation(projects.domain)
+            api(projects.data.models)
+
+            api(projects.ui.common.compose)
+            api(projects.ui.common.screens)
+            api(projects.ui.common.shared)
+            api(libs.circuit.foundation)
+            api(libs.circuit.retained)
+            api(libs.kotlinResult)
+            api(libs.kotlinResultCoroutines)
+
             implementation(compose.foundation)
-            implementation(compose.material)
             implementation(compose.material3)
+            implementation(compose.materialIconsExtended)
+            implementation(compose.components.resources)
+            implementation(libs.paging.compose)
         }
         androidMain.dependencies {
             implementation(libs.androidx.activity.compose)

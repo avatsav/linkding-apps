@@ -6,7 +6,4 @@ import me.tatarka.inject.annotations.Scope
 annotation class AppScope
 
 @Scope
-annotation class LinkdingScope
-
-@Scope
 annotation class UiScope

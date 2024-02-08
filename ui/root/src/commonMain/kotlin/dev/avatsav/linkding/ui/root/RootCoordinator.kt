@@ -1,6 +1,5 @@
 package dev.avatsav.linkding.ui.root
 
-import dev.avatsav.linkding.data.model.ApiConfiguration
 import dev.avatsav.linkding.domain.observers.ObserveApiConfiguration
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.SharingStarted.Companion.WhileSubscribed
@@ -18,6 +17,6 @@ class RootCoordinator(
         observeApiConfiguration.invoke(Unit)
     }
 
-    val apiConfiguration = observeApiConfiguration.flow
-        .stateIn(coroutineScope, WhileSubscribed(), ApiConfiguration.NotSet)
+    val apiConfig = observeApiConfiguration.flow
+        .stateIn(coroutineScope, WhileSubscribed(), null)
 }
