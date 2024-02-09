@@ -46,3 +46,19 @@ fun Project.configureJavaToolchain() {
         }
     }
 }
+
+/**
+ * Workaround to support previews for Composable in the Android target.
+ * https://github.com/JetBrains/compose-multiplatform/issues/3499
+ */
+@Suppress("UnstableApiUsage")
+fun Project.configureComposeAndroidPreviews() {
+    if (pluginManager.hasPlugin("com.android.library")) {
+        extensions.configure<BaseExtension> {
+            buildFeatures.compose = true
+            composeOptions {
+                kotlinCompilerExtensionVersion = findVersion("composeCompiler")
+            }
+        }
+    }
+}
