@@ -27,6 +27,7 @@ kotlin {
             api(projects.ui.root)
             api(projects.ui.setup)
             api(projects.ui.bookmarks)
+            api(projects.ui.addBookmark)
         }
     }
 }

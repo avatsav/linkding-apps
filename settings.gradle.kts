@@ -38,6 +38,7 @@ include(
     ":ui:common:screens",
     ":ui:common:shared",
     ":ui:bookmarks",
+    ":ui:add-bookmark",
     ":ui:setup",
     ":ui:root",
     ":unfurl"

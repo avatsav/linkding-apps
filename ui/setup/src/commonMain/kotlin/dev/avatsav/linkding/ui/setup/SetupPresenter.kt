@@ -52,7 +52,6 @@ class SetupPresenter(
 
     @Composable
     override fun present(): SetupUiState {
-        logger.d { "Setup presenter in da house!" }
         val scope = rememberCoroutineScope()
 
         val verifying by verifyApiConfiguration.inProgress.collectAsState(false)
