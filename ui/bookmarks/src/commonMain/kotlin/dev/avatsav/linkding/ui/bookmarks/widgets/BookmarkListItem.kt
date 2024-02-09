@@ -34,8 +34,8 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import dev.avatsav.linkding.data.model.Bookmark
-import dev.avatsav.linkding.ui.commons.SwipeAction
-import dev.avatsav.linkding.ui.commons.SwipeableListItem
+import dev.avatsav.linkding.ui.shared.SwipeAction
+import dev.avatsav.linkding.ui.shared.SwipeableListItem
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

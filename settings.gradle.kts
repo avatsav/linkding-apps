@@ -34,7 +34,7 @@ include(
     ":data:bookmarks",
     ":data:configuration",
     ":domain",
-    ":ui:common:compose",
+    ":ui:common:theme",
     ":ui:common:screens",
     ":ui:common:shared",
     ":ui:bookmarks",

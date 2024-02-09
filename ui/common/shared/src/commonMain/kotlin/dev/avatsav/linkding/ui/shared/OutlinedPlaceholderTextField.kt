@@ -1,4 +1,4 @@
-package dev.avatsav.linkding.ui.commons
+package dev.avatsav.linkding.ui.shared
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.keyframes

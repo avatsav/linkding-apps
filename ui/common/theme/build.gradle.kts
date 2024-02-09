@@ -16,5 +16,5 @@ kotlin {
 }
 
 android {
-    namespace = "dev.avatsav.linkding.ui.compose"
+    namespace = "dev.avatsav.linkding.ui.theme"
 }
