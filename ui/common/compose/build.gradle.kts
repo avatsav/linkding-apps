@@ -12,12 +12,9 @@ kotlin {
             api(compose.material3)
             api(libs.circuit.runtime)
         }
-        androidMain.dependencies {
-            implementation(libs.androidx.activity.compose)
-        }
     }
 }
 
 android {
-    namespace = "dev.avatsav.linkding.ui.common.compose"
+    namespace = "dev.avatsav.linkding.ui.compose"
 }

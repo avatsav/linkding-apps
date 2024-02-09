@@ -14,5 +14,5 @@ kotlin {
 }
 
 android {
-    namespace = "dev.avatsav.linkding.ui.common.screens"
+    namespace = "dev.avatsav.linkding.ui.screens"
 }

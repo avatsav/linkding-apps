@@ -15,7 +15,7 @@ import dev.avatsav.linkding.AndroidActivityComponent
 import dev.avatsav.linkding.AndroidAppComponent
 import dev.avatsav.linkding.android.LinkdingApplication
 import dev.avatsav.linkding.create
-import dev.avatsav.linkding.ui.SetupScreen
+import dev.avatsav.linkding.ui.RootScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,7 +30,7 @@ class MainActivity : ComponentActivity() {
         val activityComponent = AndroidActivityComponent.create(this, appComponent)
 
         setContent {
-            val backstack = rememberSaveableBackStack { push(SetupScreen) }
+            val backstack = rememberSaveableBackStack { push(RootScreen) }
             val navigator = rememberCircuitNavigator(backstack)
 
             activityComponent.appContent(

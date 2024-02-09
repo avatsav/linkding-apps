@@ -1,3 +1,5 @@
+import dev.avatsav.gradle.configureComposeAndroidPreviews
+
 plugins {
     id("convention.android.library")
     id("convention.kotlin.multiplatform")
@@ -26,11 +28,14 @@ kotlin {
             implementation(compose.components.resources)
         }
         androidMain.dependencies {
-            implementation(libs.androidx.activity.compose)
+            api(compose.preview)
+            api(compose.uiTooling)
         }
     }
 }
 
 android {
     namespace = "dev.avatsav.linkding.ui.setup"
+    buildFeatures.compose = true
 }
+configureComposeAndroidPreviews()
