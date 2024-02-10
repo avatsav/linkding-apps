@@ -6,7 +6,7 @@ import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.animation.with
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
@@ -100,7 +100,7 @@ fun SwipeableListItem(
             AnimatedContent(
                 targetState = Pair(dismissState.dismissDirection, dismissing),
                 transitionSpec = {
-                    fadeIn(tween(220), if (targetState.second) 1f else 0f) with fadeOut(
+                    fadeIn(tween(220), if (targetState.second) 1f else 0f) togetherWith fadeOut(
                         tween(220),
                         if (targetState.second) 1f else 0f,
                     )

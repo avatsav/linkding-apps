@@ -40,7 +40,7 @@ class SetupUiFactory : Ui.Factory {
         return when (screen) {
             is SetupScreen -> {
                 ui<SetupUiState> { state, modifier ->
-                    SetupScreen(state, modifier)
+                    SetupApiConfig(state, modifier)
                 }
             }
 
@@ -51,10 +51,13 @@ class SetupUiFactory : Ui.Factory {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SetupScreen(
+fun SetupApiConfig(
     state: SetupUiState,
     modifier: Modifier = Modifier,
 ) {
+    // https://issuetracker.google.com/issues/256100927#comment1
+    val eventSink = state.eventSink
+
     var hostUrl by remember { mutableStateOf("") }
     var apiKey by remember { mutableStateOf("") }
 
@@ -130,7 +133,7 @@ fun SetupScreen(
             ) {
                 Button(
                     enabled = allFieldsFilledOut && !state.loading,
-                    onClick = { state.eventSink(SaveConfiguration(hostUrl, apiKey)) },
+                    onClick = { eventSink(SaveConfiguration(hostUrl, apiKey)) },
                 ) {
                     Text("Save")
                 }

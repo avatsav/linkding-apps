@@ -7,7 +7,7 @@ import androidx.compose.ui.tooling.preview.Preview
 @Preview
 @Composable
 fun SetupScreenPreview() {
-    SetupScreen(
+    SetupApiConfig(
         state = SetupUiState {},
         modifier = Modifier,
     )

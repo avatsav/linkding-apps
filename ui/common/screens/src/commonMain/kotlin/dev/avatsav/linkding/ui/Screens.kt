@@ -14,4 +14,7 @@ data object SetupScreen : LinkdingScreen("Setup")
 data object BookmarksScreen : LinkdingScreen("Bookmarks")
 
 @CommonParcelize
+data class AddBookmarkScreen(val sharedUrl: String? = null) : LinkdingScreen("AddBookmark")
+
+@CommonParcelize
 data class UrlScreen(val url: String) : LinkdingScreen("UrlScreen")

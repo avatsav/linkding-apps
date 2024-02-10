@@ -13,9 +13,13 @@ import dev.avatsav.linkding.Logger
 import dev.avatsav.linkding.domain.interactors.ArchiveBookmark
 import dev.avatsav.linkding.domain.interactors.DeleteBookmark
 import dev.avatsav.linkding.domain.interactors.PagedBookmarks
+import dev.avatsav.linkding.ui.AddBookmarkScreen
 import dev.avatsav.linkding.ui.BookmarksScreen
+import dev.avatsav.linkding.ui.UrlScreen
+import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.AddBookmark
 import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.Archive
 import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.Delete
+import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.Open
 import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.Refresh
 import dev.avatsav.linkding.ui.extensions.rememberCachedPagingFlow
 import me.tatarka.inject.annotations.Assisted
@@ -61,8 +65,8 @@ class BookmarksPresenter(
             Refresh -> bookmarks.refresh()
             is Archive -> {}
             is Delete -> {}
-            BookmarksUiEvent.AddBookmark -> {}
-            is BookmarksUiEvent.Open -> {}
+            AddBookmark -> navigator.goTo(AddBookmarkScreen())
+            is Open -> navigator.goTo(UrlScreen(event.bookmark.url))
         }
 
         return BookmarksUiState(bookmarks, ::eventSink)

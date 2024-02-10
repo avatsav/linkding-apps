@@ -8,8 +8,9 @@ kotlin {
             implementation(projects.core.base)
             implementation(projects.core.logging)
             implementation(projects.data.models)
-            implementation(projects.data.bookmarks)
-            implementation(projects.data.configuration)
+            api(projects.data.bookmarks)
+            api(projects.data.configuration)
+            api(projects.data.unfurl)
             implementation(libs.paging.common)
 
             implementation(libs.kotlin.atomicfu)

@@ -4,12 +4,15 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.github.michaelbull.result.Err
 import com.github.michaelbull.result.Ok
+import dev.avatsav.linkding.AppCoroutineDispatchers
 import dev.avatsav.linkding.data.model.Bookmark
+import kotlinx.coroutines.withContext
 import me.tatarka.inject.annotations.Inject
 
 @Inject
 class BookmarksPagingSource(
     private val repository: BookmarksRepository,
+    private val dispatchers: AppCoroutineDispatchers,
 ) : PagingSource<Int, Bookmark>() {
 
     companion object {
@@ -24,18 +27,20 @@ class BookmarksPagingSource(
     }
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Bookmark> {
-        val position = params.key ?: STARTING_PAGE_INDEX
-        val offset = if (position == 1) 0 else params.loadSize * position - 1
-        return when (val result = repository.getBookmarks(offset, params.loadSize)) {
-            is Err -> LoadResult.Error(Exception(result.error.message)) // TODO: So much for typing my errors. Find a better way.
-            is Ok -> {
-                val prevKey = if (position == 1) null else (position - 1)
-                val nextKey = if (result.value.nextPage != null) position + 1 else null
-                LoadResult.Page(
-                    data = result.value.bookmarks,
-                    prevKey = prevKey,
-                    nextKey = nextKey,
-                )
+        return withContext(dispatchers.io) {
+            val position = params.key ?: STARTING_PAGE_INDEX
+            val offset = if (position == 1) 0 else params.loadSize * position - 1
+            when (val result = repository.getBookmarks(offset, params.loadSize)) {
+                is Err -> LoadResult.Error(Exception(result.error.message)) // TODO: So much for typing my errors. Find a better way.
+                is Ok -> {
+                    val prevKey = if (position == 1) null else (position - 1)
+                    val nextKey = if (result.value.nextPage != null) position + 1 else null
+                    LoadResult.Page(
+                        data = result.value.bookmarks,
+                        prevKey = prevKey,
+                        nextKey = nextKey,
+                    )
+                }
             }
         }
     }

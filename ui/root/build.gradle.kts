@@ -16,7 +16,6 @@ kotlin {
 
             implementation(projects.ui.common.theme)
             implementation(projects.ui.common.screens)
-            implementation(projects.core.preferences)
             implementation(libs.circuit.foundation)
             implementation(libs.circuit.retained)
             implementation(libs.circuit.overlay)
@@ -24,8 +23,8 @@ kotlin {
 
             implementation(compose.foundation)
             implementation(compose.material3)
-            implementation(compose.materialIconsExtended)
-            implementation(compose.components.resources)
+            api(libs.kotlinResult)
+            api(libs.kotlinResultCoroutines)
         }
         androidMain.dependencies {
             api(compose.preview)

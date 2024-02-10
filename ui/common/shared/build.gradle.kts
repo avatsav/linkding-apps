@@ -10,9 +10,7 @@ plugins {
 kotlin {
     sourceSets {
         commonMain.dependencies {
-            api(compose.foundation)
-            api(compose.material3)
-            api(compose.materialIconsExtended)
+            implementation(projects.ui.common.theme)
             api(libs.paging.compose)
         }
         androidMain.dependencies {

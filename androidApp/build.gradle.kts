@@ -22,7 +22,6 @@ android {
 
     packaging {
         resources.excludes += setOf(
-            "META-INF/*.version",
             "META-INF/proguard/*",
             "/*.properties",
             "fabric/*.properties",
