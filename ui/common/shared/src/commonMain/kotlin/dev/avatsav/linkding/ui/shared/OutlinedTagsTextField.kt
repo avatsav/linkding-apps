@@ -28,6 +28,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
@@ -56,6 +57,7 @@ fun OutlinedTagsTextField(
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
 ) {
     var textValue by remember { mutableStateOf(TextFieldValue()) }
+
     Box(modifier = modifier.onCondition(label != null) { padding(top = 4.dp) }) {
         OutlinedTagsTextField(
             tagsValue = value,
@@ -114,9 +116,12 @@ private fun OutlinedTagsTextField(
                         },
                     )
                 },
-            horizontalArrangement = Arrangement.Center,
+            horizontalArrangement = Arrangement.spacedBy(4.dp, Alignment.Start),
+            verticalArrangement = Arrangement.spacedBy((-4).dp, Alignment.Top),
+
         ) {
-            for (tag in tagsValue.tags) {
+            repeat(tagsValue.tags.size) {
+                val tag = tagsValue.tags[it]
                 InputChip(
                     selected = false,
                     onClick = { /*TODO*/ },
@@ -126,7 +131,10 @@ private fun OutlinedTagsTextField(
                             modifier = Modifier.size(16.dp),
                             onClick = { tagsValue.removeTag(tag) },
                         ) {
-                            Icon(imageVector = Icons.Default.Close, contentDescription = "")
+                            Icon(
+                                imageVector = Icons.Default.Close,
+                                contentDescription = "Remove tag ${tag.value}",
+                            )
                         }
                     },
                 )
@@ -135,6 +143,7 @@ private fun OutlinedTagsTextField(
                 value = textValue,
                 modifier = Modifier
                     .focusRequester(textFieldFocusRequester)
+                    .align(alignment = Alignment.CenterVertically)
                     .onPreviewKeyEvent { keyEvent ->
                         if (keyEvent.type == KeyEventType.KeyDown && keyEvent.key == Key.Backspace) {
                             if (textValue.text.isEmpty() && tagsValue.tags.isNotEmpty()) {
@@ -177,6 +186,7 @@ class TagsTextFieldValue(tags: List<Tag> = emptyList()) {
     var tags by mutableStateOf(tags)
 
     fun addTag(tag: Tag) {
+        if (tags.contains(tag)) return
         val list = tags.toMutableList()
         list.add(tag)
         tags = list

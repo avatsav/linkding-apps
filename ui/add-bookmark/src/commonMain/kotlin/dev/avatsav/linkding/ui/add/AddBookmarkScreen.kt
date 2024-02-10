@@ -101,7 +101,10 @@ fun AddBookmark(
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
     ) { padding ->
         Column(
-            modifier = modifier.padding(padding).padding(horizontal = 16.dp).fillMaxWidth(),
+            modifier = modifier
+                .padding(padding)
+                .padding(horizontal = 16.dp)
+                .fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             OutlinedTextField(
@@ -122,7 +125,7 @@ fun AddBookmark(
                 value = tagsValue,
                 label = { Text(text = "Tags") },
                 supportingText = {
-                    Text(text = "Enter any number of tags separated by space and without the hash (#). If a tag does not exist it will be automatically created.")
+                    Text(text = "Enter tags without the hash (#).")
                 },
             )
 
