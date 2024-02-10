@@ -12,6 +12,7 @@ import com.slack.circuit.foundation.NavigableCircuitContent
 import com.slack.circuit.retained.LocalRetainedStateRegistry
 import com.slack.circuit.retained.continuityRetainedStateRegistry
 import com.slack.circuit.runtime.Navigator
+import com.slack.circuit.runtime.screen.PopResult
 import com.slack.circuit.runtime.screen.Screen
 import com.slack.circuitx.gesturenavigation.GestureNavigationDecoration
 import dev.avatsav.linkding.Logger
@@ -22,7 +23,7 @@ import me.tatarka.inject.annotations.Inject
 
 // https://github.com/evant/kotlin-inject?tab=readme-ov-file#function-support--assisted-injection
 typealias AppContent = @Composable (
-    backstack: SaveableBackStack,
+    backStack: SaveableBackStack,
     navigator: Navigator,
     onOpenUrl: (String) -> Unit,
     modifier: Modifier,
@@ -31,7 +32,7 @@ typealias AppContent = @Composable (
 @Inject
 @Composable
 fun AppContent(
-    @Assisted backstack: SaveableBackStack,
+    @Assisted backStack: SaveableBackStack,
     @Assisted navigator: Navigator,
     @Assisted onOpenUrl: (String) -> Unit,
     circuit: Circuit,
@@ -39,7 +40,7 @@ fun AppContent(
     @Assisted modifier: Modifier = Modifier,
 ) {
     val linkdingNavigator: Navigator = remember(navigator) {
-        LinkdingNavigator(navigator, backstack, onOpenUrl, logger)
+        LinkdingNavigator(navigator, onOpenUrl, logger)
     }
     CompositionLocalProvider(
         LocalRetainedStateRegistry provides continuityRetainedStateRegistry(),
@@ -48,7 +49,7 @@ fun AppContent(
             LinkdingTheme {
                 NavigableCircuitContent(
                     navigator = linkdingNavigator,
-                    backstack = backstack,
+                    backStack = backStack,
                     decoration = remember(navigator) { GestureNavigationDecoration(onBackInvoked = navigator::pop) },
                     modifier = modifier.fillMaxSize(),
                 )
@@ -59,26 +60,36 @@ fun AppContent(
 
 private class LinkdingNavigator(
     private val navigator: Navigator,
-    private val backStack: SaveableBackStack,
     private val onOpenUrl: (String) -> Unit,
     private val logger: Logger,
 ) : Navigator {
     override fun goTo(screen: Screen) {
-        logger.d { "goTo. Screen: $screen. Current stack: ${backStack.toList()}" }
-
+        logger.d { "goTo. Screen: $screen. Current stack: ${peekBackStack()}" }
         when (screen) {
             is UrlScreen -> onOpenUrl(screen.url)
             else -> navigator.goTo(screen)
         }
     }
 
-    override fun pop(): Screen? {
-        logger.d { "pop. Current stack: ${backStack.toList()}" }
-        return navigator.pop()
+    override fun pop(result: PopResult?): Screen? {
+        logger.d { "pop. Current stack: ${peekBackStack()} " }
+        return navigator.pop(result)
     }
 
-    override fun resetRoot(newRoot: Screen): List<Screen> {
-        logger.d { "resetRoot: newRoot:$newRoot. Current stack: ${backStack.toList()}" }
-        return navigator.resetRoot(newRoot)
+    override fun resetRoot(
+        newRoot: Screen,
+        saveState: Boolean,
+        restoreState: Boolean,
+    ): List<Screen> {
+        logger.d { "resetRoot: newRoot:$newRoot. Current stack: ${peekBackStack()}" }
+        return navigator.resetRoot(newRoot, saveState, restoreState)
+    }
+
+    override fun peek(): Screen? {
+        return navigator.peek()
+    }
+
+    override fun peekBackStack(): List<Screen> {
+        return navigator.peekBackStack()
     }
 }

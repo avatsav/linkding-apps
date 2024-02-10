@@ -12,7 +12,7 @@ jetbrains-compose = "1.6.0-beta02"
 composeCompiler = "1.5.9" # womp womp!
 kotlin-inject = "0.6.3"
 paging-kmp = "3.3.0-alpha02-0.4.0"
-circuit = "0.18.2"
+circuit = "0.19.0"
 kotlinResult = "1.1.18"
 androidxActivity = "1.8.2"
 
