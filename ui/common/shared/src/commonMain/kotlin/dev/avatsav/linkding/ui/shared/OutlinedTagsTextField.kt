@@ -105,6 +105,7 @@ private fun OutlinedTagsTextField(
     decorationBox: @Composable (innerTextField: @Composable () -> Unit) -> Unit = @Composable { innerTextField -> innerTextField() },
 ) {
     val textFieldFocusRequester = remember { FocusRequester() }
+
     decorationBox {
         FlowRow(
             modifier = modifier
@@ -116,8 +117,8 @@ private fun OutlinedTagsTextField(
                         },
                     )
                 },
-            horizontalArrangement = Arrangement.spacedBy(4.dp, Alignment.Start),
-            verticalArrangement = Arrangement.spacedBy((-4).dp, Alignment.Top),
+            horizontalArrangement = Arrangement.spacedBy(6.dp, Alignment.Start),
+            verticalArrangement = Arrangement.spacedBy((-3).dp, Alignment.Top),
 
         ) {
             repeat(tagsValue.tags.size) {
@@ -128,7 +129,7 @@ private fun OutlinedTagsTextField(
                     label = { Text(tag.value) },
                     trailingIcon = {
                         IconButton(
-                            modifier = Modifier.size(16.dp),
+                            modifier = Modifier.size(12.dp),
                             onClick = { tagsValue.removeTag(tag) },
                         ) {
                             Icon(

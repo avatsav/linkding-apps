@@ -124,9 +124,6 @@ fun AddBookmark(
                 modifier = Modifier.fillMaxWidth(),
                 value = tagsValue,
                 label = { Text(text = "Tags") },
-                supportingText = {
-                    Text(text = "Enter tags without the hash (#).")
-                },
             )
 
             OutlinedTextField(
