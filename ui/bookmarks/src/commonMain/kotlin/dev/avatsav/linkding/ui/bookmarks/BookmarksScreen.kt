@@ -60,7 +60,7 @@ class BookmarksUiFactory : Ui.Factory {
         return when (screen) {
             is BookmarksScreen -> {
                 ui<BookmarksUiState> { state, modifier ->
-                    BookmarksScreen(state, modifier)
+                    Bookmarks(state, modifier)
                 }
             }
 
@@ -71,7 +71,7 @@ class BookmarksUiFactory : Ui.Factory {
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
-fun BookmarksScreen(
+fun Bookmarks(
     state: BookmarksUiState,
     modifier: Modifier = Modifier,
 ) {

@@ -18,5 +18,5 @@ interface AddBookmarkComponent {
     @IntoSet
     @Provides
     @UiScope
-    fun bindSetupUiFactoryFactory(factory:AddBookmarkUiFactory): Ui.Factory = factory
+    fun bindSetupUiFactoryFactory(factory: AddBookmarkUiFactory): Ui.Factory = factory
 }

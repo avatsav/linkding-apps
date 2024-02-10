@@ -33,6 +33,7 @@ include(
     ":data:models",
     ":data:bookmarks",
     ":data:configuration",
+    ":data:unfurl",
     ":domain",
     ":ui:common:theme",
     ":ui:common:screens",
@@ -41,5 +42,4 @@ include(
     ":ui:add-bookmark",
     ":ui:setup",
     ":ui:root",
-    ":unfurl"
 )

@@ -9,7 +9,11 @@ class ApiConfigRepository(
     private val appPreferences: AppPreferences,
 ) {
 
-    var apiConfig: ApiConfig? = appPreferences.apiConfig
+    var apiConfig: ApiConfig?
+        get() = appPreferences.apiConfig
+        set(value) {
+            appPreferences.apiConfig = value
+        }
 
     fun observeApiConfiguration() = appPreferences.observeApiConfig()
 }

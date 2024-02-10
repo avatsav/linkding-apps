@@ -11,7 +11,7 @@ data class AddBookmarkUiState(
     val unfurling: Boolean = false,
     val unfurlData: UnfurlData? = null,
     val saving: Boolean = false,
-    val saveErrorMessage: String? = null,
+    val errorMessage: String? = null,
     val eventSink: (AddBookmarkUiEvent) -> Unit,
 ) : CircuitUiState
 
@@ -24,5 +24,5 @@ sealed interface AddBookmarkUiEvent : CircuitUiEvent {
     ) : AddBookmarkUiEvent
 
     data object Close : AddBookmarkUiEvent
+    data class Unfurl(val url: String) : AddBookmarkUiEvent
 }
-

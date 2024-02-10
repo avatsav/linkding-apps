@@ -21,6 +21,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -40,9 +41,10 @@ import com.slack.circuit.runtime.ui.ui
 import dev.avatsav.linkding.ui.AddBookmarkScreen
 import dev.avatsav.linkding.ui.add.AddBookmarkUiEvent.Close
 import dev.avatsav.linkding.ui.add.AddBookmarkUiEvent.Save
-import dev.avatsav.linkding.ui.shared.OutlinedPlaceholderTextField
 import dev.avatsav.linkding.ui.shared.OutlinedTagsTextField
+import dev.avatsav.linkding.ui.shared.SmallCircularProgressIndicator
 import dev.avatsav.linkding.ui.shared.TagsTextFieldValue
+import kotlinx.coroutines.delay
 import me.tatarka.inject.annotations.Inject
 
 @Inject
@@ -51,7 +53,7 @@ class AddBookmarkUiFactory : Ui.Factory {
         return when (screen) {
             is AddBookmarkScreen -> {
                 ui<AddBookmarkUiState> { state, modifier ->
-                    AddBookmarkScreen(state, modifier)
+                    AddBookmark(state, modifier)
                 }
             }
 
@@ -62,19 +64,27 @@ class AddBookmarkUiFactory : Ui.Factory {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddBookmarkScreen(
+fun AddBookmark(
     state: AddBookmarkUiState,
     modifier: Modifier = Modifier,
 ) {
+    val eventSink = state.eventSink
+
     val scrollBehavior =
         TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
 
     var url by remember { mutableStateOf(state.sharedUrl ?: "") }
     val tagsValue by remember { mutableStateOf(TagsTextFieldValue()) }
+
     var title by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
 
-    val eventSink = state.eventSink
+    // Debouncing the url text field before unfurling
+    LaunchedEffect(url) {
+        if (url.isBlank()) return@LaunchedEffect
+        delay(1000)
+        eventSink(AddBookmarkUiEvent.Unfurl(url))
+    }
 
     Scaffold(
         topBar = {
@@ -108,7 +118,6 @@ fun AddBookmarkScreen(
                 ),
                 onValueChange = { value ->
                     url = value
-                    // Forward the value to the presenter
                 },
             )
             OutlinedTagsTextField(
@@ -119,7 +128,7 @@ fun AddBookmarkScreen(
                     Text(text = "Enter any number of tags separated by space and without the hash (#). If a tag does not exist it will be automatically created.")
                 },
             )
-            OutlinedPlaceholderTextField(
+            OutlinedTextField(
                 modifier = Modifier.fillMaxWidth(),
                 value = title,
                 label = { Text(text = "Title") },
@@ -127,7 +136,7 @@ fun AddBookmarkScreen(
                     Text(text = "Optional, leave empty to use title from website.")
                 },
                 trailingIcon = {
-                    if (state.unfurling) CircularProgressIndicator()
+                    if (state.unfurling) SmallCircularProgressIndicator()
                 },
                 placeholder = {
                     if (state.unfurlData?.title != null) {
@@ -138,14 +147,14 @@ fun AddBookmarkScreen(
                         )
                     }
                 },
-                onValueChange = { value -> title = value },
+                onValueChange = { title = it },
             )
-            OutlinedPlaceholderTextField(
+            OutlinedTextField(
                 modifier = Modifier.fillMaxWidth(),
                 value = description,
                 label = { Text(text = "Description") },
                 trailingIcon = {
-                    if (state.unfurling) CircularProgressIndicator()
+                    if (state.unfurling) SmallCircularProgressIndicator()
                 },
                 placeholder = {
                     if (state.unfurlData?.description != null) {
@@ -159,13 +168,14 @@ fun AddBookmarkScreen(
                 supportingText = {
                     Text(text = "Optional, leave empty to use description from website.")
                 },
-                onValueChange = { value -> description = value },
+                onValueChange = { description = it },
             )
             Row(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Button(
+                    enabled = url.isNotBlank(),
                     onClick = {
                         eventSink(
                             Save(
@@ -180,16 +190,14 @@ fun AddBookmarkScreen(
                     Text("Save")
                 }
                 if (state.saving) CircularProgressIndicator()
-
             }
-            if (state.saveErrorMessage != null) {
+            if (state.errorMessage != null) {
                 Text(
-                    text = state.saveErrorMessage,
+                    text = state.errorMessage,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.error,
                 )
             }
         }
-
     }
 }

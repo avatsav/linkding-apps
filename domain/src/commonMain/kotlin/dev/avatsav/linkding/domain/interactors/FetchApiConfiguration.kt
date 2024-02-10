@@ -9,13 +9,13 @@ import dev.avatsav.linkding.domain.Interactor
 import me.tatarka.inject.annotations.Inject
 
 @Inject
-class SaveApiConfiguration(
+class FetchApiConfiguration(
     private val repository: ApiConfigRepository,
-) : Interactor<ApiConfig, Unit, String>() {
+) : Interactor<Unit, ApiConfig?, String>() {
 
-    override suspend fun doWork(param: ApiConfig): Result<Unit, String> {
-        return runSuspendCatching { repository.apiConfig = param }.mapError {
-            it.message ?: "Error saving api configuration"
+    override suspend fun doWork(param: Unit): Result<ApiConfig?, String> {
+        return runSuspendCatching { repository.apiConfig }.mapError {
+            it.message ?: "Error fetching api configuration"
         }
     }
 

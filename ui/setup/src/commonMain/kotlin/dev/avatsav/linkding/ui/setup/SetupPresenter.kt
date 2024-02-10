@@ -85,7 +85,7 @@ class SetupPresenter(
                             navigator.goTo(BookmarksScreen)
                             navigator.resetRoot(BookmarksScreen)
                         }.onFailure {
-                            errorMessage = it.message
+                            errorMessage = it
                         }
                     }
                 }

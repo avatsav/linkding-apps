@@ -2,13 +2,14 @@ package dev.avatsav.linkding.ui.root
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import com.slack.circuit.retained.collectAsRetainedState
+import com.github.michaelbull.result.onFailure
+import com.github.michaelbull.result.onSuccess
 import com.slack.circuit.runtime.CircuitContext
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
 import com.slack.circuit.runtime.screen.Screen
-import dev.avatsav.linkding.domain.observers.ObserveApiConfiguration
+import dev.avatsav.linkding.Logger
+import dev.avatsav.linkding.domain.interactors.FetchApiConfiguration
 import dev.avatsav.linkding.ui.BookmarksScreen
 import dev.avatsav.linkding.ui.RootScreen
 import dev.avatsav.linkding.ui.SetupScreen
@@ -34,23 +35,27 @@ class RootUiPresenterFactory(
 @Inject
 class RootPresenter(
     @Assisted private val navigator: Navigator,
-    private val observeApiConfiguration: ObserveApiConfiguration,
+    private val fetchApiConfiguration: FetchApiConfiguration,
+    private val logger: Logger,
 ) : Presenter<RootUiState> {
 
     @Composable
     override fun present(): RootUiState {
-        val apiConfig by observeApiConfiguration.flow.collectAsRetainedState(null)
-
-        if (apiConfig == null) {
-            navigator.goTo(SetupScreen)
-            navigator.resetRoot(SetupScreen)
-        } else {
-            navigator.goTo(BookmarksScreen)
-            navigator.resetRoot(BookmarksScreen)
-        }
-
         LaunchedEffect(Unit) {
-            observeApiConfiguration.invoke(Unit)
+            fetchApiConfiguration(Unit)
+                .onSuccess {
+                    if (it == null) {
+                        navigator.goTo(SetupScreen)
+                        navigator.resetRoot(SetupScreen)
+                    } else {
+                        navigator.goTo(BookmarksScreen)
+                        navigator.resetRoot(BookmarksScreen)
+                    }
+                }.onFailure {
+                    logger.e { "Error loading ApiConfig" }
+                    navigator.goTo(SetupScreen)
+                    navigator.resetRoot(SetupScreen)
+                }
         }
         return RootUiState
     }

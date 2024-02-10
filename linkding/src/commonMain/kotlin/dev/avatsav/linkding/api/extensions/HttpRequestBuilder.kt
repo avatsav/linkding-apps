@@ -13,7 +13,7 @@ internal fun HttpRequestBuilder.endpointTags(vararg paths: String) {
 
 internal fun HttpRequestBuilder.endpointBookmarks(vararg paths: String) {
     url {
-        path("api", "bookmarks", *paths)
+        path(buildPaths("api", "bookmarks", *paths))
     }
 }
 
