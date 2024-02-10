@@ -17,6 +17,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Archive
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Link
 import androidx.compose.material.icons.filled.Unarchive
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
@@ -111,7 +112,6 @@ private fun BoxScope.BookmarkSwipeActionContent(
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Icon(
-
             modifier = Modifier
                 .scale(iconAnimatable.value)
                 .size(30.dp),
@@ -149,6 +149,11 @@ private fun BookmarkContent(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(4.dp),
         ) {
+            Icon(
+                imageVector = Icons.Default.Link,
+                contentDescription = null,
+                modifier = Modifier.size(12.dp),
+            )
             Text(
                 text = bookmark.urlHost,
                 style = MaterialTheme.typography.bodySmall,
