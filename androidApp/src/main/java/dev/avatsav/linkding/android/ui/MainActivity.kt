@@ -1,6 +1,7 @@
 package dev.avatsav.linkding.android.ui
 
 import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -25,12 +26,13 @@ class MainActivity : ComponentActivity() {
             navigationBarStyle = SystemBarStyle.auto(Color.TRANSPARENT, Color.TRANSPARENT),
         )
         super.onCreate(savedInstanceState)
-
+        val sharedLink = getSharedLinkFromIntent()
         val appComponent = AndroidAppComponent.from(this)
         val activityComponent = AndroidActivityComponent.create(this, appComponent)
 
         setContent {
-            val backstack = rememberSaveableBackStack { push(RootScreen) }
+            val backstack =
+                rememberSaveableBackStack { push(RootScreen(sharedLink)) }
             val navigator = rememberCircuitNavigator(backstack)
 
             activityComponent.appContent(
@@ -41,6 +43,14 @@ class MainActivity : ComponentActivity() {
             )
         }
     }
+
+    private fun getSharedLinkFromIntent(): String? = when (intent?.action) {
+        Intent.ACTION_SEND -> {
+            intent.getStringExtra(Intent.EXTRA_TEXT)
+        }
+
+        else -> null
+    }?.trim()
 }
 
 private fun AndroidAppComponent.Companion.from(context: Context): AndroidAppComponent {

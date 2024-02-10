@@ -10,6 +10,7 @@ import com.slack.circuit.runtime.presenter.Presenter
 import com.slack.circuit.runtime.screen.Screen
 import dev.avatsav.linkding.Logger
 import dev.avatsav.linkding.domain.interactors.FetchApiConfiguration
+import dev.avatsav.linkding.ui.AddBookmarkScreen
 import dev.avatsav.linkding.ui.BookmarksScreen
 import dev.avatsav.linkding.ui.RootScreen
 import dev.avatsav.linkding.ui.SetupScreen
@@ -18,7 +19,7 @@ import me.tatarka.inject.annotations.Inject
 
 @Inject
 class RootUiPresenterFactory(
-    private val presenterFactory: (Navigator) -> RootPresenter,
+    private val presenterFactory: (Navigator, RootScreen) -> RootPresenter,
 ) : Presenter.Factory {
     override fun create(
         screen: Screen,
@@ -26,7 +27,7 @@ class RootUiPresenterFactory(
         context: CircuitContext,
     ): Presenter<*>? {
         return when (screen) {
-            is RootScreen -> presenterFactory(navigator)
+            is RootScreen -> presenterFactory(navigator, screen)
             else -> null
         }
     }
@@ -35,6 +36,7 @@ class RootUiPresenterFactory(
 @Inject
 class RootPresenter(
     @Assisted private val navigator: Navigator,
+    @Assisted private val screen: RootScreen,
     private val fetchApiConfiguration: FetchApiConfiguration,
     private val logger: Logger,
 ) : Presenter<RootUiState> {
@@ -45,18 +47,27 @@ class RootPresenter(
             fetchApiConfiguration(Unit)
                 .onSuccess {
                     if (it == null) {
-                        navigator.goTo(SetupScreen)
-                        navigator.resetRoot(SetupScreen)
+                        navigator.goToAndResetRoot(SetupScreen)
                     } else {
-                        navigator.goTo(BookmarksScreen)
-                        navigator.resetRoot(BookmarksScreen)
+                        if (screen.sharedUrl != null) {
+                            navigator.goToAndResetRoot(AddBookmarkScreen(screen.sharedUrl))
+                        } else {
+                            navigator.goToAndResetRoot(BookmarksScreen)
+                        }
                     }
                 }.onFailure {
-                    logger.e { "Error loading ApiConfig" }
-                    navigator.goTo(SetupScreen)
-                    navigator.resetRoot(SetupScreen)
+                    navigator.goToAndResetRoot(SetupScreen)
                 }
         }
         return RootUiState
     }
+}
+
+internal fun Navigator.goToAndResetRoot(
+    screen: Screen,
+    saveState: Boolean = false,
+    restoreState: Boolean = false,
+) {
+    goTo(screen)
+    resetRoot(screen, saveState, restoreState)
 }
