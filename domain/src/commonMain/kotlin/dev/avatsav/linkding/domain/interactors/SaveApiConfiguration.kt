@@ -18,5 +18,4 @@ class SaveApiConfiguration(
             it.message ?: "Error saving api configuration"
         }
     }
-
 }

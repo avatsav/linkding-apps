@@ -82,11 +82,10 @@ class AddBookmarkPresenter(
                     logger.d { "Starting to unfurl: ${event.url}" }
                     unfurlLink(event.url)
                         .onSuccess {
-                            logger.d { "Unfurl success: ${it}" }
+                            logger.d { "Unfurl success: $it" }
                             unfurlData = it
                         }.onFailure {
                             logger.e { "Unfurl failed: ${event.url}" }
-
                         }
                 }
             }

@@ -1,3 +1,5 @@
+import dev.avatsav.gradle.configureComposeAndroidPreviews
+
 plugins {
     id("convention.android.library")
     id("convention.kotlin.multiplatform")
@@ -18,3 +20,4 @@ kotlin {
 android {
     namespace = "dev.avatsav.linkding.ui.theme"
 }
+configureComposeAndroidPreviews()

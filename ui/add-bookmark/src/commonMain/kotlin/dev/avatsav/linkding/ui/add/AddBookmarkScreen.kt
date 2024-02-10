@@ -32,7 +32,6 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.slack.circuit.runtime.CircuitContext
 import com.slack.circuit.runtime.screen.Screen
@@ -42,6 +41,7 @@ import dev.avatsav.linkding.ui.AddBookmarkScreen
 import dev.avatsav.linkding.ui.add.AddBookmarkUiEvent.Close
 import dev.avatsav.linkding.ui.add.AddBookmarkUiEvent.Save
 import dev.avatsav.linkding.ui.shared.OutlinedTagsTextField
+import dev.avatsav.linkding.ui.shared.PlaceholderVisualTransformation
 import dev.avatsav.linkding.ui.shared.SmallCircularProgressIndicator
 import dev.avatsav.linkding.ui.shared.TagsTextFieldValue
 import kotlinx.coroutines.delay
@@ -101,10 +101,7 @@ fun AddBookmark(
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
     ) { padding ->
         Column(
-            modifier = modifier
-                .padding(padding)
-                .padding(horizontal = 16.dp)
-                .fillMaxWidth(),
+            modifier = modifier.padding(padding).padding(horizontal = 16.dp).fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             OutlinedTextField(
@@ -128,24 +125,20 @@ fun AddBookmark(
                     Text(text = "Enter any number of tags separated by space and without the hash (#). If a tag does not exist it will be automatically created.")
                 },
             )
+
             OutlinedTextField(
                 modifier = Modifier.fillMaxWidth(),
                 value = title,
                 label = { Text(text = "Title") },
+                visualTransformation = PlaceholderVisualTransformation(
+                    text = state.unfurlData?.title ?: "",
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                ),
                 supportingText = {
                     Text(text = "Optional, leave empty to use title from website.")
                 },
                 trailingIcon = {
                     if (state.unfurling) SmallCircularProgressIndicator()
-                },
-                placeholder = {
-                    if (state.unfurlData?.title != null) {
-                        Text(
-                            text = state.unfurlData.title!!,
-                            maxLines = 4,
-                            overflow = TextOverflow.Ellipsis,
-                        )
-                    }
                 },
                 onValueChange = { title = it },
             )
@@ -156,15 +149,10 @@ fun AddBookmark(
                 trailingIcon = {
                     if (state.unfurling) SmallCircularProgressIndicator()
                 },
-                placeholder = {
-                    if (state.unfurlData?.description != null) {
-                        Text(
-                            text = state.unfurlData.description!!,
-                            maxLines = 4,
-                            overflow = TextOverflow.Ellipsis,
-                        )
-                    }
-                },
+                visualTransformation = PlaceholderVisualTransformation(
+                    text = state.unfurlData?.description ?: "",
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                ),
                 supportingText = {
                     Text(text = "Optional, leave empty to use description from website.")
                 },

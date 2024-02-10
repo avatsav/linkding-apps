@@ -90,9 +90,7 @@ fun OutlinedTagsTextField(
     }
 }
 
-@OptIn(
-    ExperimentalLayoutApi::class,
-)
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun OutlinedTagsTextField(
     modifier: Modifier = Modifier,
@@ -105,7 +103,6 @@ private fun OutlinedTagsTextField(
     decorationBox: @Composable (innerTextField: @Composable () -> Unit) -> Unit = @Composable { innerTextField -> innerTextField() },
 ) {
     val textFieldFocusRequester = remember { FocusRequester() }
-
     decorationBox {
         FlowRow(
             modifier = modifier

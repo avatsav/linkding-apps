@@ -18,5 +18,4 @@ class FetchApiConfiguration(
             it.message ?: "Error fetching api configuration"
         }
     }
-
 }
