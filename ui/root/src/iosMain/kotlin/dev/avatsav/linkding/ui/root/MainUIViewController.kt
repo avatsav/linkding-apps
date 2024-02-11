@@ -8,7 +8,7 @@ import androidx.compose.ui.interop.LocalUIViewController
 import androidx.compose.ui.window.ComposeUIViewController
 import com.slack.circuit.backstack.rememberSaveableBackStack
 import com.slack.circuit.foundation.rememberCircuitNavigator
-import dev.avatsav.linkding.ui.SetupScreen
+import dev.avatsav.linkding.ui.RootScreen
 import me.tatarka.inject.annotations.Inject
 import platform.Foundation.NSURL
 import platform.SafariServices.SFSafariViewController
@@ -21,7 +21,7 @@ typealias MainUIViewController = () -> UIViewController
 fun MainUIViewController(
     appContent: AppContent,
 ): UIViewController = ComposeUIViewController {
-    val backstack = rememberSaveableBackStack { push(SetupScreen) }
+    val backstack = rememberSaveableBackStack { push(RootScreen(null)) }
     val navigator = rememberCircuitNavigator(backstack, onRootPop = { /* no-op */ })
     val uiViewController = LocalUIViewController.current
     appContent(

@@ -22,15 +22,9 @@ class KotlinMultiplatformPlugin : Plugin<Project> {
                 androidTarget()
             }
 
-            listOf(
-                iosX64(),
-                iosArm64(),
-                iosSimulatorArm64(),
-            ).forEach { target ->
-                target.binaries.framework {
-                    baseName = path.substring(1).replace(':', '-')
-                }
-            }
+            iosArm64()
+            iosSimulatorArm64()
+
             targets.withType<KotlinNativeTarget>().configureEach {
                 compilations.configureEach {
                     compilerOptions.configure {

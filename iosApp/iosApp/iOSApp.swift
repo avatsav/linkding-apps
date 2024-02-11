@@ -1,10 +1,51 @@
 import SwiftUI
+import LinkdingKt
+
+class AppDelegate: UIResponder, UIApplicationDelegate {
+
+    lazy var applicationComponent: IosAppComponent = createApplicationComponent(
+        appDelegate: self
+    )
+
+    func application(
+        _: UIApplication,
+        didFinishLaunchingWithOptions _: [UIApplication.LaunchOptionsKey: Any]? = nil
+    ) -> Bool {
+        return true
+    }
+
+    func application(
+        _: UIApplication,
+        open url: URL,
+        options _: [UIApplication.OpenURLOptionsKey: Any] = [:]
+    ) -> Bool {
+        return true
+    }
+}
 
 @main
 struct iOSApp: App {
+    @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
 	var body: some Scene {
 		WindowGroup {
-			ContentView()
+            let uiComponent = createUiComponent(
+                appComponent: delegate.applicationComponent
+            )
+			ContentView(component: uiComponent)
 		}
 	}
+}
+
+private func createApplicationComponent(
+    appDelegate: AppDelegate
+) -> IosAppComponent {
+    return IosAppComponent.companion.create()
+}
+
+private func createUiComponent(
+    appComponent: IosAppComponent
+) -> IosUiViewControllerComponent {
+    return IosUiViewControllerComponent.companion.create(
+        appComponent: appComponent
+    )
 }

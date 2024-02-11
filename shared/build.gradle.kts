@@ -1,6 +1,7 @@
 @file:Suppress("UnstableApiUsage", "DSL_SCOPE_VIOLATION")
 
 import dev.avatsav.gradle.addKspDependencyForAllTargets
+import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 
 plugins {
     id("convention.android.library")
@@ -29,6 +30,13 @@ kotlin {
             api(projects.ui.setup)
             api(projects.ui.bookmarks)
             api(projects.ui.addBookmark)
+        }
+        targets.withType<KotlinNativeTarget>().configureEach {
+            binaries.framework {
+                isStatic = true
+                baseName = "LinkdingKt"
+                export(projects.ui.root)
+            }
         }
     }
 }
