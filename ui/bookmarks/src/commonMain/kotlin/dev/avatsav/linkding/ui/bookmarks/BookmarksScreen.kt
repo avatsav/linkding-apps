@@ -23,9 +23,7 @@ import androidx.compose.material3.SearchBar
 import androidx.compose.material3.SwipeToDismissBoxState
 import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshContainer
-import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -38,7 +36,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.paging.LoadState
 import com.slack.circuit.runtime.CircuitContext
 import com.slack.circuit.runtime.screen.Screen
 import com.slack.circuit.runtime.ui.Ui
@@ -109,9 +106,7 @@ fun Bookmarks(
                 onQueryChange = { },
                 onSearch = { searchActive = false },
                 active = searchActive,
-                onActiveChange = {
-                    searchActive = it
-                },
+                onActiveChange = { searchActive = it },
                 placeholder = { Text("Search for words or #tags") },
                 leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Search Icon") },
                 trailingIcon = {
@@ -135,24 +130,10 @@ fun Bookmarks(
     ) { paddingValues ->
 
         val listState = rememberLazyListState()
-        val bookmarkPagingItems = state.bookmarks
 
-        val pullToRefreshState = rememberPullToRefreshState()
-        if (pullToRefreshState.isRefreshing) {
-            eventSink(BookmarksUiEvent.Refresh)
-        }
-
-        LaunchedEffect(bookmarkPagingItems.loadState) {
-            when (bookmarkPagingItems.loadState.refresh) {
-                is LoadState.Loading -> Unit
-                is LoadState.Error, is LoadState.NotLoading -> {
-                    pullToRefreshState.endRefresh()
-                }
-            }
-        }
         Box(
             modifier = Modifier.padding(paddingValues)
-                .nestedScroll(pullToRefreshState.nestedScrollConnection)
+                .nestedScroll(state.pullToRefreshState.nestedScrollConnection)
                 .fillMaxSize(),
         ) {
             // Content padding: 56dp(FAB) + 32(Top+Bottom Padding)
@@ -161,8 +142,8 @@ fun Bookmarks(
                 state = listState,
                 contentPadding = PaddingValues(bottom = 88.dp),
             ) {
-                items(bookmarkPagingItems.itemCount) { index ->
-                    val bookmark = bookmarkPagingItems[index]
+                items(state.bookmarks.itemCount) { index ->
+                    val bookmark = state.bookmarks[index]
                     BookmarkListItem(
                         bookmark = bookmark!!,
                         openBookmark = { toOpen -> eventSink(Open(toOpen)) },
@@ -176,7 +157,7 @@ fun Bookmarks(
             }
             PullToRefreshContainer(
                 modifier = Modifier.align(Alignment.TopCenter),
-                state = pullToRefreshState,
+                state = state.pullToRefreshState,
             )
         }
     }

@@ -1,8 +1,11 @@
 package dev.avatsav.linkding.ui.bookmarks
 
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.paging.LoadState
 import androidx.paging.PagingConfig
 import app.cash.paging.compose.collectAsLazyPagingItems
 import com.slack.circuit.runtime.CircuitContext
@@ -50,12 +53,27 @@ class BookmarksPresenter(
     private val logger: Logger,
 ) : Presenter<BookmarksUiState> {
 
+    @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     override fun present(): BookmarksUiState {
         val coroutineScope = rememberCoroutineScope()
         val bookmarks = pagedBookmarks.flow
             .rememberCachedPagingFlow(coroutineScope)
             .collectAsLazyPagingItems()
+
+        val pullToRefreshState = rememberPullToRefreshState()
+        if (pullToRefreshState.isRefreshing) {
+            bookmarks.refresh()
+        }
+
+        LaunchedEffect(bookmarks.loadState) {
+            when (bookmarks.loadState.refresh) {
+                is LoadState.Loading -> Unit
+                is LoadState.Error, is LoadState.NotLoading -> {
+                    pullToRefreshState.endRefresh()
+                }
+            }
+        }
 
         LaunchedEffect(Unit) {
             pagedBookmarks.invoke(PagedBookmarks.Parameters(PAGING_CONFIG))
@@ -73,6 +91,7 @@ class BookmarksPresenter(
 
         return BookmarksUiState(
             bookmarks = bookmarks,
+            pullToRefreshState = pullToRefreshState,
             eventSink = ::eventSink,
         )
     }
