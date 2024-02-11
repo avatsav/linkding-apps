@@ -8,7 +8,7 @@ import platform.UIKit.UIViewController
 
 @Component
 @UiScope
-abstract class IosHomeUiControllerComponent(
+abstract class IosUiViewControllerComponent(
     @Component val appComponent: IosAppComponent,
 ) : SharedUiComponent {
 
@@ -17,4 +17,6 @@ abstract class IosHomeUiControllerComponent(
     @Provides
     @UiScope
     fun uiViewController(impl: MainUIViewController): UIViewController = impl()
+
+    companion object
 }

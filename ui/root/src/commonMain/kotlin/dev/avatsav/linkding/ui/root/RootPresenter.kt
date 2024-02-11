@@ -56,6 +56,7 @@ class RootPresenter(
                         }
                     }
                 }.onFailure {
+                    logger.e { "Error loading ApiConfig" }
                     navigator.goToAndResetRoot(SetupScreen)
                 }
         }

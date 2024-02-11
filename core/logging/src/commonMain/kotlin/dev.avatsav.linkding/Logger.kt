@@ -1,5 +1,6 @@
 package dev.avatsav.linkding
 
+import co.touchlab.kermit.Logger as Kermit
 import co.touchlab.kermit.Severity
 import me.tatarka.inject.annotations.Inject
 
@@ -14,7 +15,7 @@ interface Logger {
 @Inject
 internal class KermitLogger(appInfo: AppInfo) : Logger {
     init {
-        co.touchlab.kermit.Logger.setMinSeverity(
+        Kermit.setMinSeverity(
             when {
                 appInfo.debug -> Severity.Debug
                 else -> Severity.Error
@@ -23,22 +24,22 @@ internal class KermitLogger(appInfo: AppInfo) : Logger {
     }
 
     override fun v(throwable: Throwable?, message: () -> String) {
-        co.touchlab.kermit.Logger.v(throwable = throwable, message = message)
+        Kermit.v(throwable = throwable, message = message)
     }
 
     override fun d(throwable: Throwable?, message: () -> String) {
-        co.touchlab.kermit.Logger.d(throwable = throwable, message = message)
+        Kermit.d(throwable = throwable, message = message)
     }
 
     override fun i(throwable: Throwable?, message: () -> String) {
-        co.touchlab.kermit.Logger.i(throwable = throwable, message = message)
+        Kermit.i(throwable = throwable, message = message)
     }
 
     override fun e(throwable: Throwable?, message: () -> String) {
-        co.touchlab.kermit.Logger.e(throwable = throwable, message = message)
+        Kermit.e(throwable = throwable, message = message)
     }
 
     override fun w(throwable: Throwable?, message: () -> String) {
-        co.touchlab.kermit.Logger.w(throwable = throwable, message = message)
+        Kermit.w(throwable = throwable, message = message)
     }
 }
