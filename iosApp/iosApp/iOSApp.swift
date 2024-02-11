@@ -7,20 +7,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         appDelegate: self
     )
 
-    func application(
-        _: UIApplication,
-        didFinishLaunchingWithOptions _: [UIApplication.LaunchOptionsKey: Any]? = nil
-    ) -> Bool {
-        return true
-    }
-
-    func application(
-        _: UIApplication,
-        open url: URL,
-        options _: [UIApplication.OpenURLOptionsKey: Any] = [:]
-    ) -> Bool {
-        return true
-    }
 }
 
 @main

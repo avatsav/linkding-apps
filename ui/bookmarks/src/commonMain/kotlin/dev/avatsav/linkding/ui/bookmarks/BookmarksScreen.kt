@@ -1,11 +1,7 @@
 package dev.avatsav.linkding.ui.bookmarks
 
-import androidx.compose.animation.animateContentSize
-import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -21,6 +17,7 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SearchBar
 import androidx.compose.material3.SwipeToDismissBoxState
@@ -107,13 +104,7 @@ fun Bookmarks(
             SearchBar(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = searchBarHorizontalPadding)
-                    .animateContentSize(
-                        animationSpec = tween(
-                            durationMillis = 150,
-                            easing = LinearOutSlowInEasing,
-                        ),
-                    ),
+                    .padding(horizontal = searchBarHorizontalPadding),
                 query = "",
                 onQueryChange = { },
                 onSearch = { searchActive = false },
@@ -124,13 +115,12 @@ fun Bookmarks(
                 placeholder = { Text("Search for words or #tags") },
                 leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Search Icon") },
                 trailingIcon = {
-                    Icon(
-                        if (searchActive) Icons.Default.Close else Icons.Default.MoreVert,
-                        contentDescription = null,
-                        modifier = Modifier.clickable {
-                            if (searchActive) searchActive = false
-                        },
-                    )
+                    IconButton(onClick = { if (searchActive) searchActive = false }) {
+                        Icon(
+                            imageVector = if (searchActive) Icons.Default.Close else Icons.Default.MoreVert,
+                            contentDescription = null,
+                        )
+                    }
                 },
             ) {}
         },
