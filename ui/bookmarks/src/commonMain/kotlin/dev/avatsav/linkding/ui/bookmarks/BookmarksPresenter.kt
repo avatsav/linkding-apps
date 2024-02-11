@@ -61,15 +61,20 @@ class BookmarksPresenter(
             pagedBookmarks.invoke(PagedBookmarks.Parameters(PAGING_CONFIG))
         }
 
-        fun eventSink(event: BookmarksUiEvent) = when (event) {
-            Refresh -> bookmarks.refresh()
-            is Archive -> {}
-            is Delete -> {}
-            AddBookmark -> navigator.goTo(AddBookmarkScreen())
-            is Open -> navigator.goTo(UrlScreen(event.bookmark.url))
+        fun eventSink(event: BookmarksUiEvent) {
+            when (event) {
+                Refresh -> bookmarks.refresh()
+                is Archive -> {}
+                is Delete -> {}
+                AddBookmark -> navigator.goTo(AddBookmarkScreen())
+                is Open -> navigator.goTo(UrlScreen(event.bookmark.url))
+            }
         }
 
-        return BookmarksUiState(bookmarks, ::eventSink)
+        return BookmarksUiState(
+            bookmarks = bookmarks,
+            eventSink = ::eventSink,
+        )
     }
 
     companion object {

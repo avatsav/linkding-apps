@@ -1,5 +1,6 @@
 package dev.avatsav.linkding.ui.add
 
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -104,6 +105,7 @@ fun AddBookmark(
             modifier = modifier
                 .padding(padding)
                 .padding(horizontal = 16.dp)
+                .animateContentSize()
                 .fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {

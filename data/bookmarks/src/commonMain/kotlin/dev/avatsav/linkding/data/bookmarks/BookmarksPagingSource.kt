@@ -10,6 +10,15 @@ import kotlinx.coroutines.withContext
 import me.tatarka.inject.annotations.Inject
 
 @Inject
+class BookmarksPagingSourceFactory(
+    private val repository: BookmarksRepository,
+    private val dispatchers: AppCoroutineDispatchers,
+) {
+    fun create(): BookmarksPagingSource {
+        return BookmarksPagingSource(repository, dispatchers)
+    }
+}
+
 class BookmarksPagingSource(
     private val repository: BookmarksRepository,
     private val dispatchers: AppCoroutineDispatchers,
