@@ -28,6 +28,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshContainer
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -40,6 +41,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.paging.LoadState
 import com.slack.circuit.runtime.CircuitContext
 import com.slack.circuit.runtime.screen.Screen
 import com.slack.circuit.runtime.ui.Ui
@@ -76,10 +78,9 @@ fun Bookmarks(
     modifier: Modifier = Modifier,
 ) {
     val coroutineScope = rememberCoroutineScope()
-    val listState = rememberLazyListState()
-    val bookmarkDeleteState = remember { mutableStateOf<BookmarkDeleteState?>(null) }
-
     val eventSink = state.eventSink
+
+    val bookmarkDeleteState = remember { mutableStateOf<BookmarkDeleteState?>(null) }
 
     bookmarkDeleteState.value?.let { deleteState ->
         DeleteBookmarkDialog(
@@ -131,8 +132,7 @@ fun Bookmarks(
                         },
                     )
                 },
-            ) {
-            }
+            ) {}
         },
         floatingActionButton = {
             FloatingActionButton(onClick = { eventSink(AddBookmark) }) {
@@ -143,7 +143,23 @@ fun Bookmarks(
             }
         },
     ) { paddingValues ->
+
+        val listState = rememberLazyListState()
+        val bookmarkPagingItems = state.bookmarks
+
         val pullToRefreshState = rememberPullToRefreshState()
+        if (pullToRefreshState.isRefreshing) {
+            eventSink(BookmarksUiEvent.Refresh)
+        }
+
+        LaunchedEffect(bookmarkPagingItems.loadState) {
+            when (bookmarkPagingItems.loadState.refresh) {
+                is LoadState.Loading -> Unit
+                is LoadState.Error, is LoadState.NotLoading -> {
+                    pullToRefreshState.endRefresh()
+                }
+            }
+        }
         Box(
             modifier = Modifier.padding(paddingValues)
                 .nestedScroll(pullToRefreshState.nestedScrollConnection)
@@ -155,8 +171,8 @@ fun Bookmarks(
                 state = listState,
                 contentPadding = PaddingValues(bottom = 88.dp),
             ) {
-                items(state.bookmarks.itemCount) { index ->
-                    val bookmark = state.bookmarks[index]
+                items(bookmarkPagingItems.itemCount) { index ->
+                    val bookmark = bookmarkPagingItems[index]
                     BookmarkListItem(
                         bookmark = bookmark!!,
                         openBookmark = { toOpen -> eventSink(Open(toOpen)) },
