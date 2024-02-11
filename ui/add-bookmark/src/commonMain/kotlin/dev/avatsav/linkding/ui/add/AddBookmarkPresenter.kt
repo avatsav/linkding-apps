@@ -14,10 +14,10 @@ import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
 import com.slack.circuit.runtime.screen.Screen
 import dev.avatsav.linkding.Logger
+import dev.avatsav.linkding.data.model.CheckUrlResult
 import dev.avatsav.linkding.data.model.SaveBookmark
-import dev.avatsav.linkding.data.model.UnfurlData
 import dev.avatsav.linkding.domain.interactors.AddBookmark
-import dev.avatsav.linkding.domain.interactors.UnfurlLink
+import dev.avatsav.linkding.domain.interactors.CheckBookmarkUrl
 import dev.avatsav.linkding.ui.AddBookmarkScreen
 import dev.avatsav.linkding.ui.add.AddBookmarkUiEvent.Close
 import dev.avatsav.linkding.ui.add.AddBookmarkUiEvent.Save
@@ -46,7 +46,7 @@ class AddBookmarkPresenter(
     @Assisted private val navigator: Navigator,
     @Assisted private val sharedUrl: String?,
     private val addBookmark: AddBookmark,
-    private val unfurlLink: UnfurlLink,
+    private val checkBookmarkUrl: CheckBookmarkUrl,
     private val logger: Logger,
 ) : Presenter<AddBookmarkUiState> {
 
@@ -54,10 +54,10 @@ class AddBookmarkPresenter(
     override fun present(): AddBookmarkUiState {
         val scope = rememberCoroutineScope()
 
-        var unfurlData: UnfurlData? by rememberSaveable { mutableStateOf(null) }
+        var checkUrlResult: CheckUrlResult? by rememberSaveable { mutableStateOf(null) }
         var errorMessage by rememberSaveable { mutableStateOf("") }
 
-        val unfurling by unfurlLink.inProgress.collectAsState(false)
+        val checkingUrl by checkBookmarkUrl.inProgress.collectAsState(false)
         val saving by addBookmark.inProgress.collectAsState(false)
 
         fun eventSink(event: AddBookmarkUiEvent) {
@@ -78,23 +78,20 @@ class AddBookmarkPresenter(
                     }
                 }
 
-                is AddBookmarkUiEvent.Unfurl -> scope.launch {
-                    logger.d { "Starting to unfurl: ${event.url}" }
-                    unfurlLink(event.url)
-                        .onSuccess {
-                            logger.d { "Unfurl success: $it" }
-                            unfurlData = it
-                        }.onFailure {
-                            logger.e { "Unfurl failed: ${event.url}" }
-                        }
+                is AddBookmarkUiEvent.CheckUrl -> scope.launch {
+                    checkBookmarkUrl(event.url).onSuccess {
+                        checkUrlResult = it
+                    }.onFailure {
+                        logger.e { "CheckError: $it" }
+                    }
                 }
             }
         }
 
         return AddBookmarkUiState(
             sharedUrl = sharedUrl,
-            unfurling = unfurling,
-            unfurlData = unfurlData,
+            checkingUrl = checkingUrl,
+            checkUrlResult = checkUrlResult,
             saving = saving,
             errorMessage = errorMessage,
             eventSink = ::eventSink,

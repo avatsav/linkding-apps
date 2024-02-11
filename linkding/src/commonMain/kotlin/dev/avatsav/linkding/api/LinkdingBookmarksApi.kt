@@ -4,6 +4,7 @@ import com.github.michaelbull.result.Result
 import dev.avatsav.linkding.api.models.LinkdingBookmark
 import dev.avatsav.linkding.api.models.LinkdingBookmarkFilter
 import dev.avatsav.linkding.api.models.LinkdingBookmarksResponse
+import dev.avatsav.linkding.api.models.LinkdingCheckUrlResponse
 import dev.avatsav.linkding.api.models.LinkdingError
 import dev.avatsav.linkding.api.models.LinkdingSaveBookmarkRequest
 
@@ -24,6 +25,8 @@ interface LinkdingBookmarksApi {
     suspend fun getBookmark(id: Long): Result<LinkdingBookmark, LinkdingError>
 
     suspend fun saveBookmark(saveBookmark: LinkdingSaveBookmarkRequest): Result<LinkdingBookmark, LinkdingError>
+
+    suspend fun checkUrl(url: String): Result<LinkdingCheckUrlResponse, LinkdingError>
 
     suspend fun archiveBookmark(id: Long): Result<Unit, LinkdingError>
 

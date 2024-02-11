@@ -3,13 +3,14 @@ package dev.avatsav.linkding.ui.add
 import androidx.compose.runtime.Immutable
 import com.slack.circuit.runtime.CircuitUiEvent
 import com.slack.circuit.runtime.CircuitUiState
-import dev.avatsav.linkding.data.model.UnfurlData
+import dev.avatsav.linkding.data.model.CheckUrlResult
 
 @Immutable
 data class AddBookmarkUiState(
     val sharedUrl: String? = null,
-    val unfurling: Boolean = false,
-    val unfurlData: UnfurlData? = null,
+    val alreadyBookmarked: Boolean = false,
+    val checkingUrl: Boolean = false,
+    val checkUrlResult: CheckUrlResult? = null,
     val saving: Boolean = false,
     val errorMessage: String? = null,
     val eventSink: (AddBookmarkUiEvent) -> Unit,
@@ -24,5 +25,5 @@ sealed interface AddBookmarkUiEvent : CircuitUiEvent {
     ) : AddBookmarkUiEvent
 
     data object Close : AddBookmarkUiEvent
-    data class Unfurl(val url: String) : AddBookmarkUiEvent
+    data class CheckUrl(val url: String) : AddBookmarkUiEvent
 }

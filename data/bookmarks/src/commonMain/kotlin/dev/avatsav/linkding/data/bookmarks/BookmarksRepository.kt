@@ -7,9 +7,11 @@ import dev.avatsav.linkding.api.LinkdingApiProvider
 import dev.avatsav.linkding.api.models.LinkdingBookmarkFilter
 import dev.avatsav.linkding.data.bookmarks.mappers.BookmarkErrorMapper
 import dev.avatsav.linkding.data.bookmarks.mappers.BookmarkMapper
+import dev.avatsav.linkding.data.bookmarks.mappers.CheckUrlResultMapper
 import dev.avatsav.linkding.data.model.Bookmark
 import dev.avatsav.linkding.data.model.BookmarkError
 import dev.avatsav.linkding.data.model.BookmarksResult
+import dev.avatsav.linkding.data.model.CheckUrlResult
 import dev.avatsav.linkding.data.model.SaveBookmark
 import me.tatarka.inject.annotations.Inject
 
@@ -17,6 +19,7 @@ import me.tatarka.inject.annotations.Inject
 class BookmarksRepository(
     private val apiProvider: Lazy<LinkdingApiProvider>,
     private val bookmarkMapper: BookmarkMapper,
+    private val checkUrlMapper: CheckUrlResultMapper,
     private val errorMapper: BookmarkErrorMapper,
 ) {
     suspend fun getBookmarks(
@@ -27,6 +30,13 @@ class BookmarksRepository(
     ): Result<BookmarksResult, BookmarkError> {
         return apiProvider.value.bookmarksApi.getBookmarks(offset, limit, filter, query).mapEither(
             success = bookmarkMapper::map,
+            failure = errorMapper::map,
+        )
+    }
+
+    suspend fun checkUrl(url: String): Result<CheckUrlResult, BookmarkError> {
+        return apiProvider.value.bookmarksApi.checkUrl(url).mapEither(
+            success = checkUrlMapper::map,
             failure = errorMapper::map,
         )
     }
