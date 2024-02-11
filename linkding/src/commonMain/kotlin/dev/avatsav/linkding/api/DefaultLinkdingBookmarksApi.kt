@@ -12,10 +12,12 @@ import dev.avatsav.linkding.api.extensions.toLinkdingResult
 import dev.avatsav.linkding.api.models.LinkdingBookmark
 import dev.avatsav.linkding.api.models.LinkdingBookmarkFilter
 import dev.avatsav.linkding.api.models.LinkdingBookmarksResponse
+import dev.avatsav.linkding.api.models.LinkdingCheckUrlResponse
 import dev.avatsav.linkding.api.models.LinkdingError
 import dev.avatsav.linkding.api.models.LinkdingErrorResponse
 import dev.avatsav.linkding.api.models.LinkdingSaveBookmarkRequest
 import io.ktor.client.HttpClient
+import io.ktor.client.request.parameter
 import io.ktor.client.request.setBody
 
 class DefaultLinkdingBookmarksApi(private val httpClient: HttpClient) : LinkdingBookmarksApi {
@@ -54,6 +56,13 @@ class DefaultLinkdingBookmarksApi(private val httpClient: HttpClient) : Linkding
         return httpClient.post<LinkdingBookmark, LinkdingErrorResponse> {
             endpointBookmarks()
             setBody(saveBookmark)
+        }.toLinkdingResult()
+    }
+
+    override suspend fun checkUrl(url: String): Result<LinkdingCheckUrlResponse, LinkdingError> {
+        return httpClient.get<LinkdingCheckUrlResponse, LinkdingErrorResponse> {
+            endpointBookmarks("check")
+            parameter("url", url)
         }.toLinkdingResult()
     }
 

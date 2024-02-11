@@ -79,11 +79,11 @@ fun AddBookmark(
     var title by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
 
-    // Debouncing the url text field before unfurling
+    // Debouncing the url text field before unfurling/checking the url
     LaunchedEffect(url) {
         if (url.isBlank()) return@LaunchedEffect
         delay(1000)
-        eventSink(AddBookmarkUiEvent.Unfurl(url))
+        eventSink(AddBookmarkUiEvent.CheckUrl(url))
     }
 
     Scaffold(
@@ -116,6 +116,13 @@ fun AddBookmark(
                     keyboardType = KeyboardType.Uri,
                     imeAction = ImeAction.Next,
                 ),
+                supportingText = {
+                    if (state.checkUrlResult?.alreadyBookmarked == true) {
+                        Text(
+                            text = "This URL is already bookmarked. Saving will update the existing bookmark.",
+                        )
+                    }
+                },
                 onValueChange = { value ->
                     url = value
                 },
@@ -131,14 +138,14 @@ fun AddBookmark(
                 value = title,
                 label = { Text(text = "Title") },
                 visualTransformation = PlaceholderVisualTransformation(
-                    text = state.unfurlData?.title ?: "",
+                    text = state.checkUrlResult?.title ?: "",
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 ),
                 supportingText = {
                     Text(text = "Optional, leave empty to use title from website.")
                 },
                 trailingIcon = {
-                    if (state.unfurling) SmallCircularProgressIndicator()
+                    if (state.checkingUrl) SmallCircularProgressIndicator()
                 },
                 onValueChange = { title = it },
             )
@@ -147,10 +154,10 @@ fun AddBookmark(
                 value = description,
                 label = { Text(text = "Description") },
                 trailingIcon = {
-                    if (state.unfurling) SmallCircularProgressIndicator()
+                    if (state.checkingUrl) SmallCircularProgressIndicator()
                 },
                 visualTransformation = PlaceholderVisualTransformation(
-                    text = state.unfurlData?.description ?: "",
+                    text = state.checkUrlResult?.description ?: "",
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 ),
                 supportingText = {
