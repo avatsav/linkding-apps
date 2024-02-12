@@ -56,7 +56,7 @@ fun BookmarkListItem(
             startAction = SwipeAction(
                 onSwipe = { dismissState?.let { deleteBookmark(bookmark, it) } },
                 background = MaterialTheme.colorScheme.primary,
-                canDismiss = true,
+                canDismiss = false,
                 content = { dismissing ->
                     BookmarkSwipeActionContent(
                         imageVector = Icons.Default.Delete,
@@ -68,7 +68,7 @@ fun BookmarkListItem(
             endAction = SwipeAction(
                 onSwipe = { dismissState?.let { toggleArchive(bookmark, it) } },
                 background = MaterialTheme.colorScheme.primary,
-                canDismiss = true,
+                canDismiss = false,
                 content = { dismissing ->
                     BookmarkSwipeActionContent(
                         imageVector = if (bookmark.archived) Icons.Default.Unarchive else Icons.Default.Archive,

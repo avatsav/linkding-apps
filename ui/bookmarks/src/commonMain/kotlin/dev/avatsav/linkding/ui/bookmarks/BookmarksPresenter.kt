@@ -23,7 +23,6 @@ import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.AddBookmark
 import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.Archive
 import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.Delete
 import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.Open
-import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.Refresh
 import dev.avatsav.linkding.ui.extensions.rememberCachedPagingFlow
 import me.tatarka.inject.annotations.Assisted
 import me.tatarka.inject.annotations.Inject
@@ -62,7 +61,8 @@ class BookmarksPresenter(
             .collectAsLazyPagingItems()
 
         val pullToRefreshState = rememberPullToRefreshState()
-        if (pullToRefreshState.isRefreshing) {
+
+        LaunchedEffect(pullToRefreshState.isRefreshing) {
             bookmarks.refresh()
         }
 
@@ -81,7 +81,6 @@ class BookmarksPresenter(
 
         fun eventSink(event: BookmarksUiEvent) {
             when (event) {
-                Refresh -> bookmarks.refresh()
                 is Archive -> {}
                 is Delete -> {}
                 AddBookmark -> navigator.goTo(AddBookmarkScreen())

@@ -27,7 +27,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -36,6 +35,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import app.cash.paging.compose.itemKey
 import com.slack.circuit.runtime.CircuitContext
 import com.slack.circuit.runtime.screen.Screen
 import com.slack.circuit.runtime.ui.Ui
@@ -43,8 +43,6 @@ import com.slack.circuit.runtime.ui.ui
 import dev.avatsav.linkding.data.model.Bookmark
 import dev.avatsav.linkding.ui.BookmarksScreen
 import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.AddBookmark
-import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.Archive
-import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.Delete
 import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.Open
 import dev.avatsav.linkding.ui.bookmarks.widgets.BookmarkListItem
 import kotlinx.coroutines.launch
@@ -71,26 +69,8 @@ fun Bookmarks(
     state: BookmarksUiState,
     modifier: Modifier = Modifier,
 ) {
-    val coroutineScope = rememberCoroutineScope()
+    val scope = rememberCoroutineScope()
     val eventSink = state.eventSink
-
-    val bookmarkDeleteState = remember { mutableStateOf<BookmarkDeleteState?>(null) }
-
-    bookmarkDeleteState.value?.let { deleteState ->
-        DeleteBookmarkDialog(
-            bookmark = deleteState.bookmark,
-            onDismissRequest = {
-                coroutineScope.launch {
-                    deleteState.dismissState.reset()
-                }
-                bookmarkDeleteState.value = null
-            },
-            onConfirm = { toDelete ->
-                bookmarkDeleteState.value = null
-                eventSink(Delete(toDelete))
-            },
-        )
-    }
 
     var searchActive by rememberSaveable { mutableStateOf(false) }
     val searchBarHorizontalPadding: Dp by animateDpAsState(if (searchActive) 0.dp else 12.dp)
@@ -99,9 +79,7 @@ fun Bookmarks(
         modifier = modifier,
         topBar = {
             SearchBar(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = searchBarHorizontalPadding),
+                modifier = Modifier.fillMaxWidth().padding(horizontal = searchBarHorizontalPadding),
                 query = "",
                 onQueryChange = { },
                 onSearch = { searchActive = false },
@@ -130,11 +108,9 @@ fun Bookmarks(
     ) { paddingValues ->
 
         val listState = rememberLazyListState()
-
         Box(
             modifier = Modifier.padding(paddingValues)
-                .nestedScroll(state.pullToRefreshState.nestedScrollConnection)
-                .fillMaxSize(),
+                .nestedScroll(state.pullToRefreshState.nestedScrollConnection).fillMaxSize(),
         ) {
             // Content padding: 56dp(FAB) + 32(Top+Bottom Padding)
             LazyColumn(
@@ -142,17 +118,20 @@ fun Bookmarks(
                 state = listState,
                 contentPadding = PaddingValues(bottom = 88.dp),
             ) {
-                items(state.bookmarks.itemCount) { index ->
+                items(
+                    count = state.bookmarks.itemCount,
+                    key = state.bookmarks.itemKey { it.id },
+                ) { index ->
                     val bookmark = state.bookmarks[index]
-                    BookmarkListItem(
-                        bookmark = bookmark!!,
-                        openBookmark = { toOpen -> eventSink(Open(toOpen)) },
-                        toggleArchive = { toToggle, _ -> eventSink(Archive(toToggle)) },
-                        deleteBookmark = { toDelete, dismissState ->
-                            bookmarkDeleteState.value = BookmarkDeleteState(toDelete, dismissState)
-                        },
-                        modifier = Modifier.animateItemPlacement(),
-                    )
+                    if (bookmark != null) {
+                        BookmarkListItem(
+                            bookmark = bookmark,
+                            openBookmark = { toOpen -> eventSink(Open(toOpen)) },
+                            toggleArchive = { _, dismissState -> scope.launch { dismissState.reset() } },
+                            deleteBookmark = { _, dismissState -> scope.launch { dismissState.reset() } },
+                            modifier = Modifier.animateItemPlacement(),
+                        )
+                    }
                 }
             }
             PullToRefreshContainer(

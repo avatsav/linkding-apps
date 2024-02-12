@@ -10,14 +10,13 @@ import dev.avatsav.linkding.data.model.Bookmark
 
 @Immutable
 @OptIn(ExperimentalMaterial3Api::class)
-data class BookmarksUiState (
+data class BookmarksUiState(
     val bookmarks: LazyPagingItems<Bookmark>,
     val pullToRefreshState: PullToRefreshState,
     val eventSink: (BookmarksUiEvent) -> Unit,
 ) : CircuitUiState
 
 sealed interface BookmarksUiEvent : CircuitUiEvent {
-    data object Refresh : BookmarksUiEvent
     data class Archive(val bookmark: Bookmark) : BookmarksUiEvent
     data class Delete(val bookmark: Bookmark) : BookmarksUiEvent
     data class Open(val bookmark: Bookmark) : BookmarksUiEvent
