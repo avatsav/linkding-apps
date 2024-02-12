@@ -1,6 +1,5 @@
 import UIKit
 import SwiftUI
-import shared
 import LinkdingKt
 import OSLog
 

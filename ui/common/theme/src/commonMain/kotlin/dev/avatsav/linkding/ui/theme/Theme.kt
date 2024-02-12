@@ -7,7 +7,7 @@ import androidx.compose.runtime.Composable
 @Composable
 fun LinkdingTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    dynamicColor: Boolean = true,
+    dynamicColor: Boolean = false,
     content: @Composable () -> Unit,
 ) {
     MaterialTheme(
