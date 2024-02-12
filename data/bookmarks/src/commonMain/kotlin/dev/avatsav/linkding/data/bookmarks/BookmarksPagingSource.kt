@@ -26,6 +26,7 @@ class BookmarksPagingSource(
 
     companion object {
         private const val STARTING_PAGE_INDEX = 1
+        private const val PAGE_SIZE = 20
     }
 
     override fun getRefreshKey(state: PagingState<Int, Bookmark>): Int? {
@@ -38,8 +39,9 @@ class BookmarksPagingSource(
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Bookmark> {
         return withContext(dispatchers.io) {
             val position = params.key ?: STARTING_PAGE_INDEX
-            val offset = if (position == 1) 0 else params.loadSize * position - 1
-            when (val result = repository.getBookmarks(offset, params.loadSize)) {
+            val offset = if (position == 1) 0 else PAGE_SIZE * (position - 1) + 1
+
+            when (val result = repository.getBookmarks(offset, PAGE_SIZE)) {
                 is Err -> LoadResult.Error(Exception(result.error.message)) // TODO: So much for typing my errors. Find a better way.
                 is Ok -> {
                     val prevKey = if (position == 1) null else (position - 1)

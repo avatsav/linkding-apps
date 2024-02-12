@@ -98,7 +98,6 @@ class BookmarksPresenter(
     companion object {
         val PAGING_CONFIG = PagingConfig(
             pageSize = 20,
-            initialLoadSize = 60,
         )
     }
 }
