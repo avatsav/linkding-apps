@@ -35,8 +35,8 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import dev.avatsav.linkding.data.model.Bookmark
-import dev.avatsav.linkding.ui.shared.SwipeAction
-import dev.avatsav.linkding.ui.shared.SwipeableListItem
+import dev.avatsav.linkding.ui.shared.SwipeToDismissAction
+import dev.avatsav.linkding.ui.shared.SwipeToDismissListItem
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -48,14 +48,13 @@ fun BookmarkListItem(
     modifier: Modifier = Modifier,
 ) {
     var dismissState: SwipeToDismissBoxState? = null
-
-    Column(modifier = modifier) {
-        SwipeableListItem(
+    Column(modifier) {
+        SwipeToDismissListItem(
             modifier = Modifier,
-            background = MaterialTheme.colorScheme.primaryContainer,
-            startAction = SwipeAction(
-                onSwipe = { dismissState?.let { deleteBookmark(bookmark, it) } },
-                background = MaterialTheme.colorScheme.primary,
+            backgroundColor = MaterialTheme.colorScheme.primaryContainer,
+            startToEndAction = SwipeToDismissAction(
+                onSwipeToDismissTriggered = { dismissState?.let { deleteBookmark(bookmark, it) } },
+                backgroundColour = MaterialTheme.colorScheme.primary,
                 canDismiss = false,
                 content = { dismissing ->
                     BookmarkSwipeActionContent(
@@ -65,9 +64,9 @@ fun BookmarkListItem(
                     )
                 },
             ),
-            endAction = SwipeAction(
-                onSwipe = { dismissState?.let { toggleArchive(bookmark, it) } },
-                background = MaterialTheme.colorScheme.primary,
+            endToStartAction = SwipeToDismissAction(
+                onSwipeToDismissTriggered = { dismissState?.let { toggleArchive(bookmark, it) } },
+                backgroundColour = MaterialTheme.colorScheme.primary,
                 canDismiss = false,
                 content = { dismissing ->
                     BookmarkSwipeActionContent(
@@ -95,15 +94,13 @@ private fun BoxScope.BookmarkSwipeActionContent(
     dismissing: Boolean,
 ) {
     val iconAnimatable = remember { Animatable(if (dismissing) .7f else 1f) }
-    LaunchedEffect(
-        key1 = Unit,
-        block = {
-            if (dismissing) {
-                iconAnimatable.snapTo(.7f)
-                iconAnimatable.animateTo(1f, spring(Spring.DampingRatioHighBouncy))
-            }
-        },
-    )
+
+    LaunchedEffect(Unit) {
+        if (dismissing) {
+            iconAnimatable.snapTo(.7f)
+            iconAnimatable.animateTo(1f, spring(Spring.DampingRatioHighBouncy))
+        }
+    }
     Column(
         modifier = Modifier
             .padding(horizontal = 20.dp)
