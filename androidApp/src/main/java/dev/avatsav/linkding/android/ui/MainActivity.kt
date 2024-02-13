@@ -31,8 +31,7 @@ class MainActivity : ComponentActivity() {
         val activityComponent = AndroidActivityComponent.create(this, appComponent)
 
         setContent {
-            val backstack =
-                rememberSaveableBackStack { push(RootScreen(sharedLink)) }
+            val backstack = rememberSaveableBackStack(root = RootScreen(sharedLink))
             val navigator = rememberCircuitNavigator(backstack)
 
             activityComponent.appContent(

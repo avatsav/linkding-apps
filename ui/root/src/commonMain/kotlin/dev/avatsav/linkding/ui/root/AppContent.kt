@@ -18,6 +18,7 @@ import com.slack.circuitx.gesturenavigation.GestureNavigationDecoration
 import dev.avatsav.linkding.Logger
 import dev.avatsav.linkding.ui.UrlScreen
 import dev.avatsav.linkding.ui.theme.LinkdingTheme
+import kotlinx.collections.immutable.ImmutableList
 import me.tatarka.inject.annotations.Assisted
 import me.tatarka.inject.annotations.Inject
 
@@ -80,7 +81,7 @@ private class LinkdingNavigator(
         newRoot: Screen,
         saveState: Boolean,
         restoreState: Boolean,
-    ): List<Screen> {
+    ): ImmutableList<Screen> {
         logger.d { "resetRoot: newRoot:$newRoot. Current stack: ${peekBackStack()}" }
         return navigator.resetRoot(newRoot, saveState, restoreState)
     }
@@ -89,7 +90,7 @@ private class LinkdingNavigator(
         return navigator.peek()
     }
 
-    override fun peekBackStack(): List<Screen> {
+    override fun peekBackStack(): ImmutableList<Screen> {
         return navigator.peekBackStack()
     }
 }

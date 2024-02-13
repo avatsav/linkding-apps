@@ -21,7 +21,7 @@ typealias MainUIViewController = () -> UIViewController
 fun MainUIViewController(
     appContent: AppContent,
 ): UIViewController = ComposeUIViewController {
-    val backstack = rememberSaveableBackStack { push(RootScreen(null)) }
+    val backstack = rememberSaveableBackStack(root = RootScreen(null))
     val navigator = rememberCircuitNavigator(backstack, onRootPop = { /* no-op */ })
     val uiViewController = LocalUIViewController.current
     appContent(
