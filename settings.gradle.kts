@@ -23,13 +23,13 @@ rootProject.name = "linkding-apps"
 
 
 include(
-    ":androidApp",
-    ":shared",
+    ":app:android",
+    ":app:shared",
     ":core:base",
     ":core:logging",
     ":core:preferences",
-    ":linkding",
-    ":linkding-api",
+    ":linkding:api",
+    ":linkding:bind",
     ":data:models",
     ":data:bookmarks",
     ":data:configuration",
