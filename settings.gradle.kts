@@ -21,15 +21,15 @@ enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 rootProject.name = "linkding-apps"
 
-
 include(
-    ":app:android",
     ":app:shared",
+    ":app:android",
+    ":app:desktop",
+    ":linkding:api",
+    ":linkding:bind",
     ":core:base",
     ":core:logging",
     ":core:preferences",
-    ":linkding:api",
-    ":linkding:bind",
     ":data:models",
     ":data:bookmarks",
     ":data:configuration",
