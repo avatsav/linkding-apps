@@ -20,5 +20,12 @@ kotlin {
             implementation(libs.ktor.serialization.json)
             implementation(libs.kotlinResult)
         }
+        jvmMain.dependencies {
+            implementation(libs.ktor.client.okhttp)
+        }
+
+        iosMain.dependencies {
+            implementation(libs.ktor.client.darwin)
+        }
     }
 }
