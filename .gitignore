@@ -28,6 +28,6 @@ google-services.json
 # Xcode
 xcuserdata
 /.idea/kotlinScripting.xml
-iosApp/iosApp.xcworkspace/*
-iosApp/iosApp.xcodeproj/*
-!iosApp/iosApp.xcodeproj/project.pbxproj
+app/ios/iosApp.xcworkspace/*
+app/ios/iosApp.xcodeproj/*
+!app/ios/iosApp.xcodeproj/project.pbxproj
