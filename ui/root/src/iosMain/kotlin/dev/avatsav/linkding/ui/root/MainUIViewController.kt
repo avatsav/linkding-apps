@@ -27,10 +27,12 @@ fun MainUIViewController(
     appContent(
         backstack,
         navigator,
-        { url ->
-            val safari = SFSafariViewController(NSURL(string = url))
-            uiViewController.presentViewController(safari, animated = true, completion = null)
-        },
+        { uiViewController.launchUrl(it) },
         Modifier,
     )
+}
+
+fun UIViewController.launchUrl(url: String) {
+    val safari = SFSafariViewController(NSURL(string = url))
+    presentViewController(safari, animated = true, completion = null)
 }

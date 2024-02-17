@@ -7,6 +7,8 @@ import androidx.compose.ui.window.application
 import com.slack.circuit.backstack.rememberSaveableBackStack
 import com.slack.circuit.foundation.rememberCircuitNavigator
 import dev.avatsav.linkding.ui.RootScreen
+import java.awt.Desktop
+import java.net.URI
 
 fun main() = application {
     val appComponent = remember { DesktopAppComponent.create() }
@@ -23,8 +25,13 @@ fun main() = application {
         uiComponent.appContent(
             backstack,
             navigator,
-            { /*TODO*/ },
+            { launchUrl(it) },
             Modifier,
         )
     }
+}
+
+fun launchUrl(url: String) {
+    val desktop = Desktop.getDesktop()
+    desktop.browse(URI.create(url))
 }

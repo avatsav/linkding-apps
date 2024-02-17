@@ -9,8 +9,4 @@ class LinkdingApplication : Application() {
     val component: AndroidAppComponent by lazy {
         AndroidAppComponent.create(this)
     }
-
-    override fun onCreate() {
-        super.onCreate()
-    }
 }
