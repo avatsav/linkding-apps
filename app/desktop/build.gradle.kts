@@ -26,6 +26,15 @@ compose.desktop {
             targetFormats(Dmg, Msi, Deb)
             packageName = "dev.avatsav.linkding"
             packageVersion = "1.0.0"
+            macOS {
+                iconFile.set(file("icons/AppIcon.icns"))
+            }
+            linux {
+                iconFile.set(file("icons/AppIcon.png"))
+            }
+            windows {
+                iconFile.set(file("icons/AppIcon.ico"))
+            }
         }
     }
 }
