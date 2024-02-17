@@ -19,6 +19,7 @@ kotlin {
             api(projects.ui.common.shared)
             api(libs.circuit.foundation)
             api(libs.circuit.retained)
+            api(libs.circuitx.overlays)
             api(libs.kotlinResult)
             api(libs.kotlinResultCoroutines)
             implementation(libs.paging.compose)

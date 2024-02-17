@@ -8,16 +8,11 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Archive
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Link
 import androidx.compose.material.icons.filled.Unarchive
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
@@ -32,7 +27,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import dev.avatsav.linkding.data.model.Bookmark
 import dev.avatsav.linkding.ui.shared.SwipeToDismissAction
@@ -55,7 +49,7 @@ fun BookmarkListItem(
             startToEndAction = SwipeToDismissAction(
                 onSwipeToDismissTriggered = { dismissState?.let { deleteBookmark(bookmark, it) } },
                 backgroundColour = MaterialTheme.colorScheme.primary,
-                canDismiss = false,
+                canDismiss = true,
                 content = { dismissing ->
                     BookmarkSwipeActionContent(
                         imageVector = Icons.Default.Delete,
@@ -67,7 +61,7 @@ fun BookmarkListItem(
             endToStartAction = SwipeToDismissAction(
                 onSwipeToDismissTriggered = { dismissState?.let { toggleArchive(bookmark, it) } },
                 backgroundColour = MaterialTheme.colorScheme.primary,
-                canDismiss = false,
+                canDismiss = true,
                 content = { dismissing ->
                     BookmarkSwipeActionContent(
                         imageVector = if (bookmark.archived) Icons.Default.Unarchive else Icons.Default.Archive,
@@ -79,7 +73,9 @@ fun BookmarkListItem(
         ) {
             dismissState = it
             BookmarkContent(
-                modifier = Modifier.clickable { openBookmark(bookmark) },
+                modifier = Modifier
+                    .background(MaterialTheme.colorScheme.surface)
+                    .clickable { openBookmark(bookmark) },
                 bookmark = bookmark,
             )
         }
@@ -121,62 +117,5 @@ private fun BoxScope.BookmarkSwipeActionContent(
             style = MaterialTheme.typography.bodySmall,
             color = if (dismissing) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.primary,
         )
-    }
-}
-
-@Composable
-private fun BookmarkContent(
-    modifier: Modifier = Modifier,
-    bookmark: Bookmark,
-) {
-    Column(
-        modifier = modifier
-            .background(MaterialTheme.colorScheme.surface)
-            .padding(16.dp)
-            .fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(8.dp),
-    ) {
-        Text(
-            text = bookmark.title,
-            color = MaterialTheme.colorScheme.primary,
-            maxLines = 2,
-            overflow = TextOverflow.Ellipsis,
-        )
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(4.dp),
-        ) {
-            Icon(
-                imageVector = Icons.Default.Link,
-                contentDescription = null,
-                modifier = Modifier.size(12.dp),
-            )
-            Text(
-                text = bookmark.urlHost,
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-            )
-        }
-        if (bookmark.description.isNotEmpty()) {
-            Text(
-                text = bookmark.description,
-                style = MaterialTheme.typography.bodyMedium,
-                maxLines = 3,
-                overflow = TextOverflow.Ellipsis,
-            )
-        }
-        LazyRow(
-            horizontalArrangement = Arrangement.spacedBy(4.dp),
-        ) {
-            items(items = bookmark.tags.toTypedArray()) { tagName ->
-                Text(
-                    text = "#$tagName",
-                    color = MaterialTheme.colorScheme.tertiary,
-                    style = MaterialTheme.typography.labelMedium,
-                )
-            }
-        }
     }
 }

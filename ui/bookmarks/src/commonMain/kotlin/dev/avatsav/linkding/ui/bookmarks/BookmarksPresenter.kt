@@ -4,15 +4,15 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.paging.LoadState
 import androidx.paging.PagingConfig
 import app.cash.paging.compose.collectAsLazyPagingItems
+import com.github.michaelbull.result.onFailure
+import com.github.michaelbull.result.onSuccess
 import com.slack.circuit.runtime.CircuitContext
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
 import com.slack.circuit.runtime.screen.Screen
-import dev.avatsav.linkding.Logger
 import dev.avatsav.linkding.domain.interactors.ArchiveBookmark
 import dev.avatsav.linkding.domain.interactors.DeleteBookmark
 import dev.avatsav.linkding.domain.interactors.PagedBookmarks
@@ -24,6 +24,8 @@ import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.Archive
 import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.Delete
 import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.Open
 import dev.avatsav.linkding.ui.extensions.rememberCachedPagingFlow
+import dev.avatsav.linkding.ui.extensions.rememberStableCoroutineScope
+import kotlinx.coroutines.launch
 import me.tatarka.inject.annotations.Assisted
 import me.tatarka.inject.annotations.Inject
 
@@ -49,13 +51,12 @@ class BookmarksPresenter(
     private val pagedBookmarks: PagedBookmarks,
     private val deleteBookmark: DeleteBookmark,
     private val archiveBookmark: ArchiveBookmark,
-    private val logger: Logger,
 ) : Presenter<BookmarksUiState> {
 
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     override fun present(): BookmarksUiState {
-        val coroutineScope = rememberCoroutineScope()
+        val coroutineScope = rememberStableCoroutineScope()
         val bookmarks = pagedBookmarks.flow
             .rememberCachedPagingFlow(coroutineScope)
             .collectAsLazyPagingItems()
@@ -79,20 +80,31 @@ class BookmarksPresenter(
             pagedBookmarks.invoke(PagedBookmarks.Parameters(PAGING_CONFIG))
         }
 
-        fun eventSink(event: BookmarksUiEvent) {
+        return BookmarksUiState(
+            bookmarks = bookmarks,
+            pullToRefreshState = pullToRefreshState,
+        ) { event ->
             when (event) {
-                is Archive -> {}
-                is Delete -> {}
+                is Archive -> coroutineScope.launch {
+                    archiveBookmark(event.bookmark.id).onSuccess {
+                        // TODO: Remove item from the paged data.
+                    }.onFailure {
+                        // TODO: Reset the item.
+                    }
+                }
+
+                is Delete -> coroutineScope.launch {
+                    deleteBookmark(event.bookmark.id).onSuccess {
+                        // TODO: Remove item from the paged data.
+                    }.onFailure {
+                        // TODO: Reset the item.
+                    }
+                }
+
                 AddBookmark -> navigator.goTo(AddBookmarkScreen())
                 is Open -> navigator.goTo(UrlScreen(event.bookmark.url))
             }
         }
-
-        return BookmarksUiState(
-            bookmarks = bookmarks,
-            pullToRefreshState = pullToRefreshState,
-            eventSink = ::eventSink,
-        )
     }
 
     companion object {

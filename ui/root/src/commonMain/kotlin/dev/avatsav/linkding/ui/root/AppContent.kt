@@ -9,6 +9,7 @@ import com.slack.circuit.backstack.SaveableBackStack
 import com.slack.circuit.foundation.Circuit
 import com.slack.circuit.foundation.CircuitCompositionLocals
 import com.slack.circuit.foundation.NavigableCircuitContent
+import com.slack.circuit.overlay.ContentWithOverlays
 import com.slack.circuit.retained.LocalRetainedStateRegistry
 import com.slack.circuit.retained.continuityRetainedStateRegistry
 import com.slack.circuit.runtime.Navigator
@@ -48,12 +49,14 @@ fun AppContent(
     ) {
         CircuitCompositionLocals(circuit) {
             LinkdingTheme {
-                NavigableCircuitContent(
-                    navigator = linkdingNavigator,
-                    backStack = backStack,
-                    decoration = remember(navigator) { GestureNavigationDecoration(onBackInvoked = navigator::pop) },
-                    modifier = modifier.fillMaxSize(),
-                )
+                ContentWithOverlays {
+                    NavigableCircuitContent(
+                        navigator = linkdingNavigator,
+                        backStack = backStack,
+                        decoration = remember(navigator) { GestureNavigationDecoration(onBackInvoked = navigator::pop) },
+                        modifier = modifier.fillMaxSize(),
+                    )
+                }
             }
         }
     }
