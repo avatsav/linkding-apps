@@ -38,6 +38,7 @@ include(
     ":ui:common:theme",
     ":ui:common:screens",
     ":ui:common:shared",
+    ":ui:common:circuit",
     ":ui:bookmarks",
     ":ui:add-bookmark",
     ":ui:setup",

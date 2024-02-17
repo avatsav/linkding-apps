@@ -23,9 +23,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import com.slack.circuit.overlay.OverlayHost
-import com.slack.circuitx.overlays.BottomSheetOverlay
 import dev.avatsav.linkding.data.model.Bookmark
 import dev.avatsav.linkding.ui.bookmarks.widgets.BookmarkContent
+import dev.avatsav.linkding.ui.circuit.BottomSheetOverlay
 
 suspend fun OverlayHost.showDeleteBookmarkAction(bookmark: Bookmark): ActionResult {
     return show(
