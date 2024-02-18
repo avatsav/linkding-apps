@@ -1,7 +1,6 @@
 package dev.avatsav.linkding
 
 import dev.avatsav.linkding.api.LinkdingApiComponent
-import dev.avatsav.linkding.data.unfurl.inject.UnfurlerComponent
 import dev.avatsav.linkding.inject.AppScope
 import dev.avatsav.linkding.inject.LoggerComponent
 import dev.avatsav.linkding.prefs.inject.PreferencesComponent
@@ -17,8 +16,7 @@ interface SharedAppComponent :
     SharedPlatformAppComponent,
     LoggerComponent,
     PreferencesComponent,
-    LinkdingApiComponent,
-    UnfurlerComponent {
+    LinkdingApiComponent {
 
     @AppScope
     @Provides

@@ -23,7 +23,6 @@ kotlin {
             api(projects.linkding.bind)
             api(projects.domain)
             api(projects.data.bookmarks)
-            api(projects.data.unfurl)
 
             api(projects.ui.common.theme)
             api(projects.ui.root)
