@@ -15,6 +15,7 @@ paging-kmp = "3.3.0-alpha02-0.4.0"
 circuit = "0.19.1"
 kotlinResult = "1.1.18"
 androidxActivity = "1.8.2"
+sqldelight = "2.0.1"
 
 compileSdk = "34"
 minSdk = "26"
@@ -33,6 +34,7 @@ kotlin-native-cocoapods = { id = "org.jetbrains.kotlin.native.cocoapods", versio
 jetbrains-compose = { id = "org.jetbrains.compose", version.ref = "jetbrains-compose" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
+sqldelight = { id = "app.cash.sqldelight", version.ref = "sqldelight" }
 
 [libraries]
 androidx-activity = { module = "androidx.activity:activity", version.ref = "androidxActivity" }
@@ -61,7 +63,6 @@ ktor-client-contentNegotiation = { module = "io.ktor:ktor-client-content-negotia
 ktor-serialization-json = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor" }
 
 leakCanary = "com.squareup.leakcanary:leakcanary-android:2.13"
-unfurl = "me.saket.unfurl:unfurl:1.7.0"
 kermit = "co.touchlab:kermit:2.0.3"
 
 multiplatform-settings = { module = "com.russhwolf:multiplatform-settings", version.ref = "multiplatform-settings" }
@@ -84,9 +85,14 @@ circuit-foundation = { module = "com.slack.circuit:circuit-foundation", version.
 circuit-runtime = { module = "com.slack.circuit:circuit-runtime", version.ref = "circuit" }
 circuit-overlay = { module = "com.slack.circuit:circuit-overlay", version.ref = "circuit" }
 circuit-retained = { module = "com.slack.circuit:circuit-retained", version.ref = "circuit" }
-circuitx-overlays = { module = "com.slack.circuit:circuitx-overlays", version.ref = "circuit" }
-circuitx-android = { module = "com.slack.circuit:circuitx-android", version.ref = "circuit" }
 circuitx-gestureNavigation = { module = "com.slack.circuit:circuitx-gesture-navigation", version.ref = "circuit" }
+
+sqldelight-android = { module = "app.cash.sqldelight:android-driver", version.ref = "sqldelight" }
+sqldelight-native = { module = "app.cash.sqldelight:native-driver", version.ref = "sqldelight" }
+sqldelight-sqlite = { module = "app.cash.sqldelight:sqlite-driver", version.ref = "sqldelight" }
+sqldelight-coroutines = { module = "app.cash.sqldelight:coroutines-extensions", version.ref = "sqldelight" }
+sqldelight-paging = { module = "app.cash.sqldelight:androidx-paging3-extensions", version.ref = "sqldelight" }
+sqldelight-primitive = { module = "app.cash.sqldelight:primitive-adapters", version.ref = "sqldelight" }
 
 
 # Build logic dependencies

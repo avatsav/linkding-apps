@@ -1,0 +1,81 @@
+import kotlin.String;
+import kotlin.collections.Set;
+import kotlinx.datetime.Instant;
+
+CREATE TABLE IF NOT EXISTS `bookmarks` (
+    `id` INTEGER PRIMARY KEY NOT NULL,
+    `external_id` INTEGER NOT NULL,
+    `url` TEXT NOT NULL,
+    `title` TEXT,
+    `description` TEXT,
+    `archived` INTEGER AS kotlin.Boolean DEFAULT 0,
+    `unread` INTEGER AS kotlin.Boolean DEFAULT 0,
+    `tags` TEXT AS Set<String> NOT NULL,
+    `added` TEXT AS Instant,
+    `modified` TEXT AS Instant
+);
+
+CREATE UNIQUE INDEX IF NOT EXISTS `index_bookmarks_id` ON `bookmarks` (`id`);
+
+getById:
+SELECT * FROM bookmarks WHERE id = :id;
+
+insert:
+INSERT INTO bookmarks (
+    `id`,
+    `external_id`,
+    `url`,
+    `title`,
+    `description`,
+    `archived`,
+    `unread`,
+    `tags` ,
+    `added`,
+    `modified`
+) VALUES (
+    :id,
+    :external_id,
+    :url,
+    :title,
+    :description,
+    :archived,
+    :unread,
+    :tags,
+    :added,
+    :modified
+);
+
+insertFull:
+INSERT INTO bookmarks (
+    `id`,
+    `external_id`,
+    `url`,
+    `title`,
+    `description`,
+    `archived`,
+    `unread`,
+    `tags` ,
+    `added`,
+    `modified`
+) VALUES ?;
+
+update:
+UPDATE bookmarks SET
+    `external_id` = :external_id,
+    `url` = :url,
+    `title` = :title,
+    `description` = :description,
+    `archived` = :archived,
+    `unread` = :unread,
+    `tags` = :tags,
+    `added` = :added,
+    `modified` = :modified
+WHERE id = :id;
+
+delete:
+DELETE FROM bookmarks WHERE id = :id;
+
+deleteAll:
+DELETE FROM bookmarks;
+
+
