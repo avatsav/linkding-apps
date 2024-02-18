@@ -1,21 +1,19 @@
 package dev.avatsav.linkding.data.db.sqldelight.daos
 
-import dev.avatsav.linkding.AppCoroutineDispatchers
 import dev.avatsav.linkding.data.db.Database
 import dev.avatsav.linkding.data.db.daos.BookmarksDao
 import dev.avatsav.linkding.data.model.Bookmark
 import me.tatarka.inject.annotations.Inject
 
 @Inject
-class SqlDelightBookmarksDao(
-    private val db: Database,
-    private val dispatchers: AppCoroutineDispatchers,
-) : BookmarksDao {
+class SqlDelightBookmarksDao(private val db: Database) : BookmarksDao {
+
     override fun insert(entity: Bookmark) {
         db.bookmarksQueries.insert(
             id = entity.id,
             external_id = entity.externalId,
             url = entity.url,
+            urlHost = entity.urlHost,
             title = entity.title,
             description = entity.description,
             archived = entity.archived,
@@ -39,6 +37,7 @@ class SqlDelightBookmarksDao(
             id = entity.id,
             external_id = entity.externalId,
             url = entity.url,
+            urlHost = entity.urlHost,
             title = entity.title,
             description = entity.description,
             archived = entity.archived,

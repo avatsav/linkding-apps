@@ -18,7 +18,7 @@ androidxActivity = "1.8.2"
 sqldelight = "2.0.1"
 
 compileSdk = "34"
-minSdk = "26"
+minSdk = "30"
 targetSdk = "34"
 
 [plugins]

@@ -8,7 +8,7 @@ data class Bookmark(
     val url: String,
     val urlHost: String,
     val title: String,
-    val description: String = "",
+    val description: String,
     val archived: Boolean = false,
     val unread: Boolean = false,
     val tags: Set<String> = emptySet(),
