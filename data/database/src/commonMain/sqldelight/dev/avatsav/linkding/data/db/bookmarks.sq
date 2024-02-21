@@ -24,12 +24,13 @@ SELECT count(*) FROM bookmarks;
 bookmarkEntries:
 SELECT *
 FROM bookmarks
+ORDER BY id DESC
 LIMIT :limit OFFSET :offset;
 
 keyedQuery:
 SELECT * FROM bookmarks
 WHERE id >= :beginInclusive AND (id < :endExclusive OR :endExclusive IS NULL)
-ORDER BY id ASC;
+ORDER BY id DESC;
 
 insert:
 INSERT INTO bookmarks (
@@ -58,21 +59,6 @@ INSERT INTO bookmarks (
     :modified
 );
 
-insertFull:
-INSERT INTO bookmarks (
-    `id`,
-    `external_id`,
-    `url`,
-    `urlHost`,
-    `title`,
-    `description`,
-    `archived`,
-    `unread`,
-    `tags` ,
-    `added`,
-    `modified`
-) VALUES ?;
-
 update:
 UPDATE bookmarks SET
     `external_id` = :external_id,
@@ -93,4 +79,42 @@ DELETE FROM bookmarks WHERE id = :id;
 deleteAll:
 DELETE FROM bookmarks;
 
-
+upsert {
+    UPDATE bookmarks SET
+        `external_id` = :external_id,
+        `url` = :url,
+        `urlHost` = :urlHost,
+        `title` = :title,
+        `description` = :description,
+        `archived` = :archived,
+        `unread` = :unread,
+        `tags` = :tags,
+        `added` = :added,
+        `modified` = :modified
+    WHERE id = :id;
+    INSERT OR IGNORE INTO bookmarks (
+        `id`,
+        `external_id`,
+        `url`,
+        `urlHost`,
+        `title`,
+        `description`,
+        `archived`,
+        `unread`,
+        `tags`,
+        `added`,
+        `modified`
+    ) VALUES (
+         :id,
+         :external_id,
+         :url,
+         :urlHost,
+         :title,
+         :description,
+         :archived,
+         :unread,
+         :tags,
+         :added,
+         :modified
+     );
+}

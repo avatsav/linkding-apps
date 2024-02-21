@@ -10,8 +10,9 @@ kotlin {
             implementation(projects.data.models)
             api(projects.data.bookmarks)
             api(projects.data.configuration)
-            implementation(libs.paging.common)
+            api(projects.data.database)
 
+            implementation(libs.paging.common)
             implementation(libs.kotlin.atomicfu)
             implementation(libs.paging.common)
             implementation(libs.kotlinResult)

@@ -7,9 +7,9 @@ import app.cash.sqldelight.db.SqlDriver
 
 class BookmarksPageBoundariesQuery(
     private val driver: SqlDriver,
-    private val anchor: Long?,
+    private val anchor: Int?,
     private val limit: Long,
-) : Query<Long>({ it.getLong(0)!! }) {
+) : Query<Int>({ it.getLong(0)!!.toInt() }) {
 
     override fun addListener(listener: Listener) {
         driver.addListener("bookmarks", listener = listener)
@@ -26,19 +26,19 @@ class BookmarksPageBoundariesQuery(
                     |SELECT id
                     |FROM (SELECT bookmarks.id,
                     |             CASE
-                    |                 WHEN ((row_number() OVER (ORDER BY matches.match_id DESC) - 1) % :limit) = 0 THEN 1
+                    |                 WHEN ((row_number() OVER (ORDER BY bookmarks.id ASC) - 1) % :limit) = 0 THEN 1
                     |                 WHEN id = :anchor THEN 1
                     |                 ELSE 0
                     |                 END page_boundary
                     |      FROM bookmarks
-                    |      ORDER BY id DESC)
-                    |WHERE page_boundary = 1
+                    |      ORDER BY id ASC)
+                    |WHERE page_boundary = 1;
             """.trimMargin(),
             mapper = mapper,
             parameters = 2,
         ) {
             bindLong(0, limit)
-            bindLong(1, anchor)
+            bindLong(1, anchor?.toLong())
         }
 
     override fun toString(): String = "Bookmarks.sq:pageBoundaries"

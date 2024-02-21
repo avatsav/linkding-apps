@@ -11,12 +11,12 @@ import me.tatarka.inject.annotations.Inject
 
 @Inject
 class PagedBookmarks(private val sourceFactory: BookmarksPagingSourceFactory) :
-    PagedObserver<PagedBookmarks.Parameters, Bookmark>() {
+    PagedObserver<PagedBookmarks.Param, Bookmark>() {
 
-    override fun createObservable(params: Parameters): Flow<PagingData<Bookmark>> =
+    override fun createObservable(params: Param): Flow<PagingData<Bookmark>> =
         Pager(PagingConfig(pageSize = 10)) { sourceFactory.create() }.flow
 
-    data class Parameters(
+    data class Param(
         override val pagingConfig: PagingConfig,
-    ) : PagedObserver.Parameters<Bookmark>
+    ) : PagedObserver.Param<Bookmark>
 }

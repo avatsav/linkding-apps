@@ -9,6 +9,7 @@ kotlin {
         commonMain.dependencies {
             api(libs.kotlin.coroutines.core)
             api(projects.core.base)
+            api(projects.core.logging)
             api(projects.data.models)
 
             api(libs.kotlin.datetime)

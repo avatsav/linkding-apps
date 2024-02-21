@@ -6,6 +6,7 @@ import app.cash.sqldelight.db.SqlDriver
 import app.cash.sqldelight.paging3.QueryPagingSource
 import dev.avatsav.linkding.AppCoroutineDispatchers
 import dev.avatsav.linkding.data.db.Database
+import dev.avatsav.linkding.data.db.daos.BookmarksDao
 import dev.avatsav.linkding.data.db.daos.PagingBookmarksDao
 import dev.avatsav.linkding.data.db.sqldelight.queries.BookmarksPageBoundariesQuery
 import dev.avatsav.linkding.data.model.Bookmark
@@ -16,9 +17,11 @@ import me.tatarka.inject.annotations.Inject
 class SqlDelightPagingBookmarksDao(
     private val driver: SqlDriver,
     private val db: Database,
+    private val bookmarksDao: BookmarksDao,
     private val dispatchers: AppCoroutineDispatchers,
 ) : PagingBookmarksDao {
-    override fun offsetPagingSource(offset: Long, limit: Long): PagingSource<Int, Bookmark> {
+
+    override fun offsetPagingSource(): PagingSource<Int, Bookmark> {
         return QueryPagingSource(
             countQuery = db.bookmarksQueries.countBookmarks(),
             transacter = db.bookmarksQueries,
@@ -27,7 +30,7 @@ class SqlDelightPagingBookmarksDao(
         )
     }
 
-    override fun keyedPagingSource(anchor: Long?, limit: Long): PagingSource<Long, Bookmark> {
+    override fun keyedPagingSource(): PagingSource<Int, Bookmark> {
         return QueryPagingSource(
             transacter = db.bookmarksQueries,
             context = dispatchers.io,
@@ -36,12 +39,27 @@ class SqlDelightPagingBookmarksDao(
         )
     }
 
-    private fun pagedBoundariesProvider(anchor: Long?, limit: Long): Query<Long> {
+    override fun refresh(bookmarks: List<Bookmark>) {
+        db.transaction {
+            bookmarksDao.deleteAll()
+            bookmarksDao.insert(bookmarks)
+        }
+    }
+
+    override fun append(bookmarks: List<Bookmark>) {
+        bookmarksDao.upsert(bookmarks)
+    }
+
+    private fun pagedBoundariesProvider(anchor: Int?, limit: Long): Query<Int> {
         return BookmarksPageBoundariesQuery(driver, anchor, limit)
     }
 
-    private fun keyedQuery(beginInclusive: Long, endInclusive: Long?): Query<Bookmark> {
-        return db.bookmarksQueries.keyedQuery(beginInclusive, endInclusive, this::mapToBookmark)
+    private fun keyedQuery(beginInclusive: Int, endInclusive: Int?): Query<Bookmark> {
+        return db.bookmarksQueries.keyedQuery(
+            beginInclusive.toLong(),
+            endInclusive?.toLong(),
+            this::mapToBookmark,
+        )
     }
 
     private fun queryBookmarks(limit: Long, offset: Long): Query<Bookmark> {
