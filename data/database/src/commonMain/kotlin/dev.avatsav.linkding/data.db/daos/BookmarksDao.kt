@@ -7,7 +7,7 @@ interface BookmarksDao {
     fun insert(bookmarks: List<Bookmark>)
 
     fun update(bookmark: Bookmark)
-    fun upsert(entity: Bookmark)
+    fun upsert(bookmark: Bookmark)
     fun upsert(bookmarks: List<Bookmark>)
 
     fun delete(id: Long)

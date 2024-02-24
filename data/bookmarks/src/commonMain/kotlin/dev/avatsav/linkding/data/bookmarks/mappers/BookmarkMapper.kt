@@ -23,7 +23,6 @@ class BookmarkMapper {
     fun map(linkdingBookmark: LinkdingBookmark) =
         Bookmark(
             id = linkdingBookmark.id,
-            externalId = linkdingBookmark.id,
             url = linkdingBookmark.url,
             urlHost = Url(linkdingBookmark.url).host,
             title = linkdingBookmark.getSafeTitle(),

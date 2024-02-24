@@ -22,10 +22,10 @@ import me.tatarka.inject.annotations.Inject
 
 @OptIn(ExperimentalPagingApi::class)
 @Inject
-class ObservePagedBookmarks(
+class ObserveBookmarks(
     private val pagingBookmarksDao: PagingBookmarksDao,
     private val bookmarksRemoteMediator: BookmarksRemoteMediator,
-) : PagedObserver<ObservePagedBookmarks.Param, Bookmark>() {
+) : PagedObserver<ObserveBookmarks.Param, Bookmark>() {
 
     override fun createObservable(params: Param): Flow<PagingData<Bookmark>> {
         return Pager(
@@ -55,7 +55,6 @@ class BookmarksRemoteMediator(
         loadType: LoadType,
         state: PagingState<Int, Bookmark>,
     ): MediatorResult = withContext(dispatchers.io) {
-        logger.w { "Remote Mediation, LoadType:$loadType, PagingState:$state" }
         val offset = when (loadType) {
             LoadType.REFRESH -> 0
             LoadType.PREPEND -> return@withContext RemoteMediatorMediatorResultSuccess(
@@ -63,8 +62,8 @@ class BookmarksRemoteMediator(
             )
 
             LoadType.APPEND -> {
-                logger.w { "AnchorPosition:${state.anchorPosition}" }
-                state.anchorPosition ?: 0
+                // We can use the "pages" count to find the page to to be loaded.
+                state.pages.sumOf { it.data.size }
             }
         }
         return@withContext repository.getBookmarks(offset, 20).fold(

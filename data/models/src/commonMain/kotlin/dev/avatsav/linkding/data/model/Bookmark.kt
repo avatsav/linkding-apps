@@ -4,7 +4,6 @@ import kotlinx.datetime.Instant
 
 data class Bookmark(
     val id: Long,
-    val externalId: Long,
     val url: String,
     val urlHost: String,
     val title: String,

@@ -7,7 +7,6 @@ import dev.avatsav.linkding.ui.theme.LinkdingTheme
 
 private val previewBookmark = Bookmark(
     id = 1L,
-    externalId = 2L,
     url = "https://newsletter.bijanstephen.blog/lateral-thinking-with-withered-technology/",
     urlHost = "https://newsletter.bijanstephen.blog",
     title = "Lateral thinking with withered technology",

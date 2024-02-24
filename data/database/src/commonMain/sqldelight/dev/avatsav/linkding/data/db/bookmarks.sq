@@ -3,8 +3,8 @@ import kotlin.collections.Set;
 import kotlinx.datetime.Instant;
 
 CREATE TABLE IF NOT EXISTS `bookmarks` (
-    `id` INTEGER PRIMARY KEY NOT NULL,
-    `external_id` INTEGER NOT NULL,
+    `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+    `linkding_id` INTEGER NOT NULL,
     `url` TEXT NOT NULL,
     `urlHost` TEXT NOT NULL,
     `title` TEXT NOT NULL,
@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS `bookmarks` (
     `modified` TEXT AS Instant
 );
 
-CREATE UNIQUE INDEX IF NOT EXISTS `index_bookmarks_id` ON `bookmarks` (`id`);
+CREATE UNIQUE INDEX IF NOT EXISTS `index_bookmarks_linkding_id` ON `bookmarks` (`linkding_id`);
 
 countBookmarks:
 SELECT count(*) FROM bookmarks;
@@ -24,18 +24,17 @@ SELECT count(*) FROM bookmarks;
 bookmarkEntries:
 SELECT *
 FROM bookmarks
-ORDER BY id DESC
+ORDER BY id ASC
 LIMIT :limit OFFSET :offset;
 
 keyedQuery:
 SELECT * FROM bookmarks
 WHERE id >= :beginInclusive AND (id < :endExclusive OR :endExclusive IS NULL)
-ORDER BY id DESC;
+ORDER BY id ASC;
 
 insert:
 INSERT INTO bookmarks (
-    `id`,
-    `external_id`,
+    `linkding_id`,
     `url`,
     `urlHost`,
     `title`,
@@ -46,8 +45,7 @@ INSERT INTO bookmarks (
     `added`,
     `modified`
 ) VALUES (
-    :id,
-    :external_id,
+    :linkding_id,
     :url,
     :urlHost,
     :title,
@@ -61,7 +59,7 @@ INSERT INTO bookmarks (
 
 update:
 UPDATE bookmarks SET
-    `external_id` = :external_id,
+    `linkding_id` = :linkding_id,
     `url` = :url,
     `urlHost` = :urlHost,
     `title` = :title,
@@ -71,17 +69,17 @@ UPDATE bookmarks SET
     `tags` = :tags,
     `added` = :added,
     `modified` = :modified
-WHERE id = :id;
+WHERE linkding_id = :linkding_id;
 
 delete:
-DELETE FROM bookmarks WHERE id = :id;
+DELETE FROM bookmarks WHERE linkding_id = :linkding_id;
 
 deleteAll:
 DELETE FROM bookmarks;
 
 upsert {
     UPDATE bookmarks SET
-        `external_id` = :external_id,
+        `linkding_id` = :linkding_id,
         `url` = :url,
         `urlHost` = :urlHost,
         `title` = :title,
@@ -91,10 +89,9 @@ upsert {
         `tags` = :tags,
         `added` = :added,
         `modified` = :modified
-    WHERE id = :id;
+    WHERE linkding_id = :linkding_id;
     INSERT OR IGNORE INTO bookmarks (
-        `id`,
-        `external_id`,
+        `linkding_id`,
         `url`,
         `urlHost`,
         `title`,
@@ -105,8 +102,7 @@ upsert {
         `added`,
         `modified`
     ) VALUES (
-         :id,
-         :external_id,
+         :linkding_id,
          :url,
          :urlHost,
          :title,

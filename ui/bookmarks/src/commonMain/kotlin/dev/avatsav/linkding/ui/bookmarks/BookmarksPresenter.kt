@@ -15,7 +15,7 @@ import com.slack.circuit.runtime.presenter.Presenter
 import com.slack.circuit.runtime.screen.Screen
 import dev.avatsav.linkding.domain.interactors.ArchiveBookmark
 import dev.avatsav.linkding.domain.interactors.DeleteBookmark
-import dev.avatsav.linkding.domain.interactors.PagedBookmarks
+import dev.avatsav.linkding.domain.observers.ObserveBookmarks
 import dev.avatsav.linkding.ui.AddBookmarkScreen
 import dev.avatsav.linkding.ui.BookmarksScreen
 import dev.avatsav.linkding.ui.UrlScreen
@@ -48,7 +48,7 @@ class BookmarksUiPresenterFactory(
 @Inject
 class BookmarksPresenter(
     @Assisted private val navigator: Navigator,
-    private val pagedBookmarks: PagedBookmarks,
+    private val observeBookmarks: ObserveBookmarks,
     private val deleteBookmark: DeleteBookmark,
     private val archiveBookmark: ArchiveBookmark,
 ) : Presenter<BookmarksUiState> {
@@ -57,8 +57,7 @@ class BookmarksPresenter(
     @Composable
     override fun present(): BookmarksUiState {
         val coroutineScope = rememberStableCoroutineScope()
-        val bookmarks = pagedBookmarks.flow
-            .rememberCachedPagingFlow(coroutineScope)
+        val bookmarks = observeBookmarks.flow.rememberCachedPagingFlow(coroutineScope)
             .collectAsLazyPagingItems()
 
         val pullToRefreshState = rememberPullToRefreshState()
@@ -77,7 +76,15 @@ class BookmarksPresenter(
         }
 
         LaunchedEffect(Unit) {
-            pagedBookmarks.invoke(PagedBookmarks.Parameters(PAGING_CONFIG))
+            observeBookmarks.invoke(
+                ObserveBookmarks.Param(
+                    PagingConfig(
+                        initialLoadSize = 20,
+                        pageSize = 20,
+                        enablePlaceholders = false,
+                    ),
+                ),
+            )
         }
 
         return BookmarksUiState(
@@ -105,11 +112,5 @@ class BookmarksPresenter(
                 is Open -> navigator.goTo(UrlScreen(event.bookmark.url))
             }
         }
-    }
-
-    companion object {
-        val PAGING_CONFIG = PagingConfig(
-            pageSize = 20,
-        )
     }
 }

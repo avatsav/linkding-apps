@@ -72,7 +72,7 @@ class SqlDelightPagingBookmarksDao(
 
     private fun mapToBookmark(
         id: Long,
-        external_id: Long,
+        linkding_id: Long,
         url: String,
         urlHost: String,
         title: String,
@@ -83,8 +83,7 @@ class SqlDelightPagingBookmarksDao(
         added: Instant?,
         modified: Instant?,
     ) = Bookmark(
-        id = id,
-        externalId = external_id,
+        id = linkding_id,
         url = url,
         urlHost = urlHost,
         title = title,
