@@ -7,8 +7,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.paging.LoadState
 import androidx.paging.PagingConfig
 import app.cash.paging.compose.collectAsLazyPagingItems
-import com.github.michaelbull.result.onFailure
-import com.github.michaelbull.result.onSuccess
 import com.slack.circuit.runtime.CircuitContext
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
@@ -93,19 +91,11 @@ class BookmarksPresenter(
         ) { event ->
             when (event) {
                 is Archive -> coroutineScope.launch {
-                    archiveBookmark(event.bookmark.id).onSuccess {
-                        // TODO: Remove item from the paged data.
-                    }.onFailure {
-                        // TODO: Reset the item.
-                    }
+                    archiveBookmark(event.bookmark.id)
                 }
 
                 is Delete -> coroutineScope.launch {
-                    deleteBookmark(event.bookmark.id).onSuccess {
-                        // TODO: Remove item from the paged data.
-                    }.onFailure {
-                        // TODO: Reset the item.
-                    }
+                    deleteBookmark(event.bookmark.id)
                 }
 
                 AddBookmark -> navigator.goTo(AddBookmarkScreen())

@@ -1,4 +1,4 @@
-package dev.avatsav.linkding.data.db.sqldelight
+package dev.avatsav.linkding.data.db.inject
 
 import android.app.Application
 import app.cash.sqldelight.db.SqlDriver

@@ -7,6 +7,7 @@ kotlin {
         commonMain.dependencies {
             api(projects.data.models)
             implementation(projects.linkding.bind)
+            implementation(projects.data.database)
             implementation(libs.kotlinResult)
             implementation(libs.paging.common)
         }

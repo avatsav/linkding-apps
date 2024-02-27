@@ -2,85 +2,21 @@ package dev.avatsav.linkding.domain.observers
 
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.PagingConfig
-import app.cash.paging.LoadType
-import app.cash.paging.Pager
 import app.cash.paging.PagingData
-import app.cash.paging.PagingState
-import app.cash.paging.RemoteMediator
-import app.cash.paging.RemoteMediatorMediatorResultError
-import app.cash.paging.RemoteMediatorMediatorResultSuccess
-import com.github.michaelbull.result.fold
-import dev.avatsav.linkding.AppCoroutineDispatchers
-import dev.avatsav.linkding.Logger
 import dev.avatsav.linkding.data.bookmarks.BookmarksRepository
-import dev.avatsav.linkding.data.db.daos.PagingBookmarksDao
 import dev.avatsav.linkding.data.model.Bookmark
 import dev.avatsav.linkding.domain.PagedObserver
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.withContext
 import me.tatarka.inject.annotations.Inject
 
 @OptIn(ExperimentalPagingApi::class)
 @Inject
-class ObserveBookmarks(
-    private val pagingBookmarksDao: PagingBookmarksDao,
-    private val bookmarksRemoteMediator: BookmarksRemoteMediator,
-) : PagedObserver<ObserveBookmarks.Param, Bookmark>() {
+class ObserveBookmarks(private val repository: BookmarksRepository) :
+    PagedObserver<ObserveBookmarks.Param, Bookmark>() {
 
     override fun createObservable(params: Param): Flow<PagingData<Bookmark>> {
-        return Pager(
-            config = params.pagingConfig,
-            remoteMediator = bookmarksRemoteMediator,
-            pagingSourceFactory = { pagingBookmarksDao.keyedPagingSource() },
-        ).flow
+        return repository.getBookmarksPaged(params.pagingConfig)
     }
 
     data class Param(override val pagingConfig: PagingConfig) : PagedObserver.Param<Bookmark>
-}
-
-@OptIn(ExperimentalPagingApi::class)
-@Inject
-class BookmarksRemoteMediator(
-    private val repository: BookmarksRepository,
-    private val bookmarksDao: PagingBookmarksDao,
-    private val dispatchers: AppCoroutineDispatchers,
-    private val logger: Logger,
-) : RemoteMediator<Int, Bookmark>() {
-
-    override suspend fun initialize(): InitializeAction {
-        // TODO: Invalidate based on the timestamp of the last insert so that we do not need to refresh unnecessarily.
-        return super.initialize()
-    }
-
-    override suspend fun load(
-        loadType: LoadType,
-        state: PagingState<Int, Bookmark>,
-    ): MediatorResult = withContext(dispatchers.io) {
-        val offset = when (loadType) {
-            LoadType.REFRESH -> 0
-            LoadType.PREPEND -> return@withContext RemoteMediatorMediatorResultSuccess(
-                endOfPaginationReached = true,
-            )
-
-            LoadType.APPEND -> {
-                // We can use the "pages" count to find the page to to be loaded.
-                // Perhaps there's a better way to get the offset.
-                state.pages.sumOf { it.data.size }
-            }
-        }
-        return@withContext repository.getBookmarks(offset, 20).fold(
-            success = {
-                val bookmarks = it.bookmarks
-                if (loadType == androidx.paging.LoadType.REFRESH) {
-                    bookmarksDao.refresh(bookmarks)
-                } else {
-                    bookmarksDao.append(bookmarks)
-                }
-                RemoteMediatorMediatorResultSuccess(endOfPaginationReached = it.nextPage == null)
-            },
-            failure = {
-                RemoteMediatorMediatorResultError(Exception(it.message))
-            },
-        )
-    }
 }

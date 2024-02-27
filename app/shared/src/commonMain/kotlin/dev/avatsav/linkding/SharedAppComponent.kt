@@ -1,7 +1,7 @@
 package dev.avatsav.linkding
 
 import dev.avatsav.linkding.api.LinkdingApiComponent
-import dev.avatsav.linkding.data.db.sqldelight.SqlDelightComponent
+import dev.avatsav.linkding.data.db.inject.DatabaseComponent
 import dev.avatsav.linkding.inject.AppScope
 import dev.avatsav.linkding.inject.LoggerComponent
 import dev.avatsav.linkding.prefs.inject.PreferencesComponent
@@ -18,7 +18,7 @@ interface SharedAppComponent :
     LoggerComponent,
     PreferencesComponent,
     LinkdingApiComponent,
-    SqlDelightComponent {
+    DatabaseComponent {
 
     @AppScope
     @Provides
