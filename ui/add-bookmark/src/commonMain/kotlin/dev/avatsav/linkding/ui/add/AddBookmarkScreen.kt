@@ -90,6 +90,7 @@ fun AddBookmark(
     }
 
     Scaffold(
+        modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             LargeTopAppBar(
                 title = { Text(text = "Add Bookmark") },
@@ -101,7 +102,6 @@ fun AddBookmark(
                 },
             )
         },
-        modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
     ) { padding ->
         Column(
             modifier = modifier

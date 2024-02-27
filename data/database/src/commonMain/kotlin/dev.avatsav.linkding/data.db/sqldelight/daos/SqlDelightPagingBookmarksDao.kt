@@ -5,6 +5,7 @@ import app.cash.sqldelight.Query
 import app.cash.sqldelight.db.SqlDriver
 import app.cash.sqldelight.paging3.QueryPagingSource
 import dev.avatsav.linkding.AppCoroutineDispatchers
+import dev.avatsav.linkding.Logger
 import dev.avatsav.linkding.data.db.Database
 import dev.avatsav.linkding.data.db.daos.BookmarksDao
 import dev.avatsav.linkding.data.db.daos.PagingBookmarksDao
@@ -19,6 +20,7 @@ class SqlDelightPagingBookmarksDao(
     private val db: Database,
     private val bookmarksDao: BookmarksDao,
     private val dispatchers: AppCoroutineDispatchers,
+    private val logger: Logger,
 ) : PagingBookmarksDao {
 
     override fun offsetPagingSource(): PagingSource<Int, Bookmark> {
@@ -31,11 +33,12 @@ class SqlDelightPagingBookmarksDao(
     }
 
     override fun keyedPagingSource(): PagingSource<Int, Bookmark> {
-        return QueryPagingSource(
+        return dev.avatsav.linkding.data.db.sqldelight.QueryPagingSource(
             transacter = db.bookmarksQueries,
             context = dispatchers.io,
             pageBoundariesProvider = this::pagedBoundariesProvider,
             queryProvider = this::keyedQuery,
+            logger = logger,
         )
     }
 

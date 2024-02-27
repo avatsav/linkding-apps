@@ -48,6 +48,7 @@ class BookmarksRemoteMediator(
 ) : RemoteMediator<Int, Bookmark>() {
 
     override suspend fun initialize(): InitializeAction {
+        // TODO: Invalidate based on the timestamp of the last insert so that we do not need to refresh unnecessarily.
         return super.initialize()
     }
 
@@ -63,6 +64,7 @@ class BookmarksRemoteMediator(
 
             LoadType.APPEND -> {
                 // We can use the "pages" count to find the page to to be loaded.
+                // Perhaps there's a better way to get the offset.
                 state.pages.sumOf { it.data.size }
             }
         }
@@ -70,10 +72,8 @@ class BookmarksRemoteMediator(
             success = {
                 val bookmarks = it.bookmarks
                 if (loadType == androidx.paging.LoadType.REFRESH) {
-                    logger.w { "refreshing the database" }
                     bookmarksDao.refresh(bookmarks)
                 } else {
-                    logger.w { "appending entries in the database" }
                     bookmarksDao.append(bookmarks)
                 }
                 RemoteMediatorMediatorResultSuccess(endOfPaginationReached = it.nextPage == null)
