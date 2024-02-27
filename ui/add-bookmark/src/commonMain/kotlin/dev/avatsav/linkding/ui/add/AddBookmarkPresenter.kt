@@ -4,7 +4,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import com.github.michaelbull.result.onFailure
@@ -19,8 +18,7 @@ import dev.avatsav.linkding.data.model.SaveBookmark
 import dev.avatsav.linkding.domain.interactors.AddBookmark
 import dev.avatsav.linkding.domain.interactors.CheckBookmarkUrl
 import dev.avatsav.linkding.ui.AddBookmarkScreen
-import dev.avatsav.linkding.ui.add.AddBookmarkUiEvent.Close
-import dev.avatsav.linkding.ui.add.AddBookmarkUiEvent.Save
+import dev.avatsav.linkding.ui.extensions.rememberStableCoroutineScope
 import kotlinx.coroutines.launch
 import me.tatarka.inject.annotations.Assisted
 import me.tatarka.inject.annotations.Inject
@@ -52,7 +50,7 @@ class AddBookmarkPresenter(
 
     @Composable
     override fun present(): AddBookmarkUiState {
-        val scope = rememberCoroutineScope()
+        val scope = rememberStableCoroutineScope()
 
         var checkUrlResult: CheckUrlResult? by rememberSaveable { mutableStateOf(null) }
         var errorMessage by rememberSaveable { mutableStateOf("") }
@@ -61,9 +59,18 @@ class AddBookmarkPresenter(
         val saving by addBookmark.inProgress.collectAsState(false)
 
         fun eventSink(event: AddBookmarkUiEvent) {
+        }
+
+        return AddBookmarkUiState(
+            sharedUrl = sharedUrl,
+            checkingUrl = checkingUrl,
+            checkUrlResult = checkUrlResult,
+            saving = saving,
+            errorMessage = errorMessage,
+        ) { event ->
             when (event) {
-                Close -> navigator.pop()
-                is Save -> scope.launch {
+                AddBookmarkUiEvent.Close -> navigator.pop()
+                is AddBookmarkUiEvent.Save -> scope.launch {
                     addBookmark(
                         SaveBookmark(
                             event.url,
@@ -87,14 +94,5 @@ class AddBookmarkPresenter(
                 }
             }
         }
-
-        return AddBookmarkUiState(
-            sharedUrl = sharedUrl,
-            checkingUrl = checkingUrl,
-            checkUrlResult = checkUrlResult,
-            saving = saving,
-            errorMessage = errorMessage,
-            eventSink = ::eventSink,
-        )
     }
 }

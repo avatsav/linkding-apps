@@ -1,0 +1,116 @@
+import kotlin.String;
+import kotlin.collections.Set;
+import kotlinx.datetime.Instant;
+
+CREATE TABLE IF NOT EXISTS `bookmarks` (
+    `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+    `linkding_id` INTEGER NOT NULL,
+    `url` TEXT NOT NULL,
+    `urlHost` TEXT NOT NULL,
+    `title` TEXT NOT NULL,
+    `description` TEXT NOT NULL,
+    `archived` INTEGER AS kotlin.Boolean DEFAULT 0 NOT NULL,
+    `unread` INTEGER AS kotlin.Boolean DEFAULT 0 NOT NULL,
+    `tags` TEXT AS Set<String> NOT NULL,
+    `added` TEXT AS Instant,
+    `modified` TEXT AS Instant
+);
+
+CREATE UNIQUE INDEX IF NOT EXISTS `index_bookmarks_linkding_id` ON `bookmarks` (`linkding_id`);
+
+countBookmarks:
+SELECT count(*) FROM bookmarks;
+
+bookmarkEntries:
+SELECT *
+FROM bookmarks
+ORDER BY id ASC
+LIMIT :limit OFFSET :offset;
+
+keyedQuery:
+SELECT * FROM bookmarks
+WHERE id >= :beginInclusive AND (id < :endExclusive OR :endExclusive IS NULL)
+ORDER BY id ASC;
+
+insert:
+INSERT INTO bookmarks (
+    `linkding_id`,
+    `url`,
+    `urlHost`,
+    `title`,
+    `description`,
+    `archived`,
+    `unread`,
+    `tags` ,
+    `added`,
+    `modified`
+) VALUES (
+    :linkding_id,
+    :url,
+    :urlHost,
+    :title,
+    :description,
+    :archived,
+    :unread,
+    :tags,
+    :added,
+    :modified
+);
+
+update:
+UPDATE bookmarks SET
+    `linkding_id` = :linkding_id,
+    `url` = :url,
+    `urlHost` = :urlHost,
+    `title` = :title,
+    `description` = :description,
+    `archived` = :archived,
+    `unread` = :unread,
+    `tags` = :tags,
+    `added` = :added,
+    `modified` = :modified
+WHERE linkding_id = :linkding_id;
+
+delete:
+DELETE FROM bookmarks WHERE linkding_id = :linkding_id;
+
+deleteAll:
+DELETE FROM bookmarks;
+
+upsert {
+    UPDATE bookmarks SET
+        `linkding_id` = :linkding_id,
+        `url` = :url,
+        `urlHost` = :urlHost,
+        `title` = :title,
+        `description` = :description,
+        `archived` = :archived,
+        `unread` = :unread,
+        `tags` = :tags,
+        `added` = :added,
+        `modified` = :modified
+    WHERE linkding_id = :linkding_id;
+    INSERT OR IGNORE INTO bookmarks (
+        `linkding_id`,
+        `url`,
+        `urlHost`,
+        `title`,
+        `description`,
+        `archived`,
+        `unread`,
+        `tags`,
+        `added`,
+        `modified`
+    ) VALUES (
+         :linkding_id,
+         :url,
+         :urlHost,
+         :title,
+         :description,
+         :archived,
+         :unread,
+         :tags,
+         :added,
+         :modified
+     );
+}

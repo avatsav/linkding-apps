@@ -56,21 +56,21 @@ fun SwipeToDismissListItem(
     val dismissState = rememberSwipeToDismissBoxState(
         confirmValueChange = { dismissValue ->
             when (dismissValue) {
-                StartToEnd -> {
-                    startToEndAction.onSwipeToDismissTriggered.invoke()
-                    startToEndAction.canDismiss
-                }
-
-                EndToStart -> {
-                    endToStartAction.onSwipeToDismissTriggered.invoke()
-                    endToStartAction.canDismiss
-                }
-
-                Settled -> false
+                StartToEnd -> startToEndAction.canDismiss
+                EndToStart -> endToStartAction.canDismiss
+                Settled -> true
             }
         },
         positionalThreshold = { totalDistance -> 0.35f * totalDistance },
     )
+
+    LaunchedEffect(dismissState.currentValue) {
+        when (dismissState.currentValue) {
+            StartToEnd -> startToEndAction.onSwipeToDismissTriggered()
+            EndToStart -> endToStartAction.onSwipeToDismissTriggered()
+            Settled -> {}
+        }
+    }
 
     SwipeToDismissBox(
         state = dismissState,

@@ -1,6 +1,6 @@
 package dev.avatsav.linkding.api.extensions
 
-import dev.avatsav.linkding.api.models.LinkdingBookmarkFilter
+import dev.avatsav.linkding.api.models.LinkdingBookmarkCategory
 import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.parameter
 import io.ktor.http.path
@@ -28,9 +28,9 @@ internal fun HttpRequestBuilder.parameterQuery(query: String) {
 
 internal fun HttpRequestBuilder.parameterQueryWithFilter(
     query: String,
-    filter: LinkdingBookmarkFilter,
+    filter: LinkdingBookmarkCategory,
 ) {
-    parameter("q", filter.filterQuery + query)
+    parameter("q", filter.categoryQuery + query)
 }
 
 /**

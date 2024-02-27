@@ -20,11 +20,9 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SearchBar
-import androidx.compose.material3.SwipeToDismissBoxState
 import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshContainer
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
@@ -36,13 +34,15 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import app.cash.paging.compose.itemKey
+import com.slack.circuit.overlay.LocalOverlayHost
 import com.slack.circuit.runtime.CircuitContext
 import com.slack.circuit.runtime.screen.Screen
 import com.slack.circuit.runtime.ui.Ui
 import com.slack.circuit.runtime.ui.ui
-import dev.avatsav.linkding.data.model.Bookmark
 import dev.avatsav.linkding.ui.BookmarksScreen
 import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.AddBookmark
+import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.Archive
+import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.Delete
 import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.Open
 import dev.avatsav.linkding.ui.bookmarks.widgets.BookmarkListItem
 import kotlinx.coroutines.launch
@@ -71,6 +71,7 @@ fun Bookmarks(
 ) {
     val scope = rememberCoroutineScope()
     val eventSink = state.eventSink
+    val overlayHost = LocalOverlayHost.current
 
     var searchActive by rememberSaveable { mutableStateOf(false) }
     val searchBarHorizontalPadding: Dp by animateDpAsState(if (searchActive) 0.dp else 12.dp)
@@ -127,8 +128,32 @@ fun Bookmarks(
                         BookmarkListItem(
                             bookmark = bookmark,
                             openBookmark = { toOpen -> eventSink(Open(toOpen)) },
-                            toggleArchive = { _, dismissState -> scope.launch { dismissState.reset() } },
-                            deleteBookmark = { _, dismissState -> scope.launch { dismissState.reset() } },
+                            toggleArchive = { toToggle, dismissState ->
+                                scope.launch {
+                                    when (overlayHost.showArchiveBookmarkAction(toToggle)) {
+                                        ActionResult.Confirmed -> {
+                                            eventSink(Archive(toToggle))
+                                        }
+
+                                        ActionResult.Cancelled,
+                                        ActionResult.Dismissed,
+                                        -> dismissState.reset()
+                                    }
+                                }
+                            },
+                            deleteBookmark = { toDelete, dismissState ->
+                                scope.launch {
+                                    when (overlayHost.showDeleteBookmarkAction(toDelete)) {
+                                        ActionResult.Confirmed -> {
+                                            eventSink(Delete(toDelete))
+                                        }
+
+                                        ActionResult.Cancelled,
+                                        ActionResult.Dismissed,
+                                        -> dismissState.reset()
+                                    }
+                                }
+                            },
                             modifier = Modifier.animateItemPlacement(),
                         )
                     }
@@ -141,10 +166,3 @@ fun Bookmarks(
         }
     }
 }
-
-@Stable
-@OptIn(ExperimentalMaterial3Api::class)
-data class BookmarkDeleteState(
-    val bookmark: Bookmark,
-    val dismissState: SwipeToDismissBoxState,
-)

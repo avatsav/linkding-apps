@@ -5,12 +5,11 @@ import dev.avatsav.linkding.api.extensions.delete
 import dev.avatsav.linkding.api.extensions.endpointBookmarks
 import dev.avatsav.linkding.api.extensions.get
 import dev.avatsav.linkding.api.extensions.parameterPage
-import dev.avatsav.linkding.api.extensions.parameterQuery
 import dev.avatsav.linkding.api.extensions.parameterQueryWithFilter
 import dev.avatsav.linkding.api.extensions.post
 import dev.avatsav.linkding.api.extensions.toLinkdingResult
 import dev.avatsav.linkding.api.models.LinkdingBookmark
-import dev.avatsav.linkding.api.models.LinkdingBookmarkFilter
+import dev.avatsav.linkding.api.models.LinkdingBookmarkCategory
 import dev.avatsav.linkding.api.models.LinkdingBookmarksResponse
 import dev.avatsav.linkding.api.models.LinkdingCheckUrlResponse
 import dev.avatsav.linkding.api.models.LinkdingError
@@ -24,25 +23,15 @@ class DefaultLinkdingBookmarksApi(private val httpClient: HttpClient) : Linkding
     override suspend fun getBookmarks(
         offset: Int,
         limit: Int,
-        filter: LinkdingBookmarkFilter,
         query: String,
+        category: LinkdingBookmarkCategory,
     ): Result<LinkdingBookmarksResponse, LinkdingError> {
         return httpClient.get<LinkdingBookmarksResponse, LinkdingErrorResponse> {
-            endpointBookmarks()
+            val paths =
+                if (category == LinkdingBookmarkCategory.Archived) arrayOf("archived") else emptyArray()
+            endpointBookmarks(*paths)
             parameterPage(offset, limit)
-            parameterQueryWithFilter(query, filter)
-        }.toLinkdingResult()
-    }
-
-    override suspend fun getArchived(
-        offset: Int,
-        limit: Int,
-        query: String,
-    ): Result<LinkdingBookmarksResponse, LinkdingError> {
-        return httpClient.get<LinkdingBookmarksResponse, LinkdingErrorResponse> {
-            endpointBookmarks("archived")
-            parameterPage(offset, limit)
-            parameterQuery(query)
+            parameterQueryWithFilter(query, category)
         }.toLinkdingResult()
     }
 

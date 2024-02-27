@@ -11,6 +11,7 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             implementation(projects.ui.common.theme)
+            api(projects.core.logging)
             api(libs.paging.compose)
         }
         androidMain.dependencies {

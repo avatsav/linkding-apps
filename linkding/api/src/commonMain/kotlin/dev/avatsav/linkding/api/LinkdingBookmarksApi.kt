@@ -2,7 +2,7 @@ package dev.avatsav.linkding.api
 
 import com.github.michaelbull.result.Result
 import dev.avatsav.linkding.api.models.LinkdingBookmark
-import dev.avatsav.linkding.api.models.LinkdingBookmarkFilter
+import dev.avatsav.linkding.api.models.LinkdingBookmarkCategory
 import dev.avatsav.linkding.api.models.LinkdingBookmarksResponse
 import dev.avatsav.linkding.api.models.LinkdingCheckUrlResponse
 import dev.avatsav.linkding.api.models.LinkdingError
@@ -12,14 +12,8 @@ interface LinkdingBookmarksApi {
     suspend fun getBookmarks(
         offset: Int,
         limit: Int,
-        filter: LinkdingBookmarkFilter,
-        query: String,
-    ): Result<LinkdingBookmarksResponse, LinkdingError>
-
-    suspend fun getArchived(
-        offset: Int,
-        limit: Int,
-        query: String,
+        query: String = "",
+        category: LinkdingBookmarkCategory = LinkdingBookmarkCategory.All,
     ): Result<LinkdingBookmarksResponse, LinkdingError>
 
     suspend fun getBookmark(id: Long): Result<LinkdingBookmark, LinkdingError>
