@@ -5,8 +5,8 @@ package dev.avatsav.linkding.ui.extensions
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import androidx.paging.PagingData
-import androidx.paging.cachedIn
+import app.cash.paging.PagingData
+import app.cash.paging.cachedIn
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 

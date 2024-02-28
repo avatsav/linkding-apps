@@ -20,6 +20,7 @@ import app.cash.paging.PagingSource
 import app.cash.paging.PagingSourceLoadParams
 import app.cash.paging.PagingSourceLoadResult
 import app.cash.paging.PagingSourceLoadResultError
+import app.cash.paging.PagingSourceLoadResultInvalid
 import app.cash.paging.PagingSourceLoadResultPage
 import app.cash.paging.PagingState
 import app.cash.sqldelight.Query
@@ -61,17 +62,6 @@ private class KeyedQueryPagingSource<Key : Any, RowType : Any>(
 
     private var pageBoundaries: List<Key>? = null
     override val jumpingSupported: Boolean get() = false
-    private var boundariesQuery: Query<Key>? by Delegates.observable(null) { _, old, new ->
-        old?.removeListener(this)
-        new?.addListener(this)
-    }
-
-    init {
-        registerInvalidatedCallback {
-            boundariesQuery?.removeListener(this)
-            boundariesQuery = null
-        }
-    }
 
     override fun getRefreshKey(state: PagingState<Key, RowType>): Key? {
         val boundaries = pageBoundaries ?: return null
@@ -90,24 +80,16 @@ private class KeyedQueryPagingSource<Key : Any, RowType : Any>(
                     {
                         val boundaries = pageBoundaries
                             ?: pageBoundariesProvider(params.key, params.loadSize.toLong())
-                                .also { boundariesQuery = it }
                                 .executeAsList()
                                 .also { pageBoundaries = it }
 
                         // If the boundaries are empty, that means that we have no elements in the table.
                         // We cannot really proceed with calling the queryProvider for results and thus
                         // cannot rely on the QueryPagingSource to invalidate the PagingSource on changes.
-                        // So we'll register a listener to the boundariesQuery which will trigger an
-                        // invalidation on the paging source for this case.
                         if (boundaries.isEmpty()) {
-                            // Instead of erroring, we'll send a Page back with empty results.
-                            PagingSourceLoadResultPage(
-                                data = emptyList(),
-                                prevKey = null,
-                                nextKey = null,
-                            ) as PagingSourceLoadResult<Key, RowType>
+                            // Instead of error, we'll return an Invalid result when the boundaries are empty.
+                            PagingSourceLoadResultInvalid<Int, RowType>() as PagingSourceLoadResult<Key, RowType>
                         } else {
-                            boundariesQuery = null
                             val key = params.key ?: boundaries.first()
                             require(key in boundaries)
                             val keyIndex = boundaries.indexOf(key)
