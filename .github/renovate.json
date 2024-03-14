@@ -3,36 +3,15 @@
   "extends": [
     "config:base"
   ],
-  "prHourlyLimit": 5,
   "packageRules": [
     {
-      "groupName": "Kotlin, KSP and Compose Compiler",
+      "groupName": "Kotlin, KSP and Compose",
       "groupSlug": "kotlin",
-      "matchPackagePrefixes": [
+      "matchPackageNames": [
         "com.google.devtools.ksp",
-        "androidx.compose.compiler"
-      ],
-      "matchPackagePatterns": [
-        "org.jetbrains.kotlin.*"
+        "org.jetbrains.kotlin",
+        "org.jetbrains.compose"
       ]
-    },
-    {
-      "groupName": "AndroidX Tests",
-      "groupSlug": "androidx-tests",
-      "matchPackagePatterns": [
-        "androidx.tests.*"
-      ]
-    },
-    {
-      "description": "Automatically merge minor and patch-level updates",
-      "matchUpdateTypes": [
-        "minor",
-        "patch",
-        "digest"
-      ],
-      "automerge": false,
-      "automergeType": "pr",
-      "platformAutomerge": false
     }
   ]
 }
