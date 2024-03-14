@@ -121,7 +121,7 @@ fun Bookmarks(
             ) {
                 items(
                     count = state.bookmarks.itemCount,
-                    key = state.bookmarks.itemKey { it.id },
+                    key = state.bookmarks.itemKey { it.localId },
                 ) { index ->
                     val bookmark = state.bookmarks[index]
                     if (bookmark != null) {

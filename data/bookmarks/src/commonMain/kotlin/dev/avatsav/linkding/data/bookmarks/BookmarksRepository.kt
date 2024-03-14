@@ -1,7 +1,5 @@
 package dev.avatsav.linkding.data.bookmarks
 
-import androidx.paging.ExperimentalPagingApi
-import app.cash.paging.Pager
 import app.cash.paging.PagingConfig
 import app.cash.paging.PagingData
 import com.github.michaelbull.result.Result
@@ -13,7 +11,6 @@ import dev.avatsav.linkding.data.bookmarks.mappers.BookmarkErrorMapper
 import dev.avatsav.linkding.data.bookmarks.mappers.BookmarkMapper
 import dev.avatsav.linkding.data.bookmarks.mappers.CheckUrlResultMapper
 import dev.avatsav.linkding.data.db.daos.BookmarksDao
-import dev.avatsav.linkding.data.db.daos.PagingBookmarksDao
 import dev.avatsav.linkding.data.model.Bookmark
 import dev.avatsav.linkding.data.model.BookmarkCategory
 import dev.avatsav.linkding.data.model.BookmarkError
@@ -25,24 +22,19 @@ import me.tatarka.inject.annotations.Inject
 @Inject
 class BookmarksRepository(
     private val apiProvider: Lazy<LinkdingApiProvider>,
-    private val bookmarksRemoteMediatorFactory: BookmarksRemoteMediatorFactory,
-    private val pagingBookmarksDao: PagingBookmarksDao,
     private val bookmarksDao: BookmarksDao,
+    private val bookmarksPagingDataFactory: BookmarksPagingDataFactory,
     private val bookmarkMapper: BookmarkMapper,
     private val checkUrlMapper: CheckUrlResultMapper,
     private val errorMapper: BookmarkErrorMapper,
 ) {
-    @OptIn(ExperimentalPagingApi::class)
+
     fun getBookmarksPaged(
         pagingConfig: PagingConfig,
         query: String = "",
         category: BookmarkCategory = BookmarkCategory.All,
     ): Flow<PagingData<Bookmark>> {
-        return Pager(
-            config = pagingConfig,
-            remoteMediator = bookmarksRemoteMediatorFactory(query, category),
-            pagingSourceFactory = { pagingBookmarksDao.keyedPagingSource() },
-        ).flow
+        return bookmarksPagingDataFactory.create(pagingConfig, query, category)
     }
 
     suspend fun checkUrl(url: String): Result<CheckUrlResult, BookmarkError> {

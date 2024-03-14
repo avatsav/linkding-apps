@@ -86,6 +86,7 @@ class SqlDelightPagingBookmarksDao(
         added: Instant?,
         modified: Instant?,
     ) = Bookmark(
+        localId = id,
         id = linkding_id,
         url = url,
         urlHost = urlHost,
