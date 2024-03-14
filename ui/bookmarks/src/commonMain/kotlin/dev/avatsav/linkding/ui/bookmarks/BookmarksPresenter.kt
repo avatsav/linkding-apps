@@ -4,8 +4,10 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.paging.LoadState
-import androidx.paging.PagingConfig
+import app.cash.paging.LoadStateError
+import app.cash.paging.LoadStateLoading
+import app.cash.paging.LoadStateNotLoading
+import app.cash.paging.PagingConfig
 import app.cash.paging.compose.collectAsLazyPagingItems
 import com.slack.circuit.runtime.CircuitContext
 import com.slack.circuit.runtime.Navigator
@@ -66,8 +68,8 @@ class BookmarksPresenter(
 
         LaunchedEffect(bookmarks.loadState) {
             when (bookmarks.loadState.refresh) {
-                is LoadState.Loading -> Unit
-                is LoadState.Error, is LoadState.NotLoading -> {
+                is LoadStateLoading -> Unit
+                is LoadStateError, is LoadStateNotLoading -> {
                     pullToRefreshState.endRefresh()
                 }
             }

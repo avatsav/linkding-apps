@@ -3,6 +3,7 @@ package dev.avatsav.linkding.data.model
 import kotlinx.datetime.Instant
 
 data class Bookmark(
+    val localId: Long = 0,
     val id: Long,
     val url: String,
     val urlHost: String,

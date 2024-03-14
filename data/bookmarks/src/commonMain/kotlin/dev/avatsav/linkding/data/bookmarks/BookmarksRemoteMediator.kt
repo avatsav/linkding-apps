@@ -1,9 +1,9 @@
 package dev.avatsav.linkding.data.bookmarks
 
 import androidx.paging.ExperimentalPagingApi
-import androidx.paging.LoadType
-import androidx.paging.RemoteMediator
+import app.cash.paging.LoadType
 import app.cash.paging.PagingState
+import app.cash.paging.RemoteMediator
 import app.cash.paging.RemoteMediatorMediatorResultError
 import app.cash.paging.RemoteMediatorMediatorResultSuccess
 import com.github.michaelbull.result.fold
