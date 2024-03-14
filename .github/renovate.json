@@ -12,17 +12,6 @@
         "org.jetbrains.kotlin",
         "org.jetbrains.compose"
       ]
-    },
-    {
-      "description": "Automatically merge minor and patch-level updates",
-      "matchUpdateTypes": [
-        "minor",
-        "patch",
-        "digest"
-      ],
-      "automerge": false,
-      "automergeType": "pr",
-      "platformAutomerge": false
     }
   ]
 }
