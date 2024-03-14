@@ -3,24 +3,14 @@
   "extends": [
     "config:base"
   ],
-  "prHourlyLimit": 5,
   "packageRules": [
     {
-      "groupName": "Kotlin, KSP and Compose Compiler",
+      "groupName": "Kotlin, KSP and Compose",
       "groupSlug": "kotlin",
-      "matchPackagePrefixes": [
+      "matchPackageNames": [
         "com.google.devtools.ksp",
-        "androidx.compose.compiler"
-      ],
-      "matchPackagePatterns": [
-        "org.jetbrains.kotlin.*"
-      ]
-    },
-    {
-      "groupName": "AndroidX Tests",
-      "groupSlug": "androidx-tests",
-      "matchPackagePatterns": [
-        "androidx.tests.*"
+        "org.jetbrains.kotlin",
+        "org.jetbrains.compose"
       ]
     },
     {
