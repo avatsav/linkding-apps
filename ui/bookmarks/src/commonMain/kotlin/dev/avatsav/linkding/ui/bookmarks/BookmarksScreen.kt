@@ -26,9 +26,12 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SearchBar
 import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshContainer
+import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -80,14 +83,27 @@ fun Bookmarks(
 
     var searchActive by rememberSaveable { mutableStateOf(false) }
     val searchBarHorizontalPadding: Dp by animateDpAsState(if (searchActive) 0.dp else 12.dp)
-    val searchBarBottomPadding: Dp by animateDpAsState(if (searchActive) 0.dp else 8.dp)
+    val searchBarBottomPadding: Dp by animateDpAsState(if (searchActive) 0.dp else 12.dp)
+
+    val listState = rememberLazyListState()
+    val scrolledToTop by remember {
+        derivedStateOf {
+            listState.firstVisibleItemIndex == 0 && listState.firstVisibleItemScrollOffset == 0
+        }
+    }
+    val searchBarBackgroundElevation: Dp by animateDpAsState(if (scrolledToTop) 0.dp else 8.dp)
+    val searchBarTonalElevation: Dp by animateDpAsState(if (scrolledToTop && !searchActive) 8.dp else 0.dp)
 
     Scaffold(
         modifier = modifier,
         topBar = {
             SearchBar(
                 modifier = Modifier.fillMaxWidth()
-                    .background(color = MaterialTheme.colorScheme.surface)
+                    .background(
+                        color = MaterialTheme.colorScheme.surfaceColorAtElevation(
+                            searchBarBackgroundElevation,
+                        ),
+                    )
                     .padding(horizontal = searchBarHorizontalPadding)
                     .padding(bottom = searchBarBottomPadding),
                 query = "",
@@ -105,6 +121,7 @@ fun Bookmarks(
                         )
                     }
                 },
+                tonalElevation = searchBarTonalElevation,
             ) {}
         },
         floatingActionButton = {
@@ -116,7 +133,6 @@ fun Bookmarks(
             }
         },
     ) { paddingValues ->
-        val listState = rememberLazyListState()
         Box(
             modifier = Modifier.padding(
                 top = paddingValues.calculateTopPadding(),
