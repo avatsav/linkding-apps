@@ -2,8 +2,11 @@ package dev.avatsav.linkding.ui.bookmarks
 
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.calculateEndPadding
+import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -18,6 +21,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SearchBar
 import androidx.compose.material3.Text
@@ -32,6 +36,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import app.cash.paging.compose.itemKey
 import com.slack.circuit.overlay.LocalOverlayHost
@@ -75,12 +80,16 @@ fun Bookmarks(
 
     var searchActive by rememberSaveable { mutableStateOf(false) }
     val searchBarHorizontalPadding: Dp by animateDpAsState(if (searchActive) 0.dp else 12.dp)
+    val searchBarBottomPadding: Dp by animateDpAsState(if (searchActive) 0.dp else 8.dp)
 
     Scaffold(
         modifier = modifier,
         topBar = {
             SearchBar(
-                modifier = Modifier.fillMaxWidth().padding(horizontal = searchBarHorizontalPadding),
+                modifier = Modifier.fillMaxWidth()
+                    .background(color = MaterialTheme.colorScheme.surface)
+                    .padding(horizontal = searchBarHorizontalPadding)
+                    .padding(bottom = searchBarBottomPadding),
                 query = "",
                 onQueryChange = { },
                 onSearch = { searchActive = false },
@@ -107,10 +116,14 @@ fun Bookmarks(
             }
         },
     ) { paddingValues ->
-
         val listState = rememberLazyListState()
         Box(
-            modifier = Modifier.padding(paddingValues)
+            modifier = Modifier.padding(
+                top = paddingValues.calculateTopPadding(),
+                start = paddingValues.calculateStartPadding(LayoutDirection.Ltr),
+                end = paddingValues.calculateEndPadding(LayoutDirection.Ltr),
+                bottom = 0.dp,
+            )
                 .nestedScroll(state.pullToRefreshState.nestedScrollConnection).fillMaxSize(),
         ) {
             // Content padding: 56dp(FAB) + 32(Top+Bottom Padding)

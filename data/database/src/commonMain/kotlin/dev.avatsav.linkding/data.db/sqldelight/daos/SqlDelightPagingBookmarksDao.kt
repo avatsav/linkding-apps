@@ -32,6 +32,10 @@ class SqlDelightPagingBookmarksDao(
         )
     }
 
+    override fun countBookmarks(): Long {
+        return db.bookmarksQueries.countBookmarks().executeAsOne()
+    }
+
     override fun keyedPagingSource(): PagingSource<Int, Bookmark> {
         return dev.avatsav.linkding.data.db.sqldelight.QueryPagingSource(
             transacter = db.bookmarksQueries,

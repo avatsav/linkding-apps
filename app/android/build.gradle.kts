@@ -40,6 +40,7 @@ android {
             isShrinkResources = true
             isMinifyEnabled = true
             proguardFiles("proguard-rules.pro")
+            signingConfig = signingConfigs.getByName("debug")
         }
     }
 }

@@ -8,4 +8,5 @@ interface PagingBookmarksDao {
     fun keyedPagingSource(): PagingSource<Int, Bookmark>
     fun refresh(bookmarks: List<Bookmark>)
     fun append(bookmarks: List<Bookmark>)
+    fun countBookmarks(): Long
 }
