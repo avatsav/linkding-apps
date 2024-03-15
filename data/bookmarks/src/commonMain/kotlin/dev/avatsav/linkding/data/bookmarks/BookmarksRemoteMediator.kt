@@ -29,17 +29,13 @@ class BookmarksRemoteMediator(
     @Assisted private val query: String,
     @Assisted private val category: BookmarkCategory,
     private val apiProvider: Lazy<LinkdingApiProvider>,
+
     private val bookmarksDao: PagingBookmarksDao,
     private val dispatchers: AppCoroutineDispatchers,
     private val bookmarkMapper: BookmarkMapper,
     private val errorMapper: BookmarkErrorMapper,
     private val logger: Logger,
 ) : RemoteMediator<Int, Bookmark>() {
-
-    override suspend fun initialize(): InitializeAction {
-        // TODO: Invalidate based on the timestamp of the last insert so that we do not need to refresh unnecessarily.
-        return super.initialize()
-    }
 
     override suspend fun load(
         loadType: LoadType,
@@ -52,34 +48,30 @@ class BookmarksRemoteMediator(
             )
 
             LoadType.APPEND -> {
-                // We can use the "pages" count to find the page to to be loaded.
-                // Perhaps there's a better way to get the offset.
-                state.pages.sumOf { it.data.size }
+                bookmarksDao.countBookmarks().toInt()
             }
         }
         return@withContext apiProvider.value.bookmarksApi.getBookmarks(
             offset,
-            20,
+            state.config.pageSize,
             query,
             category.toLinkding(),
+        ).mapEither(
+            success = bookmarkMapper::map,
+            failure = errorMapper::map,
+        ).fold(
+            success = {
+                val bookmarks = it.bookmarks
+                if (loadType == LoadType.REFRESH) {
+                    bookmarksDao.refresh(bookmarks)
+                } else {
+                    bookmarksDao.append(bookmarks)
+                }
+                RemoteMediatorMediatorResultSuccess(endOfPaginationReached = it.nextPage == null)
+            },
+            failure = {
+                RemoteMediatorMediatorResultError(Exception(it.message))
+            },
         )
-            .mapEither(
-                success = bookmarkMapper::map,
-                failure = errorMapper::map,
-            )
-            .fold(
-                success = {
-                    val bookmarks = it.bookmarks
-                    if (loadType == LoadType.REFRESH) {
-                        bookmarksDao.refresh(bookmarks)
-                    } else {
-                        bookmarksDao.append(bookmarks)
-                    }
-                    RemoteMediatorMediatorResultSuccess(endOfPaginationReached = it.nextPage == null)
-                },
-                failure = {
-                    RemoteMediatorMediatorResultError(Exception(it.message))
-                },
-            )
     }
 }

@@ -25,7 +25,7 @@ class BookmarksPagingDataFactory(
         return Pager(
             config = pagingConfig,
             remoteMediator = bookmarksRemoteMediatorFactory(query, category),
-            pagingSourceFactory = { pagingBookmarksDao.keyedPagingSource() },
+            pagingSourceFactory = { pagingBookmarksDao.offsetPagingSource() },
         ).flow
     }
 }

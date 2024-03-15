@@ -81,7 +81,6 @@ class BookmarksPresenter(
                     PagingConfig(
                         initialLoadSize = 20,
                         pageSize = 20,
-                        enablePlaceholders = false,
                     ),
                 ),
             )
