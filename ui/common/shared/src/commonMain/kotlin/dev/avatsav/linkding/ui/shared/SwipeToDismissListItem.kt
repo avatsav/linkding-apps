@@ -13,18 +13,19 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.SwipeToDismissBox
+import androidx.compose.material3.SwipeToDismissBoxDefaults
 import androidx.compose.material3.SwipeToDismissBoxState
 import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.material3.SwipeToDismissBoxValue.EndToStart
 import androidx.compose.material3.SwipeToDismissBoxValue.Settled
 import androidx.compose.material3.SwipeToDismissBoxValue.StartToEnd
-import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
@@ -33,6 +34,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.unit.Density
 import dev.avatsav.linkding.ui.extensions.circularReveal
 import kotlinx.coroutines.flow.distinctUntilChanged
 
@@ -53,7 +55,7 @@ fun SwipeToDismissListItem(
     backgroundColor: Color = Color.Transparent,
     content: @Composable (dismissState: SwipeToDismissBoxState) -> Unit,
 ) {
-    val dismissState = rememberSwipeToDismissBoxState(
+    val dismissState = rememberNoFlingSwipeToDismissBoxState(
         confirmValueChange = { dismissValue ->
             when (dismissValue) {
                 StartToEnd -> startToEndAction.canDismiss
@@ -160,4 +162,26 @@ private fun SwipeDismissBackgroundContent(
 @OptIn(ExperimentalMaterial3Api::class)
 private fun SwipeToDismissBoxValue.willDismiss(): Boolean {
     return this == StartToEnd || this == EndToStart
+}
+
+
+// https://issuetracker.google.com/issues/252334353#comment16
+@Composable
+@ExperimentalMaterial3Api
+fun rememberNoFlingSwipeToDismissBoxState(
+    initialValue: SwipeToDismissBoxValue = Settled,
+    confirmValueChange: (SwipeToDismissBoxValue) -> Boolean = { true },
+    positionalThreshold: (totalDistance: Float) -> Float =
+        SwipeToDismissBoxDefaults.positionalThreshold,
+): SwipeToDismissBoxState {
+    val density = Density(Float.POSITIVE_INFINITY)
+    return rememberSaveable(
+        saver = SwipeToDismissBoxState.Saver(
+            confirmValueChange = confirmValueChange,
+            density = density,
+            positionalThreshold = positionalThreshold,
+        ),
+    ) {
+        SwipeToDismissBoxState(initialValue, density, confirmValueChange, positionalThreshold)
+    }
 }
