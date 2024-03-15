@@ -164,7 +164,6 @@ private fun SwipeToDismissBoxValue.willDismiss(): Boolean {
     return this == StartToEnd || this == EndToStart
 }
 
-
 // https://issuetracker.google.com/issues/252334353#comment16
 @Composable
 @ExperimentalMaterial3Api
