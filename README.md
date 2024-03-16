@@ -18,6 +18,7 @@ It is very much a playground to experiment with architecture, Gradle, libraries,
 - [circuit](https://slackhq.github.io/circuit/) for compose powered UI state management.
 - [kotlin-inject](https://github.com/evant/kotlin-inject) for DI.
 - [kotlin-result](https://github.com/michaelbull/kotlin-result) for result types.
+- Icons generated with [Icon Kitchen](https://icon.kitchen)
 
 ## License
 
