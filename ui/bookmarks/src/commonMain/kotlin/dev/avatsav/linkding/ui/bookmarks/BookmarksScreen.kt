@@ -1,6 +1,7 @@
 package dev.avatsav.linkding.ui.bookmarks
 
 import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -92,8 +93,15 @@ fun Bookmarks(
             listState.firstVisibleItemIndex == 0 && listState.firstVisibleItemScrollOffset == 0
         }
     }
-    val searchBarBackgroundElevation: Dp by animateDpAsState(if (scrolledToTop) 0.dp else 8.dp)
-    val searchBarTonalElevation: Dp by animateDpAsState(if (scrolledToTop && !searchActive) 8.dp else 0.dp)
+
+    val searchBarBackgroundElevation: Dp by animateDpAsState(
+        targetValue = if (scrolledToTop) 0.dp else 8.dp,
+        animationSpec = tween(),
+    )
+    val searchBarTonalElevation: Dp by animateDpAsState(
+        targetValue = if (scrolledToTop && !searchActive) 8.dp else 0.dp,
+        animationSpec = tween(),
+    )
 
     Scaffold(
         modifier = modifier,
@@ -166,10 +174,7 @@ fun Bookmarks(
                             toggleArchive = { toToggle, dismissState ->
                                 scope.launch {
                                     when (overlayHost.showArchiveBookmarkAction(toToggle)) {
-                                        ActionResult.Confirmed -> {
-                                            eventSink(Archive(toToggle))
-                                        }
-
+                                        ActionResult.Confirmed -> eventSink(Archive(toToggle))
                                         ActionResult.Cancelled,
                                         ActionResult.Dismissed,
                                         -> dismissState.reset()
@@ -179,10 +184,7 @@ fun Bookmarks(
                             deleteBookmark = { toDelete, dismissState ->
                                 scope.launch {
                                     when (overlayHost.showDeleteBookmarkAction(toDelete)) {
-                                        ActionResult.Confirmed -> {
-                                            eventSink(Delete(toDelete))
-                                        }
-
+                                        ActionResult.Confirmed -> eventSink(Delete(toDelete))
                                         ActionResult.Cancelled,
                                         ActionResult.Dismissed,
                                         -> dismissState.reset()
