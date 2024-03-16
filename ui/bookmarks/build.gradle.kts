@@ -11,6 +11,7 @@ kotlin {
         commonMain.dependencies {
             implementation(projects.core.base)
             implementation(projects.core.logging)
+            implementation(projects.core.connectivity)
             implementation(projects.domain)
             api(projects.data.models)
 

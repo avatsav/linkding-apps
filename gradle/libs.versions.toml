@@ -16,6 +16,7 @@ circuit = "0.19.1"
 kotlinResult = "1.1.20"
 androidxActivity = "1.8.2"
 sqldelight = "2.0.1"
+ kotest = "5.8.1"
 
 compileSdk = "34"
 minSdk = "30"
@@ -30,7 +31,6 @@ kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlin" }
-kotlin-native-cocoapods = { id = "org.jetbrains.kotlin.native.cocoapods", version.ref = "kotlin" }
 jetbrains-compose = { id = "org.jetbrains.compose", version.ref = "jetbrains-compose" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
@@ -74,12 +74,15 @@ kotlin-inject-runtime = { module = "me.tatarka.inject:kotlin-inject-runtime", ve
 kotlinResult = { module = "com.michael-bull.kotlin-result:kotlin-result", version.ref = "kotlinResult" }
 kotlinResultCoroutines = { module = "com.michael-bull.kotlin-result:kotlin-result-coroutines", version.ref = "kotlinResult" }
 
+kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 junit = "junit:junit:4.13.2"
 androidx-test-core = "androidx.test:core-ktx:1.5.0"
 androidx-test-junit = "androidx.test.ext:junit-ktx:1.1.5"
 androidx-test-rules = "androidx.test:rules:1.5.0"
 androidx-test-runner = "androidx.test:runner:1.5.2"
 androidx-test-espresso = "androidx.test.espresso:espresso-core:3.5.1"
+turbine = "app.cash.turbine:turbine:1.1.0"
+kotest-assertions = { module = "io.kotest:kotest-assertions-core", version.ref = "kotest" }
 
 circuit-foundation = { module = "com.slack.circuit:circuit-foundation", version.ref = "circuit" }
 circuit-runtime = { module = "com.slack.circuit:circuit-runtime", version.ref = "circuit" }

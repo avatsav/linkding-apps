@@ -30,6 +30,7 @@ include(
     ":core:base",
     ":core:logging",
     ":core:preferences",
+     ":core:connectivity",
     ":data:models",
     ":data:bookmarks",
     ":data:configuration",

@@ -4,6 +4,8 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import app.cash.paging.LoadStateError
 import app.cash.paging.LoadStateLoading
 import app.cash.paging.LoadStateNotLoading
@@ -16,6 +18,7 @@ import com.slack.circuit.runtime.screen.Screen
 import dev.avatsav.linkding.domain.interactors.ArchiveBookmark
 import dev.avatsav.linkding.domain.interactors.DeleteBookmark
 import dev.avatsav.linkding.domain.observers.ObserveBookmarks
+import dev.avatsav.linkding.internet.ConnectivityObserver
 import dev.avatsav.linkding.ui.AddBookmarkScreen
 import dev.avatsav.linkding.ui.BookmarksScreen
 import dev.avatsav.linkding.ui.UrlScreen
@@ -51,6 +54,7 @@ class BookmarksPresenter(
     private val observeBookmarks: ObserveBookmarks,
     private val deleteBookmark: DeleteBookmark,
     private val archiveBookmark: ArchiveBookmark,
+    private val connectivityObserver: ConnectivityObserver,
 ) : Presenter<BookmarksUiState> {
 
     @OptIn(ExperimentalMaterial3Api::class)
@@ -59,6 +63,8 @@ class BookmarksPresenter(
         val coroutineScope = rememberStableCoroutineScope()
         val bookmarks = observeBookmarks.flow.rememberCachedPagingFlow(coroutineScope)
             .collectAsLazyPagingItems()
+
+        val isOnline by connectivityObserver.observeIsOnline.collectAsState()
 
         val pullToRefreshState = rememberPullToRefreshState()
 
@@ -88,6 +94,7 @@ class BookmarksPresenter(
 
         return BookmarksUiState(
             bookmarks = bookmarks,
+            isOnline = isOnline,
             pullToRefreshState = pullToRefreshState,
         ) { event ->
             when (event) {
