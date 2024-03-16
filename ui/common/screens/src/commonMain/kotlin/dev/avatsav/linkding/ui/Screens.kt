@@ -18,3 +18,6 @@ data class AddBookmarkScreen(val sharedUrl: String? = null) : LinkdingScreen("Ad
 
 @CommonParcelize
 data class UrlScreen(val url: String) : LinkdingScreen("UrlScreen")
+
+@CommonParcelize
+data object SettingsScreen : LinkdingScreen("Settings")
