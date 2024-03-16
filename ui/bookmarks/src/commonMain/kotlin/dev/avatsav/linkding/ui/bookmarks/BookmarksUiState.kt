@@ -13,6 +13,7 @@ import dev.avatsav.linkding.data.model.Bookmark
 data class BookmarksUiState(
     val bookmarks: LazyPagingItems<Bookmark>,
     val pullToRefreshState: PullToRefreshState,
+    val isOnline: Boolean,
     val eventSink: (BookmarksUiEvent) -> Unit,
 ) : CircuitUiState
 

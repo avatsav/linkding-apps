@@ -1,6 +1,7 @@
 package dev.avatsav.gradle
 
 import com.android.build.gradle.BaseExtension
+import com.android.build.gradle.LibraryExtension
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.plugins.JavaPluginExtension
@@ -31,10 +32,21 @@ class AndroidLibraryPlugin : Plugin<Project> {
 
 private fun Project.configureAndroid() {
     extensions.configure<BaseExtension> {
+        val targetSdkVersion = findVersion("targetSdk").toInt()
+
         compileSdkVersion(findVersion("compileSdk").toInt())
         defaultConfig {
             minSdk = findVersion("minSdk").toInt()
-            targetSdk = findVersion("targetSdk").toInt()
+            targetSdk = targetSdkVersion
+        }
+        testOptions {
+            if (this@configure is LibraryExtension) {
+                targetSdk = targetSdkVersion
+            }
+            unitTests {
+                isIncludeAndroidResources = true
+                isReturnDefaultValues = true
+            }
         }
     }
 }

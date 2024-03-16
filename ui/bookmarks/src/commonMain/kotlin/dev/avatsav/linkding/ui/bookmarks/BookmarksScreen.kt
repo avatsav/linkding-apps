@@ -15,6 +15,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.CloudOff
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -112,7 +113,12 @@ fun Bookmarks(
                 active = searchActive,
                 onActiveChange = { searchActive = it },
                 placeholder = { Text("Search for words or #tags") },
-                leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Search Icon") },
+                leadingIcon = {
+                    Icon(
+                        imageVector = if (state.isOnline) Icons.Default.Search else Icons.Default.CloudOff,
+                        contentDescription = "Search Icon",
+                    )
+                },
                 trailingIcon = {
                     IconButton(onClick = { if (searchActive) searchActive = false }) {
                         Icon(
