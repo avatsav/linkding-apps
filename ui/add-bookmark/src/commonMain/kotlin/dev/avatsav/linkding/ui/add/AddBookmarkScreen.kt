@@ -85,7 +85,7 @@ fun AddBookmark(
     // Debouncing the url text field before unfurling/checking the url
     LaunchedEffect(url) {
         if (url.isBlank()) return@LaunchedEffect
-        delay(1000)
+        delay(500)
         eventSink(AddBookmarkUiEvent.CheckUrl(url))
     }
 

@@ -17,8 +17,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.CloudOff
-import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -54,6 +54,7 @@ import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.AddBookmark
 import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.Archive
 import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.Delete
 import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.Open
+import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.ShowSettings
 import dev.avatsav.linkding.ui.bookmarks.widgets.BookmarkListItem
 import kotlinx.coroutines.launch
 import me.tatarka.inject.annotations.Inject
@@ -128,10 +129,15 @@ fun Bookmarks(
                     )
                 },
                 trailingIcon = {
-                    IconButton(onClick = { if (searchActive) searchActive = false }) {
+                    IconButton(
+                        onClick = {
+                            if (searchActive) searchActive = false
+                            else eventSink(ShowSettings)
+                        },
+                    ) {
                         Icon(
-                            imageVector = if (searchActive) Icons.Default.Close else Icons.Default.MoreVert,
-                            contentDescription = null,
+                            imageVector = if (searchActive) Icons.Default.Close else Icons.Default.Settings,
+                            contentDescription = if (searchActive) "Close" else "Settings",
                         )
                     }
                 },

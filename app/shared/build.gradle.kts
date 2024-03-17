@@ -31,6 +31,7 @@ kotlin {
             api(projects.ui.setup)
             api(projects.ui.bookmarks)
             api(projects.ui.addBookmark)
+            api(projects.ui.settings)
         }
         targets.withType<KotlinNativeTarget>().configureEach {
             binaries.framework {

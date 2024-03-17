@@ -6,8 +6,9 @@ import com.slack.circuit.runtime.CircuitUiState
 
 @Immutable
 data class SettingsUiState(
-    val loading: Boolean = false,
     val eventSink: (SettingsUiEvent) -> Unit,
 ) : CircuitUiState
 
-sealed interface SettingsUiEvent : CircuitUiEvent
+sealed interface SettingsUiEvent : CircuitUiEvent {
+    data object Close : SettingsUiEvent
+}

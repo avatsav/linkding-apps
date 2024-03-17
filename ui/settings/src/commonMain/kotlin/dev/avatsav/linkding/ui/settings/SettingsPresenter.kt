@@ -7,7 +7,6 @@ import com.slack.circuit.runtime.presenter.Presenter
 import com.slack.circuit.runtime.screen.Screen
 import dev.avatsav.linkding.Logger
 import dev.avatsav.linkding.ui.SettingsScreen
-import dev.avatsav.linkding.ui.extensions.rememberStableCoroutineScope
 import me.tatarka.inject.annotations.Assisted
 import me.tatarka.inject.annotations.Inject
 
@@ -35,7 +34,10 @@ class SettingsPresenter(
 
     @Composable
     override fun present(): SettingsUiState {
-        val scope = rememberStableCoroutineScope()
-        TODO()
+        return SettingsUiState { event ->
+            when (event) {
+                SettingsUiEvent.Close -> navigator.pop()
+            }
+        }
     }
 }
