@@ -58,9 +58,6 @@ class AddBookmarkPresenter(
         val checkingUrl by checkBookmarkUrl.inProgress.collectAsState(false)
         val saving by addBookmark.inProgress.collectAsState(false)
 
-        fun eventSink(event: AddBookmarkUiEvent) {
-        }
-
         return AddBookmarkUiState(
             sharedUrl = sharedUrl,
             checkingUrl = checkingUrl,

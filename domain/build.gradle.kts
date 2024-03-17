@@ -9,7 +9,6 @@ kotlin {
             implementation(projects.core.logging)
             implementation(projects.data.models)
             api(projects.data.bookmarks)
-            api(projects.data.configuration)
             api(projects.data.database)
 
             implementation(libs.paging.common)

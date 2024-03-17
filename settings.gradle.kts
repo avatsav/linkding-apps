@@ -33,7 +33,6 @@ include(
     ":core:connectivity",
     ":data:models",
     ":data:bookmarks",
-    ":data:configuration",
     ":data:database",
     ":domain",
     ":ui:common:theme",

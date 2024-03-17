@@ -2,14 +2,12 @@ package dev.avatsav.linkding.ui.root
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import com.github.michaelbull.result.onFailure
-import com.github.michaelbull.result.onSuccess
 import com.slack.circuit.runtime.CircuitContext
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
 import com.slack.circuit.runtime.screen.Screen
 import dev.avatsav.linkding.Logger
-import dev.avatsav.linkding.domain.interactors.FetchApiConfiguration
+import dev.avatsav.linkding.prefs.AppPreferences
 import dev.avatsav.linkding.ui.AddBookmarkScreen
 import dev.avatsav.linkding.ui.BookmarksScreen
 import dev.avatsav.linkding.ui.RootScreen
@@ -37,28 +35,22 @@ class RootUiPresenterFactory(
 class RootPresenter(
     @Assisted private val navigator: Navigator,
     @Assisted private val screen: RootScreen,
-    private val fetchApiConfiguration: FetchApiConfiguration,
+    private val appPreferences: AppPreferences,
     private val logger: Logger,
 ) : Presenter<RootUiState> {
 
     @Composable
     override fun present(): RootUiState {
         LaunchedEffect(Unit) {
-            fetchApiConfiguration(Unit)
-                .onSuccess {
-                    if (it == null) {
-                        navigator.goToAndResetRoot(SetupScreen)
-                    } else {
-                        if (screen.sharedUrl != null) {
-                            navigator.goToAndResetRoot(AddBookmarkScreen(screen.sharedUrl))
-                        } else {
-                            navigator.goToAndResetRoot(BookmarksScreen)
-                        }
-                    }
-                }.onFailure {
-                    logger.e { "Error loading ApiConfig" }
-                    navigator.goToAndResetRoot(SetupScreen)
+            if (appPreferences.getApiConfig() == null) {
+                navigator.goToAndResetRoot(SetupScreen)
+            } else {
+                if (screen.sharedUrl != null) {
+                    navigator.goToAndResetRoot(AddBookmarkScreen(screen.sharedUrl))
+                } else {
+                    navigator.goToAndResetRoot(BookmarksScreen)
                 }
+            }
         }
         return RootUiState
     }

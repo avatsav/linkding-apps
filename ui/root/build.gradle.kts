@@ -29,6 +29,7 @@ kotlin {
             api(libs.kotlinResultCoroutines)
         }
         androidMain.dependencies {
+            implementation(libs.androidx.activity.compose)
             api(compose.preview)
             api(compose.uiTooling)
         }
