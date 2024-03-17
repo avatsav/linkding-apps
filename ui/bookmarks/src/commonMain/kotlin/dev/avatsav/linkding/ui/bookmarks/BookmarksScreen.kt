@@ -131,8 +131,11 @@ fun Bookmarks(
                 trailingIcon = {
                     IconButton(
                         onClick = {
-                            if (searchActive) searchActive = false
-                            else eventSink(ShowSettings)
+                            if (searchActive) {
+                                searchActive = false
+                            } else {
+                                eventSink(ShowSettings)
+                            }
                         },
                     ) {
                         Icon(

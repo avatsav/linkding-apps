@@ -1,6 +1,7 @@
 package dev.avatsav.linkding.ui.settings
 
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -19,12 +20,17 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.unit.dp
 import com.slack.circuit.runtime.CircuitContext
 import com.slack.circuit.runtime.screen.Screen
 import com.slack.circuit.runtime.ui.Ui
 import com.slack.circuit.runtime.ui.ui
 import dev.avatsav.linkding.data.model.prefs.AppTheme
 import dev.avatsav.linkding.ui.SettingsScreen
+import dev.avatsav.linkding.ui.settings.widget.PreferenceDefaults
+import dev.avatsav.linkding.ui.settings.widget.PreferenceSection
+import dev.avatsav.linkding.ui.settings.widget.SwitchPreference
+import dev.avatsav.linkding.ui.settings.widget.ThemePreference
 import me.tatarka.inject.annotations.Inject
 
 @Inject
@@ -57,7 +63,7 @@ fun Settings(
     var dynamicColorsChecked by remember { mutableStateOf(false) }
 
     Scaffold(
-        modifier = modifier,
+        modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             LargeTopAppBar(
                 title = { Text(text = "Settings") },
@@ -75,25 +81,24 @@ fun Settings(
     ) { padding ->
         LazyColumn(
             contentPadding = padding,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
                 .nestedScroll(scrollBehavior.nestedScrollConnection),
         ) {
             item {
-                PreferenceHeader("Appearance")
-            }
-            item {
-                ThemePreference(
-                    selected = selectedTheme,
-                    onSelected = { selectedTheme = it },
-                )
-            }
-            item {
-                SwitchPreference(
-                    title = "Dynamic colours",
-                    description = "Stuff",
-                    checked = dynamicColorsChecked,
-                    onCheckedChange = { dynamicColorsChecked = dynamicColorsChecked.not() },
-                )
+                PreferenceSection("Appearance") {
+                    ThemePreference(
+                        shape = PreferenceDefaults.itemShape(0, 2),
+                        selected = selectedTheme,
+                        onSelected = { selectedTheme = it },
+                    )
+                    SwitchPreference(
+                        shape = PreferenceDefaults.itemShape(1, 2),
+                        title = "Dynamic colours",
+                        description = "Colors adapt to your wallpaper",
+                        checked = dynamicColorsChecked,
+                        onCheckedChange = { dynamicColorsChecked = dynamicColorsChecked.not() },
+                    )
+                }
             }
         }
     }
