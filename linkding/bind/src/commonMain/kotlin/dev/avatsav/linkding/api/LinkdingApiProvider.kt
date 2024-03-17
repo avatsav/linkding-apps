@@ -1,39 +1,32 @@
 package dev.avatsav.linkding.api
 
-import dev.avatsav.linkding.AppCoroutineDispatchers
 import dev.avatsav.linkding.AppCoroutineScope
 import dev.avatsav.linkding.AppInfo
 import dev.avatsav.linkding.Logger
-import dev.avatsav.linkding.data.config.ApiConfigRepository
+import dev.avatsav.linkding.data.model.ApiConfig
+import dev.avatsav.linkding.prefs.AppPreferences
 import io.ktor.client.plugins.logging.LogLevel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.stateIn
 import me.tatarka.inject.annotations.Inject
 
 @Inject
 class LinkdingApiProvider(
     private val appInfo: AppInfo,
     private val appLogger: Logger,
-    private val configRepository: ApiConfigRepository,
-    dispatchers: AppCoroutineDispatchers,
+    appPreferences: AppPreferences,
     coroutineScope: AppCoroutineScope,
 ) {
-    private val apiConfig = MutableStateFlow(configRepository.apiConfig)
-
-    init {
-        coroutineScope.launch(dispatchers.io) {
-            configRepository.observeApiConfiguration().collect {
-                apiConfig.value = it
-            }
-        }
-    }
+    private val apiConfig: StateFlow<ApiConfig?> =
+        appPreferences.observeApiConfig()
+            .stateIn(coroutineScope, SharingStarted.Eagerly, appPreferences.getApiConfig())
 
     private val linkding: Linkding by lazy {
-        val linkdingApiConfig =
-            LinkdingApiConfig(
-                apiConfig.value!!.hostUrl,
-                apiConfig.value!!.apiKey,
-            )
+        val linkdingApiConfig = LinkdingApiConfig(
+            apiConfig.value!!.hostUrl,
+            apiConfig.value!!.apiKey,
+        )
         Linkding(linkdingApiConfig) {
             httpClient(httpClientEngine)
             logging {

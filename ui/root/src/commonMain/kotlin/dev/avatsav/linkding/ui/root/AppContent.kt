@@ -1,8 +1,10 @@
 package dev.avatsav.linkding.ui.root
 
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import com.slack.circuit.backstack.SaveableBackStack
@@ -17,6 +19,8 @@ import com.slack.circuit.runtime.screen.PopResult
 import com.slack.circuit.runtime.screen.Screen
 import com.slack.circuitx.gesturenavigation.GestureNavigationDecoration
 import dev.avatsav.linkding.Logger
+import dev.avatsav.linkding.data.model.prefs.AppTheme
+import dev.avatsav.linkding.prefs.AppPreferences
 import dev.avatsav.linkding.ui.UrlScreen
 import dev.avatsav.linkding.ui.theme.LinkdingTheme
 import kotlinx.collections.immutable.ImmutableList
@@ -37,6 +41,7 @@ fun AppContent(
     @Assisted backStack: SaveableBackStack,
     @Assisted navigator: Navigator,
     @Assisted onOpenUrl: (String) -> Unit,
+    preferences: AppPreferences,
     circuit: Circuit,
     logger: Logger,
     @Assisted modifier: Modifier = Modifier,
@@ -48,18 +53,39 @@ fun AppContent(
         LocalRetainedStateRegistry provides continuityRetainedStateRegistry(),
     ) {
         CircuitCompositionLocals(circuit) {
-            LinkdingTheme {
+            LinkdingTheme(
+                darkTheme = preferences.shouldUseDarkTheme(),
+                dynamicColors = preferences.shouldUseDynamicColors(),
+            ) {
                 ContentWithOverlays {
                     NavigableCircuitContent(
                         navigator = linkdingNavigator,
                         backStack = backStack,
-                        decoration = remember(navigator) { GestureNavigationDecoration(onBackInvoked = navigator::pop) },
+                        decoration = GestureNavigationDecoration(onBackInvoked = navigator::pop),
                         modifier = modifier.fillMaxSize(),
                     )
                 }
             }
         }
     }
+}
+
+@Composable
+private fun AppPreferences.shouldUseDarkTheme(): Boolean {
+    val appTheme = remember { observeAppTheme() }
+        .collectAsState(initial = AppTheme.System)
+    return when (appTheme.value) {
+        AppTheme.System -> isSystemInDarkTheme()
+        AppTheme.Light -> false
+        AppTheme.Dark -> true
+    }
+}
+
+@Composable
+private fun AppPreferences.shouldUseDynamicColors(): Boolean {
+    return remember { observeUseDynamicColors() }
+        .collectAsState(initial = true)
+        .value
 }
 
 private class LinkdingNavigator(

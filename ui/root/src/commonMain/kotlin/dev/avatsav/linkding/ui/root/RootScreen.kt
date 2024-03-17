@@ -4,19 +4,13 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Link
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import com.slack.circuit.runtime.CircuitContext
 import com.slack.circuit.runtime.screen.Screen
 import com.slack.circuit.runtime.ui.Ui
@@ -55,17 +49,7 @@ fun RootScreen(
                     .background(MaterialTheme.colorScheme.surface)
                     .fillMaxSize(),
             ) {
-                Icon(
-                    imageVector = Icons.Default.Link,
-                    modifier = Modifier
-                        .height(60.dp)
-                        .width(60.dp),
-                    contentDescription = "",
-                    tint = MaterialTheme.colorScheme.primary,
-                )
-                CircularProgressIndicator(
-                    modifier = Modifier.padding(vertical = 36.dp),
-                )
+                CircularProgressIndicator()
             }
         },
     )

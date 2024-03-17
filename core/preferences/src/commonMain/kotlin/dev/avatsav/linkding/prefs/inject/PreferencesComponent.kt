@@ -2,6 +2,7 @@ package dev.avatsav.linkding.prefs.inject
 
 import com.russhwolf.settings.ObservableSettings
 import dev.avatsav.linkding.AppCoroutineDispatchers
+import dev.avatsav.linkding.Logger
 import dev.avatsav.linkding.inject.AppScope
 import dev.avatsav.linkding.prefs.AppPreferences
 import dev.avatsav.linkding.prefs.DefaultAppPreferences
@@ -14,8 +15,9 @@ interface PreferencesComponent : PreferencesPlatformComponent {
     @Provides
     fun providePreferences(
         settings: ObservableSettings,
+        logger: Logger,
         dispatchers: AppCoroutineDispatchers,
     ): AppPreferences {
-        return DefaultAppPreferences(settings, dispatchers)
+        return DefaultAppPreferences(settings, logger, dispatchers)
     }
 }

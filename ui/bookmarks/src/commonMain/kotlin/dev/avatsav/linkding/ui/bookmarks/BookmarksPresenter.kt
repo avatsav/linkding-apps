@@ -21,6 +21,7 @@ import dev.avatsav.linkding.domain.observers.ObserveBookmarks
 import dev.avatsav.linkding.internet.ConnectivityObserver
 import dev.avatsav.linkding.ui.AddBookmarkScreen
 import dev.avatsav.linkding.ui.BookmarksScreen
+import dev.avatsav.linkding.ui.SettingsScreen
 import dev.avatsav.linkding.ui.UrlScreen
 import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.AddBookmark
 import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.Archive
@@ -108,6 +109,7 @@ class BookmarksPresenter(
 
                 AddBookmark -> navigator.goTo(AddBookmarkScreen())
                 is Open -> navigator.goTo(UrlScreen(event.bookmark.url))
+                BookmarksUiEvent.ShowSettings -> navigator.goTo(SettingsScreen)
             }
         }
     }

@@ -22,4 +22,5 @@ sealed interface BookmarksUiEvent : CircuitUiEvent {
     data class Delete(val bookmark: Bookmark) : BookmarksUiEvent
     data class Open(val bookmark: Bookmark) : BookmarksUiEvent
     data object AddBookmark : BookmarksUiEvent
+    data object ShowSettings : BookmarksUiEvent
 }

@@ -13,24 +13,24 @@ kotlin {
             implementation(projects.core.logging)
             implementation(projects.core.preferences)
             implementation(projects.domain)
-            implementation(projects.data.models)
+            api(projects.data.models)
 
-            implementation(projects.ui.common.theme)
-            implementation(projects.ui.common.screens)
-            implementation(libs.circuit.foundation)
-            implementation(libs.circuit.retained)
-            implementation(libs.circuit.overlay)
-            implementation(libs.circuitx.gestureNavigation)
+            api(projects.ui.common.theme)
+            api(projects.ui.common.shared)
+            api(projects.ui.common.screens)
+            api(libs.circuit.foundation)
+            api(libs.circuit.retained)
+            api(libs.circuit.overlay)
+            api(libs.circuitx.overlays)
+            api(libs.kotlinResult)
+            api(libs.kotlinResultCoroutines)
 
             implementation(compose.foundation)
             implementation(compose.material3)
             implementation(compose.materialIconsExtended)
-
-            api(libs.kotlinResult)
-            api(libs.kotlinResultCoroutines)
+            implementation(compose.components.resources)
         }
         androidMain.dependencies {
-            implementation(libs.androidx.activity.compose)
             api(compose.preview)
             api(compose.uiTooling)
         }
@@ -38,7 +38,7 @@ kotlin {
 }
 
 android {
-    namespace = "dev.avatsav.linkding.ui.setup"
-    buildFeatures.compose = true
+    namespace = "dev.avatsav.linkding.ui.settings"
 }
+
 configureComposeAndroidPreviews()

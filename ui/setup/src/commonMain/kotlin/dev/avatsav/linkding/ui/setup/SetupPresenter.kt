@@ -17,8 +17,8 @@ import dev.avatsav.linkding.data.model.ApiConfig
 import dev.avatsav.linkding.data.model.ConfigurationError.InvalidApiKey
 import dev.avatsav.linkding.data.model.ConfigurationError.InvalidHostname
 import dev.avatsav.linkding.data.model.ConfigurationError.Other
-import dev.avatsav.linkding.domain.interactors.SaveApiConfiguration
 import dev.avatsav.linkding.domain.interactors.VerifyApiConfiguration
+import dev.avatsav.linkding.prefs.AppPreferences
 import dev.avatsav.linkding.ui.BookmarksScreen
 import dev.avatsav.linkding.ui.SetupScreen
 import dev.avatsav.linkding.ui.extensions.rememberStableCoroutineScope
@@ -46,7 +46,7 @@ class SetupUiPresenterFactory(
 class SetupPresenter(
     @Assisted private val navigator: Navigator,
     private val verifyApiConfiguration: VerifyApiConfiguration,
-    private val saveApiConfiguration: SaveApiConfiguration,
+    private val appPreferences: AppPreferences,
     private val logger: Logger,
 ) : Presenter<SetupUiState> {
 
@@ -55,7 +55,6 @@ class SetupPresenter(
         val scope = rememberStableCoroutineScope()
 
         val verifying by verifyApiConfiguration.inProgress.collectAsState(false)
-        val saving by saveApiConfiguration.inProgress.collectAsState(false)
 
         var invalidHostUrl by rememberSaveable { mutableStateOf(false) }
         var invalidApiKey by rememberSaveable { mutableStateOf(false) }
@@ -63,7 +62,6 @@ class SetupPresenter(
 
         return SetupUiState(
             verifying = verifying,
-            saving = saving,
             invalidHostUrl = invalidHostUrl,
             invalidApiKey = invalidApiKey,
             errorMessage = errorMessage,
@@ -86,14 +84,9 @@ class SetupPresenter(
                                 is Other -> errorMessage = error.message
                             }
                         }.onSuccess {
-                            saveApiConfiguration(
-                                ApiConfig(event.hostUrl, event.apiKey),
-                            ).onSuccess {
-                                navigator.goTo(BookmarksScreen)
-                                navigator.resetRoot(BookmarksScreen)
-                            }.onFailure {
-                                errorMessage = it
-                            }
+                            appPreferences.setApiConfig(ApiConfig(event.hostUrl, event.apiKey))
+                            navigator.goTo(BookmarksScreen)
+                            navigator.resetRoot(BookmarksScreen)
                         }
                     }
                 }

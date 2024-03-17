@@ -30,10 +30,9 @@ include(
     ":core:base",
     ":core:logging",
     ":core:preferences",
-     ":core:connectivity",
+    ":core:connectivity",
     ":data:models",
     ":data:bookmarks",
-    ":data:configuration",
     ":data:database",
     ":domain",
     ":ui:common:theme",
@@ -44,4 +43,5 @@ include(
     ":ui:add-bookmark",
     ":ui:setup",
     ":ui:root",
+    ":ui:settings"
 )
