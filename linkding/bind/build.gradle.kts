@@ -7,6 +7,7 @@ kotlin {
         commonMain.dependencies {
             api(projects.core.base)
             api(projects.core.logging)
+            api(projects.core.preferences)
             api(projects.linkding.api)
             api(projects.data.models)
             api(libs.kotlin.coroutines.core)

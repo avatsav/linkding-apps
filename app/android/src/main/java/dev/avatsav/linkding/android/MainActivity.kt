@@ -12,24 +12,31 @@ import androidx.activity.enableEdgeToEdge
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.slack.circuit.backstack.rememberSaveableBackStack
 import com.slack.circuit.foundation.rememberCircuitNavigator
 import dev.avatsav.linkding.AndroidActivityComponent
 import dev.avatsav.linkding.AndroidAppComponent
 import dev.avatsav.linkding.create
+import dev.avatsav.linkding.data.model.prefs.AppTheme
 import dev.avatsav.linkding.ui.RootScreen
+import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
-        enableEdgeToEdge(
-            statusBarStyle = SystemBarStyle.auto(Color.TRANSPARENT, Color.TRANSPARENT),
-            navigationBarStyle = SystemBarStyle.auto(Color.TRANSPARENT, Color.TRANSPARENT),
-        )
         super.onCreate(savedInstanceState)
         val sharedLink = getSharedLinkFromIntent()
         val appComponent = AndroidAppComponent.from(this)
         val activityComponent = AndroidActivityComponent.create(this, appComponent)
+
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                appComponent.appPreferences.observeAppTheme().collect(::enableEdgeToEdge)
+            }
+        }
 
         setContent {
             val backstack = rememberSaveableBackStack(root = RootScreen(sharedLink))
@@ -53,14 +60,21 @@ class MainActivity : ComponentActivity() {
     }?.trim()
 }
 
-private val customTabsIntent = CustomTabsIntent.Builder()
-    .setShowTitle(true)
+private val customTabsIntent = CustomTabsIntent.Builder().setShowTitle(true)
     .setColorScheme(CustomTabsIntent.COLOR_SCHEME_SYSTEM)
-    .setShareState(CustomTabsIntent.SHARE_STATE_OFF)
-    .build()
+    .setShareState(CustomTabsIntent.SHARE_STATE_OFF).build()
 
 fun MainActivity.launchUrl(url: String) {
     customTabsIntent.launchUrl(this, Uri.parse(url))
+}
+
+private fun ComponentActivity.enableEdgeToEdge(appTheme: AppTheme) {
+    val style = when (appTheme) {
+        AppTheme.System -> SystemBarStyle.auto(Color.TRANSPARENT, Color.TRANSPARENT)
+        AppTheme.Light -> SystemBarStyle.light(Color.TRANSPARENT, Color.TRANSPARENT)
+        AppTheme.Dark -> SystemBarStyle.dark(Color.TRANSPARENT)
+    }
+    enableEdgeToEdge(statusBarStyle = style, navigationBarStyle = style)
 }
 
 private fun AndroidAppComponent.Companion.from(context: Context): AndroidAppComponent {

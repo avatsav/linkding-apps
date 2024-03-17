@@ -13,5 +13,5 @@ interface AppPreferences {
     suspend fun setAppTheme(appTheme: AppTheme)
 
     fun observeUseDynamicColors(): Flow<Boolean>
-    suspend fun setUseDynamicColors(useDynamicColors: Boolean)
+    suspend fun toggleUseDynamicColors()
 }

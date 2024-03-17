@@ -7,6 +7,7 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             implementation(projects.core.base)
+            implementation(projects.core.logging)
             implementation(projects.data.models)
 
             api(libs.multiplatform.settings)

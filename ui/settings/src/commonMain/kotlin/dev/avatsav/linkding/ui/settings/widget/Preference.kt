@@ -7,6 +7,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
@@ -35,11 +36,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import dev.avatsav.linkding.data.model.prefs.AppTheme
+import dev.avatsav.linkding.ui.extensions.onCondition
 
 @Composable
 fun PreferenceColumnScope.SwitchPreference(
@@ -113,11 +115,16 @@ fun PreferenceColumnScope.Preference(
     title: String,
     description: String? = null,
     shape: Shape,
+    clickable: Boolean = false,
+    onClicked: () -> Unit = {},
     modifier: Modifier = Modifier,
     control: (@Composable () -> Unit)? = null,
 ) {
     Surface(
-        modifier = modifier,
+        modifier = modifier.clip(shape)
+            .onCondition(clickable) {
+                clickable { onClicked() }
+            },
         shape = shape,
         color = MaterialTheme.colorScheme.surfaceColorAtElevation(8.dp),
     ) {
@@ -186,7 +193,7 @@ private fun PreferenceHeader(
     modifier: Modifier = Modifier,
 ) {
     Surface(
-        modifier = modifier.padding(horizontal = 16.dp, vertical = 4.dp),
+        modifier = modifier.padding(horizontal = 16.dp),
     ) {
         Text(
             text = title,
@@ -213,7 +220,7 @@ internal object PreferenceDefaults {
         return when (index) {
             0 -> baseShape.start()
             count - 1 -> baseShape.end()
-            else -> RectangleShape
+            else -> baseShape
         }
     }
 }

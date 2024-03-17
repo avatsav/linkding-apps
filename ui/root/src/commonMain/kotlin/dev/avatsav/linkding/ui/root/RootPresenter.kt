@@ -35,14 +35,14 @@ class RootUiPresenterFactory(
 class RootPresenter(
     @Assisted private val navigator: Navigator,
     @Assisted private val screen: RootScreen,
-    private val appPreferences: AppPreferences,
+    private val preferences: AppPreferences,
     private val logger: Logger,
 ) : Presenter<RootUiState> {
 
     @Composable
     override fun present(): RootUiState {
         LaunchedEffect(Unit) {
-            if (appPreferences.getApiConfig() == null) {
+            if (preferences.getApiConfig() == null) {
                 navigator.goToAndResetRoot(SetupScreen)
             } else {
                 if (screen.sharedUrl != null) {

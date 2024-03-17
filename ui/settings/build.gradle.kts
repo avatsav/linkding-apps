@@ -20,6 +20,8 @@ kotlin {
             api(projects.ui.common.screens)
             api(libs.circuit.foundation)
             api(libs.circuit.retained)
+            api(libs.circuit.overlay)
+            api(libs.circuitx.overlays)
             api(libs.kotlinResult)
             api(libs.kotlinResultCoroutines)
 

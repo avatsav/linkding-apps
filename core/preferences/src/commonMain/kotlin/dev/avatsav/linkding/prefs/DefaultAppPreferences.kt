@@ -6,6 +6,7 @@ import com.russhwolf.settings.coroutines.toFlowSettings
 import com.russhwolf.settings.get
 import com.russhwolf.settings.set
 import dev.avatsav.linkding.AppCoroutineDispatchers
+import dev.avatsav.linkding.Logger
 import dev.avatsav.linkding.data.model.ApiConfig
 import dev.avatsav.linkding.data.model.prefs.AppTheme
 import dev.avatsav.linkding.prefs.HOST_URL_CONFIGURATION_KEY as HOST_URL_CONFIGURATION_KEY1
@@ -15,12 +16,17 @@ import kotlinx.coroutines.flow.map
 
 private const val HOST_URL_CONFIGURATION_KEY = "linkding-hostUrl"
 private const val API_KEY_CONFIGURATION_KEY = "linkding-apiKey"
-private const val APP_THEME_KEY = "app-theme"
 private const val USE_DYNAMIC_COLORS_KEY = "use-dynamic-colors"
+private const val APP_THEME_KEY = "app-theme"
+
+private const val APP_THEME_SYSTEM_VALUE = "system"
+private const val APP_THEME_LIGHT_VALUE = "light"
+private const val APP_THEME_DARK_VALUE = "dark"
 
 @OptIn(ExperimentalSettingsApi::class)
 internal class DefaultAppPreferences(
-    internal val settings: ObservableSettings,
+    private val settings: ObservableSettings,
+    private val logger: Logger,
     dispatchers: AppCoroutineDispatchers,
 ) : AppPreferences {
 
@@ -67,14 +73,10 @@ internal class DefaultAppPreferences(
     override fun observeUseDynamicColors(): Flow<Boolean> =
         flowSettings.getBooleanFlow(USE_DYNAMIC_COLORS_KEY, false)
 
-    override suspend fun setUseDynamicColors(useDynamicColors: Boolean) {
-        settings[USE_DYNAMIC_COLORS_KEY] = useDynamicColors
+    override suspend fun toggleUseDynamicColors() {
+        settings[USE_DYNAMIC_COLORS_KEY] = !settings.getBoolean(USE_DYNAMIC_COLORS_KEY, false)
     }
 }
-
-private const val APP_THEME_SYSTEM_VALUE = "system"
-private const val APP_THEME_LIGHT_VALUE = "light"
-private const val APP_THEME_DARK_VALUE = "dark"
 
 private val AppTheme.storageValue: String
     get() = when (this) {
