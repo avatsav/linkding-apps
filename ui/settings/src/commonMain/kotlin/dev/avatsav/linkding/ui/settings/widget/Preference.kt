@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CornerBasedShape
@@ -121,7 +122,9 @@ fun PreferenceColumnScope.Preference(
     control: (@Composable () -> Unit)? = null,
 ) {
     Surface(
-        modifier = modifier.clip(shape)
+        modifier = modifier
+            .defaultMinSize(minHeight = PreferenceDefaults.MinHeight)
+            .clip(shape)
             .onCondition(clickable) {
                 clickable { onClicked() }
             },
@@ -211,6 +214,7 @@ private class PreferenceColumnScopeWrapper(scope: ColumnScope) :
 
 internal object PreferenceDefaults {
     val SectionWidth = 2.dp
+    val MinHeight = 56.dp
 
     val baseShape: CornerBasedShape
         get() = RoundedCornerShape(4.dp)

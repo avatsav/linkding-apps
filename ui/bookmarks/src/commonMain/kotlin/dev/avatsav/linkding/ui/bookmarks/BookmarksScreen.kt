@@ -22,7 +22,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.CloudOff
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FloatingActionButton
@@ -147,7 +147,7 @@ fun Bookmarks(
                             },
                         ) {
                             Icon(
-                                imageVector = if (searchActive) Icons.Default.Close else Icons.Default.Settings,
+                                imageVector = if (searchActive) Icons.Default.Close else Icons.Outlined.Settings,
                                 contentDescription = if (searchActive) "Close" else "Settings",
                             )
                         }
