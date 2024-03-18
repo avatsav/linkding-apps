@@ -1,16 +1,15 @@
 # Linkding Apps (WIP)
 
-Android(and soon iOS) app for [Linkding](https://github.com/sissbruecker/linkding) self-hosted
-bookmarking service.
+Android and iOS app for [Linkding](https://github.com/sissbruecker/linkding) self-hosted bookmarking service.
 
 > [!WARNING]  
-> This repository is under heavy development to modularize and migrate to using Compose
-> Multiplatform.
+> This repository is under heavy development.
 
 ## Motivation
 
-This is an app that I built for myself to add and access bookmarks from my Linkding instance.
-It is very much a playground to experiment with architecture, Gradle, libraries, patterns, API design, and more.
+I developed this app for personal use, aiming to integrate with my Linkding instance while also serving as a playground for exploring architecture, Gradle, diverse libraries, design patterns, API design, and more.
+
+This project owes it's multiplatform foundation to the excellent [Tivi](https://github.com/chrisbanes/tivi) project.
 
 ## Colophon
 
