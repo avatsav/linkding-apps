@@ -4,5 +4,4 @@ enum class BookmarkCategory {
     All,
     Archived,
     Unread,
-    Untagged,
 }

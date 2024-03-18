@@ -7,10 +7,12 @@ import app.cash.paging.compose.LazyPagingItems
 import com.slack.circuit.runtime.CircuitUiEvent
 import com.slack.circuit.runtime.CircuitUiState
 import dev.avatsav.linkding.data.model.Bookmark
+import dev.avatsav.linkding.data.model.BookmarkCategory
 
 @Immutable
 @OptIn(ExperimentalMaterial3Api::class)
 data class BookmarksUiState(
+    val bookmarkCategory: BookmarkCategory,
     val bookmarks: LazyPagingItems<Bookmark>,
     val pullToRefreshState: PullToRefreshState,
     val isOnline: Boolean,
@@ -21,6 +23,7 @@ sealed interface BookmarksUiEvent : CircuitUiEvent {
     data class Archive(val bookmark: Bookmark) : BookmarksUiEvent
     data class Delete(val bookmark: Bookmark) : BookmarksUiEvent
     data class Open(val bookmark: Bookmark) : BookmarksUiEvent
+    data class SetBookmarkCategory(val bookmarkCategory: BookmarkCategory) : BookmarksUiEvent
     data object AddBookmark : BookmarksUiEvent
     data object ShowSettings : BookmarksUiEvent
 }

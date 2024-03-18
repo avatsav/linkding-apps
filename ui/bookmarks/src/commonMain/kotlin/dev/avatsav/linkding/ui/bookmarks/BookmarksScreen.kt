@@ -4,7 +4,9 @@ import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
@@ -12,6 +14,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -20,6 +24,7 @@ import androidx.compose.material.icons.filled.CloudOff
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -49,12 +54,12 @@ import com.slack.circuit.runtime.CircuitContext
 import com.slack.circuit.runtime.screen.Screen
 import com.slack.circuit.runtime.ui.Ui
 import com.slack.circuit.runtime.ui.ui
+import dev.avatsav.linkding.data.model.BookmarkCategory
 import dev.avatsav.linkding.ui.BookmarksScreen
 import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.AddBookmark
 import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.Archive
 import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.Delete
 import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.Open
-import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.ShowSettings
 import dev.avatsav.linkding.ui.bookmarks.widgets.BookmarkListItem
 import kotlinx.coroutines.launch
 import me.tatarka.inject.annotations.Inject
@@ -80,10 +85,11 @@ fun Bookmarks(
     state: BookmarksUiState,
     modifier: Modifier = Modifier,
 ) {
-    val scope = rememberCoroutineScope()
     val eventSink = state.eventSink
+    val bookmarkCategories = BookmarkCategory.entries
     val overlayHost = LocalOverlayHost.current
 
+    val scope = rememberCoroutineScope()
     var searchActive by rememberSaveable { mutableStateOf(false) }
     val searchBarHorizontalPadding: Dp by animateDpAsState(if (searchActive) 0.dp else 12.dp)
     val searchBarBottomPadding: Dp by animateDpAsState(if (searchActive) 0.dp else 12.dp)
@@ -107,45 +113,48 @@ fun Bookmarks(
     Scaffold(
         modifier = modifier,
         topBar = {
-            SearchBar(
-                modifier = Modifier.fillMaxWidth()
-                    .background(
-                        color = MaterialTheme.colorScheme.surfaceColorAtElevation(
-                            searchBarBackgroundElevation,
-                        ),
-                    )
-                    .padding(horizontal = searchBarHorizontalPadding)
-                    .padding(bottom = searchBarBottomPadding),
-                query = "",
-                onQueryChange = { },
-                onSearch = { searchActive = false },
-                active = searchActive,
-                onActiveChange = { searchActive = it },
-                placeholder = { Text("Search for words or #tags") },
-                leadingIcon = {
-                    Icon(
-                        imageVector = if (state.isOnline) Icons.Default.Search else Icons.Default.CloudOff,
-                        contentDescription = "Search Icon",
-                    )
-                },
-                trailingIcon = {
-                    IconButton(
-                        onClick = {
-                            if (searchActive) {
-                                searchActive = false
-                            } else {
-                                eventSink(ShowSettings)
-                            }
-                        },
-                    ) {
+            Column(
+                modifier = Modifier.background(
+                    color = MaterialTheme.colorScheme.surfaceColorAtElevation(
+                        searchBarBackgroundElevation,
+                    ),
+                ),
+            ) {
+                SearchBar(
+                    modifier = Modifier.fillMaxWidth()
+                        .padding(horizontal = searchBarHorizontalPadding)
+                        .padding(bottom = searchBarBottomPadding),
+                    query = "",
+                    onQueryChange = { },
+                    onSearch = { searchActive = false },
+                    active = searchActive,
+                    onActiveChange = { searchActive = it },
+                    placeholder = { Text("Search for words or #tags") },
+                    leadingIcon = {
                         Icon(
-                            imageVector = if (searchActive) Icons.Default.Close else Icons.Default.Settings,
-                            contentDescription = if (searchActive) "Close" else "Settings",
+                            imageVector = if (state.isOnline) Icons.Default.Search else Icons.Default.CloudOff,
+                            contentDescription = "Search Icon",
                         )
-                    }
-                },
-                tonalElevation = searchBarTonalElevation,
-            ) {}
+                    },
+                    trailingIcon = {
+                        IconButton(
+                            onClick = {
+                                if (searchActive) {
+                                    searchActive = false
+                                } else {
+                                    eventSink(BookmarksUiEvent.ShowSettings)
+                                }
+                            },
+                        ) {
+                            Icon(
+                                imageVector = if (searchActive) Icons.Default.Close else Icons.Default.Settings,
+                                contentDescription = if (searchActive) "Close" else "Settings",
+                            )
+                        }
+                    },
+                    tonalElevation = searchBarTonalElevation,
+                ) {}
+            }
         },
         floatingActionButton = {
             FloatingActionButton(onClick = { eventSink(AddBookmark) }) {
@@ -171,6 +180,15 @@ fun Bookmarks(
                 state = listState,
                 contentPadding = PaddingValues(bottom = 88.dp),
             ) {
+                item {
+                    BookmarkCategoryFilter(
+                        categories = bookmarkCategories,
+                        selected = state.bookmarkCategory,
+                        onSelected = { eventSink(BookmarksUiEvent.SetBookmarkCategory(it)) },
+                        modifier = Modifier
+                            .padding(horizontal = 16.dp),
+                    )
+                }
                 items(
                     count = state.bookmarks.itemCount,
                     key = state.bookmarks.itemKey { it.localId },
@@ -208,6 +226,27 @@ fun Bookmarks(
             PullToRefreshContainer(
                 modifier = Modifier.align(Alignment.TopCenter),
                 state = state.pullToRefreshState,
+            )
+        }
+    }
+}
+
+@Composable
+fun BookmarkCategoryFilter(
+    categories: List<BookmarkCategory>,
+    selected: BookmarkCategory,
+    onSelected: (BookmarkCategory) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    LazyRow(
+        modifier = modifier,
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        items(categories) {
+            FilterChip(
+                selected = selected == it,
+                onClick = { onSelected(it) },
+                label = { Text(it.name) },
             )
         }
     }

@@ -6,6 +6,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import app.cash.paging.LoadStateError
 import app.cash.paging.LoadStateLoading
 import app.cash.paging.LoadStateNotLoading
@@ -15,6 +18,7 @@ import com.slack.circuit.runtime.CircuitContext
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
 import com.slack.circuit.runtime.screen.Screen
+import dev.avatsav.linkding.data.model.BookmarkCategory
 import dev.avatsav.linkding.domain.interactors.ArchiveBookmark
 import dev.avatsav.linkding.domain.interactors.DeleteBookmark
 import dev.avatsav.linkding.domain.observers.ObserveBookmarks
@@ -27,6 +31,7 @@ import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.AddBookmark
 import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.Archive
 import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.Delete
 import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.Open
+import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.ShowSettings
 import dev.avatsav.linkding.ui.extensions.rememberCachedPagingFlow
 import dev.avatsav.linkding.ui.extensions.rememberStableCoroutineScope
 import kotlinx.coroutines.launch
@@ -62,10 +67,14 @@ class BookmarksPresenter(
     @Composable
     override fun present(): BookmarksUiState {
         val coroutineScope = rememberStableCoroutineScope()
+
         val bookmarks = observeBookmarks.flow.rememberCachedPagingFlow(coroutineScope)
             .collectAsLazyPagingItems()
 
-        val isOnline by connectivityObserver.observeIsOnline.collectAsState()
+        val isOnline by remember { connectivityObserver.observeIsOnline }
+            .collectAsState()
+
+        var bookmarkCategory by remember { mutableStateOf(BookmarkCategory.All) }
 
         val pullToRefreshState = rememberPullToRefreshState()
 
@@ -82,9 +91,10 @@ class BookmarksPresenter(
             }
         }
 
-        LaunchedEffect(Unit) {
+        LaunchedEffect(bookmarkCategory) {
             observeBookmarks.invoke(
                 ObserveBookmarks.Param(
+                    bookmarkCategory,
                     PagingConfig(
                         initialLoadSize = 20,
                         pageSize = 20,
@@ -94,6 +104,7 @@ class BookmarksPresenter(
         }
 
         return BookmarksUiState(
+            bookmarkCategory = bookmarkCategory,
             bookmarks = bookmarks,
             isOnline = isOnline,
             pullToRefreshState = pullToRefreshState,
@@ -107,9 +118,13 @@ class BookmarksPresenter(
                     deleteBookmark(event.bookmark.id)
                 }
 
-                AddBookmark -> navigator.goTo(AddBookmarkScreen())
                 is Open -> navigator.goTo(UrlScreen(event.bookmark.url))
-                BookmarksUiEvent.ShowSettings -> navigator.goTo(SettingsScreen)
+                is BookmarksUiEvent.SetBookmarkCategory -> {
+                    bookmarkCategory = event.bookmarkCategory
+                }
+
+                AddBookmark -> navigator.goTo(AddBookmarkScreen())
+                ShowSettings -> navigator.goTo(SettingsScreen)
             }
         }
     }
