@@ -33,11 +33,11 @@ import dev.avatsav.linkding.ui.settings.SettingsUiEvent.Close
 import dev.avatsav.linkding.ui.settings.SettingsUiEvent.ResetApiConfig
 import dev.avatsav.linkding.ui.settings.SettingsUiEvent.SetAppTheme
 import dev.avatsav.linkding.ui.settings.SettingsUiEvent.ToggleUseDynamicColors
-import dev.avatsav.linkding.ui.settings.widget.Preference
-import dev.avatsav.linkding.ui.settings.widget.PreferenceDefaults
-import dev.avatsav.linkding.ui.settings.widget.PreferenceSection
-import dev.avatsav.linkding.ui.settings.widget.SwitchPreference
-import dev.avatsav.linkding.ui.settings.widget.ThemePreference
+import dev.avatsav.linkding.ui.settings.widgets.Preference
+import dev.avatsav.linkding.ui.settings.widgets.PreferenceDefaults
+import dev.avatsav.linkding.ui.settings.widgets.PreferenceSection
+import dev.avatsav.linkding.ui.settings.widgets.SwitchPreference
+import dev.avatsav.linkding.ui.settings.widgets.ThemePreference
 import kotlinx.coroutines.launch
 import me.tatarka.inject.annotations.Inject
 

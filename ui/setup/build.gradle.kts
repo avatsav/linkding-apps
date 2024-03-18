@@ -15,9 +15,9 @@ kotlin {
             implementation(projects.domain)
             api(projects.data.models)
 
-            api(projects.ui.common.theme)
-            api(projects.ui.common.shared)
-            api(projects.ui.common.screens)
+            api(projects.ui.core.theme)
+            api(projects.ui.core.compose)
+            api(projects.ui.core.screens)
             api(libs.circuit.foundation)
             api(libs.circuit.retained)
             api(libs.kotlinResult)

@@ -15,8 +15,8 @@ kotlin {
             implementation(projects.domain)
             implementation(projects.data.models)
 
-            implementation(projects.ui.common.theme)
-            implementation(projects.ui.common.screens)
+            implementation(projects.ui.core.theme)
+            implementation(projects.ui.core.screens)
             implementation(libs.circuit.foundation)
             implementation(libs.circuit.retained)
             implementation(libs.circuit.overlay)

@@ -29,8 +29,8 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import dev.avatsav.linkding.data.model.Bookmark
-import dev.avatsav.linkding.ui.shared.SwipeToDismissAction
-import dev.avatsav.linkding.ui.shared.SwipeToDismissListItem
+import dev.avatsav.linkding.ui.compose.widgets.SwipeToDismissAction
+import dev.avatsav.linkding.ui.compose.widgets.SwipeToDismissListItem
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

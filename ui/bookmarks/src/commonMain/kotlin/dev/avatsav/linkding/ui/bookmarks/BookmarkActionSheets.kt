@@ -10,7 +10,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Archive
-import androidx.compose.material.icons.filled.DeleteSweep
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
@@ -23,9 +23,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import com.slack.circuit.overlay.OverlayHost
+import com.slack.circuitx.overlays.BottomSheetOverlay
 import dev.avatsav.linkding.data.model.Bookmark
 import dev.avatsav.linkding.ui.bookmarks.widgets.BookmarkContent
-import dev.avatsav.linkding.ui.circuit.BottomSheetOverlay
 
 suspend fun OverlayHost.showDeleteBookmarkAction(bookmark: Bookmark): ActionResult {
     return show(
@@ -72,7 +72,7 @@ fun DeleteBookmarkActionSheet(
 ) {
     BookmarkActionSheet(
         titleText = "Delete Bookmark?",
-        imageVector = Icons.Default.DeleteSweep,
+        imageVector = Icons.Default.Delete,
         bookmark = bookmark,
         onConfirm = onConfirm,
         onCancelled = onCancelled,

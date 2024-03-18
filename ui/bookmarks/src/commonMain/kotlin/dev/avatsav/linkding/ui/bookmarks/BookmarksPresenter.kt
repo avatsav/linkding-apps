@@ -32,8 +32,8 @@ import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.Archive
 import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.Delete
 import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.Open
 import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.ShowSettings
-import dev.avatsav.linkding.ui.extensions.rememberCachedPagingFlow
-import dev.avatsav.linkding.ui.extensions.rememberStableCoroutineScope
+import dev.avatsav.linkding.ui.compose.extensions.rememberCachedPagingFlow
+import dev.avatsav.linkding.ui.compose.extensions.rememberStableCoroutineScope
 import kotlinx.coroutines.launch
 import me.tatarka.inject.annotations.Assisted
 import me.tatarka.inject.annotations.Inject

@@ -43,10 +43,10 @@ import com.slack.circuit.runtime.ui.ui
 import dev.avatsav.linkding.ui.AddBookmarkScreen
 import dev.avatsav.linkding.ui.add.AddBookmarkUiEvent.Close
 import dev.avatsav.linkding.ui.add.AddBookmarkUiEvent.Save
-import dev.avatsav.linkding.ui.shared.OutlinedTagsTextField
-import dev.avatsav.linkding.ui.shared.PlaceholderVisualTransformation
-import dev.avatsav.linkding.ui.shared.SmallCircularProgressIndicator
-import dev.avatsav.linkding.ui.shared.TagsTextFieldValue
+import dev.avatsav.linkding.ui.compose.widgets.OutlinedTagsTextField
+import dev.avatsav.linkding.ui.compose.widgets.PlaceholderVisualTransformation
+import dev.avatsav.linkding.ui.compose.widgets.SmallCircularProgressIndicator
+import dev.avatsav.linkding.ui.compose.widgets.TagsTextFieldValue
 import kotlinx.coroutines.delay
 import me.tatarka.inject.annotations.Inject
 

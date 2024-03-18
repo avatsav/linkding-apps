@@ -11,6 +11,6 @@ interface ConnectivityComponent : PlatformNetworkMonitorComponent {
 
     @AppScope
     @Provides
-    fun provideInternetConnectivityObserver(bind: DefaultConnectivityObserver): ConnectivityObserver =
+    fun provideConnectivityObserver(bind: DefaultConnectivityObserver): ConnectivityObserver =
         bind
 }

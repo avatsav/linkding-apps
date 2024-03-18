@@ -1,3 +1,6 @@
+// Copyright 2018, Google LLC, Christopher Banes and the Tivi project contributors
+// SPDX-License-Identifier: Apache-2.0
+
 package dev.avatsav.linkding.domain
 
 import com.github.michaelbull.result.Result
@@ -7,6 +10,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 
+/**
+ * https://github.com/chrisbanes/tivi/blob/fb1e59a6c0244e378543bbbc761b26fbb61d896d/domain/src/commonMain/kotlin/app/tivi/domain/Interactor.kt
+ */
 abstract class Interactor<P, R, E> {
 
     private val count = atomic(0)
