@@ -114,9 +114,9 @@ class BookmarksPresenter(
             when (event) {
                 is ToggleArchive -> coroutineScope.launch {
                     if (event.bookmark.archived) {
-                        archiveBookmark(event.bookmark.id)
-                    } else {
                         unarchiveBookmark(event.bookmark.id)
+                    } else {
+                        archiveBookmark(event.bookmark.id)
                     }
                 }
 
