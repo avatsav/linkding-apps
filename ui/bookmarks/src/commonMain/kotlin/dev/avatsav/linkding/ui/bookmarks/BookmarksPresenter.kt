@@ -21,6 +21,7 @@ import com.slack.circuit.runtime.screen.Screen
 import dev.avatsav.linkding.data.model.BookmarkCategory
 import dev.avatsav.linkding.domain.interactors.ArchiveBookmark
 import dev.avatsav.linkding.domain.interactors.DeleteBookmark
+import dev.avatsav.linkding.domain.interactors.UnarchiveBookmark
 import dev.avatsav.linkding.domain.observers.ObserveBookmarks
 import dev.avatsav.linkding.internet.ConnectivityObserver
 import dev.avatsav.linkding.ui.AddBookmarkScreen
@@ -28,10 +29,10 @@ import dev.avatsav.linkding.ui.BookmarksScreen
 import dev.avatsav.linkding.ui.SettingsScreen
 import dev.avatsav.linkding.ui.UrlScreen
 import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.AddBookmark
-import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.Archive
 import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.Delete
 import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.Open
 import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.ShowSettings
+import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.ToggleArchive
 import dev.avatsav.linkding.ui.compose.extensions.rememberCachedPagingFlow
 import dev.avatsav.linkding.ui.compose.extensions.rememberStableCoroutineScope
 import kotlinx.coroutines.launch
@@ -60,6 +61,7 @@ class BookmarksPresenter(
     private val observeBookmarks: ObserveBookmarks,
     private val deleteBookmark: DeleteBookmark,
     private val archiveBookmark: ArchiveBookmark,
+    private val unarchiveBookmark: UnarchiveBookmark,
     private val connectivityObserver: ConnectivityObserver,
 ) : Presenter<BookmarksUiState> {
 
@@ -71,7 +73,7 @@ class BookmarksPresenter(
         val bookmarks = observeBookmarks.flow.rememberCachedPagingFlow(coroutineScope)
             .collectAsLazyPagingItems()
 
-        val isOnline by remember { connectivityObserver.observeIsOnline }
+        val isOnline by connectivityObserver.observeIsOnline
             .collectAsState()
 
         var bookmarkCategory by remember { mutableStateOf(BookmarkCategory.All) }
@@ -92,7 +94,7 @@ class BookmarksPresenter(
         }
 
         LaunchedEffect(bookmarkCategory) {
-            observeBookmarks.observe(
+            observeBookmarks(
                 ObserveBookmarks.Param(
                     bookmarkCategory,
                     PagingConfig(
@@ -110,8 +112,12 @@ class BookmarksPresenter(
             pullToRefreshState = pullToRefreshState,
         ) { event ->
             when (event) {
-                is Archive -> coroutineScope.launch {
-                    archiveBookmark(event.bookmark.id)
+                is ToggleArchive -> coroutineScope.launch {
+                    if (event.bookmark.archived) {
+                        archiveBookmark(event.bookmark.id)
+                    } else {
+                        unarchiveBookmark(event.bookmark.id)
+                    }
                 }
 
                 is Delete -> coroutineScope.launch {

@@ -26,7 +26,7 @@ abstract class Observer<P : Any, R> {
         .flatMapLatest { createObservable(it) }
         .distinctUntilChanged()
 
-    suspend fun observe(params: P) {
+    suspend operator fun invoke(params: P) {
         paramState.emit(params)
     }
 

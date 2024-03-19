@@ -215,8 +215,7 @@ private class PreferenceColumnScopeWrapper(scope: ColumnScope) :
 internal object PreferenceDefaults {
     val SectionWidth = 2.dp
     val MinHeight = 56.dp
-
-    val baseShape: CornerBasedShape
+    private val baseShape: CornerBasedShape
         get() = RoundedCornerShape(4.dp)
 
     fun itemShape(index: Int, count: Int, baseShape: CornerBasedShape = this.baseShape): Shape {
