@@ -20,7 +20,7 @@ data class BookmarksUiState(
 ) : CircuitUiState
 
 sealed interface BookmarksUiEvent : CircuitUiEvent {
-    data class Archive(val bookmark: Bookmark) : BookmarksUiEvent
+    data class ToggleArchive(val bookmark: Bookmark) : BookmarksUiEvent
     data class Delete(val bookmark: Bookmark) : BookmarksUiEvent
     data class Open(val bookmark: Bookmark) : BookmarksUiEvent
     data class SetBookmarkCategory(val bookmarkCategory: BookmarkCategory) : BookmarksUiEvent

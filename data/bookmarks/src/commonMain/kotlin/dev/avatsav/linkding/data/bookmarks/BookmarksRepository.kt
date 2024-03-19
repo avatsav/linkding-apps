@@ -59,7 +59,9 @@ class BookmarksRepository(
     }
 
     suspend fun unarchiveBookmark(id: Long): Result<Unit, BookmarkError> {
-        return apiProvider.value.bookmarksApi.unarchiveBookmark(id).mapError(errorMapper::map)
+        return apiProvider.value.bookmarksApi.unarchiveBookmark(id)
+            .onSuccess { bookmarksDao.delete(id) }
+            .mapError(errorMapper::map)
     }
 
     suspend fun deleteBookmark(id: Long): Result<Unit, BookmarkError> {

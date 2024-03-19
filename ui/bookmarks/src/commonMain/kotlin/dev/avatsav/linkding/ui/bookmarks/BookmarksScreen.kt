@@ -57,9 +57,9 @@ import com.slack.circuit.runtime.ui.ui
 import dev.avatsav.linkding.data.model.BookmarkCategory
 import dev.avatsav.linkding.ui.BookmarksScreen
 import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.AddBookmark
-import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.Archive
 import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.Delete
 import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.Open
+import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.ToggleArchive
 import dev.avatsav.linkding.ui.bookmarks.widgets.BookmarkListItem
 import kotlinx.coroutines.launch
 import me.tatarka.inject.annotations.Inject
@@ -201,7 +201,7 @@ fun Bookmarks(
                             toggleArchive = { toToggle, dismissState ->
                                 scope.launch {
                                     when (overlayHost.showArchiveBookmarkAction(toToggle)) {
-                                        ActionResult.Confirmed -> eventSink(Archive(toToggle))
+                                        ActionResult.Confirmed -> eventSink(ToggleArchive(toToggle))
                                         ActionResult.Cancelled,
                                         ActionResult.Dismissed,
                                         -> dismissState.reset()
