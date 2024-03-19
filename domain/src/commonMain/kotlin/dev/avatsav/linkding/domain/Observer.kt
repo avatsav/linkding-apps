@@ -9,6 +9,10 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
 
+/**
+ * Inspired by:
+ * https://github.com/chrisbanes/tivi/blob/fb1e59a6c0244e378543bbbc761b26fbb61d896d/domain/src/commonMain/kotlin/app/tivi/domain/Interactor.kt#L69
+ */
 @OptIn(ExperimentalCoroutinesApi::class)
 abstract class Observer<P : Any, R> {
 
@@ -22,8 +26,8 @@ abstract class Observer<P : Any, R> {
         .flatMapLatest { createObservable(it) }
         .distinctUntilChanged()
 
-    operator fun invoke(params: P) {
-        paramState.tryEmit(params)
+    suspend fun observe(params: P) {
+        paramState.emit(params)
     }
 
     protected abstract fun createObservable(params: P): Flow<R>

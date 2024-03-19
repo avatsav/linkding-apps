@@ -92,7 +92,7 @@ class BookmarksPresenter(
         }
 
         LaunchedEffect(bookmarkCategory) {
-            observeBookmarks.invoke(
+            observeBookmarks.observe(
                 ObserveBookmarks.Param(
                     bookmarkCategory,
                     PagingConfig(
