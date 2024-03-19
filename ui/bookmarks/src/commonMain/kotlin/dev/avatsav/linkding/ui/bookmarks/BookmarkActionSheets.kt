@@ -11,6 +11,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Archive
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Unarchive
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
@@ -86,8 +87,8 @@ fun ArchiveBookmarkActionSheet(
     onCancelled: () -> Unit,
 ) {
     BookmarkActionSheet(
-        titleText = "Archive Bookmark?",
-        imageVector = Icons.Default.Archive,
+        titleText = if (bookmark.archived) "Unarchive Bookmark?" else "Archive Bookmark?",
+        imageVector = if (bookmark.archived) Icons.Default.Unarchive else Icons.Default.Archive,
         bookmark = bookmark,
         onConfirm = onConfirm,
         onCancelled = onCancelled,
