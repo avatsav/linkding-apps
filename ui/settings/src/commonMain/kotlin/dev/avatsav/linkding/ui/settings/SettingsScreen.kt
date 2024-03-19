@@ -1,5 +1,6 @@
 package dev.avatsav.linkding.ui.settings
 
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -10,6 +11,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LargeTopAppBar
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -19,6 +21,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.slack.circuit.overlay.LocalOverlayHost
 import com.slack.circuit.overlay.OverlayHost
@@ -32,6 +35,9 @@ import dev.avatsav.linkding.ui.SettingsScreen
 import dev.avatsav.linkding.ui.settings.SettingsUiEvent.Close
 import dev.avatsav.linkding.ui.settings.SettingsUiEvent.ResetApiConfig
 import dev.avatsav.linkding.ui.settings.SettingsUiEvent.SetAppTheme
+import dev.avatsav.linkding.ui.settings.SettingsUiEvent.ShowLicenses
+import dev.avatsav.linkding.ui.settings.SettingsUiEvent.ShowPrivacyPolicy
+import dev.avatsav.linkding.ui.settings.SettingsUiEvent.ShowSourceCode
 import dev.avatsav.linkding.ui.settings.SettingsUiEvent.ToggleUseDynamicColors
 import dev.avatsav.linkding.ui.settings.widgets.Preference
 import dev.avatsav.linkding.ui.settings.widgets.PreferenceDefaults
@@ -88,9 +94,13 @@ fun Settings(
         },
     ) { padding ->
         LazyColumn(
-            contentPadding = padding,
+            contentPadding = PaddingValues(
+                start = 16.dp,
+                end = 16.dp,
+                bottom = 88.dp,
+            ),
             modifier = Modifier.fillMaxWidth()
-                .padding(horizontal = 16.dp)
+                .padding(padding)
                 .nestedScroll(scrollBehavior.nestedScrollConnection),
         ) {
             item {
@@ -134,8 +144,50 @@ fun Settings(
                     )
                 }
             }
+            item {
+                PreferenceSection("About", modifier = Modifier.padding(vertical = 8.dp)) {
+                    Preference(
+                        shape = PreferenceDefaults.itemShape(0, 4),
+                        title = "Version",
+                        description = state.appInfo.version,
+                    )
+                    Preference(
+                        shape = PreferenceDefaults.itemShape(1, 4),
+                        title = "Source code",
+                        description = "Appding repository on Github",
+                        clickable = true,
+                        onClicked = { eventSink(ShowSourceCode) },
+                    )
+                    Preference(
+                        shape = PreferenceDefaults.itemShape(2, 4),
+                        title = "Open Source licenses",
+                        clickable = true,
+                        onClicked = { eventSink(ShowLicenses) },
+                    )
+                    Preference(
+                        shape = PreferenceDefaults.itemShape(3, 4),
+                        title = "Privacy policy",
+                        clickable = true,
+                        onClicked = { eventSink(ShowPrivacyPolicy) },
+                    )
+                }
+            }
+            item {
+                MadeInMunich()
+            }
         }
     }
+}
+
+@Composable
+private fun MadeInMunich() {
+    Text(
+        text = "Made with \uD83E\uDD68 in München",
+        style = MaterialTheme.typography.bodyMedium,
+        modifier = Modifier.fillMaxWidth()
+            .padding(vertical = 16.dp),
+        textAlign = TextAlign.Center,
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

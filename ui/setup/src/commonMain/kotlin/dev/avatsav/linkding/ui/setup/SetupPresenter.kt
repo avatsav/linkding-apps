@@ -10,6 +10,7 @@ import com.github.michaelbull.result.onFailure
 import com.github.michaelbull.result.onSuccess
 import com.slack.circuit.runtime.CircuitContext
 import com.slack.circuit.runtime.Navigator
+import com.slack.circuit.runtime.internal.rememberStableCoroutineScope
 import com.slack.circuit.runtime.presenter.Presenter
 import com.slack.circuit.runtime.screen.Screen
 import dev.avatsav.linkding.Logger
@@ -21,7 +22,6 @@ import dev.avatsav.linkding.domain.interactors.VerifyApiConfiguration
 import dev.avatsav.linkding.prefs.AppPreferences
 import dev.avatsav.linkding.ui.BookmarksScreen
 import dev.avatsav.linkding.ui.SetupScreen
-import dev.avatsav.linkding.ui.compose.extensions.rememberStableCoroutineScope
 import kotlinx.coroutines.launch
 import me.tatarka.inject.annotations.Assisted
 import me.tatarka.inject.annotations.Inject

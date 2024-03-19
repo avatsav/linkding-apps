@@ -16,6 +16,7 @@ import app.cash.paging.PagingConfig
 import app.cash.paging.compose.collectAsLazyPagingItems
 import com.slack.circuit.runtime.CircuitContext
 import com.slack.circuit.runtime.Navigator
+import com.slack.circuit.runtime.internal.rememberStableCoroutineScope
 import com.slack.circuit.runtime.presenter.Presenter
 import com.slack.circuit.runtime.screen.Screen
 import dev.avatsav.linkding.data.model.BookmarkCategory
@@ -34,7 +35,6 @@ import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.Open
 import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.ShowSettings
 import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.ToggleArchive
 import dev.avatsav.linkding.ui.compose.extensions.rememberCachedPagingFlow
-import dev.avatsav.linkding.ui.compose.extensions.rememberStableCoroutineScope
 import kotlinx.coroutines.launch
 import me.tatarka.inject.annotations.Assisted
 import me.tatarka.inject.annotations.Inject
