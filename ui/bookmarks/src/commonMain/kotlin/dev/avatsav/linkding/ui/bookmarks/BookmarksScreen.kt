@@ -4,7 +4,6 @@ import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -14,15 +13,16 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.CloudOff
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.outlined.Settings
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FloatingActionButton
@@ -31,6 +31,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SearchBar
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshContainer
 import androidx.compose.material3.surfaceColorAtElevation
@@ -61,6 +62,7 @@ import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.Delete
 import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.Open
 import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.ToggleArchive
 import dev.avatsav.linkding.ui.bookmarks.widgets.BookmarkListItem
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.launch
 import me.tatarka.inject.annotations.Inject
 
@@ -86,7 +88,6 @@ fun Bookmarks(
     modifier: Modifier = Modifier,
 ) {
     val eventSink = state.eventSink
-    val bookmarkCategories = BookmarkCategory.entries
     val overlayHost = LocalOverlayHost.current
 
     val scope = rememberCoroutineScope()
@@ -180,9 +181,8 @@ fun Bookmarks(
                 state = listState,
                 contentPadding = PaddingValues(bottom = 88.dp),
             ) {
-                item {
+                item(key = state.bookmarkCategory) {
                     BookmarkCategoryFilter(
-                        categories = bookmarkCategories,
                         selected = state.bookmarkCategory,
                         onSelected = { eventSink(BookmarksUiEvent.SetBookmarkCategory(it)) },
                         modifier = Modifier
@@ -231,23 +231,35 @@ fun Bookmarks(
     }
 }
 
+private val bookmarkCategories = BookmarkCategory.entries.toImmutableList()
+
 @Composable
-fun BookmarkCategoryFilter(
-    categories: List<BookmarkCategory>,
+private fun BookmarkCategoryFilter(
     selected: BookmarkCategory,
     onSelected: (BookmarkCategory) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    LazyRow(
-        modifier = modifier,
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-    ) {
-        items(categories) {
-            FilterChip(
-                selected = selected == it,
-                onClick = { onSelected(it) },
-                label = { Text(it.name) },
-            )
+    var showMenu by remember { mutableStateOf(false) }
+    Surface(modifier) {
+        FilterChip(
+            selected = true,
+            onClick = { showMenu = showMenu.not() },
+            label = { Text(selected.name) },
+            trailingIcon = { Icon(Icons.Default.ArrowDropDown, null) },
+        )
+        DropdownMenu(
+            expanded = showMenu,
+            onDismissRequest = { showMenu = false },
+        ) {
+            bookmarkCategories.forEach { category ->
+                DropdownMenuItem(
+                    onClick = {
+                        onSelected(category)
+                        showMenu = false
+                    },
+                    text = { Text(category.name) },
+                )
+            }
         }
     }
 }
