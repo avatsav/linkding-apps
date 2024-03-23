@@ -39,7 +39,7 @@ import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.SelectTag
 import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.SetBookmarkCategory
 import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.ShowSettings
 import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.ToggleArchive
-import dev.avatsav.linkding.ui.compose.extensions.rememberCachedPagingFlow
+import dev.avatsav.linkding.ui.compose.rememberCachedPagingFlow
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.launch
 import me.tatarka.inject.annotations.Assisted

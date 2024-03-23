@@ -25,8 +25,8 @@ import androidx.compose.ui.unit.dp
 import com.slack.circuit.overlay.OverlayHost
 import dev.avatsav.linkding.data.model.Tag
 import dev.avatsav.linkding.ui.bookmarks.TagPickerResult.Dismissed
+import dev.avatsav.linkding.ui.compose.none
 import dev.avatsav.linkding.ui.compose.widgets.BottomSheetOverlay
-import dev.avatsav.linkding.ui.compose.widgets.none
 import kotlinx.collections.immutable.ImmutableList
 
 suspend fun OverlayHost.showTagPicker(tags: ImmutableList<Tag>): TagPickerResult {

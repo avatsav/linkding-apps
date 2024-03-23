@@ -1,4 +1,4 @@
-package dev.avatsav.linkding.ui.compose.widgets
+package dev.avatsav.linkding.ui.compose
 
 import androidx.compose.foundation.layout.WindowInsets
 

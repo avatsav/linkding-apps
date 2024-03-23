@@ -35,7 +35,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.unit.Density
-import dev.avatsav.linkding.ui.compose.extensions.circularReveal
+import dev.avatsav.linkding.ui.compose.circularReveal
 import kotlinx.coroutines.flow.distinctUntilChanged
 
 @Stable
