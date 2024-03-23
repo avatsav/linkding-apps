@@ -21,3 +21,6 @@ data class UrlScreen(val url: String) : LinkdingScreen("UrlScreen")
 
 @CommonParcelize
 data object SettingsScreen : LinkdingScreen("Settings")
+
+@CommonParcelize
+data object TagsScreen : LinkdingScreen("Tags")

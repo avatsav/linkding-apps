@@ -9,6 +9,7 @@ import dev.avatsav.linkding.ui.bookmarks.inject.BookmarksComponent
 import dev.avatsav.linkding.ui.root.inject.RootComponent
 import dev.avatsav.linkding.ui.settings.inject.SettingsComponent
 import dev.avatsav.linkding.ui.setup.inject.SetupComponent
+import dev.avatsav.linkding.ui.tags.inject.TagsComponent
 import me.tatarka.inject.annotations.Provides
 
 interface SharedUiComponent :
@@ -16,7 +17,8 @@ interface SharedUiComponent :
     SetupComponent,
     BookmarksComponent,
     AddBookmarkComponent,
-    SettingsComponent {
+    SettingsComponent,
+    TagsComponent {
 
     @UiScope
     @Provides

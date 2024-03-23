@@ -42,5 +42,6 @@ include(
     ":ui:add-bookmark",
     ":ui:setup",
     ":ui:root",
-    ":ui:settings"
+    ":ui:settings",
+    ":ui:tags"
 )
