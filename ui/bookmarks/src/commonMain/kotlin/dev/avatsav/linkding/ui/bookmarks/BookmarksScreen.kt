@@ -60,6 +60,7 @@ import com.slack.circuit.runtime.ui.ui
 import dev.avatsav.linkding.data.model.BookmarkCategory
 import dev.avatsav.linkding.data.model.Tag
 import dev.avatsav.linkding.ui.BookmarksScreen
+import dev.avatsav.linkding.ui.TagsScreen
 import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.AddBookmark
 import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.Delete
 import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.Open
@@ -69,7 +70,8 @@ import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.SetBookmarkCategory
 import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.ShowSettings
 import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.ToggleArchive
 import dev.avatsav.linkding.ui.bookmarks.widgets.BookmarkListItem
-import kotlinx.collections.immutable.ImmutableList
+import dev.avatsav.linkding.ui.tags.showTagsBottomSheet
+import kotlin.random.Random
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.launch
 import me.tatarka.inject.annotations.Inject
@@ -180,8 +182,7 @@ fun Bookmarks(
                 start = paddingValues.calculateStartPadding(LayoutDirection.Ltr),
                 end = paddingValues.calculateEndPadding(LayoutDirection.Ltr),
                 bottom = 0.dp,
-            )
-                .nestedScroll(state.pullToRefreshState.nestedScrollConnection).fillMaxSize(),
+            ).nestedScroll(state.pullToRefreshState.nestedScrollConnection).fillMaxSize(),
         ) {
             // Content padding: 56dp(FAB) + 32(Top+Bottom Padding)
             LazyColumn(
@@ -193,12 +194,10 @@ fun Bookmarks(
                     FiltersBar(
                         selectedCategory = state.bookmarkCategory,
                         onCategorySelected = { eventSink(SetBookmarkCategory(it)) },
-                        tags = state.tags,
                         selectedTags = state.selectedTags.toList(),
                         onTagSelected = { eventSink(SelectTag(it)) },
                         onTagRemoved = { eventSink(RemoveTag(it)) },
-                        modifier = Modifier
-                            .fillMaxWidth(),
+                        modifier = Modifier.fillMaxWidth(),
                     )
                 }
                 items(
@@ -248,7 +247,6 @@ fun Bookmarks(
 fun FiltersBar(
     selectedCategory: BookmarkCategory,
     onCategorySelected: (BookmarkCategory) -> Unit,
-    tags: ImmutableList<Tag>,
     selectedTags: List<Tag>,
     onTagSelected: (Tag) -> Unit,
     onTagRemoved: (Tag) -> Unit,
@@ -260,8 +258,7 @@ fun FiltersBar(
     LazyRow(
         modifier = modifier,
         contentPadding = PaddingValues(horizontal = 16.dp),
-        horizontalArrangement = Arrangement
-            .spacedBy(8.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         item {
             BookmarkCategoryFilter(
@@ -274,9 +271,14 @@ fun FiltersBar(
                 selected = true,
                 onClick = {
                     scope.launch {
-                        val result = overlayHost.showTagPicker(tags)
-                        if (result is TagPickerResult.Selected) {
-                            onTagSelected(result.tag)
+                        when (val result = overlayHost.showTagsBottomSheet(selectedTags)) {
+                            TagsScreen.Result.Dismissed -> {}
+                            is TagsScreen.Result.Selected -> onTagSelected(
+                                Tag(
+                                    id = Random.nextLong(),
+                                    result.tag,
+                                ),
+                            )
                         }
                     }
                 },
@@ -297,8 +299,7 @@ fun FiltersBar(
     }
 }
 
-private val bookmarkCategories =
-    BookmarkCategory.entries.toImmutableList()
+private val bookmarkCategories = BookmarkCategory.entries.toImmutableList()
 
 @Composable
 private fun BookmarkCategoryFilter(

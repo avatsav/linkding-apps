@@ -1,5 +1,6 @@
 package dev.avatsav.linkding.ui
 
+import com.slack.circuit.runtime.screen.PopResult
 import com.slack.circuit.runtime.screen.Screen
 
 abstract class LinkdingScreen(val name: String) : Screen
@@ -23,4 +24,12 @@ data class UrlScreen(val url: String) : LinkdingScreen("UrlScreen")
 data object SettingsScreen : LinkdingScreen("Settings")
 
 @CommonParcelize
-data object TagsScreen : LinkdingScreen("Tags")
+data class TagsScreen(val selectedTags: List<String>) : LinkdingScreen("Tags") {
+    sealed interface Result : PopResult {
+        @CommonParcelize
+        data class Selected(val tag: String) : Result
+
+        @CommonParcelize
+        data object Dismissed : Result
+    }
+}

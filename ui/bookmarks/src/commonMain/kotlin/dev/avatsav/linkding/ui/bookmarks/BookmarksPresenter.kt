@@ -40,7 +40,6 @@ import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.SetBookmarkCategory
 import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.ShowSettings
 import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.ToggleArchive
 import dev.avatsav.linkding.ui.compose.rememberCachedPagingFlow
-import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.launch
 import me.tatarka.inject.annotations.Assisted
 import me.tatarka.inject.annotations.Inject
@@ -116,7 +115,6 @@ class BookmarksPresenter(
         return BookmarksUiState(
             bookmarkCategory = bookmarkCategory,
             bookmarks = bookmarks,
-            tags = tags,
             selectedTags = selectedTags,
             isOnline = isOnline,
             pullToRefreshState = pullToRefreshState,
@@ -147,14 +145,3 @@ class BookmarksPresenter(
         }
     }
 }
-
-private val tags = mutableListOf<Tag>().also { tags ->
-    repeat(50) {
-        tags.add(
-            Tag(
-                id = it.toLong() + 1,
-                name = "Tag ${it + 1}",
-            ),
-        )
-    }
-}.toImmutableList()

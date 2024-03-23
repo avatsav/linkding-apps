@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Archive
 import androidx.compose.material.icons.filled.Delete
@@ -32,7 +31,6 @@ suspend fun OverlayHost.showDeleteBookmarkAction(bookmark: Bookmark): ActionResu
     return show(
         BottomSheetOverlay(
             model = bookmark,
-            sheetShape = RoundedCornerShape(topEnd = 32.dp, topStart = 32.dp),
             onDismiss = { ActionResult.Dismissed },
         ) { toDelete, overlayNavigator ->
             DeleteBookmarkActionSheet(
@@ -48,7 +46,6 @@ suspend fun OverlayHost.showArchiveBookmarkAction(bookmark: Bookmark): ActionRes
     return show(
         BottomSheetOverlay(
             model = bookmark,
-            sheetShape = RoundedCornerShape(topEnd = 32.dp, topStart = 32.dp),
             onDismiss = { ActionResult.Dismissed },
         ) { toArchive, overlayNavigator ->
             ArchiveBookmarkActionSheet(

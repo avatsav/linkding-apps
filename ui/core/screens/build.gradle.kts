@@ -8,6 +8,7 @@ plugins {
 kotlin {
     sourceSets {
         commonMain.dependencies {
+            implementation(projects.data.models)
             api(libs.circuit.runtime)
         }
     }

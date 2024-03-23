@@ -153,7 +153,7 @@ private constructor(
                 }
             },
             sheetState = sheetState,
-            shape = sheetShape ?: RoundedCornerShape(32.dp),
+            shape = sheetShape ?: RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp),
             containerColor = sheetContainerColor ?: BottomSheetDefaults.ContainerColor,
             dragHandle = dragHandle ?: { BottomSheetDefaults.DragHandle() },
             windowInsets = WindowInsets(0, 0, 0, 0),
