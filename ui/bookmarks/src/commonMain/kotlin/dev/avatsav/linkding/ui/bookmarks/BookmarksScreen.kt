@@ -4,6 +4,7 @@ import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -13,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -56,12 +58,18 @@ import com.slack.circuit.runtime.screen.Screen
 import com.slack.circuit.runtime.ui.Ui
 import com.slack.circuit.runtime.ui.ui
 import dev.avatsav.linkding.data.model.BookmarkCategory
+import dev.avatsav.linkding.data.model.Tag
 import dev.avatsav.linkding.ui.BookmarksScreen
 import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.AddBookmark
 import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.Delete
 import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.Open
+import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.RemoveTag
+import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.SelectTag
+import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.SetBookmarkCategory
+import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.ShowSettings
 import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.ToggleArchive
 import dev.avatsav.linkding.ui.bookmarks.widgets.BookmarkListItem
+import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.launch
 import me.tatarka.inject.annotations.Inject
@@ -143,7 +151,7 @@ fun Bookmarks(
                                 if (searchActive) {
                                     searchActive = false
                                 } else {
-                                    eventSink(BookmarksUiEvent.ShowSettings)
+                                    eventSink(ShowSettings)
                                 }
                             },
                         ) {
@@ -182,11 +190,15 @@ fun Bookmarks(
                 contentPadding = PaddingValues(bottom = 88.dp),
             ) {
                 item(key = state.bookmarkCategory) {
-                    BookmarkCategoryFilter(
-                        selected = state.bookmarkCategory,
-                        onSelected = { eventSink(BookmarksUiEvent.SetBookmarkCategory(it)) },
+                    FiltersBar(
+                        selectedCategory = state.bookmarkCategory,
+                        onCategorySelected = { eventSink(SetBookmarkCategory(it)) },
+                        tags = state.tags,
+                        selectedTags = state.selectedTags.toList(),
+                        onTagSelected = { eventSink(SelectTag(it)) },
+                        onTagRemoved = { eventSink(RemoveTag(it)) },
                         modifier = Modifier
-                            .padding(horizontal = 16.dp),
+                            .fillMaxWidth(),
                     )
                 }
                 items(
@@ -231,7 +243,62 @@ fun Bookmarks(
     }
 }
 
-private val bookmarkCategories = BookmarkCategory.entries.toImmutableList()
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun FiltersBar(
+    selectedCategory: BookmarkCategory,
+    onCategorySelected: (BookmarkCategory) -> Unit,
+    tags: ImmutableList<Tag>,
+    selectedTags: List<Tag>,
+    onTagSelected: (Tag) -> Unit,
+    onTagRemoved: (Tag) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val scope = rememberCoroutineScope()
+    val overlayHost = LocalOverlayHost.current
+
+    LazyRow(
+        modifier = modifier,
+        contentPadding = PaddingValues(horizontal = 16.dp),
+        horizontalArrangement = Arrangement
+            .spacedBy(8.dp),
+    ) {
+        item {
+            BookmarkCategoryFilter(
+                selected = selectedCategory,
+                onSelected = onCategorySelected,
+            )
+        }
+        item {
+            FilterChip(
+                selected = true,
+                onClick = {
+                    scope.launch {
+                        val result = overlayHost.showTagPicker(tags)
+                        if (result is TagPickerResult.Selected) {
+                            onTagSelected(result.tag)
+                        }
+                    }
+                },
+                label = { Text("Tags") },
+                trailingIcon = { Icon(Icons.Default.ArrowDropDown, null) },
+            )
+        }
+        items(selectedTags.size, key = { selectedTags[it].id }) { index ->
+            val item = selectedTags[index]
+            FilterChip(
+                modifier = Modifier.animateItemPlacement(),
+                selected = false,
+                onClick = { onTagRemoved(item) },
+                label = { Text(item.name) },
+                trailingIcon = { Icon(Icons.Default.Close, null) },
+            )
+        }
+    }
+}
+
+private val bookmarkCategories =
+    BookmarkCategory.entries.toImmutableList()
 
 @Composable
 private fun BookmarkCategoryFilter(

@@ -24,15 +24,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import com.slack.circuit.overlay.OverlayHost
-import com.slack.circuitx.overlays.BottomSheetOverlay
 import dev.avatsav.linkding.data.model.Bookmark
 import dev.avatsav.linkding.ui.bookmarks.widgets.BookmarkContent
+import dev.avatsav.linkding.ui.compose.widgets.BottomSheetOverlay
 
 suspend fun OverlayHost.showDeleteBookmarkAction(bookmark: Bookmark): ActionResult {
     return show(
         BottomSheetOverlay(
             model = bookmark,
-            sheetShape = RoundedCornerShape(topEnd = 16.dp, topStart = 16.dp),
+            sheetShape = RoundedCornerShape(topEnd = 32.dp, topStart = 32.dp),
             onDismiss = { ActionResult.Dismissed },
         ) { toDelete, overlayNavigator ->
             DeleteBookmarkActionSheet(
@@ -48,6 +48,7 @@ suspend fun OverlayHost.showArchiveBookmarkAction(bookmark: Bookmark): ActionRes
     return show(
         BottomSheetOverlay(
             model = bookmark,
+            sheetShape = RoundedCornerShape(topEnd = 32.dp, topStart = 32.dp),
             onDismiss = { ActionResult.Dismissed },
         ) { toArchive, overlayNavigator ->
             ArchiveBookmarkActionSheet(

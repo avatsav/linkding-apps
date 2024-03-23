@@ -8,12 +8,16 @@ import com.slack.circuit.runtime.CircuitUiEvent
 import com.slack.circuit.runtime.CircuitUiState
 import dev.avatsav.linkding.data.model.Bookmark
 import dev.avatsav.linkding.data.model.BookmarkCategory
+import dev.avatsav.linkding.data.model.Tag
+import kotlinx.collections.immutable.ImmutableList
 
 @Immutable
 @OptIn(ExperimentalMaterial3Api::class)
 data class BookmarksUiState(
     val bookmarkCategory: BookmarkCategory,
     val bookmarks: LazyPagingItems<Bookmark>,
+    val tags: ImmutableList<Tag>,
+    val selectedTags: List<Tag>,
     val pullToRefreshState: PullToRefreshState,
     val isOnline: Boolean,
     val eventSink: (BookmarksUiEvent) -> Unit,
@@ -26,4 +30,6 @@ sealed interface BookmarksUiEvent : CircuitUiEvent {
     data class SetBookmarkCategory(val bookmarkCategory: BookmarkCategory) : BookmarksUiEvent
     data object AddBookmark : BookmarksUiEvent
     data object ShowSettings : BookmarksUiEvent
+    data class SelectTag(val tag: Tag) : BookmarksUiEvent
+    data class RemoveTag(val tag: Tag) : BookmarksUiEvent
 }

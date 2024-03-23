@@ -6,6 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -20,6 +21,7 @@ import com.slack.circuit.runtime.internal.rememberStableCoroutineScope
 import com.slack.circuit.runtime.presenter.Presenter
 import com.slack.circuit.runtime.screen.Screen
 import dev.avatsav.linkding.data.model.BookmarkCategory
+import dev.avatsav.linkding.data.model.Tag
 import dev.avatsav.linkding.domain.interactors.ArchiveBookmark
 import dev.avatsav.linkding.domain.interactors.DeleteBookmark
 import dev.avatsav.linkding.domain.interactors.UnarchiveBookmark
@@ -32,9 +34,13 @@ import dev.avatsav.linkding.ui.UrlScreen
 import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.AddBookmark
 import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.Delete
 import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.Open
+import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.RemoveTag
+import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.SelectTag
+import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.SetBookmarkCategory
 import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.ShowSettings
 import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.ToggleArchive
 import dev.avatsav.linkding.ui.compose.extensions.rememberCachedPagingFlow
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.launch
 import me.tatarka.inject.annotations.Assisted
 import me.tatarka.inject.annotations.Inject
@@ -78,6 +84,8 @@ class BookmarksPresenter(
 
         var bookmarkCategory by remember { mutableStateOf(BookmarkCategory.All) }
 
+        val selectedTags = remember { mutableStateListOf<Tag>() }
+
         val pullToRefreshState = rememberPullToRefreshState()
 
         LaunchedEffect(pullToRefreshState.isRefreshing) {
@@ -108,6 +116,8 @@ class BookmarksPresenter(
         return BookmarksUiState(
             bookmarkCategory = bookmarkCategory,
             bookmarks = bookmarks,
+            tags = tags,
+            selectedTags = selectedTags,
             isOnline = isOnline,
             pullToRefreshState = pullToRefreshState,
         ) { event ->
@@ -125,13 +135,26 @@ class BookmarksPresenter(
                 }
 
                 is Open -> navigator.goTo(UrlScreen(event.bookmark.url))
-                is BookmarksUiEvent.SetBookmarkCategory -> {
+                is SetBookmarkCategory -> {
                     bookmarkCategory = event.bookmarkCategory
                 }
 
                 AddBookmark -> navigator.goTo(AddBookmarkScreen())
                 ShowSettings -> navigator.goTo(SettingsScreen)
+                is RemoveTag -> selectedTags.remove(event.tag)
+                is SelectTag -> selectedTags.add(event.tag)
             }
         }
     }
 }
+
+private val tags = mutableListOf<Tag>().also { tags ->
+    repeat(50) {
+        tags.add(
+            Tag(
+                id = it.toLong() + 1,
+                name = "Tag ${it + 1}",
+            ),
+        )
+    }
+}.toImmutableList()
