@@ -33,7 +33,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SearchBar
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshContainer
 import androidx.compose.material3.surfaceColorAtElevation
@@ -70,6 +69,7 @@ import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.SetBookmarkCategory
 import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.ShowSettings
 import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.ToggleArchive
 import dev.avatsav.linkding.ui.bookmarks.widgets.BookmarkListItem
+import dev.avatsav.linkding.ui.compose.widgets.TagInputChip
 import dev.avatsav.linkding.ui.mapToTag
 import dev.avatsav.linkding.ui.tags.showTagsBottomSheet
 import kotlinx.collections.immutable.toImmutableList
@@ -260,14 +260,16 @@ fun FiltersBar(
         contentPadding = PaddingValues(horizontal = 16.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        item {
+        item(selectedCategory) {
             BookmarkCategoryFilter(
+                modifier = Modifier.animateItemPlacement(),
                 selected = selectedCategory,
                 onSelected = onCategorySelected,
             )
         }
         item {
             FilterChip(
+                modifier = Modifier.animateItemPlacement(),
                 selected = true,
                 onClick = {
                     scope.launch {
@@ -283,12 +285,10 @@ fun FiltersBar(
         }
         items(selectedTags.size, key = { selectedTags[it].id }) { index ->
             val item = selectedTags[index]
-            FilterChip(
+            TagInputChip(
                 modifier = Modifier.animateItemPlacement(),
-                selected = false,
                 onClick = { onTagRemoved(item) },
                 label = { Text(item.name) },
-                trailingIcon = { Icon(Icons.Default.Close, null) },
             )
         }
     }
@@ -298,31 +298,31 @@ private val bookmarkCategories = BookmarkCategory.entries.toImmutableList()
 
 @Composable
 private fun BookmarkCategoryFilter(
+    modifier: Modifier = Modifier,
     selected: BookmarkCategory,
     onSelected: (BookmarkCategory) -> Unit,
-    modifier: Modifier = Modifier,
 ) {
     var showMenu by remember { mutableStateOf(false) }
-    Surface(modifier) {
-        FilterChip(
-            selected = true,
-            onClick = { showMenu = showMenu.not() },
-            label = { Text(selected.name) },
-            trailingIcon = { Icon(Icons.Default.ArrowDropDown, null) },
-        )
-        DropdownMenu(
-            expanded = showMenu,
-            onDismissRequest = { showMenu = false },
-        ) {
-            bookmarkCategories.forEach { category ->
-                DropdownMenuItem(
-                    onClick = {
-                        onSelected(category)
-                        showMenu = false
-                    },
-                    text = { Text(category.name) },
-                )
-            }
+
+    FilterChip(
+        modifier = modifier,
+        selected = true,
+        onClick = { showMenu = showMenu.not() },
+        label = { Text(selected.name) },
+        trailingIcon = { Icon(Icons.Default.ArrowDropDown, null) },
+    )
+    DropdownMenu(
+        expanded = showMenu,
+        onDismissRequest = { showMenu = false },
+    ) {
+        bookmarkCategories.forEach { category ->
+            DropdownMenuItem(
+                onClick = {
+                    onSelected(category)
+                    showMenu = false
+                },
+                text = { Text(category.name) },
+            )
         }
     }
 }

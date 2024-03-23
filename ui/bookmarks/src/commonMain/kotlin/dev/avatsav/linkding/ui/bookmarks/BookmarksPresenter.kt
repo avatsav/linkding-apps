@@ -8,13 +8,13 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import app.cash.paging.LoadStateError
 import app.cash.paging.LoadStateLoading
 import app.cash.paging.LoadStateNotLoading
 import app.cash.paging.PagingConfig
 import app.cash.paging.compose.collectAsLazyPagingItems
+import com.slack.circuit.retained.rememberRetained
 import com.slack.circuit.runtime.CircuitContext
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.internal.rememberStableCoroutineScope
@@ -81,9 +81,9 @@ class BookmarksPresenter(
         val isOnline by connectivityObserver.observeIsOnline
             .collectAsState()
 
-        var bookmarkCategory by remember { mutableStateOf(BookmarkCategory.All) }
+        var bookmarkCategory by rememberRetained { mutableStateOf(BookmarkCategory.All) }
 
-        val selectedTags = remember { mutableStateListOf<Tag>() }
+        val selectedTags = rememberRetained { mutableStateListOf<Tag>() }
 
         val pullToRefreshState = rememberPullToRefreshState()
 
@@ -140,7 +140,11 @@ class BookmarksPresenter(
                 AddBookmark -> navigator.goTo(AddBookmarkScreen())
                 ShowSettings -> navigator.goTo(SettingsScreen)
                 is RemoveTag -> selectedTags.remove(event.tag)
-                is SelectTag -> selectedTags.add(event.tag)
+                is SelectTag -> {
+                    if (!selectedTags.contains(event.tag)) {
+                        selectedTags.add(0, event.tag)
+                    }
+                }
             }
         }
     }
