@@ -21,15 +21,13 @@ import kotlinx.coroutines.withContext
 import me.tatarka.inject.annotations.Assisted
 import me.tatarka.inject.annotations.Inject
 
-typealias BookmarksRemoteMediatorFactory = (String, BookmarkCategory) -> BookmarksRemoteMediator
+typealias BookmarksRemoteMediatorFactory = (BookmarkCategory) -> BookmarksRemoteMediator
 
 @OptIn(ExperimentalPagingApi::class)
 @Inject
 class BookmarksRemoteMediator(
-    @Assisted private val query: String,
     @Assisted private val category: BookmarkCategory,
     private val apiProvider: Lazy<LinkdingApiProvider>,
-
     private val bookmarksDao: PagingBookmarksDao,
     private val dispatchers: AppCoroutineDispatchers,
     private val bookmarkMapper: BookmarkMapper,
@@ -51,11 +49,10 @@ class BookmarksRemoteMediator(
                 bookmarksDao.countBookmarks().toInt()
             }
         }
-        return@withContext apiProvider.value.bookmarksApi.getBookmarks(
-            offset,
-            state.config.pageSize,
-            query,
-            category.toLinkding(),
+        apiProvider.value.bookmarksApi.getBookmarks(
+            offset = offset,
+            limit = state.config.pageSize,
+            category = category.toLinkding(),
         ).mapEither(
             success = bookmarkMapper::map,
             failure = errorMapper::map,

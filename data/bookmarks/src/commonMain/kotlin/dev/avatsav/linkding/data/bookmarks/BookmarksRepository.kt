@@ -1,5 +1,6 @@
 package dev.avatsav.linkding.data.bookmarks
 
+import app.cash.paging.Pager
 import app.cash.paging.PagingConfig
 import app.cash.paging.PagingData
 import com.github.michaelbull.result.Result
@@ -24,6 +25,7 @@ class BookmarksRepository(
     private val apiProvider: Lazy<LinkdingApiProvider>,
     private val bookmarksDao: BookmarksDao,
     private val bookmarksPagingDataFactory: BookmarksPagingDataFactory,
+    private val searchBookmarksPagingSourceFactory: SearchBookmarksPagingSourceFactory,
     private val bookmarkMapper: BookmarkMapper,
     private val checkUrlMapper: CheckUrlResultMapper,
     private val errorMapper: BookmarkErrorMapper,
@@ -31,10 +33,19 @@ class BookmarksRepository(
 
     fun getBookmarksPaged(
         pagingConfig: PagingConfig,
-        query: String = "",
         category: BookmarkCategory = BookmarkCategory.All,
     ): Flow<PagingData<Bookmark>> {
-        return bookmarksPagingDataFactory.create(pagingConfig, query, category)
+        return bookmarksPagingDataFactory.create(pagingConfig, category)
+    }
+
+    fun searchBookmarks(
+        pagingConfig: PagingConfig,
+        query: String = "",
+    ): Flow<PagingData<Bookmark>> {
+        return Pager(
+            config = pagingConfig,
+            pagingSourceFactory = { searchBookmarksPagingSourceFactory(query) },
+        ).flow
     }
 
     suspend fun checkUrl(url: String): Result<CheckUrlResult, BookmarkError> {

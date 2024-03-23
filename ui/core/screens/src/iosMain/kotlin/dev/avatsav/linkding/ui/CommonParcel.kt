@@ -11,3 +11,5 @@ package dev.avatsav.linkding.ui
 actual annotation class CommonParcelize actual constructor()
 
 actual interface CommonParceler<T>
+
+actual interface CommonParcelable

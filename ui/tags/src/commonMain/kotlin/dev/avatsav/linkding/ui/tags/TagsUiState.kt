@@ -1,18 +1,19 @@
 package dev.avatsav.linkding.ui.tags
 
 import androidx.compose.runtime.Immutable
+import app.cash.paging.compose.LazyPagingItems
 import com.slack.circuit.runtime.CircuitUiEvent
 import com.slack.circuit.runtime.CircuitUiState
-import kotlinx.collections.immutable.ImmutableList
+import dev.avatsav.linkding.data.model.Tag
 
 @Immutable
 data class TagsUiState(
-    val selectedTags: List<String>,
-    val tags: ImmutableList<String>,
+    val selectedTags: List<Tag>,
+    val tags: LazyPagingItems<Tag>,
     val eventSink: (TagsUiEvent) -> Unit,
 ) : CircuitUiState
 
 sealed interface TagsUiEvent : CircuitUiEvent {
-    data class SelectTag(val tag: String) : TagsUiEvent
+    data class SelectTag(val tag: Tag) : TagsUiEvent
     data object Close : TagsUiEvent
 }

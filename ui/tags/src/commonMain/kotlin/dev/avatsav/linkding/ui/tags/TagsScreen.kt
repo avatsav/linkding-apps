@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Tag
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -76,13 +77,15 @@ fun Tags(
         },
     ) { padding ->
         LazyColumn(modifier = Modifier.padding(padding)) {
-            items(state.tags.size) { index ->
+            items(state.tags.itemCount) { index ->
                 val tag = state.tags[index]
-                ListItem(
-                    modifier = Modifier.clickable { eventSink(TagsUiEvent.SelectTag(tag)) },
-                    headlineContent = { Text(tag) },
-                    leadingContent = { Text("#") },
-                )
+                if (tag != null) {
+                    ListItem(
+                        modifier = Modifier.clickable { eventSink(TagsUiEvent.SelectTag(tag)) },
+                        headlineContent = { Text(tag.name) },
+                        leadingContent = { Icon(Icons.Default.Tag, null) },
+                    )
+                }
             }
         }
     }

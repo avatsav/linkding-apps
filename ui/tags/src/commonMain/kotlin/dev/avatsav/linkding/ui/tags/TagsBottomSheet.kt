@@ -5,26 +5,28 @@ import com.slack.circuit.foundation.NavEvent
 import com.slack.circuit.overlay.OverlayHost
 import dev.avatsav.linkding.data.model.Tag
 import dev.avatsav.linkding.ui.TagsScreen
+import dev.avatsav.linkding.ui.TagsScreenResult
 import dev.avatsav.linkding.ui.compose.widgets.BottomSheetOverlay
+import dev.avatsav.linkding.ui.mapToScreenParam
 
-suspend fun OverlayHost.showTagsBottomSheet(selectedTags: List<Tag>): TagsScreen.Result {
-    return show<TagsScreen.Result>(
+suspend fun OverlayHost.showTagsBottomSheet(selectedTags: List<Tag>): TagsScreenResult {
+    return show<TagsScreenResult>(
         BottomSheetOverlay(
             model = selectedTags,
-            onDismiss = { TagsScreen.Result.Dismissed },
+            onDismiss = { TagsScreenResult.Dismissed },
         ) { data, overlayNavigator ->
             CircuitContent(
-                screen = TagsScreen(data.map { it.name }),
+                screen = TagsScreen(data.map { it.mapToScreenParam() }),
                 onNavEvent = { event ->
                     when (event) {
                         is NavEvent.Pop -> {
                             overlayNavigator.finish(
-                                event.result as? TagsScreen.Result ?: TagsScreen.Result.Dismissed,
+                                event.result as? TagsScreenResult ?: TagsScreenResult.Dismissed,
                             )
                         }
 
                         else ->
-                            overlayNavigator.finish(TagsScreen.Result.Dismissed)
+                            overlayNavigator.finish(TagsScreenResult.Dismissed)
                     }
                 },
             )

@@ -19,12 +19,11 @@ class BookmarksPagingDataFactory(
     @OptIn(ExperimentalPagingApi::class)
     fun create(
         pagingConfig: PagingConfig,
-        query: String = "",
         category: BookmarkCategory = BookmarkCategory.All,
     ): Flow<PagingData<Bookmark>> {
         return Pager(
             config = pagingConfig,
-            remoteMediator = bookmarksRemoteMediatorFactory(query, category),
+            remoteMediator = bookmarksRemoteMediatorFactory(category),
             pagingSourceFactory = { pagingBookmarksDao.offsetPagingSource() },
         ).flow
     }

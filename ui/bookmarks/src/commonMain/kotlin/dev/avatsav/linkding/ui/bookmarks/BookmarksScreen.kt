@@ -60,7 +60,7 @@ import com.slack.circuit.runtime.ui.ui
 import dev.avatsav.linkding.data.model.BookmarkCategory
 import dev.avatsav.linkding.data.model.Tag
 import dev.avatsav.linkding.ui.BookmarksScreen
-import dev.avatsav.linkding.ui.TagsScreen
+import dev.avatsav.linkding.ui.TagsScreenResult
 import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.AddBookmark
 import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.Delete
 import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.Open
@@ -70,8 +70,8 @@ import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.SetBookmarkCategory
 import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.ShowSettings
 import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.ToggleArchive
 import dev.avatsav.linkding.ui.bookmarks.widgets.BookmarkListItem
+import dev.avatsav.linkding.ui.mapToTag
 import dev.avatsav.linkding.ui.tags.showTagsBottomSheet
-import kotlin.random.Random
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.launch
 import me.tatarka.inject.annotations.Inject
@@ -272,13 +272,8 @@ fun FiltersBar(
                 onClick = {
                     scope.launch {
                         when (val result = overlayHost.showTagsBottomSheet(selectedTags)) {
-                            TagsScreen.Result.Dismissed -> {}
-                            is TagsScreen.Result.Selected -> onTagSelected(
-                                Tag(
-                                    id = Random.nextLong(),
-                                    result.tag,
-                                ),
-                            )
+                            TagsScreenResult.Dismissed -> {}
+                            is TagsScreenResult.Selected -> onTagSelected(result.tag.mapToTag())
                         }
                     }
                 },

@@ -7,7 +7,7 @@ import io.ktor.http.path
 
 internal fun HttpRequestBuilder.endpointTags(vararg paths: String) {
     url {
-        path(buildPaths("api", "bookmarks", *paths))
+        path(buildPaths("api", "tags", *paths))
     }
 }
 
