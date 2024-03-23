@@ -1,6 +1,7 @@
 package dev.avatsav.linkding.ui.bookmarks
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -25,6 +26,7 @@ import com.slack.circuit.overlay.OverlayHost
 import dev.avatsav.linkding.data.model.Tag
 import dev.avatsav.linkding.ui.bookmarks.TagPickerResult.Dismissed
 import dev.avatsav.linkding.ui.compose.widgets.BottomSheetOverlay
+import dev.avatsav.linkding.ui.compose.widgets.none
 import kotlinx.collections.immutable.ImmutableList
 
 suspend fun OverlayHost.showTagPicker(tags: ImmutableList<Tag>): TagPickerResult {
@@ -62,6 +64,7 @@ fun TagsContent(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             TopAppBar(
+                windowInsets = WindowInsets.Companion.none,
                 title = { Text("Tags") },
                 navigationIcon = {
                     IconButton(onClick = { onClosed() }) {
