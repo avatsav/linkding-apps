@@ -6,19 +6,17 @@ plugins {
 kotlin {
     sourceSets {
         commonMain.dependencies {
-            api(projects.core.base)
-            api(projects.core.logging)
-            api(projects.data.models)
-
-            implementation(libs.kotlin.coroutines.core)
+            implementation(projects.core.base)
+            implementation(projects.core.logging)
             implementation(libs.kotlin.serialization.json)
             implementation(libs.kotlin.datetime)
-
             implementation(libs.ktor.client.core)
             implementation(libs.ktor.client.logging)
             implementation(libs.ktor.client.contentNegotiation)
             implementation(libs.ktor.serialization.json)
-            implementation(libs.kotlinResult)
+            api(projects.data.models)
+            api(libs.kotlin.coroutines.core)
+            api(libs.kotlinResult)
         }
         jvmMain.dependencies {
             implementation(libs.ktor.client.okhttp)

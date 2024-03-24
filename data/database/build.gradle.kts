@@ -7,20 +7,17 @@ plugins {
 kotlin {
     sourceSets {
         commonMain.dependencies {
-            api(libs.kotlin.coroutines.core)
-            api(projects.core.base)
-            api(projects.core.logging)
-            api(projects.data.models)
-
-            api(libs.kotlin.datetime)
-            api(libs.kotlin.atomicfu)
-            api(libs.kotlin.coroutines.core)
-
+            implementation(projects.core.base)
+            implementation(projects.core.logging)
+            implementation(libs.kotlin.atomicfu)
             implementation(libs.sqldelight.coroutines)
             implementation(libs.sqldelight.paging)
             implementation(libs.sqldelight.primitive)
-
-            implementation(libs.kotlin.inject.runtime)
+            api(projects.data.models)
+            api(libs.kotlin.datetime)
+            api(libs.kotlin.coroutines.core)
+            api(libs.kotlin.inject.runtime)
+            api(libs.paging.common)
         }
         androidMain.dependencies {
             implementation(libs.sqldelight.android)

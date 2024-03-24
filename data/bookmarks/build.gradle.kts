@@ -5,11 +5,14 @@ plugins {
 kotlin {
     sourceSets {
         commonMain.dependencies {
-            api(projects.data.models)
+            implementation(projects.core.base)
+            implementation(projects.core.logging)
             implementation(projects.linkding.bind)
             implementation(projects.data.database)
-            implementation(libs.kotlinResult)
-            implementation(libs.paging.common)
+            implementation(libs.ktor.client.core)
+            api(projects.data.models)
+            api(libs.kotlinResult)
+            api(libs.paging.common)
         }
     }
 }

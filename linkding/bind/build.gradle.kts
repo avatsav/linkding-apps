@@ -5,15 +5,13 @@ plugins {
 kotlin {
     sourceSets {
         commonMain.dependencies {
-            api(projects.core.base)
-            api(projects.core.logging)
-            api(projects.core.preferences)
+            implementation(projects.core.base)
+            implementation(projects.core.logging)
+            implementation(projects.core.preferences)
+            implementation(projects.data.models)
+            implementation(libs.ktor.client.core)
+            implementation(libs.ktor.client.logging)
             api(projects.linkding.api)
-            api(projects.data.models)
-            api(libs.kotlin.coroutines.core)
-
-            api(libs.ktor.client.core)
-            api(libs.ktor.client.logging)
         }
 
         jvmMain.dependencies {
