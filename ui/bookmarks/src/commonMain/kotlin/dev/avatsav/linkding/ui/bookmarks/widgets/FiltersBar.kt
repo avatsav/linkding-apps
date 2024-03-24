@@ -18,6 +18,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import com.slack.circuit.overlay.LocalOverlayHost
 import dev.avatsav.linkding.data.model.BookmarkCategory
@@ -99,6 +100,7 @@ private fun CategoryFilter(
         trailingIcon = { Icon(Icons.Default.ArrowDropDown, null) },
     )
     DropdownMenu(
+        offset = DpOffset(16.dp, 0.dp),
         expanded = showMenu,
         onDismissRequest = { showMenu = false },
     ) {
