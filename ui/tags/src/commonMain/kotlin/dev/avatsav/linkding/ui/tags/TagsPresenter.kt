@@ -14,8 +14,6 @@ import dev.avatsav.linkding.domain.observers.ObserveTags
 import dev.avatsav.linkding.ui.TagsScreen
 import dev.avatsav.linkding.ui.TagsScreenResult
 import dev.avatsav.linkding.ui.compose.rememberCachedPagingFlow
-import dev.avatsav.linkding.ui.mapToScreenParam
-import dev.avatsav.linkding.ui.mapToTag
 import dev.avatsav.linkding.ui.tags.TagsUiEvent.Close
 import dev.avatsav.linkding.ui.tags.TagsUiEvent.SelectTag
 import me.tatarka.inject.annotations.Assisted

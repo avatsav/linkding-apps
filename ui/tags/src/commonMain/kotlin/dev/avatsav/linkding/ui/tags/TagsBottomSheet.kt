@@ -7,7 +7,6 @@ import dev.avatsav.linkding.data.model.Tag
 import dev.avatsav.linkding.ui.TagsScreen
 import dev.avatsav.linkding.ui.TagsScreenResult
 import dev.avatsav.linkding.ui.compose.widgets.BottomSheetOverlay
-import dev.avatsav.linkding.ui.mapToScreenParam
 
 suspend fun OverlayHost.showTagsBottomSheet(selectedTags: List<Tag>): TagsScreenResult {
     return show<TagsScreenResult>(

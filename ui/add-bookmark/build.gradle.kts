@@ -12,22 +12,17 @@ kotlin {
             implementation(projects.core.base)
             implementation(projects.core.logging)
             implementation(projects.domain)
-            api(projects.data.models)
-            api(projects.ui.core.theme)
-            api(projects.ui.core.screens)
-            api(projects.ui.core.compose)
-            api(libs.circuit.foundation)
-            api(libs.circuit.retained)
-            api(libs.kotlinResult)
-            api(libs.kotlinResultCoroutines)
-
+            implementation(projects.ui.core.compose)
             implementation(compose.foundation)
             implementation(compose.material3)
-            implementation(compose.components.resources)
+            implementation(libs.circuit.retained)
+            api(projects.ui.core.theme)
+            api(projects.ui.core.screens)
+            api(libs.circuit.foundation)
         }
         androidMain.dependencies {
-            api(compose.preview)
-            api(compose.uiTooling)
+            implementation(compose.preview)
+            implementation(compose.uiTooling)
         }
     }
 }

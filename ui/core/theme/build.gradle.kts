@@ -12,7 +12,6 @@ kotlin {
         commonMain.dependencies {
             api(compose.foundation)
             api(compose.material3)
-            api(libs.circuit.runtime)
         }
     }
 }
