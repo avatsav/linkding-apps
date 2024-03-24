@@ -8,16 +8,10 @@ import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.InputChip
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextFieldDefaults
@@ -44,7 +38,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
-import dev.avatsav.linkding.ui.compose.extensions.onCondition
+import dev.avatsav.linkding.ui.compose.onCondition
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -123,21 +117,10 @@ private fun OutlinedTagsTextField(
         ) {
             repeat(tagsValue.tags.size) {
                 val tag = tagsValue.tags[it]
-                InputChip(
-                    selected = false,
-                    onClick = { /*TODO*/ },
+                TagInputChip(
+                    modifier = modifier,
                     label = { Text(tag.value) },
-                    trailingIcon = {
-                        IconButton(
-                            modifier = Modifier.size(12.dp),
-                            onClick = { tagsValue.removeTag(tag) },
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.Close,
-                                contentDescription = "Remove tag ${tag.value}",
-                            )
-                        }
-                    },
+                    onClick = { tagsValue.removeTag(tag) },
                 )
             }
             BasicTextField(

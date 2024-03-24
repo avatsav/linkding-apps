@@ -1,5 +1,7 @@
 package dev.avatsav.linkding.ui
 
+import java.io.Serializable
+
 /**
  * https://medium.com/@chrisathanas/how-to-use-parcels-on-kotlin-multiplatform-mobile-kmm-e29590816624
  * https://github.com/realityexpander/NoteAppKMM/
@@ -11,3 +13,5 @@ package dev.avatsav.linkding.ui
 actual annotation class CommonParcelize actual constructor()
 
 actual interface CommonParceler<T>
+
+actual interface CommonParcelable : Serializable

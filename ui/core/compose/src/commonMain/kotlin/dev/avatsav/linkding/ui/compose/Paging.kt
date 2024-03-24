@@ -1,7 +1,7 @@
 // Copyright 2021, Google LLC, Christopher Banes and the Tivi project contributors
 // SPDX-License-Identifier: Apache-2.0
 
-package dev.avatsav.linkding.ui.compose.extensions
+package dev.avatsav.linkding.ui.compose
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember

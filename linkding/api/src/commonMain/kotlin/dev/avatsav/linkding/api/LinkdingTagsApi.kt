@@ -8,6 +8,6 @@ interface LinkdingTagsApi {
     suspend fun getTags(
         offset: Int,
         limit: Int,
-        query: String,
+        query: String = "",
     ): Result<LinkdingTagsResponse, LinkdingError>
 }

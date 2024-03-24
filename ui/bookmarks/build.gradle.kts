@@ -13,11 +13,13 @@ kotlin {
             implementation(projects.core.logging)
             implementation(projects.core.connectivity)
             implementation(projects.domain)
-            api(projects.data.models)
+            implementation(projects.data.models)
 
-            api(projects.ui.core.theme)
-            api(projects.ui.core.screens)
-            api(projects.ui.core.compose)
+            implementation(projects.ui.core.theme)
+            implementation(projects.ui.core.screens)
+            implementation(projects.ui.core.compose)
+            implementation(projects.ui.tags)
+
             api(libs.circuit.foundation)
             api(libs.circuit.retained)
             api(libs.circuitx.overlays)

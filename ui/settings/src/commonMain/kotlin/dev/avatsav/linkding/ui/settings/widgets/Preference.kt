@@ -42,7 +42,7 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import dev.avatsav.linkding.data.model.prefs.AppTheme
-import dev.avatsav.linkding.ui.compose.extensions.onCondition
+import dev.avatsav.linkding.ui.compose.onCondition
 
 @Composable
 fun PreferenceColumnScope.SwitchPreference(

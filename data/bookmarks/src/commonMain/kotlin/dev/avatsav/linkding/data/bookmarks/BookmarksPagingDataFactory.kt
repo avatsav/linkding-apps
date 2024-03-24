@@ -7,6 +7,7 @@ import app.cash.paging.PagingData
 import dev.avatsav.linkding.data.db.daos.PagingBookmarksDao
 import dev.avatsav.linkding.data.model.Bookmark
 import dev.avatsav.linkding.data.model.BookmarkCategory
+import dev.avatsav.linkding.data.model.Tag
 import kotlinx.coroutines.flow.Flow
 import me.tatarka.inject.annotations.Inject
 
@@ -17,14 +18,14 @@ class BookmarksPagingDataFactory(
 ) {
 
     @OptIn(ExperimentalPagingApi::class)
-    fun create(
+    operator fun invoke(
         pagingConfig: PagingConfig,
-        query: String = "",
         category: BookmarkCategory = BookmarkCategory.All,
+        selectedTags: List<Tag> = emptyList(),
     ): Flow<PagingData<Bookmark>> {
         return Pager(
             config = pagingConfig,
-            remoteMediator = bookmarksRemoteMediatorFactory(query, category),
+            remoteMediator = bookmarksRemoteMediatorFactory(category, selectedTags),
             pagingSourceFactory = { pagingBookmarksDao.offsetPagingSource() },
         ).flow
     }

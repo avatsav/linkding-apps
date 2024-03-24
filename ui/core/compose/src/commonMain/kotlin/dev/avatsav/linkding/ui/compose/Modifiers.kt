@@ -1,4 +1,4 @@
-package dev.avatsav.linkding.ui.compose.extensions
+package dev.avatsav.linkding.ui.compose
 
 import androidx.compose.runtime.State
 import androidx.compose.ui.Modifier
