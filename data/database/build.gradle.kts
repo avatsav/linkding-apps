@@ -27,7 +27,7 @@ kotlin {
         }
         iosMain.dependencies {
             // Required for iOS build: https://github.com/cashapp/sqldelight/issues/4888#issuecomment-1846036472
-            val statelyVersion = "2.0.6"
+            val statelyVersion = "2.0.7"
             implementation("co.touchlab:stately-common:$statelyVersion")
             implementation("co.touchlab:stately-isolate:$statelyVersion")
             implementation("co.touchlab:stately-iso-collections:$statelyVersion")
