@@ -2,7 +2,6 @@ package dev.avatsav.linkding.ui
 
 import com.slack.circuit.runtime.screen.PopResult
 import com.slack.circuit.runtime.screen.Screen
-import dev.avatsav.linkding.data.model.Tag
 
 abstract class LinkdingScreen(val name: String) : Screen
 
@@ -36,12 +35,4 @@ sealed interface TagsScreenResult : PopResult {
 
     @CommonParcelize
     data object Dismissed : TagsScreenResult
-}
-
-fun Tag.mapToScreenParam(): TagsScreenParam {
-    return TagsScreenParam(id, name)
-}
-
-fun TagsScreenParam.mapToTag(): Tag {
-    return Tag(id, name)
 }

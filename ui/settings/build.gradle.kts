@@ -13,26 +13,20 @@ kotlin {
             implementation(projects.core.logging)
             implementation(projects.core.preferences)
             implementation(projects.domain)
-            api(projects.data.models)
-
-            api(projects.ui.core.theme)
-            api(projects.ui.core.compose)
-            api(projects.ui.core.screens)
-            api(libs.circuit.foundation)
-            api(libs.circuit.retained)
-            api(libs.circuit.overlay)
-            api(libs.circuitx.overlays)
-            api(libs.kotlinResult)
-            api(libs.kotlinResultCoroutines)
-
+            implementation(projects.ui.core.compose)
             implementation(compose.foundation)
             implementation(compose.material3)
             implementation(compose.materialIconsExtended)
-            implementation(compose.components.resources)
+            implementation(libs.circuit.retained)
+            implementation(libs.circuit.overlay)
+            implementation(libs.circuitx.overlays)
+            api(projects.ui.core.theme)
+            api(projects.ui.core.screens)
+            api(libs.circuit.foundation)
         }
         androidMain.dependencies {
-            api(compose.preview)
-            api(compose.uiTooling)
+            implementation(compose.preview)
+            implementation(compose.uiTooling)
         }
     }
 }

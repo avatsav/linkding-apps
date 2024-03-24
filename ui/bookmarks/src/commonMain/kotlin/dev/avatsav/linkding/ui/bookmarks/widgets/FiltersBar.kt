@@ -25,7 +25,7 @@ import dev.avatsav.linkding.data.model.BookmarkCategory
 import dev.avatsav.linkding.data.model.Tag
 import dev.avatsav.linkding.ui.TagsScreenResult
 import dev.avatsav.linkding.ui.compose.widgets.TagInputChip
-import dev.avatsav.linkding.ui.mapToTag
+import dev.avatsav.linkding.ui.tags.mapToTag
 import dev.avatsav.linkding.ui.tags.showTagsBottomSheet
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.launch

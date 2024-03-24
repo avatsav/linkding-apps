@@ -7,15 +7,13 @@ kotlin {
         commonMain.dependencies {
             implementation(projects.core.base)
             implementation(projects.core.logging)
-            implementation(projects.data.models)
-            api(projects.data.bookmarks)
-            api(projects.data.database)
-
-            implementation(libs.paging.common)
+            implementation(projects.data.database)
+            implementation(projects.data.bookmarks)
             implementation(libs.kotlin.atomicfu)
-            implementation(libs.paging.common)
-            implementation(libs.kotlinResult)
             implementation(libs.kotlinResultCoroutines)
+            api(projects.data.models)
+            api(libs.kotlinResult)
+            api(libs.paging.common)
         }
     }
 }

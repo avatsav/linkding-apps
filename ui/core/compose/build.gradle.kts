@@ -11,15 +11,14 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             implementation(projects.ui.core.theme)
-            api(projects.core.logging)
+            implementation(projects.core.logging)
             api(libs.paging.compose)
-
             api(libs.circuit.foundation)
             api(libs.circuit.overlay)
         }
         androidMain.dependencies {
-            api(compose.preview)
-            api(compose.uiTooling)
+            implementation(compose.preview)
+            implementation(compose.uiTooling)
         }
     }
 }
