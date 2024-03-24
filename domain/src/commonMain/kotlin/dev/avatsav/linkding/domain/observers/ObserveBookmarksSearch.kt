@@ -22,7 +22,7 @@ class ObserveBookmarksSearch(private val repository: BookmarksRepository) :
     }
 
     data class Param(
-        val query: String = "",
+        val query: String,
         override val pagingConfig: PagingConfig,
     ) : PagedObserver.Param<Bookmark>
 }

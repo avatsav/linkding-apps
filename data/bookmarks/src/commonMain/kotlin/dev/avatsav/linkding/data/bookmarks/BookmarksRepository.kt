@@ -17,6 +17,7 @@ import dev.avatsav.linkding.data.model.BookmarkCategory
 import dev.avatsav.linkding.data.model.BookmarkError
 import dev.avatsav.linkding.data.model.CheckUrlResult
 import dev.avatsav.linkding.data.model.SaveBookmark
+import dev.avatsav.linkding.data.model.Tag
 import kotlinx.coroutines.flow.Flow
 import me.tatarka.inject.annotations.Inject
 
@@ -33,14 +34,15 @@ class BookmarksRepository(
 
     fun getBookmarksPaged(
         pagingConfig: PagingConfig,
-        category: BookmarkCategory = BookmarkCategory.All,
+        category: BookmarkCategory,
+        selectedTags: List<Tag>,
     ): Flow<PagingData<Bookmark>> {
-        return bookmarksPagingDataFactory.create(pagingConfig, category)
+        return bookmarksPagingDataFactory(pagingConfig, category, selectedTags)
     }
 
     fun searchBookmarks(
         pagingConfig: PagingConfig,
-        query: String = "",
+        query: String,
     ): Flow<PagingData<Bookmark>> {
         return Pager(
             config = pagingConfig,

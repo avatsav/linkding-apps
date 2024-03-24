@@ -100,10 +100,11 @@ class BookmarksPresenter(
             }
         }
 
-        LaunchedEffect(bookmarkCategory) {
+        LaunchedEffect(bookmarkCategory, selectedTags.size) {
             observeBookmarks(
                 ObserveBookmarks.Param(
                     bookmarkCategory,
+                    selectedTags,
                     PagingConfig(
                         initialLoadSize = 20,
                         pageSize = 20,
