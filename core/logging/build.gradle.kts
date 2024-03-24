@@ -5,11 +5,9 @@ plugins {
 kotlin {
     sourceSets {
         commonMain.dependencies {
-            api(libs.kotlin.coroutines.core)
-            api(projects.core.base)
-
-            implementation(libs.kotlin.inject.runtime)
+            implementation(projects.core.base)
             implementation(libs.kermit)
+            api(libs.kotlin.inject.runtime)
         }
     }
 }

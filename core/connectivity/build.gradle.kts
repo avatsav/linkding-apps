@@ -6,14 +6,13 @@ plugins {
 kotlin {
     sourceSets {
         commonMain.dependencies {
+            implementation(projects.core.base)
+            implementation(projects.core.logging)
+            api(libs.kotlin.inject.runtime)
             api(libs.kotlin.coroutines.core)
-            api(projects.core.base)
-            api(projects.core.logging)
-
-            implementation(libs.kotlin.inject.runtime)
         }
         androidMain.dependencies {
-            api(libs.androidx.core)
+            implementation(libs.androidx.core)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
