@@ -1,6 +1,5 @@
 package dev.avatsav.linkding.data.bookmarks
 
-import app.cash.paging.Pager
 import app.cash.paging.PagingConfig
 import app.cash.paging.PagingData
 import com.github.michaelbull.result.Result
@@ -17,7 +16,6 @@ import dev.avatsav.linkding.data.model.BookmarkCategory
 import dev.avatsav.linkding.data.model.BookmarkError
 import dev.avatsav.linkding.data.model.CheckUrlResult
 import dev.avatsav.linkding.data.model.SaveBookmark
-import dev.avatsav.linkding.data.model.Tag
 import kotlinx.coroutines.flow.Flow
 import me.tatarka.inject.annotations.Inject
 
@@ -26,28 +24,23 @@ class BookmarksRepository(
     private val apiProvider: Lazy<LinkdingApiProvider>,
     private val bookmarksDao: BookmarksDao,
     private val bookmarksPagingDataFactory: BookmarksPagingDataFactory,
-    private val searchBookmarksPagingSourceFactory: SearchBookmarksPagingSourceFactory,
     private val bookmarkMapper: BookmarkMapper,
     private val checkUrlMapper: CheckUrlResultMapper,
     private val errorMapper: BookmarkErrorMapper,
 ) {
 
     fun getBookmarksPaged(
-        pagingConfig: PagingConfig,
-        category: BookmarkCategory,
-        selectedTags: List<Tag>,
-    ): Flow<PagingData<Bookmark>> {
-        return bookmarksPagingDataFactory(pagingConfig, category, selectedTags)
-    }
-
-    fun searchBookmarks(
+        cached: Boolean,
         pagingConfig: PagingConfig,
         query: String,
+        category: BookmarkCategory,
+        tags: List<String>,
     ): Flow<PagingData<Bookmark>> {
-        return Pager(
-            config = pagingConfig,
-            pagingSourceFactory = { searchBookmarksPagingSourceFactory(query) },
-        ).flow
+        return bookmarksPagingDataFactory.create(
+            cached = cached,
+            pagingConfig = pagingConfig,
+            param = BookmarksPagingDataFactory.Param(query, category, tags),
+        )
     }
 
     suspend fun checkUrl(url: String): Result<CheckUrlResult, BookmarkError> {

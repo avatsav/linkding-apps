@@ -1,6 +1,8 @@
 package dev.avatsav.linkding.api.extensions
 
 import dev.avatsav.linkding.api.models.LinkdingBookmarkCategory
+import dev.avatsav.linkding.api.models.LinkdingBookmarkCategory.Unread
+import dev.avatsav.linkding.api.models.LinkdingBookmarkCategory.Untagged
 import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.parameter
 import io.ktor.http.path
@@ -26,11 +28,23 @@ internal fun HttpRequestBuilder.parameterQuery(query: String) {
     parameter("q", query)
 }
 
-internal fun HttpRequestBuilder.parameterQueryWithFilter(
+internal fun HttpRequestBuilder.parameterQuery(
     query: String,
-    filter: LinkdingBookmarkCategory,
+    category: LinkdingBookmarkCategory,
+    tags: List<String>,
 ) {
-    parameter("q", filter.categoryQuery + query)
+    val constructedQuery = buildString {
+        append("$query ")
+        append(tags.joinToString(separator = " ") { "#$it" })
+        when (category) {
+            Unread -> append("!unread ")
+            Untagged -> append("!untagged ")
+            else -> {}
+        }
+    }.trim()
+    if (constructedQuery.isNotBlank()) {
+        parameter("q", constructedQuery)
+    }
 }
 
 /**

@@ -16,15 +16,19 @@ class ObserveBookmarks(private val repository: BookmarksRepository) :
 
     override fun createObservable(params: Param): Flow<PagingData<Bookmark>> {
         return repository.getBookmarksPaged(
+            cached = params.cached,
             pagingConfig = params.pagingConfig,
-            category = params.bookmarkCategory,
-            selectedTags = params.selectedTags,
+            query = params.query,
+            category = params.category,
+            tags = params.tags.map { it.name },
         )
     }
 
     data class Param(
-        val bookmarkCategory: BookmarkCategory,
-        val selectedTags: List<Tag>,
+        val cached: Boolean,
+        val query: String,
+        val category: BookmarkCategory,
+        val tags: List<Tag>,
         override val pagingConfig: PagingConfig,
     ) : PagedObserver.Param<Bookmark>
 }

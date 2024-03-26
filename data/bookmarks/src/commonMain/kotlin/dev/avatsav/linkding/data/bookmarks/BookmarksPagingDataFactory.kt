@@ -7,26 +7,52 @@ import app.cash.paging.PagingData
 import dev.avatsav.linkding.data.db.daos.PagingBookmarksDao
 import dev.avatsav.linkding.data.model.Bookmark
 import dev.avatsav.linkding.data.model.BookmarkCategory
-import dev.avatsav.linkding.data.model.Tag
 import kotlinx.coroutines.flow.Flow
 import me.tatarka.inject.annotations.Inject
 
+@OptIn(ExperimentalPagingApi::class)
 @Inject
 class BookmarksPagingDataFactory(
     private val bookmarksRemoteMediatorFactory: BookmarksRemoteMediatorFactory,
+    private val remoteBookmarksPagingSourceFactory: RemoteBookmarksPagingSourceFactory,
     private val pagingBookmarksDao: PagingBookmarksDao,
 ) {
-
-    @OptIn(ExperimentalPagingApi::class)
-    operator fun invoke(
+    fun create(
+        cached: Boolean,
         pagingConfig: PagingConfig,
-        category: BookmarkCategory = BookmarkCategory.All,
-        selectedTags: List<Tag> = emptyList(),
+        param: Param,
     ): Flow<PagingData<Bookmark>> {
-        return Pager(
-            config = pagingConfig,
-            remoteMediator = bookmarksRemoteMediatorFactory(category, selectedTags),
-            pagingSourceFactory = { pagingBookmarksDao.offsetPagingSource() },
-        ).flow
+        return if (cached) {
+            cachedBookmarksFlow(pagingConfig, param)
+        } else {
+            onlineOnlyBookmarksFlow(pagingConfig, param)
+        }
     }
+
+    private fun cachedBookmarksFlow(pagingConfig: PagingConfig, param: Param) = Pager(
+        config = pagingConfig,
+        pagingSourceFactory = {
+            remoteBookmarksPagingSourceFactory(
+                param.query,
+                param.category,
+                param.tags,
+            )
+        },
+    ).flow
+
+    private fun onlineOnlyBookmarksFlow(pagingConfig: PagingConfig, param: Param) = Pager(
+        config = pagingConfig,
+        remoteMediator = bookmarksRemoteMediatorFactory(
+            param.query,
+            param.category,
+            param.tags,
+        ),
+        pagingSourceFactory = { pagingBookmarksDao.offsetPagingSource() },
+    ).flow
+
+    data class Param(
+        val query: String = "",
+        val category: BookmarkCategory = BookmarkCategory.All,
+        val tags: List<String> = emptyList(),
+    )
 }

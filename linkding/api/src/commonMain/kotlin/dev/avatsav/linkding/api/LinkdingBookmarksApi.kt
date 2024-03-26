@@ -14,6 +14,7 @@ interface LinkdingBookmarksApi {
         limit: Int,
         query: String = "",
         category: LinkdingBookmarkCategory = LinkdingBookmarkCategory.All,
+        tags: List<String>,
     ): Result<LinkdingBookmarksResponse, LinkdingError>
 
     suspend fun getBookmark(id: Long): Result<LinkdingBookmark, LinkdingError>

@@ -81,7 +81,9 @@ class BookmarksPresenter(
         val isOnline by connectivityObserver.observeIsOnline
             .collectAsState()
 
-        var bookmarkCategory by rememberRetained { mutableStateOf(BookmarkCategory.All) }
+        val query by rememberRetained { mutableStateOf("") }
+
+        var category by rememberRetained { mutableStateOf(BookmarkCategory.All) }
 
         val selectedTags = rememberRetained { mutableStateListOf<Tag>() }
 
@@ -100,12 +102,14 @@ class BookmarksPresenter(
             }
         }
 
-        LaunchedEffect(bookmarkCategory, selectedTags.size) {
+        LaunchedEffect(query, category, selectedTags.size) {
             observeBookmarks(
                 ObserveBookmarks.Param(
-                    bookmarkCategory,
-                    selectedTags,
-                    PagingConfig(
+                    cached = false,
+                    query = query,
+                    category = category,
+                    tags = selectedTags,
+                    pagingConfig = PagingConfig(
                         initialLoadSize = 20,
                         pageSize = 20,
                     ),
@@ -114,7 +118,7 @@ class BookmarksPresenter(
         }
 
         return BookmarksUiState(
-            bookmarkCategory = bookmarkCategory,
+            bookmarkCategory = category,
             bookmarks = bookmarks,
             selectedTags = selectedTags,
             isOnline = isOnline,
@@ -135,7 +139,7 @@ class BookmarksPresenter(
 
                 is Open -> navigator.goTo(UrlScreen(event.bookmark.url))
                 is SetBookmarkCategory -> {
-                    bookmarkCategory = event.bookmarkCategory
+                    category = event.bookmarkCategory
                 }
 
                 AddBookmark -> navigator.goTo(AddBookmarkScreen())
