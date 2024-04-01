@@ -5,7 +5,7 @@ import dev.avatsav.linkding.api.extensions.delete
 import dev.avatsav.linkding.api.extensions.endpointBookmarks
 import dev.avatsav.linkding.api.extensions.get
 import dev.avatsav.linkding.api.extensions.parameterPage
-import dev.avatsav.linkding.api.extensions.parameterQueryWithFilter
+import dev.avatsav.linkding.api.extensions.parameterQuery
 import dev.avatsav.linkding.api.extensions.post
 import dev.avatsav.linkding.api.extensions.toLinkdingResult
 import dev.avatsav.linkding.api.models.LinkdingBookmark
@@ -25,13 +25,14 @@ class DefaultLinkdingBookmarksApi(private val httpClient: HttpClient) : Linkding
         limit: Int,
         query: String,
         category: LinkdingBookmarkCategory,
+        tags: List<String>,
     ): Result<LinkdingBookmarksResponse, LinkdingError> {
         return httpClient.get<LinkdingBookmarksResponse, LinkdingErrorResponse> {
             val paths =
                 if (category == LinkdingBookmarkCategory.Archived) arrayOf("archived") else emptyArray()
             endpointBookmarks(*paths)
             parameterPage(offset, limit)
-            parameterQueryWithFilter(query, category)
+            parameterQuery(query, category, tags)
         }.toLinkdingResult()
     }
 

@@ -9,7 +9,7 @@ multiplatform-settings = "1.1.1"
 ktor = "2.3.9"
 datetime = "0.5.0"
 jetbrains-compose = "1.6.1"
-composeCompiler = "1.5.10" # womp womp!
+composeCompiler = "1.5.11" # womp womp!
 kotlin-inject = "0.6.3"
 paging-kmp = "3.3.0-alpha02-0.5.1"
 circuit = "0.20.0"
@@ -21,6 +21,7 @@ kotest = "5.8.1"
 compileSdk = "34"
 minSdk = "30"
 targetSdk = "34"
+jvmToolchain = "17"
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

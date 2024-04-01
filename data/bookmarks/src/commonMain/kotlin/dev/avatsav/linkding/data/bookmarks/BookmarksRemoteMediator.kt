@@ -17,18 +17,18 @@ import dev.avatsav.linkding.data.bookmarks.mappers.toLinkding
 import dev.avatsav.linkding.data.db.daos.PagingBookmarksDao
 import dev.avatsav.linkding.data.model.Bookmark
 import dev.avatsav.linkding.data.model.BookmarkCategory
-import dev.avatsav.linkding.data.model.Tag
 import kotlinx.coroutines.withContext
 import me.tatarka.inject.annotations.Assisted
 import me.tatarka.inject.annotations.Inject
 
-typealias BookmarksRemoteMediatorFactory = (BookmarkCategory, List<Tag>) -> BookmarksRemoteMediator
+typealias BookmarksRemoteMediatorFactory = (String, BookmarkCategory, List<String>) -> BookmarksRemoteMediator
 
 @OptIn(ExperimentalPagingApi::class)
 @Inject
 class BookmarksRemoteMediator(
+    @Assisted private val query: String,
     @Assisted private val category: BookmarkCategory,
-    @Assisted private val selectedTags: List<Tag>,
+    @Assisted private val tags: List<String>,
     private val apiProvider: Lazy<LinkdingApiProvider>,
     private val bookmarksDao: PagingBookmarksDao,
     private val dispatchers: AppCoroutineDispatchers,
@@ -51,13 +51,13 @@ class BookmarksRemoteMediator(
                 bookmarksDao.countBookmarks().toInt()
             }
         }
-        val query = selectedTags.joinToString(separator = " ") { "#${it.name}" }
 
         apiProvider.value.bookmarksApi.getBookmarks(
             query = query,
+            tags = tags,
+            category = category.toLinkding(),
             offset = offset,
             limit = state.config.pageSize,
-            category = category.toLinkding(),
         ).mapEither(
             success = bookmarkMapper::map,
             failure = errorMapper::map,

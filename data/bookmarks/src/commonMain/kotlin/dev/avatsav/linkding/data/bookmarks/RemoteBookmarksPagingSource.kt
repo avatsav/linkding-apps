@@ -9,16 +9,20 @@ import dev.avatsav.linkding.Logger
 import dev.avatsav.linkding.api.LinkdingApiProvider
 import dev.avatsav.linkding.data.bookmarks.mappers.BookmarkErrorMapper
 import dev.avatsav.linkding.data.bookmarks.mappers.BookmarkMapper
+import dev.avatsav.linkding.data.bookmarks.mappers.toLinkding
 import dev.avatsav.linkding.data.model.Bookmark
+import dev.avatsav.linkding.data.model.BookmarkCategory
 import kotlinx.coroutines.withContext
 import me.tatarka.inject.annotations.Assisted
 import me.tatarka.inject.annotations.Inject
 
-typealias SearchBookmarksPagingSourceFactory = (String) -> SearchBookmarksPagingSource
+typealias RemoteBookmarksPagingSourceFactory = (String, BookmarkCategory, List<String>) -> RemoteBookmarksPagingSource
 
 @Inject
-class SearchBookmarksPagingSource(
+class RemoteBookmarksPagingSource(
     @Assisted private val query: String,
+    @Assisted private val category: BookmarkCategory,
+    @Assisted private val tags: List<String>,
     private val apiProvider: LinkdingApiProvider,
     private val mapper: BookmarkMapper,
     private val errorMapper: BookmarkErrorMapper,
@@ -42,7 +46,13 @@ class SearchBookmarksPagingSource(
             val position = params.key ?: FIRST_PAGE
             val offset = if (position == FIRST_PAGE) 0 else params.loadSize * (position - 1) + 1
 
-            apiProvider.bookmarksApi.getBookmarks(offset, params.loadSize, query).mapEither(
+            apiProvider.bookmarksApi.getBookmarks(
+                offset = offset,
+                limit = params.loadSize,
+                query = query,
+                category = category.toLinkding(),
+                tags = tags,
+            ).mapEither(
                 success = mapper::map,
                 failure = errorMapper::map,
             ).fold(
