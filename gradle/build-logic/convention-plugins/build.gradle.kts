@@ -1,5 +1,3 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
 /**
  * References:
  * - https://github.com/android/nowinandroid/tree/main/build-logic
@@ -17,11 +15,9 @@ dependencies {
     compileOnly(libs.jetbrains.compose.gradlePlugin)
 }
 
-java { toolchain { languageVersion.set(JavaLanguageVersion.of(17)) } }
-
-tasks.withType<KotlinCompile>().configureEach {
-    kotlinOptions {
-        jvmTarget = "17"
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(libs.versions.jvmToolchain.get()))
     }
 }
 

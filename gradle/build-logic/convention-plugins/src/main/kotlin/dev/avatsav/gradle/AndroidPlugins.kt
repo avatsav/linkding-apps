@@ -54,7 +54,7 @@ private fun Project.configureAndroid() {
 fun Project.configureJavaToolchain() {
     extensions.configure<JavaPluginExtension> {
         toolchain {
-            languageVersion.set(JavaLanguageVersion.of(17))
+            languageVersion.set(JavaLanguageVersion.of(findVersion("jvmToolchain")))
         }
     }
 }
