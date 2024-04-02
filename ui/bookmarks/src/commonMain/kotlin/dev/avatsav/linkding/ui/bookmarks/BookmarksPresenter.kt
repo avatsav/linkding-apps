@@ -26,15 +26,18 @@ import dev.avatsav.linkding.domain.interactors.ArchiveBookmark
 import dev.avatsav.linkding.domain.interactors.DeleteBookmark
 import dev.avatsav.linkding.domain.interactors.UnarchiveBookmark
 import dev.avatsav.linkding.domain.observers.ObserveBookmarks
+import dev.avatsav.linkding.domain.observers.ObserveSearchResults
 import dev.avatsav.linkding.internet.ConnectivityObserver
 import dev.avatsav.linkding.ui.AddBookmarkScreen
 import dev.avatsav.linkding.ui.BookmarksScreen
 import dev.avatsav.linkding.ui.SettingsScreen
 import dev.avatsav.linkding.ui.UrlScreen
 import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.AddBookmark
+import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.ClearSearch
 import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.Delete
 import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.Open
 import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.RemoveTag
+import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.Search
 import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.SelectTag
 import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.SetBookmarkCategory
 import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.ShowSettings
@@ -64,6 +67,7 @@ class BookmarksUiPresenterFactory(
 class BookmarksPresenter(
     @Assisted private val navigator: Navigator,
     private val observeBookmarks: ObserveBookmarks,
+    private val observeSearchResults: ObserveSearchResults,
     private val deleteBookmark: DeleteBookmark,
     private val archiveBookmark: ArchiveBookmark,
     private val unarchiveBookmark: UnarchiveBookmark,
@@ -78,10 +82,13 @@ class BookmarksPresenter(
         val bookmarks = observeBookmarks.flow.rememberCachedPagingFlow(coroutineScope)
             .collectAsLazyPagingItems()
 
+        val searchResults = observeSearchResults.flow.rememberCachedPagingFlow(coroutineScope)
+            .collectAsLazyPagingItems()
+
         val isOnline by connectivityObserver.observeIsOnline
             .collectAsState()
 
-        val query by rememberRetained { mutableStateOf("") }
+        var searchQuery by rememberRetained { mutableStateOf("") }
 
         var category by rememberRetained { mutableStateOf(BookmarkCategory.All) }
 
@@ -102,13 +109,27 @@ class BookmarksPresenter(
             }
         }
 
-        LaunchedEffect(query, category, selectedTags.size) {
+        LaunchedEffect(category, selectedTags.size) {
             observeBookmarks(
                 ObserveBookmarks.Param(
-                    cached = false,
-                    query = query,
+                    cached = true,
+                    query = "",
                     category = category,
                     tags = selectedTags,
+                    pagingConfig = PagingConfig(
+                        initialLoadSize = 20,
+                        pageSize = 20,
+                    ),
+                ),
+            )
+        }
+
+        LaunchedEffect(searchQuery) {
+            observeSearchResults(
+                ObserveSearchResults.Param(
+                    query = searchQuery,
+                    category = BookmarkCategory.All,
+                    tags = emptyList(),
                     pagingConfig = PagingConfig(
                         initialLoadSize = 20,
                         pageSize = 20,
@@ -120,6 +141,7 @@ class BookmarksPresenter(
         return BookmarksUiState(
             bookmarkCategory = category,
             bookmarks = bookmarks,
+            searchResults = searchResults,
             selectedTags = selectedTags,
             isOnline = isOnline,
             pullToRefreshState = pullToRefreshState,
@@ -149,6 +171,11 @@ class BookmarksPresenter(
                     if (!selectedTags.contains(event.tag)) {
                         selectedTags.add(0, event.tag)
                     }
+                }
+
+                is Search -> searchQuery = event.query
+                ClearSearch -> {
+                    searchQuery = ""
                 }
             }
         }

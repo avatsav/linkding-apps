@@ -1,7 +1,10 @@
 package dev.avatsav.linkding.ui.bookmarks
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -31,6 +34,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshContainer
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -41,6 +45,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
@@ -55,6 +60,7 @@ import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.AddBookmark
 import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.Delete
 import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.Open
 import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.RemoveTag
+import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.Search
 import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.SelectTag
 import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.SetBookmarkCategory
 import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.ShowSettings
@@ -87,8 +93,10 @@ fun Bookmarks(
 ) {
     val eventSink = state.eventSink
     val overlayHost = LocalOverlayHost.current
+    val focusManager = LocalFocusManager.current
 
     val scope = rememberCoroutineScope()
+
     var searchActive by rememberSaveable { mutableStateOf(false) }
     val searchBarHorizontalPadding: Dp by animateDpAsState(if (searchActive) 0.dp else 12.dp)
     val searchBarBottomPadding: Dp by animateDpAsState(if (searchActive) 0.dp else 12.dp)
@@ -114,18 +122,29 @@ fun Bookmarks(
         topBar = {
             Column(
                 modifier = Modifier.background(
-                    color = MaterialTheme.colorScheme.surfaceColorAtElevation(
+                    MaterialTheme.colorScheme.surfaceColorAtElevation(
                         searchBarBackgroundElevation,
                     ),
                 ),
             ) {
+                var searchQuery by rememberSaveable { mutableStateOf("") }
+                LaunchedEffect(searchActive) {
+                    if (!searchActive) {
+                        searchQuery = ""
+                        eventSink(BookmarksUiEvent.ClearSearch)
+                    }
+                }
+
                 SearchBar(
                     modifier = Modifier.fillMaxWidth()
                         .padding(horizontal = searchBarHorizontalPadding)
                         .padding(bottom = searchBarBottomPadding),
-                    query = "",
-                    onQueryChange = { },
-                    onSearch = { searchActive = false },
+                    query = searchQuery,
+                    onQueryChange = { searchQuery = it },
+                    onSearch = {
+                        eventSink(Search(searchQuery))
+                        focusManager.clearFocus()
+                    },
                     active = searchActive,
                     onActiveChange = { searchActive = it },
                     placeholder = { Text("Search for words or #tags") },
@@ -152,15 +171,69 @@ fun Bookmarks(
                         }
                     },
                     tonalElevation = searchBarTonalElevation,
-                ) {}
+                ) {
+                    LazyColumn(
+                        modifier = Modifier.fillMaxSize(),
+                        contentPadding = PaddingValues(bottom = 56.dp),
+                    ) {
+                        items(
+                            count = state.searchResults.itemCount,
+                            key = state.searchResults.itemKey { it.id },
+                        ) { index ->
+                            val bookmark = state.searchResults[index]
+                            if (bookmark != null) {
+                                BookmarkListItem(
+                                    bookmark = bookmark,
+                                    openBookmark = { toOpen -> eventSink(Open(toOpen)) },
+                                    toggleArchive = { toToggle, dismissState ->
+                                        scope.launch {
+                                            when (overlayHost.showArchiveBookmarkAction(toToggle)) {
+                                                ActionResult.Confirmed -> eventSink(
+                                                    ToggleArchive(
+                                                        toToggle,
+                                                    ),
+                                                )
+
+                                                ActionResult.Cancelled,
+                                                ActionResult.Dismissed,
+                                                -> dismissState.reset()
+                                            }
+                                        }
+                                    },
+                                    deleteBookmark = { toDelete, dismissState ->
+                                        scope.launch {
+                                            when (overlayHost.showDeleteBookmarkAction(toDelete)) {
+                                                ActionResult.Confirmed -> eventSink(
+                                                    Delete(
+                                                        toDelete,
+                                                    ),
+                                                )
+
+                                                ActionResult.Cancelled,
+                                                ActionResult.Dismissed,
+                                                -> dismissState.reset()
+                                            }
+                                        }
+                                    },
+                                )
+                            }
+                        }
+                    }
+                }
             }
         },
         floatingActionButton = {
-            FloatingActionButton(onClick = { eventSink(AddBookmark) }) {
-                Icon(
-                    imageVector = Icons.Filled.Add,
-                    contentDescription = "Add Bookmark",
-                )
+            AnimatedVisibility(
+                visible = !searchActive,
+                enter = scaleIn(),
+                exit = scaleOut(),
+            ) {
+                FloatingActionButton(onClick = { eventSink(AddBookmark) }) {
+                    Icon(
+                        imageVector = Icons.Filled.Add,
+                        contentDescription = "Add Bookmark",
+                    )
+                }
             }
         },
     ) { paddingValues ->

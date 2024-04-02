@@ -15,6 +15,7 @@ import dev.avatsav.linkding.data.model.Tag
 data class BookmarksUiState(
     val bookmarkCategory: BookmarkCategory,
     val bookmarks: LazyPagingItems<Bookmark>,
+    val searchResults: LazyPagingItems<Bookmark>,
     val selectedTags: List<Tag>,
     val pullToRefreshState: PullToRefreshState,
     val isOnline: Boolean,
@@ -30,4 +31,6 @@ sealed interface BookmarksUiEvent : CircuitUiEvent {
     data object ShowSettings : BookmarksUiEvent
     data class SelectTag(val tag: Tag) : BookmarksUiEvent
     data class RemoveTag(val tag: Tag) : BookmarksUiEvent
+    data class Search(val query: String) : BookmarksUiEvent
+    data object ClearSearch : BookmarksUiEvent
 }

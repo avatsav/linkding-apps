@@ -25,11 +25,11 @@ class BookmarksPagingDataFactory(
         return if (cached) {
             cachedBookmarksFlow(pagingConfig, param)
         } else {
-            onlineOnlyBookmarksFlow(pagingConfig, param)
+            remoteBookmarksFlow(pagingConfig, param)
         }
     }
 
-    private fun cachedBookmarksFlow(pagingConfig: PagingConfig, param: Param) = Pager(
+    private fun remoteBookmarksFlow(pagingConfig: PagingConfig, param: Param) = Pager(
         config = pagingConfig,
         pagingSourceFactory = {
             remoteBookmarksPagingSourceFactory(
@@ -40,7 +40,7 @@ class BookmarksPagingDataFactory(
         },
     ).flow
 
-    private fun onlineOnlyBookmarksFlow(pagingConfig: PagingConfig, param: Param) = Pager(
+    private fun cachedBookmarksFlow(pagingConfig: PagingConfig, param: Param) = Pager(
         config = pagingConfig,
         remoteMediator = bookmarksRemoteMediatorFactory(
             param.query,
