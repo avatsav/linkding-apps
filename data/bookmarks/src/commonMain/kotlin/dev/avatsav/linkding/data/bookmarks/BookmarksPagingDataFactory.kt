@@ -47,7 +47,7 @@ class BookmarksPagingDataFactory(
             param.category,
             param.tags,
         ),
-        pagingSourceFactory = { pagingBookmarksDao.offsetPagingSource() },
+        pagingSourceFactory = { pagingBookmarksDao.bookmarksPagingSource() },
     ).flow
 
     data class Param(
