@@ -14,7 +14,7 @@ kotlin-inject = "0.6.3"
 paging-kmp = "3.3.0-alpha02-0.5.1"
 circuit = "0.20.0"
 kotlinResult = "2.0.0"
-androidxActivity = "1.8.2"
+androidxActivity = "1.9.0"
 sqldelight = "2.0.2"
 kotest = "5.8.1"
 
