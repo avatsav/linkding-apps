@@ -16,7 +16,7 @@ circuit = "0.20.0"
 kotlinResult = "2.0.0"
 androidxActivity = "1.9.0"
 sqldelight = "2.0.2"
-kotest = "5.8.1"
+kotest = "5.9.0"
 
 compileSdk = "34"
 minSdk = "30"
