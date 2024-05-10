@@ -42,7 +42,7 @@ class MainActivity : ComponentActivity() {
             val backstack = rememberSaveableBackStack(root = RootScreen(sharedLink))
             val navigator = rememberCircuitNavigator(backstack)
 
-            activityComponent.appContent(
+            activityComponent.appUi.Content(
                 backstack,
                 navigator,
                 { url -> launchUrl(url) },

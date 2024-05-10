@@ -2,7 +2,7 @@ package dev.avatsav.linkding
 
 import android.app.Activity
 import dev.avatsav.linkding.inject.UiScope
-import dev.avatsav.linkding.ui.root.AppContent
+import dev.avatsav.linkding.ui.root.AppUi
 import me.tatarka.inject.annotations.Component
 import me.tatarka.inject.annotations.Provides
 
@@ -13,7 +13,7 @@ abstract class AndroidActivityComponent(
     @Component val applicationComponent: AndroidAppComponent,
 ) : SharedUiComponent {
 
-    abstract val appContent: AppContent
+    abstract val appUi: AppUi
 
     companion object
 }

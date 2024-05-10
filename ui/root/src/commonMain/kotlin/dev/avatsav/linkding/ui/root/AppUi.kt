@@ -24,46 +24,51 @@ import dev.avatsav.linkding.prefs.AppPreferences
 import dev.avatsav.linkding.ui.UrlScreen
 import dev.avatsav.linkding.ui.theme.LinkdingTheme
 import kotlinx.collections.immutable.ImmutableList
-import me.tatarka.inject.annotations.Assisted
 import me.tatarka.inject.annotations.Inject
 
-// https://github.com/evant/kotlin-inject?tab=readme-ov-file#function-support--assisted-injection
-typealias AppContent = @Composable (
-    backStack: SaveableBackStack,
-    navigator: Navigator,
-    onOpenUrl: (String) -> Unit,
-    modifier: Modifier,
-) -> Unit
+interface AppUi {
+    @Composable
+    fun Content(
+        backStack: SaveableBackStack,
+        navigator: Navigator,
+        onOpenUrl: (String) -> Unit,
+        modifier: Modifier,
+    )
+}
 
 @Inject
-@Composable
-fun AppContent(
-    @Assisted backStack: SaveableBackStack,
-    @Assisted navigator: Navigator,
-    @Assisted onOpenUrl: (String) -> Unit,
-    preferences: AppPreferences,
-    circuit: Circuit,
-    logger: Logger,
-    @Assisted modifier: Modifier = Modifier,
-) {
-    val linkdingNavigator: Navigator = remember(navigator) {
-        LinkdingNavigator(navigator, onOpenUrl, logger)
-    }
-    CompositionLocalProvider(
-        LocalRetainedStateRegistry provides continuityRetainedStateRegistry(),
+class DefaultAppUi(
+    private val preferences: AppPreferences,
+    private val circuit: Circuit,
+    private val logger: Logger,
+) : AppUi {
+
+    @Composable
+    override fun Content(
+        backStack: SaveableBackStack,
+        navigator: Navigator,
+        onOpenUrl: (String) -> Unit,
+        modifier: Modifier,
     ) {
-        CircuitCompositionLocals(circuit) {
-            LinkdingTheme(
-                darkTheme = preferences.shouldUseDarkTheme(),
-                dynamicColors = preferences.shouldUseDynamicColors(),
-            ) {
-                ContentWithOverlays {
-                    NavigableCircuitContent(
-                        navigator = linkdingNavigator,
-                        backStack = backStack,
-                        decoration = GestureNavigationDecoration(onBackInvoked = navigator::pop),
-                        modifier = modifier.fillMaxSize(),
-                    )
+        val linkdingNavigator: Navigator = remember(navigator) {
+            LinkdingNavigator(navigator, onOpenUrl, logger)
+        }
+        CompositionLocalProvider(
+            LocalRetainedStateRegistry provides continuityRetainedStateRegistry(),
+        ) {
+            CircuitCompositionLocals(circuit) {
+                LinkdingTheme(
+                    darkTheme = preferences.shouldUseDarkTheme(),
+                    dynamicColors = preferences.shouldUseDynamicColors(),
+                ) {
+                    ContentWithOverlays {
+                        NavigableCircuitContent(
+                            navigator = linkdingNavigator,
+                            backStack = backStack,
+                            decoration = GestureNavigationDecoration(onBackInvoked = navigator::pop),
+                            modifier = modifier.fillMaxSize(),
+                        )
+                    }
                 }
             }
         }
@@ -72,8 +77,7 @@ fun AppContent(
 
 @Composable
 private fun AppPreferences.shouldUseDarkTheme(): Boolean {
-    val appTheme = remember { observeAppTheme() }
-        .collectAsState(initial = AppTheme.System)
+    val appTheme = remember { observeAppTheme() }.collectAsState(initial = AppTheme.System)
     return when (appTheme.value) {
         AppTheme.System -> isSystemInDarkTheme()
         AppTheme.Light -> false
@@ -83,9 +87,7 @@ private fun AppPreferences.shouldUseDarkTheme(): Boolean {
 
 @Composable
 private fun AppPreferences.shouldUseDynamicColors(): Boolean {
-    return remember { observeUseDynamicColors() }
-        .collectAsState(initial = true)
-        .value
+    return remember { observeUseDynamicColors() }.collectAsState(initial = true).value
 }
 
 private class LinkdingNavigator(

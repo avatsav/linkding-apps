@@ -19,12 +19,12 @@ typealias MainUIViewController = () -> UIViewController
 @Inject
 @Suppress("ktlint:standard:function-naming")
 fun MainUIViewController(
-    appContent: AppContent,
+    appUi: AppUi,
 ): UIViewController = ComposeUIViewController {
     val backstack = rememberSaveableBackStack(root = RootScreen(null))
     val navigator = rememberCircuitNavigator(backstack, onRootPop = { /* no-op */ })
     val uiViewController = LocalUIViewController.current
-    appContent(
+    appUi.Content(
         backstack,
         navigator,
         { uiViewController.launchUrl(it) },
