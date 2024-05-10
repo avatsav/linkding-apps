@@ -24,4 +24,3 @@ kotlin {
 android {
     namespace = "dev.avatsav.linkding.ui.add"
 }
-
