@@ -5,34 +5,34 @@ import com.slack.circuit.runtime.screen.Screen
 
 abstract class LinkdingScreen(val name: String) : Screen
 
-@CommonParcelize
+@Parcelize
 data class RootScreen(val sharedUrl: String?) : LinkdingScreen("Root")
 
-@CommonParcelize
+@Parcelize
 data object SetupScreen : LinkdingScreen("Setup")
 
-@CommonParcelize
+@Parcelize
 data object BookmarksScreen : LinkdingScreen("Bookmarks")
 
-@CommonParcelize
+@Parcelize
 data class AddBookmarkScreen(val sharedUrl: String? = null) : LinkdingScreen("AddBookmark")
 
-@CommonParcelize
+@Parcelize
 data class UrlScreen(val url: String) : LinkdingScreen("UrlScreen")
 
-@CommonParcelize
+@Parcelize
 data object SettingsScreen : LinkdingScreen("Settings")
 
-@CommonParcelize
-data class TagsScreenParam(val id: Long, val name: String) : CommonParcelable
+@Parcelize
+data class TagsScreenParam(val id: Long, val name: String) : Parcelable
 
-@CommonParcelize
+@Parcelize
 data class TagsScreen(val selectedTags: List<TagsScreenParam>) : LinkdingScreen("Tags")
 
 sealed interface TagsScreenResult : PopResult {
-    @CommonParcelize
+    @Parcelize
     data class Selected(val tag: TagsScreenParam) : TagsScreenResult
 
-    @CommonParcelize
+    @Parcelize
     data object Dismissed : TagsScreenResult
 }
