@@ -3,6 +3,7 @@ build
 # Gradle
 .gradle
 build/
+.kotlin/
 local.properties
 /local.properties
 
