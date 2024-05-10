@@ -26,26 +26,28 @@ class KotlinMultiplatformPlugin : Plugin<Project> {
             iosSimulatorArm64()
 
             targets.withType<KotlinNativeTarget>().configureEach {
+                binaries.configureEach {
+                    linkerOpts("-lsqlite3")
+                }
+
                 compilations.configureEach {
-                    compilerOptions.configure {
-                        // Features:
-                        // https://kotlinlang.org/docs/whatsnew19.html#preview-of-custom-memory-allocator
-                        // https://kotlinlang.org/docs/whatsnew19.html#compiler-option-for-c-interop-implicit-integer-conversions
-                        freeCompilerArgs.addAll(
-                            "-Xallocator=custom",
-                            "-XXLanguage:+ImplicitSignedToUnsignedIntegerConversion",
-                            "-opt-in=kotlinx.cinterop.ExperimentalForeignApi",
-                            "-opt-in=kotlinx.cinterop.BetaInteropApi",
-                            "-Xadd-light-debug=enable",
-                        )
+                    compileTaskProvider.configure {
+                        compilerOptions {
+                           freeCompilerArgs.addAll(
+                                "-opt-in=kotlinx.cinterop.ExperimentalForeignApi",
+                                "-opt-in=kotlinx.cinterop.BetaInteropApi",
+                            )
+                        }
                     }
                 }
             }
 
             targets.configureEach {
                 compilations.configureEach {
-                    compilerOptions.configure {
-                        freeCompilerArgs.add("-Xexpect-actual-classes")
+                    compileTaskProvider.configure {
+                        compilerOptions {
+                            freeCompilerArgs.add("-Xexpect-actual-classes")
+                        }
                     }
                 }
             }
@@ -60,4 +62,5 @@ internal fun Project.configureKotlin() {
     // Java toolchain configuration is picked up by Kotlin
     configureJavaToolchain()
 }
+
 
