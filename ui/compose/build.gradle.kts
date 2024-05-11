@@ -8,7 +8,7 @@ plugins {
 kotlin {
     sourceSets {
         commonMain.dependencies {
-            implementation(projects.ui.core.theme)
+            implementation(projects.ui.theme)
             implementation(projects.core.logging)
             api(libs.paging.compose)
             api(libs.circuit.foundation)

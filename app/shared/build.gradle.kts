@@ -26,12 +26,12 @@ kotlin {
             api(projects.data.database)
             api(projects.domain)
             api(projects.ui.root)
-            api(projects.ui.core.theme)
-            api(projects.ui.setup)
-            api(projects.ui.bookmarks)
-            api(projects.ui.addBookmark)
-            api(projects.ui.settings)
-            api(projects.ui.tags)
+            api(projects.ui.theme)
+            api(projects.features.setup)
+            api(projects.features.bookmarks)
+            api(projects.features.addBookmark)
+            api(projects.features.settings)
+            api(projects.features.tags)
         }
         targets.withType<KotlinNativeTarget>().configureEach {
             binaries.framework {

@@ -10,14 +10,14 @@ kotlin {
             implementation(projects.core.base)
             implementation(projects.core.logging)
             implementation(projects.domain)
-            implementation(projects.ui.core.compose)
+            implementation(projects.ui.compose)
             implementation(compose.foundation)
             implementation(compose.material3)
             implementation(compose.materialIconsExtended)
             implementation(libs.circuit.retained)
             implementation(libs.circuit.overlay)
-            api(projects.ui.core.theme)
-            api(projects.ui.core.screens)
+            api(projects.ui.theme)
+            api(projects.ui.screens)
             api(libs.circuit.foundation)
         }
     }

@@ -9,18 +9,22 @@ kotlin {
         commonMain.dependencies {
             implementation(projects.core.base)
             implementation(projects.core.logging)
+            implementation(projects.core.preferences)
             implementation(projects.domain)
-            implementation(projects.ui.core.compose)
+            implementation(projects.ui.compose)
             implementation(compose.foundation)
             implementation(compose.material3)
+            implementation(compose.materialIconsExtended)
             implementation(libs.circuit.retained)
-            api(projects.ui.core.theme)
-            api(projects.ui.core.screens)
+            implementation(libs.circuit.overlay)
+            implementation(libs.circuitx.overlays)
+            api(projects.ui.theme)
+            api(projects.ui.screens)
             api(libs.circuit.foundation)
         }
     }
 }
 
 android {
-    namespace = "dev.avatsav.linkding.ui.add"
+    namespace = "dev.avatsav.linkding.ui.settings"
 }

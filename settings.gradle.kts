@@ -35,13 +35,13 @@ include(
     ":data:bookmarks",
     ":data:database",
     ":domain",
-    ":ui:core:theme",
-    ":ui:core:screens",
-    ":ui:core:compose",
-    ":ui:bookmarks",
-    ":ui:add-bookmark",
-    ":ui:setup",
+    ":ui:theme",
+    ":ui:screens",
+    ":ui:compose",
     ":ui:root",
-    ":ui:settings",
-    ":ui:tags"
+    ":features:bookmarks",
+    ":features:add-bookmark",
+    ":features:setup",
+    ":features:settings",
+    ":features:tags"
 )
