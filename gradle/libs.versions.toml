@@ -48,7 +48,6 @@ androidx-browser = "androidx.browser:browser:1.8.0"
 androidx-preference = "androidx.preference:preference-ktx:1.2.1"
 
 paging-common = { module = "androidx.paging:paging-common", version.ref = "paging" }
-paging-compose = { module = "app.cash.paging:paging-compose-common", version.ref = "paging-compose" }
 
 kotlin-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "coroutines" }
 kotlin-coroutines-swing = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-swing", version.ref = "coroutines" }
