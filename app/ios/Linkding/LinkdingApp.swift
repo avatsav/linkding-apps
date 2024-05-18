@@ -3,6 +3,11 @@ import LinkdingKt
 
 class AppDelegate: UIResponder, UIApplicationDelegate {
     lazy var applicationComponent: MergedIosAppComponent = createAppComponent(appDelegate: self)
+    
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
+        applicationComponent.appInitializer.initialize()
+        return true
+    }
 }
 
 @main

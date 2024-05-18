@@ -3,6 +3,7 @@ package dev.avatsav.linkding
 import android.app.Application
 import android.content.pm.ApplicationInfo
 import com.r0adkll.kimchi.annotations.MergeComponent
+import dev.avatsav.linkding.initializers.AppInitializer
 import dev.avatsav.linkding.inject.AppScope
 import dev.avatsav.linkding.inject.annotations.SingleIn
 import dev.avatsav.linkding.prefs.AppPreferences
@@ -13,6 +14,8 @@ import me.tatarka.inject.annotations.Provides
 abstract class AndroidAppComponent(@get:Provides val application: Application) {
 
     abstract val appPreferences: AppPreferences
+
+    abstract val appInitializer: AppInitializer
 
     @SingleIn(AppScope::class)
     @Provides

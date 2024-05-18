@@ -17,8 +17,9 @@ import java.awt.Desktop
 import java.net.URI
 
 fun main() = application {
-    val appComponent = DesktopAppComponent.createDesktopAppComponent()
+    DesktopAppComponent.createDesktopAppComponent()
         .also { ComponentHolder.components += it }
+        .also { it.appInitializer.initialize() }
 
     val uiComponent: DesktopUiComponent =
         ComponentHolder.component<DesktopUiComponent.Factory>()
