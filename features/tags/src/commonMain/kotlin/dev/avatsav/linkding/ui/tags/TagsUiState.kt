@@ -1,7 +1,7 @@
 package dev.avatsav.linkding.ui.tags
 
 import androidx.compose.runtime.Immutable
-import app.cash.paging.compose.LazyPagingItems
+import androidx.paging.compose.LazyPagingItems
 import com.slack.circuit.runtime.CircuitUiEvent
 import com.slack.circuit.runtime.CircuitUiState
 import dev.avatsav.linkding.data.model.Tag

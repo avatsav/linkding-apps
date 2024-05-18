@@ -44,5 +44,6 @@ include(
     ":features:add-bookmark",
     ":features:setup",
     ":features:settings",
-    ":features:tags"
+    ":features:tags",
+    ":thirdparty:paging:compose",
 )
