@@ -5,8 +5,8 @@ package dev.avatsav.linkding.ui.compose
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import app.cash.paging.PagingData
-import app.cash.paging.cachedIn
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import com.slack.circuit.runtime.internal.rememberStableCoroutineScope
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow

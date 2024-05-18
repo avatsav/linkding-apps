@@ -2,7 +2,7 @@ package dev.avatsav.linkding.ui.tags
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import app.cash.paging.PagingConfig
+import androidx.paging.PagingConfig
 import app.cash.paging.compose.collectAsLazyPagingItems
 import com.slack.circuit.runtime.CircuitContext
 import com.slack.circuit.runtime.Navigator

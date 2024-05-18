@@ -1,6 +1,6 @@
 package dev.avatsav.linkding.data.db.daos
 
-import app.cash.paging.PagingSource
+import androidx.paging.PagingSource
 import dev.avatsav.linkding.data.model.Bookmark
 
 interface PagingBookmarksDao {
