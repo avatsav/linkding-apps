@@ -15,7 +15,6 @@ kotlin {
             api(libs.circuit.runtime)
         }
     }
-
 }
 
 android {

@@ -7,7 +7,6 @@ import dev.avatsav.gradle.configureParcelize
  * TODO: Remove this module when androidx.paging.compose adds support for other platforms.
  */
 
-
 plugins {
     id("convention.android.library")
     id("convention.kotlin.multiplatform")
@@ -29,4 +28,3 @@ kotlin {
 android {
     namespace = "androidx.paging.compose"
 }
-
