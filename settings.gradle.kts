@@ -31,6 +31,7 @@ include(
     ":core:logging",
     ":core:preferences",
     ":core:connectivity",
+    ":core:parcelize",
     ":data:models",
     ":data:bookmarks",
     ":data:database",
