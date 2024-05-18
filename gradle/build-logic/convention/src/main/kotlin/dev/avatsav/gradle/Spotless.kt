@@ -6,8 +6,10 @@ import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure
 
 internal fun Project.configureSpotless() {
-    pluginManager.apply("com.diffplug.spotless")
+    // Skip Spotless for thirdparty module
+    if (path.startsWith(":thirdparty")) return
 
+    pluginManager.apply("com.diffplug.spotless")
     configure<SpotlessExtension> {
         lineEndings = LineEnding.PLATFORM_NATIVE
         val ktLintVersion = findVersion("ktlint")
