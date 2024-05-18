@@ -10,6 +10,7 @@ kotlin {
         commonMain.dependencies {
             implementation(projects.ui.theme)
             implementation(projects.core.logging)
+            api(libs.paging.common)
             api(libs.paging.compose)
             api(libs.circuit.foundation)
             api(libs.circuit.overlay)

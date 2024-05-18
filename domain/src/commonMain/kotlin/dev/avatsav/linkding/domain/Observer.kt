@@ -1,7 +1,7 @@
 package dev.avatsav.linkding.domain
 
-import app.cash.paging.PagingConfig
-import app.cash.paging.PagingData
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.Flow

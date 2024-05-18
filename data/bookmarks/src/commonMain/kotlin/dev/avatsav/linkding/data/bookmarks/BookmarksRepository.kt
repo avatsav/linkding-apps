@@ -1,7 +1,7 @@
 package dev.avatsav.linkding.data.bookmarks
 
-import app.cash.paging.PagingConfig
-import app.cash.paging.PagingData
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
 import com.github.michaelbull.result.Result
 import com.github.michaelbull.result.mapEither
 import com.github.michaelbull.result.mapError
