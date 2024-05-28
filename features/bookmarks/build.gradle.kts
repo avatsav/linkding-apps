@@ -18,7 +18,7 @@ kotlin {
             implementation(compose.materialIconsExtended)
             implementation(libs.circuitx.overlays)
             implementation(libs.circuit.retained)
-            implementation(libs.paging.compose)
+            implementation(projects.thirdparty.paging.compose)
             api(projects.ui.theme)
             api(projects.ui.screens)
             api(libs.circuit.foundation)

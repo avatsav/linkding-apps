@@ -1,4 +1,4 @@
-package dev.avatsav.linkding.ui
+package dev.avatsav.linkding.parcelize
 
 import android.os.Parcelable
 

@@ -31,6 +31,7 @@ include(
     ":core:logging",
     ":core:preferences",
     ":core:connectivity",
+    ":core:parcelize",
     ":data:models",
     ":data:bookmarks",
     ":data:database",
@@ -43,5 +44,6 @@ include(
     ":features:add-bookmark",
     ":features:setup",
     ":features:settings",
-    ":features:tags"
+    ":features:tags",
+    ":thirdparty:paging:compose",
 )

@@ -9,11 +9,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import app.cash.paging.LoadStateError
-import app.cash.paging.LoadStateLoading
-import app.cash.paging.LoadStateNotLoading
-import app.cash.paging.PagingConfig
-import app.cash.paging.compose.collectAsLazyPagingItems
+import androidx.paging.LoadState
+import androidx.paging.PagingConfig
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.slack.circuit.retained.rememberRetained
 import com.slack.circuit.runtime.CircuitContext
 import com.slack.circuit.runtime.Navigator
@@ -102,8 +100,8 @@ class BookmarksPresenter(
 
         LaunchedEffect(bookmarks.loadState) {
             when (bookmarks.loadState.refresh) {
-                is LoadStateLoading -> Unit
-                is LoadStateError, is LoadStateNotLoading -> {
+                is LoadState.Loading -> Unit
+                is LoadState.Error, is LoadState.NotLoading -> {
                     pullToRefreshState.endRefresh()
                 }
             }

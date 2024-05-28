@@ -1,11 +1,9 @@
 package dev.avatsav.linkding.data.bookmarks
 
 import androidx.paging.ExperimentalPagingApi
-import app.cash.paging.LoadType
-import app.cash.paging.PagingState
-import app.cash.paging.RemoteMediator
-import app.cash.paging.RemoteMediatorMediatorResultError
-import app.cash.paging.RemoteMediatorMediatorResultSuccess
+import androidx.paging.LoadType
+import androidx.paging.PagingState
+import androidx.paging.RemoteMediator
 import com.github.michaelbull.result.fold
 import com.github.michaelbull.result.mapEither
 import dev.avatsav.linkding.AppCoroutineDispatchers
@@ -43,7 +41,7 @@ class BookmarksRemoteMediator(
     ): MediatorResult = withContext(dispatchers.io) {
         val offset = when (loadType) {
             LoadType.REFRESH -> 0
-            LoadType.PREPEND -> return@withContext RemoteMediatorMediatorResultSuccess(
+            LoadType.PREPEND -> return@withContext MediatorResult.Success(
                 endOfPaginationReached = true,
             )
 
@@ -69,10 +67,10 @@ class BookmarksRemoteMediator(
                 } else {
                     bookmarksDao.append(bookmarks)
                 }
-                RemoteMediatorMediatorResultSuccess(endOfPaginationReached = it.nextPage == null)
+                MediatorResult.Success(endOfPaginationReached = it.nextPage == null)
             },
             failure = {
-                RemoteMediatorMediatorResultError(Exception(it.message))
+                MediatorResult.Error(Exception(it.message))
             },
         )
     }

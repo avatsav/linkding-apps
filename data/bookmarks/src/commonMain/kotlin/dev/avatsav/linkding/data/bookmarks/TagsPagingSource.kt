@@ -1,7 +1,7 @@
 package dev.avatsav.linkding.data.bookmarks
 
 import androidx.paging.PagingSource
-import app.cash.paging.PagingState
+import androidx.paging.PagingState
 import com.github.michaelbull.result.fold
 import com.github.michaelbull.result.mapEither
 import dev.avatsav.linkding.AppCoroutineDispatchers
