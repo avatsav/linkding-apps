@@ -64,8 +64,9 @@ private val customTabsIntent = CustomTabsIntent.Builder().setShowTitle(true)
     .setColorScheme(CustomTabsIntent.COLOR_SCHEME_SYSTEM)
     .setShareState(CustomTabsIntent.SHARE_STATE_OFF).build()
 
-fun MainActivity.launchUrl(url: String) {
+private fun MainActivity.launchUrl(url: String): Boolean {
     customTabsIntent.launchUrl(this, Uri.parse(url))
+    return true
 }
 
 private fun ComponentActivity.enableEdgeToEdge(appTheme: AppTheme) {

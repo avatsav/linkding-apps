@@ -42,7 +42,8 @@ fun main() = application {
     }
 }
 
-fun launchUrl(url: String) {
+private fun launchUrl(url: String): Boolean {
     val desktop = Desktop.getDesktop()
     desktop.browse(URI.create(url))
+    return true
 }

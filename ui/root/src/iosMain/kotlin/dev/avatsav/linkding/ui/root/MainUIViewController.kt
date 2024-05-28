@@ -32,7 +32,8 @@ fun MainUIViewController(
     )
 }
 
-fun UIViewController.launchUrl(url: String) {
+private fun UIViewController.launchUrl(url: String): Boolean {
     val safari = SFSafariViewController(NSURL(string = url))
     presentViewController(safari, animated = true, completion = null)
+    return true
 }

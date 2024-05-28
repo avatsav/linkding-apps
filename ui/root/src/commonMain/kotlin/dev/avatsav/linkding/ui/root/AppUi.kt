@@ -31,7 +31,7 @@ interface AppUi {
     fun Content(
         backStack: SaveableBackStack,
         navigator: Navigator,
-        onOpenUrl: (String) -> Unit,
+        onOpenUrl: (String) -> Boolean,
         modifier: Modifier,
     )
 }
@@ -47,7 +47,7 @@ class DefaultAppUi(
     override fun Content(
         backStack: SaveableBackStack,
         navigator: Navigator,
-        onOpenUrl: (String) -> Unit,
+        onOpenUrl: (String) -> Boolean,
         modifier: Modifier,
     ) {
         val linkdingNavigator: Navigator = remember(navigator) {
@@ -92,12 +92,12 @@ private fun AppPreferences.shouldUseDynamicColors(): Boolean {
 
 private class LinkdingNavigator(
     private val navigator: Navigator,
-    private val onOpenUrl: (String) -> Unit,
+    private val onOpenUrl: (String) -> Boolean,
     private val logger: Logger,
 ) : Navigator {
-    override fun goTo(screen: Screen) {
+    override fun goTo(screen: Screen): Boolean {
         logger.d { "goTo. Screen: $screen. Current stack: ${peekBackStack()}" }
-        when (screen) {
+        return when (screen) {
             is UrlScreen -> onOpenUrl(screen.url)
             else -> navigator.goTo(screen)
         }
