@@ -13,7 +13,7 @@ kotlin-inject = "0.6.3"
 paging = "3.3.0"
 paging-compose = "3.3.0-alpha02-0.5.1"
 
-circuit = "0.22.0"
+circuit = "0.22.1"
 kotlinResult = "2.0.0"
 androidxActivity = "1.9.0"
 sqldelight = "2.0.2"
