@@ -11,8 +11,15 @@ class ComposePlugin : Plugin<Project> {
         pluginManager.apply("org.jetbrains.kotlin.plugin.compose")
 
         extensions.configure<ComposeCompilerGradlePluginExtension> {
+
+            // https://www.jetbrains.com/help/kotlin-multiplatform-dev/compose-compiler.html#enablestrongskippingmode
             enableStrongSkippingMode.set(true)
+
+            // https://www.jetbrains.com/help/kotlin-multiplatform-dev/compose-compiler.html#includesourceinformation
             includeSourceInformation.set(true)
+
+            // https://www.jetbrains.com/help/kotlin-multiplatform-dev/compose-compiler.html#stabilityconfigurationfile
+            stabilityConfigurationFile.set(rootProject.file("compose-stability.conf"))
         }
     }
 }

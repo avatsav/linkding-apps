@@ -33,7 +33,7 @@ class KotlinMultiplatformPlugin : Plugin<Project> {
                 compilations.configureEach {
                     compileTaskProvider.configure {
                         compilerOptions {
-                           freeCompilerArgs.addAll(
+                            freeCompilerArgs.addAll(
                                 "-opt-in=kotlinx.cinterop.ExperimentalForeignApi",
                                 "-opt-in=kotlinx.cinterop.BetaInteropApi",
                             )
