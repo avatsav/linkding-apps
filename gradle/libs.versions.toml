@@ -81,7 +81,7 @@ androidx-test-core = "androidx.test:core-ktx:1.6.0"
 androidx-test-junit = "androidx.test.ext:junit-ktx:1.2.0"
 androidx-test-rules = "androidx.test:rules:1.6.0"
 androidx-test-runner = "androidx.test:runner:1.6.0"
-androidx-test-espresso = "androidx.test.espresso:espresso-core:3.6.0"
+androidx-test-espresso = "androidx.test.espresso:espresso-core:3.6.1"
 turbine = "app.cash.turbine:turbine:1.1.0"
 kotest-assertions = { module = "io.kotest:kotest-assertions-core", version.ref = "kotest" }
 
