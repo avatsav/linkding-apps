@@ -14,6 +14,7 @@ paging = "3.3.0"
 circuit = "0.22.2"
 kotlinResult = "2.0.0"
 androidxActivity = "1.9.0"
+androidxTest = "1.6.1"
 sqldelight = "2.0.2"
 kotest = "5.9.1"
 
@@ -54,7 +55,7 @@ kotlin-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-co
 kotlin-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutines" }
 kotlin-serialization-json = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.1"
 kotlin-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "datetime" }
-kotlin-atomicfu = "org.jetbrains.kotlinx:atomicfu:0.24.0"
+kotlin-atomicfu = "org.jetbrains.kotlinx:atomicfu:0.25.0"
 
 ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
 ktor-client-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor" }
@@ -77,11 +78,11 @@ kotlinResultCoroutines = { module = "com.michael-bull.kotlin-result:kotlin-resul
 
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 junit = "junit:junit:4.13.2"
-androidx-test-core = "androidx.test:core-ktx:1.6.0"
-androidx-test-junit = "androidx.test.ext:junit-ktx:1.2.0"
-androidx-test-rules = "androidx.test:rules:1.6.0"
-androidx-test-runner = "androidx.test:runner:1.6.0"
-androidx-test-espresso = "androidx.test.espresso:espresso-core:3.6.0"
+androidx-test-core = { module = "androidx.test:core-ktx", version.ref = "androidxTest" }
+androidx-test-rules = { module = "androidx.test:rules", version.ref = "androidxTest" }
+androidx-test-runner = { module = "androidx.test:runner", version.ref = "androidxTest" }
+androidx-test-junit = "androidx.test.ext:junit-ktx:1.2.1"
+androidx-test-espresso = "androidx.test.espresso:espresso-core:3.6.1"
 turbine = "app.cash.turbine:turbine:1.1.0"
 kotest-assertions = { module = "io.kotest:kotest-assertions-core", version.ref = "kotest" }
 
