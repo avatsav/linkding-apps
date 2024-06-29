@@ -11,7 +11,6 @@ kotlin {
             implementation(projects.core.logging)
             implementation(libs.kotlin.atomicfu)
             implementation(libs.sqldelight.coroutines)
-            implementation(libs.sqldelight.paging)
             implementation(libs.sqldelight.primitive)
             api(projects.data.models)
             api(libs.kotlin.datetime)
