@@ -2,11 +2,11 @@ package dev.avatsav.linkding.data.db.sqldelight.daos
 
 import androidx.paging.PagingSource
 import app.cash.sqldelight.Query
-import app.cash.sqldelight.paging3.QueryPagingSource
 import dev.avatsav.linkding.AppCoroutineDispatchers
 import dev.avatsav.linkding.data.db.Database
 import dev.avatsav.linkding.data.db.daos.BookmarksDao
 import dev.avatsav.linkding.data.db.daos.PagingBookmarksDao
+import dev.avatsav.linkding.data.db.sqldelight.paging.QueryPagingSource
 import dev.avatsav.linkding.data.model.Bookmark
 import kotlinx.datetime.Instant
 import me.tatarka.inject.annotations.Inject
