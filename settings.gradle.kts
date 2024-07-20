@@ -46,4 +46,6 @@ include(
     ":features:settings",
     ":features:tags",
     ":thirdparty:paging:compose",
+    ":kim:annotations",
+    ":kim:compiler",
 )

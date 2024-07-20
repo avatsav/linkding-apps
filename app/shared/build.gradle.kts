@@ -32,6 +32,7 @@ kotlin {
             api(projects.features.addBookmark)
             api(projects.features.settings)
             api(projects.features.tags)
+            api(projects.kim.annotations)
         }
         targets.withType<KotlinNativeTarget>().configureEach {
             binaries.framework {
@@ -48,3 +49,4 @@ ksp {
 }
 
 addKspDependencyForAllTargets(libs.kotlin.inject.compiler)
+addKspDependencyForAllTargets(projects.kim.compiler)
