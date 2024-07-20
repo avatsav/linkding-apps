@@ -43,10 +43,5 @@ gradlePlugin {
             id = "convention.android.library"
             implementationClass = "dev.avatsav.gradle.AndroidLibraryPlugin"
         }
-
-        register("androidTest") {
-            id = "convention.android.test"
-            implementationClass = "dev.avatsav.gradle.AndroidTestPlugin"
-        }
     }
 }

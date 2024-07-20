@@ -6,14 +6,13 @@ import androidx.paging.PagingConfig
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.slack.circuit.runtime.CircuitContext
 import com.slack.circuit.runtime.Navigator
-import com.slack.circuit.runtime.internal.rememberStableCoroutineScope
 import com.slack.circuit.runtime.presenter.Presenter
 import com.slack.circuit.runtime.screen.Screen
 import dev.avatsav.linkding.Logger
 import dev.avatsav.linkding.domain.observers.ObserveTags
 import dev.avatsav.linkding.ui.TagsScreen
 import dev.avatsav.linkding.ui.TagsScreenResult
-import dev.avatsav.linkding.ui.compose.rememberCachedPagingFlow
+import dev.avatsav.linkding.ui.compose.rememberRetainedCachedPagingFlow
 import dev.avatsav.linkding.ui.tags.TagsUiEvent.Close
 import dev.avatsav.linkding.ui.tags.TagsUiEvent.SelectTag
 import me.tatarka.inject.annotations.Assisted
@@ -46,8 +45,9 @@ class TagsPresenter(
     @Composable
     override fun present(): TagsUiState {
         val selectedTags = screen.selectedTags.map { it.mapToTag() }
-        val coroutineScope = rememberStableCoroutineScope()
-        val tags = observeTags.flow.rememberCachedPagingFlow(coroutineScope)
+
+        val tags = observeTags.flow
+            .rememberRetainedCachedPagingFlow()
             .collectAsLazyPagingItems()
 
         LaunchedEffect(Unit) {
