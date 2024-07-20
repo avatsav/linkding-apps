@@ -4,13 +4,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import com.github.michaelbull.result.onFailure
 import com.github.michaelbull.result.onSuccess
 import com.slack.circuit.runtime.CircuitContext
 import com.slack.circuit.runtime.Navigator
-import com.slack.circuit.runtime.internal.rememberStableCoroutineScope
 import com.slack.circuit.runtime.presenter.Presenter
 import com.slack.circuit.runtime.screen.Screen
 import dev.avatsav.linkding.Logger
@@ -50,7 +50,7 @@ class AddBookmarkPresenter(
 
     @Composable
     override fun present(): AddBookmarkUiState {
-        val scope = rememberStableCoroutineScope()
+        val scope = rememberCoroutineScope()
 
         var checkUrlResult: CheckUrlResult? by rememberSaveable { mutableStateOf(null) }
         var errorMessage by rememberSaveable { mutableStateOf("") }

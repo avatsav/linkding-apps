@@ -4,18 +4,18 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.paging.LoadState
 import androidx.paging.PagingConfig
 import androidx.paging.compose.collectAsLazyPagingItems
+import com.slack.circuit.retained.collectAsRetainedState
 import com.slack.circuit.retained.rememberRetained
 import com.slack.circuit.runtime.CircuitContext
 import com.slack.circuit.runtime.Navigator
-import com.slack.circuit.runtime.internal.rememberStableCoroutineScope
 import com.slack.circuit.runtime.presenter.Presenter
 import com.slack.circuit.runtime.screen.Screen
 import dev.avatsav.linkding.data.model.BookmarkCategory
@@ -40,7 +40,7 @@ import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.SelectTag
 import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.SetBookmarkCategory
 import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.ShowSettings
 import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.ToggleArchive
-import dev.avatsav.linkding.ui.compose.rememberCachedPagingFlow
+import dev.avatsav.linkding.ui.compose.rememberRetainedCachedPagingFlow
 import kotlinx.coroutines.launch
 import me.tatarka.inject.annotations.Assisted
 import me.tatarka.inject.annotations.Inject
@@ -75,16 +75,21 @@ class BookmarksPresenter(
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     override fun present(): BookmarksUiState {
-        val coroutineScope = rememberStableCoroutineScope()
+        val coroutineScope = rememberCoroutineScope()
 
-        val bookmarks = observeBookmarks.flow.rememberCachedPagingFlow(coroutineScope)
+        // Shame we have to do this to retain the same flow on navigating back.
+        val retainedObserveBookmarks = rememberRetained { observeBookmarks }
+        val bookmarks = retainedObserveBookmarks.flow
+            .rememberRetainedCachedPagingFlow()
             .collectAsLazyPagingItems()
 
-        val searchResults = observeSearchResults.flow.rememberCachedPagingFlow(coroutineScope)
+        val retainedObserveSearchResults = rememberRetained { observeSearchResults }
+        val searchResults = retainedObserveSearchResults.flow
+            .rememberRetainedCachedPagingFlow()
             .collectAsLazyPagingItems()
 
         val isOnline by connectivityObserver.observeIsOnline
-            .collectAsState()
+            .collectAsRetainedState()
 
         var searchQuery by rememberRetained { mutableStateOf("") }
 
@@ -108,7 +113,7 @@ class BookmarksPresenter(
         }
 
         LaunchedEffect(category, selectedTags.size) {
-            observeBookmarks(
+            retainedObserveBookmarks(
                 ObserveBookmarks.Param(
                     cached = true,
                     query = "",
@@ -123,7 +128,7 @@ class BookmarksPresenter(
         }
 
         LaunchedEffect(searchQuery) {
-            observeSearchResults(
+            retainedObserveSearchResults(
                 ObserveSearchResults.Param(
                     query = searchQuery,
                     category = BookmarkCategory.All,

@@ -3,10 +3,10 @@ package dev.avatsav.linkding.ui.settings
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import com.slack.circuit.retained.collectAsRetainedState
 import com.slack.circuit.runtime.CircuitContext
 import com.slack.circuit.runtime.Navigator
-import com.slack.circuit.runtime.internal.rememberStableCoroutineScope
 import com.slack.circuit.runtime.presenter.Presenter
 import com.slack.circuit.runtime.screen.Screen
 import dev.avatsav.linkding.AppInfo
@@ -46,7 +46,7 @@ class SettingsPresenter(
 
     @Composable
     override fun present(): SettingsUiState {
-        val coroutineScope = rememberStableCoroutineScope()
+        val coroutineScope = rememberCoroutineScope()
 
         val apiConfig by remember { preferences.observeApiConfig() }
             .collectAsRetainedState(preferences.getApiConfig())

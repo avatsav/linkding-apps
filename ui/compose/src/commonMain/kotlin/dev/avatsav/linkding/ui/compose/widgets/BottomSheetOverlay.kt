@@ -15,6 +15,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.graphics.Color
@@ -23,7 +24,6 @@ import androidx.compose.ui.unit.dp
 import com.slack.circuit.foundation.internal.BackHandler
 import com.slack.circuit.overlay.Overlay
 import com.slack.circuit.overlay.OverlayNavigator
-import com.slack.circuit.runtime.internal.rememberStableCoroutineScope
 import kotlinx.coroutines.launch
 
 /**
@@ -129,7 +129,7 @@ private constructor(
 
         ModalBottomSheet(
             content = {
-                val coroutineScope = rememberStableCoroutineScope()
+                val coroutineScope = rememberCoroutineScope()
                 BackHandler(enabled = sheetState.isVisible) {
                     coroutineScope
                         .launch { sheetState.hide() }
