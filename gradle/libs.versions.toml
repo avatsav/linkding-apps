@@ -13,7 +13,7 @@ paging = "3.3.0"
 
 circuit = "0.22.2"
 kotlinResult = "2.0.0"
-androidxActivity = "1.9.0"
+androidxActivity = "1.9.1"
 androidxTest = "1.6.1"
 sqldelight = "2.0.2"
 kotest = "5.9.1"
