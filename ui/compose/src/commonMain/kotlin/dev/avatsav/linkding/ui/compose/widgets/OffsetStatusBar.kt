@@ -10,10 +10,13 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Constraints
 
 @Composable
-fun OffsetStatusBar(content: @Composable () -> Unit) {
+fun OffsetStatusBar(
+    modifier: Modifier = Modifier,
+    content: @Composable () -> Unit,
+) {
     val statusBarHeight = WindowInsets.statusBars.getTop(LocalDensity.current)
     Box(
-        modifier = Modifier.layout { measurable, constraints ->
+        modifier = modifier.layout { measurable, constraints ->
             val newConstraints = Constraints(
                 minWidth = constraints.minWidth,
                 maxWidth = constraints.maxWidth,

@@ -47,10 +47,10 @@ import dev.avatsav.linkding.ui.compose.onCondition
 @Composable
 fun PreferenceColumnScope.SwitchPreference(
     title: String,
-    description: String? = null,
     shape: Shape,
-    modifier: Modifier = Modifier,
     checked: Boolean,
+    modifier: Modifier = Modifier,
+    description: String? = null,
     onCheckedChange: () -> Unit,
 ) {
     Preference(
@@ -72,13 +72,15 @@ fun PreferenceColumnScope.SwitchPreference(
 fun PreferenceColumnScope.ThemePreference(
     shape: Shape,
     selected: AppTheme,
-    onSelected: (AppTheme) -> Unit,
+    modifier: Modifier = Modifier,
+    onSelect: (AppTheme) -> Unit,
 ) {
     val options = AppTheme.entries
     Preference(
         title = "Theme",
         description = selected.name,
         shape = shape,
+        modifier = modifier,
     ) {
         SingleChoiceSegmentedButtonRow {
             options.forEachIndexed { index, theme ->
@@ -87,7 +89,7 @@ fun PreferenceColumnScope.ThemePreference(
                         index = index,
                         count = options.size,
                     ),
-                    onClick = { onSelected(theme) },
+                    onClick = { onSelect(theme) },
                     icon = {},
                     selected = theme == selected,
                     colors = SegmentedButtonDefaults.colors().copy(
@@ -114,11 +116,11 @@ fun PreferenceColumnScope.ThemePreference(
 @Composable
 fun PreferenceColumnScope.Preference(
     title: String,
-    description: String? = null,
     shape: Shape,
-    clickable: Boolean = false,
-    onClicked: () -> Unit = {},
     modifier: Modifier = Modifier,
+    description: String? = null,
+    clickable: Boolean = false,
+    onClick: () -> Unit = {},
     control: (@Composable () -> Unit)? = null,
 ) {
     Surface(
@@ -126,7 +128,7 @@ fun PreferenceColumnScope.Preference(
             .defaultMinSize(minHeight = PreferenceDefaults.MinHeight)
             .clip(shape)
             .onCondition(clickable) {
-                clickable { onClicked() }
+                clickable { onClick() }
             },
         shape = shape,
         color = MaterialTheme.colorScheme.surfaceColorAtElevation(8.dp),
@@ -173,8 +175,8 @@ fun PreferenceColumnScope.Preference(
 @Composable
 fun PreferenceSection(
     title: String?,
-    space: Dp = PreferenceDefaults.SectionWidth,
     modifier: Modifier = Modifier,
+    space: Dp = PreferenceDefaults.SectionWidth,
     content: @Composable PreferenceColumnScope.() -> Unit,
 ) {
     Column(
@@ -212,7 +214,7 @@ private class PreferenceColumnScopeWrapper(scope: ColumnScope) :
     PreferenceColumnScope,
     ColumnScope by scope
 
-internal object PreferenceDefaults {
+object PreferenceDefaults {
     val SectionWidth = 2.dp
     val MinHeight = 56.dp
     private val baseShape: CornerBasedShape

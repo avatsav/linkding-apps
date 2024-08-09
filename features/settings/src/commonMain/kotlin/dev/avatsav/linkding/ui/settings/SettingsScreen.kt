@@ -117,7 +117,7 @@ fun Settings(
                         shape = PreferenceDefaults.itemShape(2, 3),
                         title = "Reset",
                         clickable = true,
-                        onClicked = {
+                        onClick = {
                             coroutineScope.launch {
                                 val result = overlayHost.showResetConfirmationDialog()
                                 if (result == DialogResult.Confirm) eventSink(ResetApiConfig)
@@ -131,7 +131,7 @@ fun Settings(
                     ThemePreference(
                         shape = PreferenceDefaults.itemShape(0, 2),
                         selected = state.appTheme,
-                        onSelected = { if (state.appTheme != it) eventSink(SetAppTheme(it)) },
+                        onSelect = { if (state.appTheme != it) eventSink(SetAppTheme(it)) },
                     )
                     SwitchPreference(
                         shape = PreferenceDefaults.itemShape(1, 2),
@@ -154,19 +154,19 @@ fun Settings(
                         title = "Source code",
                         description = "Appding repository on Github",
                         clickable = true,
-                        onClicked = { eventSink(ShowSourceCode) },
+                        onClick = { eventSink(ShowSourceCode) },
                     )
                     Preference(
                         shape = PreferenceDefaults.itemShape(2, 4),
                         title = "Open Source licenses",
                         clickable = true,
-                        onClicked = { eventSink(ShowLicenses) },
+                        onClick = { eventSink(ShowLicenses) },
                     )
                     Preference(
                         shape = PreferenceDefaults.itemShape(3, 4),
                         title = "Privacy policy",
                         clickable = true,
-                        onClicked = { eventSink(ShowPrivacyPolicy) },
+                        onClick = { eventSink(ShowPrivacyPolicy) },
                     )
                 }
             }

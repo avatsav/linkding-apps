@@ -22,8 +22,8 @@ import dev.avatsav.linkding.data.model.Bookmark
 
 @Composable
 fun BookmarkContent(
-    modifier: Modifier = Modifier,
     bookmark: Bookmark,
+    modifier: Modifier = Modifier,
 ) {
     Column(
         modifier = modifier

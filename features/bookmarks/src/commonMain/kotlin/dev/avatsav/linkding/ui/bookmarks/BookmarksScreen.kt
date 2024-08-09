@@ -250,10 +250,10 @@ fun Bookmarks(
                 item(key = state.bookmarkCategory) {
                     FiltersBar(
                         selectedCategory = state.bookmarkCategory,
-                        onCategorySelected = { eventSink(SetBookmarkCategory(it)) },
+                        onSelectCategory = { eventSink(SetBookmarkCategory(it)) },
                         selectedTags = state.selectedTags.toList(),
-                        onTagSelected = { eventSink(SelectTag(it)) },
-                        onTagRemoved = { eventSink(RemoveTag(it)) },
+                        onSelectTag = { eventSink(SelectTag(it)) },
+                        onRemoveTag = { eventSink(RemoveTag(it)) },
                         modifier = Modifier.fillMaxWidth(),
                     )
                 }

@@ -3,6 +3,7 @@ package dev.avatsav.linkding.ui.bookmarks.widgets
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
@@ -34,10 +35,10 @@ import kotlinx.coroutines.launch
 @Composable
 fun FiltersBar(
     selectedCategory: BookmarkCategory,
-    onCategorySelected: (BookmarkCategory) -> Unit,
+    onSelectCategory: (BookmarkCategory) -> Unit,
     selectedTags: List<Tag>,
-    onTagSelected: (Tag) -> Unit,
-    onTagRemoved: (Tag) -> Unit,
+    onSelectTag: (Tag) -> Unit,
+    onRemoveTag: (Tag) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val scope = rememberCoroutineScope()
@@ -52,7 +53,7 @@ fun FiltersBar(
             CategoryFilter(
                 modifier = Modifier.animateItemPlacement(),
                 selected = selectedCategory,
-                onSelected = onCategorySelected,
+                onSelect = onSelectCategory,
             )
         }
         item {
@@ -63,7 +64,7 @@ fun FiltersBar(
                     scope.launch {
                         when (val result = overlayHost.showTagsBottomSheet(selectedTags)) {
                             TagsScreenResult.Dismissed -> {}
-                            is TagsScreenResult.Selected -> onTagSelected(result.tag.mapToTag())
+                            is TagsScreenResult.Selected -> onSelectTag(result.tag.mapToTag())
                         }
                     }
                 },
@@ -75,7 +76,7 @@ fun FiltersBar(
             val item = selectedTags[index]
             TagInputChip(
                 modifier = Modifier.animateItemPlacement(),
-                onClick = { onTagRemoved(item) },
+                onClick = { onRemoveTag(item) },
                 label = { Text(item.name) },
             )
         }
@@ -85,10 +86,10 @@ fun FiltersBar(
 private val bookmarkCategories = BookmarkCategory.entries.toImmutableList()
 
 @Composable
-private fun CategoryFilter(
-    modifier: Modifier = Modifier,
+private fun LazyItemScope.CategoryFilter(
     selected: BookmarkCategory,
-    onSelected: (BookmarkCategory) -> Unit,
+    modifier: Modifier = Modifier,
+    onSelect: (BookmarkCategory) -> Unit,
 ) {
     var showMenu by remember { mutableStateOf(false) }
 
@@ -107,7 +108,7 @@ private fun CategoryFilter(
         bookmarkCategories.forEach { category ->
             DropdownMenuItem(
                 onClick = {
-                    onSelected(category)
+                    onSelect(category)
                     showMenu = false
                 },
                 text = { Text(category.name) },

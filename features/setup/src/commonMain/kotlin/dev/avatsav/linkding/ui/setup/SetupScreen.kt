@@ -87,7 +87,7 @@ fun SetupApiConfig(
     ) { padding ->
 
         Column(
-            modifier = modifier
+            modifier = Modifier
                 .padding(padding)
                 .padding(horizontal = 16.dp)
                 .verticalScroll(rememberScrollState())

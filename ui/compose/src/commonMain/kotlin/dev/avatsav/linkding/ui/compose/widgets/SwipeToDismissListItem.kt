@@ -49,9 +49,9 @@ data class SwipeToDismissAction(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SwipeToDismissListItem(
-    modifier: Modifier = Modifier,
     startToEndAction: SwipeToDismissAction,
     endToStartAction: SwipeToDismissAction,
+    modifier: Modifier = Modifier,
     backgroundColor: Color = Color.Transparent,
     content: @Composable (dismissState: SwipeToDismissBoxState) -> Unit,
 ) {
