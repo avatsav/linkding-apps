@@ -43,8 +43,8 @@ import dev.avatsav.linkding.ui.compose.onCondition
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun OutlinedTagsTextField(
-    modifier: Modifier = Modifier,
     value: TagsTextFieldValue,
+    modifier: Modifier = Modifier,
     label: @Composable (() -> Unit)? = null,
     supportingText: @Composable (() -> Unit)? = null,
     keyboardOptions: KeyboardOptions = KeyboardOptions(),
@@ -89,14 +89,14 @@ fun OutlinedTagsTextField(
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun OutlinedTagsTextField(
-    modifier: Modifier = Modifier,
     tagsValue: TagsTextFieldValue,
     textValue: TextFieldValue,
-    onTextValueChange: (TextFieldValue) -> Unit,
+    modifier: Modifier = Modifier,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     textStyle: TextStyle = LocalTextStyle.current,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     decorationBox: @Composable (innerTextField: @Composable () -> Unit) -> Unit = @Composable { innerTextField -> innerTextField() },
+    onTextValueChange: (TextFieldValue) -> Unit,
 ) {
     val textFieldFocusRequester = remember { FocusRequester() }
 
@@ -118,7 +118,6 @@ private fun OutlinedTagsTextField(
             repeat(tagsValue.tags.size) {
                 val tag = tagsValue.tags[it]
                 TagInputChip(
-                    modifier = modifier,
                     label = { Text(tag.value) },
                     onClick = { tagsValue.removeTag(tag) },
                 )
@@ -207,18 +206,10 @@ private inline fun tagValueChange(
     onValueChange(textFieldValue)
 }
 
-private fun String.isEscaping(): Boolean {
-    return hasSpace() || hasNewLine()
-}
+private fun String.isEscaping(): Boolean = hasSpace() || hasNewLine()
 
-private fun String.removeEscapingCharacters(): String {
-    return replace(" ", "").replace("\n", "")
-}
+private fun String.removeEscapingCharacters(): String = replace(" ", "").replace("\n", "")
 
-private fun String.hasNewLine(): Boolean {
-    return indexOf('\n') != -1
-}
+private fun String.hasNewLine(): Boolean = indexOf('\n') != -1
 
-private fun String.hasSpace(): Boolean {
-    return indexOf(' ') != -1
-}
+private fun String.hasSpace(): Boolean = indexOf(' ') != -1

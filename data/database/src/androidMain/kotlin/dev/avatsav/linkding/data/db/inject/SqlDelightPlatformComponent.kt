@@ -13,11 +13,9 @@ actual interface SqlDelightPlatformComponent {
     @AppScope
     fun provideSqliteDriver(
         application: Application,
-    ): SqlDriver {
-        return AndroidSqliteDriver(
-            schema = Database.Schema,
-            context = application,
-            name = "linkding.db",
-        )
-    }
+    ): SqlDriver = AndroidSqliteDriver(
+        schema = Database.Schema,
+        context = application,
+        name = "linkding.db",
+    )
 }

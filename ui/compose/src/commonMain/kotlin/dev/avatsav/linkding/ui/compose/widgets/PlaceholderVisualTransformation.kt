@@ -26,11 +26,10 @@ class PlaceholderVisualTransformation(
         },
     )
 
-    override fun filter(text: AnnotatedString): TransformedText {
-        return if (text.isEmpty() && this.text.isNotBlank()) {
+    override fun filter(text: AnnotatedString): TransformedText =
+        if (text.isEmpty() && this.text.isNotBlank()) {
             placeHolderTransformedText
         } else {
             TransformedText(text, OffsetMapping.Identity)
         }
-    }
 }

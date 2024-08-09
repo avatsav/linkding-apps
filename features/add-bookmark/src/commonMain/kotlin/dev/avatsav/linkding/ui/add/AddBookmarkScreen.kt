@@ -47,21 +47,19 @@ import dev.avatsav.linkding.ui.compose.widgets.OutlinedTagsTextField
 import dev.avatsav.linkding.ui.compose.widgets.PlaceholderVisualTransformation
 import dev.avatsav.linkding.ui.compose.widgets.SmallCircularProgressIndicator
 import dev.avatsav.linkding.ui.compose.widgets.TagsTextFieldValue
-import kotlinx.coroutines.delay
 import me.tatarka.inject.annotations.Inject
+import kotlinx.coroutines.delay
 
 @Inject
 class AddBookmarkUiFactory : Ui.Factory {
-    override fun create(screen: Screen, context: CircuitContext): Ui<*>? {
-        return when (screen) {
-            is AddBookmarkScreen -> {
-                ui<AddBookmarkUiState> { state, modifier ->
-                    AddBookmark(state, modifier)
-                }
+    override fun create(screen: Screen, context: CircuitContext): Ui<*>? = when (screen) {
+        is AddBookmarkScreen -> {
+            ui<AddBookmarkUiState> { state, modifier ->
+                AddBookmark(state, modifier)
             }
-
-            else -> null
         }
+
+        else -> null
     }
 }
 
@@ -104,7 +102,7 @@ fun AddBookmark(
         },
     ) { padding ->
         Column(
-            modifier = modifier
+            modifier = Modifier
                 .padding(padding)
                 .padding(horizontal = 16.dp)
                 .animateContentSize()

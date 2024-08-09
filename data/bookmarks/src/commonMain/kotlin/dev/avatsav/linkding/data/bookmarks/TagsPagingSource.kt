@@ -10,9 +10,9 @@ import dev.avatsav.linkding.api.LinkdingApiProvider
 import dev.avatsav.linkding.data.bookmarks.mappers.BookmarkErrorMapper
 import dev.avatsav.linkding.data.bookmarks.mappers.TagMapper
 import dev.avatsav.linkding.data.model.Tag
-import kotlinx.coroutines.withContext
 import me.tatarka.inject.annotations.Assisted
 import me.tatarka.inject.annotations.Inject
+import kotlinx.coroutines.withContext
 
 typealias TagsPagingSourceFactory = (List<Tag>) -> TagsPagingSource
 
@@ -30,12 +30,11 @@ class TagsPagingSource(
         private const val FIRST_PAGE = 1
     }
 
-    override fun getRefreshKey(state: PagingState<Int, Tag>): Int? {
-        return state.anchorPosition?.let { anchorPosition ->
+    override fun getRefreshKey(state: PagingState<Int, Tag>): Int? =
+        state.anchorPosition?.let { anchorPosition ->
             val anchorPage = state.closestPageToPosition(anchorPosition)
             anchorPage?.prevKey?.plus(1) ?: anchorPage?.nextKey?.minus(1)
         }
-    }
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Tag> =
         withContext(dispatchers.io) {

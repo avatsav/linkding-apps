@@ -5,19 +5,16 @@ import androidx.paging.PagingData
 import dev.avatsav.linkding.data.bookmarks.TagsRepository
 import dev.avatsav.linkding.data.model.Tag
 import dev.avatsav.linkding.domain.PagedObserver
-import kotlinx.coroutines.flow.Flow
 import me.tatarka.inject.annotations.Inject
+import kotlinx.coroutines.flow.Flow
 
 @Inject
-class ObserveTags(private val repository: TagsRepository) :
-    PagedObserver<ObserveTags.Param, Tag>() {
+class ObserveTags(private val repository: TagsRepository) : PagedObserver<ObserveTags.Param, Tag>() {
 
-    override fun createObservable(params: Param): Flow<PagingData<Tag>> {
-        return repository.getTagsPaged(
-            pagingConfig = params.pagingConfig,
-            selectedTags = params.selectedTags,
-        )
-    }
+    override fun createObservable(params: Param): Flow<PagingData<Tag>> = repository.getTagsPaged(
+        pagingConfig = params.pagingConfig,
+        selectedTags = params.selectedTags,
+    )
 
     data class Param(
         val selectedTags: List<Tag> = emptyList(),

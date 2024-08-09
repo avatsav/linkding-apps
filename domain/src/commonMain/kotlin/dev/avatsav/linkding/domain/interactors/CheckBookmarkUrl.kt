@@ -6,8 +6,8 @@ import dev.avatsav.linkding.AppCoroutineDispatchers
 import dev.avatsav.linkding.data.bookmarks.BookmarksRepository
 import dev.avatsav.linkding.data.model.CheckUrlResult
 import dev.avatsav.linkding.domain.Interactor
-import kotlinx.coroutines.withContext
 import me.tatarka.inject.annotations.Inject
+import kotlinx.coroutines.withContext
 
 @Inject
 class CheckBookmarkUrl(
@@ -15,9 +15,8 @@ class CheckBookmarkUrl(
     private val dispatchers: AppCoroutineDispatchers,
 ) : Interactor<String, CheckUrlResult, String>() {
 
-    override suspend fun doWork(param: String): Result<CheckUrlResult, String> {
-        return withContext(dispatchers.io) {
+    override suspend fun doWork(param: String): Result<CheckUrlResult, String> =
+        withContext(dispatchers.io) {
             repository.checkUrl(param).mapError { it.message }
         }
-    }
 }

@@ -8,8 +8,8 @@ import dev.avatsav.linkding.ui.TagsScreen
 import dev.avatsav.linkding.ui.TagsScreenResult
 import dev.avatsav.linkding.ui.compose.widgets.BottomSheetOverlay
 
-suspend fun OverlayHost.showTagsBottomSheet(selectedTags: List<Tag>): TagsScreenResult {
-    return show<TagsScreenResult>(
+suspend fun OverlayHost.showTagsBottomSheet(selectedTags: List<Tag>): TagsScreenResult =
+    show<TagsScreenResult>(
         BottomSheetOverlay(
             model = selectedTags,
             onDismiss = { TagsScreenResult.Dismissed },
@@ -31,4 +31,3 @@ suspend fun OverlayHost.showTagsBottomSheet(selectedTags: List<Tag>): TagsScreen
             )
         },
     )
-}

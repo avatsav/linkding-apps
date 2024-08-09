@@ -41,9 +41,9 @@ import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.SetBookmarkCategory
 import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.ShowSettings
 import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.ToggleArchive
 import dev.avatsav.linkding.ui.compose.rememberRetainedCachedPagingFlow
-import kotlinx.coroutines.launch
 import me.tatarka.inject.annotations.Assisted
 import me.tatarka.inject.annotations.Inject
+import kotlinx.coroutines.launch
 
 @Inject
 class BookmarksUiPresenterFactory(
@@ -53,11 +53,9 @@ class BookmarksUiPresenterFactory(
         screen: Screen,
         navigator: Navigator,
         context: CircuitContext,
-    ): Presenter<*>? {
-        return when (screen) {
-            is BookmarksScreen -> presenterFactory(navigator)
-            else -> null
-        }
+    ): Presenter<*>? = when (screen) {
+        is BookmarksScreen -> presenterFactory(navigator)
+        else -> null
     }
 }
 

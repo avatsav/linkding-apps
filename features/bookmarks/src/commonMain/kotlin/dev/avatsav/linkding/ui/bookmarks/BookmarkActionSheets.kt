@@ -27,35 +27,31 @@ import dev.avatsav.linkding.data.model.Bookmark
 import dev.avatsav.linkding.ui.bookmarks.widgets.BookmarkContent
 import dev.avatsav.linkding.ui.compose.widgets.BottomSheetOverlay
 
-suspend fun OverlayHost.showDeleteBookmarkAction(bookmark: Bookmark): ActionResult {
-    return show(
-        BottomSheetOverlay(
-            model = bookmark,
-            onDismiss = { ActionResult.Dismissed },
-        ) { toDelete, overlayNavigator ->
-            DeleteBookmarkActionSheet(
-                bookmark = toDelete,
-                onConfirm = { overlayNavigator.finish(ActionResult.Confirmed) },
-                onCancelled = { overlayNavigator.finish(ActionResult.Cancelled) },
-            )
-        },
-    )
-}
+suspend fun OverlayHost.showDeleteBookmarkAction(bookmark: Bookmark): ActionResult = show(
+    BottomSheetOverlay(
+        model = bookmark,
+        onDismiss = { ActionResult.Dismissed },
+    ) { toDelete, overlayNavigator ->
+        DeleteBookmarkActionSheet(
+            bookmark = toDelete,
+            onConfirm = { overlayNavigator.finish(ActionResult.Confirmed) },
+            onCancel = { overlayNavigator.finish(ActionResult.Cancelled) },
+        )
+    },
+)
 
-suspend fun OverlayHost.showArchiveBookmarkAction(bookmark: Bookmark): ActionResult {
-    return show(
-        BottomSheetOverlay(
-            model = bookmark,
-            onDismiss = { ActionResult.Dismissed },
-        ) { toArchive, overlayNavigator ->
-            ArchiveBookmarkActionSheet(
-                bookmark = toArchive,
-                onConfirm = { overlayNavigator.finish(ActionResult.Confirmed) },
-                onCancelled = { overlayNavigator.finish(ActionResult.Cancelled) },
-            )
-        },
-    )
-}
+suspend fun OverlayHost.showArchiveBookmarkAction(bookmark: Bookmark): ActionResult = show(
+    BottomSheetOverlay(
+        model = bookmark,
+        onDismiss = { ActionResult.Dismissed },
+    ) { toArchive, overlayNavigator ->
+        ArchiveBookmarkActionSheet(
+            bookmark = toArchive,
+            onConfirm = { overlayNavigator.finish(ActionResult.Confirmed) },
+            onCancel = { overlayNavigator.finish(ActionResult.Cancelled) },
+        )
+    },
+)
 
 enum class ActionResult {
     Confirmed,
@@ -67,14 +63,14 @@ enum class ActionResult {
 fun DeleteBookmarkActionSheet(
     bookmark: Bookmark,
     onConfirm: () -> Unit,
-    onCancelled: () -> Unit,
+    onCancel: () -> Unit,
 ) {
     BookmarkActionSheet(
         titleText = "Delete Bookmark?",
         imageVector = Icons.Default.Delete,
         bookmark = bookmark,
         onConfirm = onConfirm,
-        onCancelled = onCancelled,
+        onCancel = onCancel,
     )
 }
 
@@ -82,14 +78,14 @@ fun DeleteBookmarkActionSheet(
 fun ArchiveBookmarkActionSheet(
     bookmark: Bookmark,
     onConfirm: () -> Unit,
-    onCancelled: () -> Unit,
+    onCancel: () -> Unit,
 ) {
     BookmarkActionSheet(
         titleText = if (bookmark.archived) "Unarchive Bookmark?" else "Archive Bookmark?",
         imageVector = if (bookmark.archived) Icons.Default.Unarchive else Icons.Default.Archive,
         bookmark = bookmark,
         onConfirm = onConfirm,
-        onCancelled = onCancelled,
+        onCancel = onCancel,
     )
 }
 
@@ -99,10 +95,11 @@ fun BookmarkActionSheet(
     imageVector: ImageVector,
     bookmark: Bookmark,
     onConfirm: () -> Unit,
-    onCancelled: () -> Unit,
+    onCancel: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     Column(
-        modifier = Modifier.padding(
+        modifier = modifier.padding(
             start = 16.dp,
             end = 16.dp,
             top = 12.dp,
@@ -133,7 +130,7 @@ fun BookmarkActionSheet(
             modifier = Modifier.align(Alignment.End),
             horizontalArrangement = Arrangement.spacedBy(16.dp),
         ) {
-            OutlinedButton(onClick = { onCancelled() }) {
+            OutlinedButton(onClick = { onCancel() }) {
                 Text("Cancel")
             }
             Button(onClick = { onConfirm() }) {

@@ -67,21 +67,19 @@ import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.ShowSettings
 import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.ToggleArchive
 import dev.avatsav.linkding.ui.bookmarks.widgets.BookmarkListItem
 import dev.avatsav.linkding.ui.bookmarks.widgets.FiltersBar
-import kotlinx.coroutines.launch
 import me.tatarka.inject.annotations.Inject
+import kotlinx.coroutines.launch
 
 @Inject
 class BookmarksUiFactory : Ui.Factory {
-    override fun create(screen: Screen, context: CircuitContext): Ui<*>? {
-        return when (screen) {
-            is BookmarksScreen -> {
-                ui<BookmarksUiState> { state, modifier ->
-                    Bookmarks(state, modifier)
-                }
+    override fun create(screen: Screen, context: CircuitContext): Ui<*>? = when (screen) {
+        is BookmarksScreen -> {
+            ui<BookmarksUiState> { state, modifier ->
+                Bookmarks(state, modifier)
             }
-
-            else -> null
         }
+
+        else -> null
     }
 }
 
@@ -252,10 +250,10 @@ fun Bookmarks(
                 item(key = state.bookmarkCategory) {
                     FiltersBar(
                         selectedCategory = state.bookmarkCategory,
-                        onCategorySelected = { eventSink(SetBookmarkCategory(it)) },
+                        onSelectCategory = { eventSink(SetBookmarkCategory(it)) },
                         selectedTags = state.selectedTags.toList(),
-                        onTagSelected = { eventSink(SelectTag(it)) },
-                        onTagRemoved = { eventSink(RemoveTag(it)) },
+                        onSelectTag = { eventSink(SelectTag(it)) },
+                        onRemoveTag = { eventSink(RemoveTag(it)) },
                         modifier = Modifier.fillMaxWidth(),
                     )
                 }

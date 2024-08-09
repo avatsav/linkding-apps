@@ -7,13 +7,12 @@ import dev.avatsav.linkding.data.model.Bookmark
 import dev.avatsav.linkding.data.model.BookmarkCategory
 import dev.avatsav.linkding.data.model.Tag
 import dev.avatsav.linkding.domain.PagedObserver
+import me.tatarka.inject.annotations.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
-import me.tatarka.inject.annotations.Inject
 
 @Inject
-class ObserveSearchResults(private val repository: BookmarksRepository) :
-    PagedObserver<ObserveSearchResults.Param, Bookmark>() {
+class ObserveSearchResults(private val repository: BookmarksRepository) : PagedObserver<ObserveSearchResults.Param, Bookmark>() {
 
     override fun createObservable(params: Param): Flow<PagingData<Bookmark>> {
         if (params.query.isBlank()) return flowOf(PagingData.empty())

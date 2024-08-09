@@ -23,11 +23,9 @@ class RootUiPresenterFactory(
         screen: Screen,
         navigator: Navigator,
         context: CircuitContext,
-    ): Presenter<*>? {
-        return when (screen) {
-            is RootScreen -> presenterFactory(navigator, screen)
-            else -> null
-        }
+    ): Presenter<*>? = when (screen) {
+        is RootScreen -> presenterFactory(navigator, screen)
+        else -> null
     }
 }
 

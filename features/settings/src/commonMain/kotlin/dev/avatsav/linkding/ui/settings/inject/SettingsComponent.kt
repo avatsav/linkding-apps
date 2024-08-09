@@ -13,7 +13,8 @@ interface SettingsComponent {
     @IntoSet
     @Provides
     @UiScope
-    fun bindSettingsPresenterFactory(factory: SettingsUiPresenterFactory): Presenter.Factory = factory
+    fun bindSettingsPresenterFactory(factory: SettingsUiPresenterFactory): Presenter.Factory =
+        factory
 
     @IntoSet
     @Provides

@@ -49,9 +49,9 @@ data class SwipeToDismissAction(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SwipeToDismissListItem(
-    modifier: Modifier = Modifier,
     startToEndAction: SwipeToDismissAction,
     endToStartAction: SwipeToDismissAction,
+    modifier: Modifier = Modifier,
     backgroundColor: Color = Color.Transparent,
     content: @Composable (dismissState: SwipeToDismissBoxState) -> Unit,
 ) {
@@ -160,9 +160,7 @@ private fun SwipeDismissBackgroundContent(
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
-private fun SwipeToDismissBoxValue.willDismiss(): Boolean {
-    return this == StartToEnd || this == EndToStart
-}
+private fun SwipeToDismissBoxValue.willDismiss(): Boolean = this == StartToEnd || this == EndToStart
 
 // https://issuetracker.google.com/issues/252334353#comment16
 @Composable

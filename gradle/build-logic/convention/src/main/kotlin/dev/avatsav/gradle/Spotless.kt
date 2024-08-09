@@ -12,16 +12,24 @@ internal fun Project.configureSpotless() {
     pluginManager.apply("com.diffplug.spotless")
     configure<SpotlessExtension> {
         lineEndings = LineEnding.PLATFORM_NATIVE
-        val ktLintVersion = findVersion("ktlint")
+        val ktlintVersion = libs.findLibrary("ktlint").get().get().version
+        val ktlintCompose = libs.findLibrary("ktlintCompose").get().get().toString()
+
         kotlin {
             target("src/**/*.kt")
             targetExclude("${layout.buildDirectory}/**/*.kt")
-            ktlint(ktLintVersion)
+            ktlint(ktlintVersion)
+                .editorConfigOverride(
+                    mapOf("android" to "true"),
+                )
+                .customRuleSets(
+                    listOf(ktlintCompose),
+                )
         }
         kotlinGradle {
             target("*.kts")
             targetExclude("${layout.buildDirectory}/**/*.kts")
-            ktlint(ktLintVersion)
+            ktlint(ktlintVersion)
         }
     }
 }

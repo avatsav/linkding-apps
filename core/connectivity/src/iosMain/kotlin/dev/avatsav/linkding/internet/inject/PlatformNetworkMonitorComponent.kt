@@ -9,7 +9,5 @@ actual interface PlatformNetworkMonitorComponent {
 
     @Provides
     @AppScope
-    fun provideNetworkMonitor(): NetworkMonitor {
-        return IosNetworkMonitor()
-    }
+    fun provideNetworkMonitor(): NetworkMonitor = IosNetworkMonitor()
 }

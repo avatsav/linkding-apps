@@ -44,21 +44,19 @@ import dev.avatsav.linkding.ui.settings.widgets.PreferenceDefaults
 import dev.avatsav.linkding.ui.settings.widgets.PreferenceSection
 import dev.avatsav.linkding.ui.settings.widgets.SwitchPreference
 import dev.avatsav.linkding.ui.settings.widgets.ThemePreference
-import kotlinx.coroutines.launch
 import me.tatarka.inject.annotations.Inject
+import kotlinx.coroutines.launch
 
 @Inject
 class SettingsUiFactory : Ui.Factory {
-    override fun create(screen: Screen, context: CircuitContext): Ui<*>? {
-        return when (screen) {
-            is SettingsScreen -> {
-                ui<SettingsUiState> { state, modifier ->
-                    Settings(state, modifier)
-                }
+    override fun create(screen: Screen, context: CircuitContext): Ui<*>? = when (screen) {
+        is SettingsScreen -> {
+            ui<SettingsUiState> { state, modifier ->
+                Settings(state, modifier)
             }
-
-            else -> null
         }
+
+        else -> null
     }
 }
 
@@ -119,7 +117,7 @@ fun Settings(
                         shape = PreferenceDefaults.itemShape(2, 3),
                         title = "Reset",
                         clickable = true,
-                        onClicked = {
+                        onClick = {
                             coroutineScope.launch {
                                 val result = overlayHost.showResetConfirmationDialog()
                                 if (result == DialogResult.Confirm) eventSink(ResetApiConfig)
@@ -133,7 +131,7 @@ fun Settings(
                     ThemePreference(
                         shape = PreferenceDefaults.itemShape(0, 2),
                         selected = state.appTheme,
-                        onSelected = { if (state.appTheme != it) eventSink(SetAppTheme(it)) },
+                        onSelect = { if (state.appTheme != it) eventSink(SetAppTheme(it)) },
                     )
                     SwitchPreference(
                         shape = PreferenceDefaults.itemShape(1, 2),
@@ -156,19 +154,19 @@ fun Settings(
                         title = "Source code",
                         description = "Appding repository on Github",
                         clickable = true,
-                        onClicked = { eventSink(ShowSourceCode) },
+                        onClick = { eventSink(ShowSourceCode) },
                     )
                     Preference(
                         shape = PreferenceDefaults.itemShape(2, 4),
                         title = "Open Source licenses",
                         clickable = true,
-                        onClicked = { eventSink(ShowLicenses) },
+                        onClick = { eventSink(ShowLicenses) },
                     )
                     Preference(
                         shape = PreferenceDefaults.itemShape(3, 4),
                         title = "Privacy policy",
                         clickable = true,
-                        onClicked = { eventSink(ShowPrivacyPolicy) },
+                        onClick = { eventSink(ShowPrivacyPolicy) },
                     )
                 }
             }
@@ -192,17 +190,15 @@ private fun MadeInMunich() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Inject
-suspend fun OverlayHost.showResetConfirmationDialog(): DialogResult {
-    return show(
-        alertDialogOverlay(
-            title = { Text("Confirm Reset") },
-            text = { Text("Are you sure you want to reset the api configuration?") },
-            confirmButton = { onClick ->
-                Button(onClick = onClick) { Text("Yes") }
-            },
-            dismissButton = { onClick ->
-                OutlinedButton(onClick = onClick) { Text("No") }
-            },
-        ),
-    )
-}
+suspend fun OverlayHost.showResetConfirmationDialog(): DialogResult = show(
+    alertDialogOverlay(
+        title = { Text("Confirm Reset") },
+        text = { Text("Are you sure you want to reset the api configuration?") },
+        confirmButton = { onClick ->
+            Button(onClick = onClick) { Text("Yes") }
+        },
+        dismissButton = { onClick ->
+            OutlinedButton(onClick = onClick) { Text("No") }
+        },
+    ),
+)

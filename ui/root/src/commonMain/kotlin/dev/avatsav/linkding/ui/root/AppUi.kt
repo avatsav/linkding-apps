@@ -23,8 +23,8 @@ import dev.avatsav.linkding.data.model.prefs.AppTheme
 import dev.avatsav.linkding.prefs.AppPreferences
 import dev.avatsav.linkding.ui.UrlScreen
 import dev.avatsav.linkding.ui.theme.LinkdingTheme
-import kotlinx.collections.immutable.ImmutableList
 import me.tatarka.inject.annotations.Inject
+import kotlinx.collections.immutable.ImmutableList
 
 interface AppUi {
     @Composable
@@ -86,9 +86,8 @@ private fun AppPreferences.shouldUseDarkTheme(): Boolean {
 }
 
 @Composable
-private fun AppPreferences.shouldUseDynamicColors(): Boolean {
-    return remember { observeUseDynamicColors() }.collectAsState(initial = true).value
-}
+private fun AppPreferences.shouldUseDynamicColors(): Boolean =
+    remember { observeUseDynamicColors() }.collectAsState(initial = true).value
 
 private class LinkdingNavigator(
     private val navigator: Navigator,
@@ -117,11 +116,7 @@ private class LinkdingNavigator(
         return navigator.resetRoot(newRoot, saveState, restoreState)
     }
 
-    override fun peek(): Screen? {
-        return navigator.peek()
-    }
+    override fun peek(): Screen? = navigator.peek()
 
-    override fun peekBackStack(): ImmutableList<Screen> {
-        return navigator.peekBackStack()
-    }
+    override fun peekBackStack(): ImmutableList<Screen> = navigator.peekBackStack()
 }

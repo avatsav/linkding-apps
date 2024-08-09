@@ -16,9 +16,9 @@ import dev.avatsav.linkding.prefs.AppPreferences
 import dev.avatsav.linkding.ui.SettingsScreen
 import dev.avatsav.linkding.ui.SetupScreen
 import dev.avatsav.linkding.ui.UrlScreen
-import kotlinx.coroutines.launch
 import me.tatarka.inject.annotations.Assisted
 import me.tatarka.inject.annotations.Inject
+import kotlinx.coroutines.launch
 
 @Inject
 class SettingsUiPresenterFactory(
@@ -28,11 +28,9 @@ class SettingsUiPresenterFactory(
         screen: Screen,
         navigator: Navigator,
         context: CircuitContext,
-    ): Presenter<*>? {
-        return when (screen) {
-            is SettingsScreen -> presenterFactory(navigator)
-            else -> null
-        }
+    ): Presenter<*>? = when (screen) {
+        is SettingsScreen -> presenterFactory(navigator)
+        else -> null
     }
 }
 

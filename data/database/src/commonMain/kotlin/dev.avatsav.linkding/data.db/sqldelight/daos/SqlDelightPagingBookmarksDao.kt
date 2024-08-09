@@ -8,8 +8,8 @@ import dev.avatsav.linkding.data.db.daos.BookmarksDao
 import dev.avatsav.linkding.data.db.daos.PagingBookmarksDao
 import dev.avatsav.linkding.data.db.sqldelight.paging.QueryPagingSource
 import dev.avatsav.linkding.data.model.Bookmark
-import kotlinx.datetime.Instant
 import me.tatarka.inject.annotations.Inject
+import kotlinx.datetime.Instant
 
 @Inject
 class SqlDelightPagingBookmarksDao(
@@ -18,18 +18,14 @@ class SqlDelightPagingBookmarksDao(
     private val dispatchers: AppCoroutineDispatchers,
 ) : PagingBookmarksDao {
 
-    override fun bookmarksPagingSource(): PagingSource<Int, Bookmark> {
-        return QueryPagingSource(
-            countQuery = db.bookmarksQueries.countBookmarks(),
-            transacter = db.bookmarksQueries,
-            context = dispatchers.io,
-            queryProvider = ::queryBookmarks,
-        )
-    }
+    override fun bookmarksPagingSource(): PagingSource<Int, Bookmark> = QueryPagingSource(
+        countQuery = db.bookmarksQueries.countBookmarks(),
+        transacter = db.bookmarksQueries,
+        context = dispatchers.io,
+        queryProvider = ::queryBookmarks,
+    )
 
-    override fun countBookmarks(): Long {
-        return db.bookmarksQueries.countBookmarks().executeAsOne()
-    }
+    override fun countBookmarks(): Long = db.bookmarksQueries.countBookmarks().executeAsOne()
 
     override fun refresh(bookmarks: List<Bookmark>) {
         db.transaction {
@@ -42,13 +38,12 @@ class SqlDelightPagingBookmarksDao(
         bookmarksDao.upsert(bookmarks)
     }
 
-    private fun queryBookmarks(limit: Long, offset: Long): Query<Bookmark> {
-        return db.bookmarksQueries.bookmarkEntries(
+    private fun queryBookmarks(limit: Long, offset: Long): Query<Bookmark> =
+        db.bookmarksQueries.bookmarkEntries(
             limit = limit,
             offset = offset,
             mapper = this::mapToBookmark,
         )
-    }
 
     private fun mapToBookmark(
         id: Long,

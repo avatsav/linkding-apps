@@ -10,10 +10,8 @@ actual interface SqlDelightPlatformComponent {
 
     @Provides
     @AppScope
-    fun provideSqliteDriver(): SqlDriver {
-        return NativeSqliteDriver(
-            schema = Database.Schema,
-            name = "linkding.db",
-        )
-    }
+    fun provideSqliteDriver(): SqlDriver = NativeSqliteDriver(
+        schema = Database.Schema,
+        name = "linkding.db",
+    )
 }

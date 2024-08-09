@@ -33,8 +33,7 @@ abstract class Observer<P : Any, R> {
     protected abstract fun createObservable(params: P): Flow<R>
 }
 
-abstract class PagedObserver<P : PagedObserver.Param<T>, T : Any> :
-    Observer<P, PagingData<T>>() {
+abstract class PagedObserver<P : PagedObserver.Param<T>, T : Any> : Observer<P, PagingData<T>>() {
 
     interface Param<T : Any> {
         val pagingConfig: PagingConfig

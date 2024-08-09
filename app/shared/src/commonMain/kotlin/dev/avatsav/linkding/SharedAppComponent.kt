@@ -6,11 +6,11 @@ import dev.avatsav.linkding.inject.AppScope
 import dev.avatsav.linkding.inject.LoggerComponent
 import dev.avatsav.linkding.internet.inject.ConnectivityComponent
 import dev.avatsav.linkding.prefs.inject.PreferencesComponent
+import me.tatarka.inject.annotations.Provides
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.SupervisorJob
-import me.tatarka.inject.annotations.Provides
 
 expect interface SharedPlatformAppComponent
 

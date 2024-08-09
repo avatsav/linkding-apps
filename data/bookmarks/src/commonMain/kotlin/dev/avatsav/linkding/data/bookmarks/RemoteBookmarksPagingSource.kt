@@ -12,9 +12,9 @@ import dev.avatsav.linkding.data.bookmarks.mappers.BookmarkMapper
 import dev.avatsav.linkding.data.bookmarks.mappers.toLinkding
 import dev.avatsav.linkding.data.model.Bookmark
 import dev.avatsav.linkding.data.model.BookmarkCategory
-import kotlinx.coroutines.withContext
 import me.tatarka.inject.annotations.Assisted
 import me.tatarka.inject.annotations.Inject
+import kotlinx.coroutines.withContext
 
 typealias RemoteBookmarksPagingSourceFactory = (String, BookmarkCategory, List<String>) -> RemoteBookmarksPagingSource
 
@@ -34,12 +34,11 @@ class RemoteBookmarksPagingSource(
         private const val FIRST_PAGE = 1
     }
 
-    override fun getRefreshKey(state: PagingState<Int, Bookmark>): Int? {
-        return state.anchorPosition?.let { anchorPosition ->
+    override fun getRefreshKey(state: PagingState<Int, Bookmark>): Int? =
+        state.anchorPosition?.let { anchorPosition ->
             val anchorPage = state.closestPageToPosition(anchorPosition)
             anchorPage?.prevKey?.plus(1) ?: anchorPage?.nextKey?.minus(1)
         }
-    }
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Bookmark> =
         withContext(dispatchers.io) {

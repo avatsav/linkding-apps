@@ -1,6 +1,5 @@
 @file:Suppress("UnstableApiUsage")
 
-
 dependencyResolutionManagement {
     repositories {
         google()
@@ -14,5 +13,6 @@ dependencyResolutionManagement {
     }
 }
 
-include(":convention")
+rootProject.name = "build-logic"
 
+include(":convention")

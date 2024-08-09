@@ -17,7 +17,5 @@ interface PreferencesComponent : PreferencesPlatformComponent {
         settings: ObservableSettings,
         logger: Logger,
         dispatchers: AppCoroutineDispatchers,
-    ): AppPreferences {
-        return DefaultAppPreferences(settings, logger, dispatchers)
-    }
+    ): AppPreferences = DefaultAppPreferences(settings, logger, dispatchers)
 }

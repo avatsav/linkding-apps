@@ -9,10 +9,10 @@ import dev.avatsav.linkding.AppCoroutineDispatchers
 import dev.avatsav.linkding.Logger
 import dev.avatsav.linkding.data.model.ApiConfig
 import dev.avatsav.linkding.data.model.prefs.AppTheme
-import dev.avatsav.linkding.prefs.HOST_URL_CONFIGURATION_KEY as HOST_URL_CONFIGURATION_KEY1
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
+import dev.avatsav.linkding.prefs.HOST_URL_CONFIGURATION_KEY as HOST_URL_CONFIGURATION_KEY1
 
 private const val HOST_URL_CONFIGURATION_KEY = "linkding-hostUrl"
 private const val API_KEY_CONFIGURATION_KEY = "linkding-apiKey"

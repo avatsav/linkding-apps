@@ -7,8 +7,8 @@ import androidx.paging.PagingData
 import dev.avatsav.linkding.data.db.daos.PagingBookmarksDao
 import dev.avatsav.linkding.data.model.Bookmark
 import dev.avatsav.linkding.data.model.BookmarkCategory
-import kotlinx.coroutines.flow.Flow
 import me.tatarka.inject.annotations.Inject
+import kotlinx.coroutines.flow.Flow
 
 @OptIn(ExperimentalPagingApi::class)
 @Inject
@@ -21,12 +21,10 @@ class BookmarksPagingDataFactory(
         cached: Boolean,
         pagingConfig: PagingConfig,
         param: Param,
-    ): Flow<PagingData<Bookmark>> {
-        return if (cached) {
-            cachedBookmarksFlow(pagingConfig, param)
-        } else {
-            remoteBookmarksFlow(pagingConfig, param)
-        }
+    ): Flow<PagingData<Bookmark>> = if (cached) {
+        cachedBookmarksFlow(pagingConfig, param)
+    } else {
+        remoteBookmarksFlow(pagingConfig, param)
     }
 
     private fun remoteBookmarksFlow(pagingConfig: PagingConfig, param: Param) = Pager(

@@ -20,23 +20,21 @@ import me.tatarka.inject.annotations.Inject
 
 @Inject
 class RootUiFactory : Ui.Factory {
-    override fun create(screen: Screen, context: CircuitContext): Ui<*>? {
-        return when (screen) {
-            is RootScreen -> {
-                ui<RootUiState> { state, modifier ->
-                    RootScreen(state, modifier)
-                }
+    override fun create(screen: Screen, context: CircuitContext): Ui<*>? = when (screen) {
+        is RootScreen -> {
+            ui<RootUiState> { state, modifier ->
+                RootScreen(state, modifier)
             }
-
-            else -> null
         }
+
+        else -> null
     }
 }
 
 @Composable
 fun RootScreen(
     state: RootUiState,
-    modifier: Modifier,
+    modifier: Modifier = Modifier,
 ) {
     Scaffold(
         modifier = modifier,

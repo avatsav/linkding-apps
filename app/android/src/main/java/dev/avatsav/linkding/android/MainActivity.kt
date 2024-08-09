@@ -78,6 +78,5 @@ private fun ComponentActivity.enableEdgeToEdge(appTheme: AppTheme) {
     enableEdgeToEdge(statusBarStyle = style, navigationBarStyle = style)
 }
 
-private fun AndroidAppComponent.Companion.from(context: Context): AndroidAppComponent {
-    return (context.applicationContext as LinkdingApplication).component
-}
+private fun AndroidAppComponent.Companion.from(context: Context): AndroidAppComponent =
+    (context.applicationContext as LinkdingApplication).component
