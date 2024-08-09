@@ -9,7 +9,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
 
@@ -23,11 +23,11 @@ jobs:
         with:
           gradle-home-cache-cleanup: true
 
+      - name: Lint
+        run: ./gradlew spotlessCheck lintDebug
+
       - name: Test
         run: ./gradlew testDebugUnitTest
-
-      - name: Check
-        run: ./gradlew spotlessCheck lintDebug
 
       - name: Build
         run: ./gradlew assembleDebug
