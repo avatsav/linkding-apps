@@ -67,8 +67,8 @@ import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.ShowSettings
 import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.ToggleArchive
 import dev.avatsav.linkding.ui.bookmarks.widgets.BookmarkListItem
 import dev.avatsav.linkding.ui.bookmarks.widgets.FiltersBar
-import kotlinx.coroutines.launch
 import me.tatarka.inject.annotations.Inject
+import kotlinx.coroutines.launch
 
 @Inject
 class BookmarksUiFactory : Ui.Factory {

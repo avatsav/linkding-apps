@@ -8,8 +8,8 @@ import dev.avatsav.linkding.data.db.daos.BookmarksDao
 import dev.avatsav.linkding.data.db.daos.PagingBookmarksDao
 import dev.avatsav.linkding.data.db.sqldelight.paging.QueryPagingSource
 import dev.avatsav.linkding.data.model.Bookmark
-import kotlinx.datetime.Instant
 import me.tatarka.inject.annotations.Inject
+import kotlinx.datetime.Instant
 
 @Inject
 class SqlDelightPagingBookmarksDao(

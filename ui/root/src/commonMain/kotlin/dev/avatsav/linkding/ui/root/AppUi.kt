@@ -23,8 +23,8 @@ import dev.avatsav.linkding.data.model.prefs.AppTheme
 import dev.avatsav.linkding.prefs.AppPreferences
 import dev.avatsav.linkding.ui.UrlScreen
 import dev.avatsav.linkding.ui.theme.LinkdingTheme
-import kotlinx.collections.immutable.ImmutableList
 import me.tatarka.inject.annotations.Inject
+import kotlinx.collections.immutable.ImmutableList
 
 interface AppUi {
     @Composable

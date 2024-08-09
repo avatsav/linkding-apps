@@ -44,8 +44,8 @@ import dev.avatsav.linkding.ui.settings.widgets.PreferenceDefaults
 import dev.avatsav.linkding.ui.settings.widgets.PreferenceSection
 import dev.avatsav.linkding.ui.settings.widgets.SwitchPreference
 import dev.avatsav.linkding.ui.settings.widgets.ThemePreference
-import kotlinx.coroutines.launch
 import me.tatarka.inject.annotations.Inject
+import kotlinx.coroutines.launch
 
 @Inject
 class SettingsUiFactory : Ui.Factory {

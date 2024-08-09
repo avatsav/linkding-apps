@@ -1,8 +1,8 @@
 package dev.avatsav.linkding
 
 import dev.avatsav.linkding.inject.AppScope
-import java.util.prefs.Preferences
 import me.tatarka.inject.annotations.Provides
+import java.util.prefs.Preferences
 
 actual interface SharedPlatformAppComponent {
 

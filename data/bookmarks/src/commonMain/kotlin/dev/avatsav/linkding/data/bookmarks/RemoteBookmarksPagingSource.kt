@@ -12,9 +12,9 @@ import dev.avatsav.linkding.data.bookmarks.mappers.BookmarkMapper
 import dev.avatsav.linkding.data.bookmarks.mappers.toLinkding
 import dev.avatsav.linkding.data.model.Bookmark
 import dev.avatsav.linkding.data.model.BookmarkCategory
-import kotlinx.coroutines.withContext
 import me.tatarka.inject.annotations.Assisted
 import me.tatarka.inject.annotations.Inject
+import kotlinx.coroutines.withContext
 
 typealias RemoteBookmarksPagingSourceFactory = (String, BookmarkCategory, List<String>) -> RemoteBookmarksPagingSource
 

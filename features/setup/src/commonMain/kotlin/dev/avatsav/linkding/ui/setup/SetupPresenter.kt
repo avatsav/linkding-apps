@@ -22,9 +22,9 @@ import dev.avatsav.linkding.domain.interactors.VerifyApiConfiguration
 import dev.avatsav.linkding.prefs.AppPreferences
 import dev.avatsav.linkding.ui.BookmarksScreen
 import dev.avatsav.linkding.ui.SetupScreen
-import kotlinx.coroutines.launch
 import me.tatarka.inject.annotations.Assisted
 import me.tatarka.inject.annotations.Inject
+import kotlinx.coroutines.launch
 
 @Inject
 class SetupUiPresenterFactory(

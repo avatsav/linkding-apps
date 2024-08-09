@@ -7,8 +7,8 @@ import androidx.paging.PagingData
 import dev.avatsav.linkding.data.db.daos.PagingBookmarksDao
 import dev.avatsav.linkding.data.model.Bookmark
 import dev.avatsav.linkding.data.model.BookmarkCategory
-import kotlinx.coroutines.flow.Flow
 import me.tatarka.inject.annotations.Inject
+import kotlinx.coroutines.flow.Flow
 
 @OptIn(ExperimentalPagingApi::class)
 @Inject

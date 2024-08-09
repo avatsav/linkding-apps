@@ -47,8 +47,8 @@ import dev.avatsav.linkding.ui.compose.widgets.OutlinedTagsTextField
 import dev.avatsav.linkding.ui.compose.widgets.PlaceholderVisualTransformation
 import dev.avatsav.linkding.ui.compose.widgets.SmallCircularProgressIndicator
 import dev.avatsav.linkding.ui.compose.widgets.TagsTextFieldValue
-import kotlinx.coroutines.delay
 import me.tatarka.inject.annotations.Inject
+import kotlinx.coroutines.delay
 
 @Inject
 class AddBookmarkUiFactory : Ui.Factory {

@@ -4,20 +4,18 @@ root = true
 [*]
 indent_size = 4
 indent_style = space
-
 charset = utf-8
 trim_trailing_whitespace = true
-end_of_line = lf
 insert_final_newline = true
+end_of_line = lf
 
 [*.{kt,kts}]
-ij_kotlin_imports_layout = *
+ktlint_code_style = intellij_idea
+ij_kotlin_imports_layout = *,java.**,javax.**,kotlin.**,kotlinx.**,^
 ij_kotlin_allow_trailing_comma = true
 ij_kotlin_allow_trailing_comma_on_call_site = true
-ij_kotlin_imports_layout=*,java.**,javax.**,kotlin.**,^
-ktlint_code_style = intellij_idea
+
 ktlint_standard_discouraged-comment-location = disabled
-ktlint_standard_no-empty-file = disabled
 ktlint_function_naming_ignore_when_annotated_with = Composable
 
 [*.md]

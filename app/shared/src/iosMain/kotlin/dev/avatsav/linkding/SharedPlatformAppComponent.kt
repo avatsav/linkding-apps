@@ -1,10 +1,10 @@
 package dev.avatsav.linkding
 
 import dev.avatsav.linkding.inject.AppScope
-import kotlin.experimental.ExperimentalNativeApi
 import me.tatarka.inject.annotations.Provides
 import platform.Foundation.NSBundle
 import platform.Foundation.NSUserDefaults
+import kotlin.experimental.ExperimentalNativeApi
 
 @OptIn(ExperimentalNativeApi::class)
 actual interface SharedPlatformAppComponent {

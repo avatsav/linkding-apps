@@ -1,8 +1,8 @@
 package dev.avatsav.linkding
 
-import co.touchlab.kermit.Logger as Kermit
 import co.touchlab.kermit.Severity
 import me.tatarka.inject.annotations.Inject
+import co.touchlab.kermit.Logger as Kermit
 
 interface Logger {
     fun v(throwable: Throwable? = null, message: () -> String = { "" }) = Unit

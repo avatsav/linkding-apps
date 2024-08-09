@@ -6,10 +6,10 @@ import dev.avatsav.linkding.Logger
 import dev.avatsav.linkding.data.model.ApiConfig
 import dev.avatsav.linkding.prefs.AppPreferences
 import io.ktor.client.plugins.logging.LogLevel
+import me.tatarka.inject.annotations.Inject
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
-import me.tatarka.inject.annotations.Inject
 
 @Inject
 class LinkdingApiProvider(
