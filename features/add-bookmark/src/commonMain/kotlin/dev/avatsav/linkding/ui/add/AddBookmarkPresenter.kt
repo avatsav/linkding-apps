@@ -31,11 +31,9 @@ class AddBookmarkPresenterFactory(
         screen: Screen,
         navigator: Navigator,
         context: CircuitContext,
-    ): Presenter<*>? {
-        return when (screen) {
-            is AddBookmarkScreen -> presenterFactory(navigator, screen.sharedUrl)
-            else -> null
-        }
+    ): Presenter<*>? = when (screen) {
+        is AddBookmarkScreen -> presenterFactory(navigator, screen.sharedUrl)
+        else -> null
     }
 }
 

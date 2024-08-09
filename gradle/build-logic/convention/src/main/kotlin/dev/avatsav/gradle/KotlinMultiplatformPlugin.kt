@@ -62,5 +62,3 @@ internal fun Project.configureKotlin() {
     // Java toolchain configuration is picked up by Kotlin
     configureJavaToolchain()
 }
-
-

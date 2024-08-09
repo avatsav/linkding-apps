@@ -35,20 +35,17 @@ class BookmarksRepository(
         query: String,
         category: BookmarkCategory,
         tags: List<String>,
-    ): Flow<PagingData<Bookmark>> {
-        return bookmarksPagingDataFactory.create(
-            cached = cached,
-            pagingConfig = pagingConfig,
-            param = BookmarksPagingDataFactory.Param(query, category, tags),
-        )
-    }
+    ): Flow<PagingData<Bookmark>> = bookmarksPagingDataFactory.create(
+        cached = cached,
+        pagingConfig = pagingConfig,
+        param = BookmarksPagingDataFactory.Param(query, category, tags),
+    )
 
-    suspend fun checkUrl(url: String): Result<CheckUrlResult, BookmarkError> {
-        return apiProvider.value.bookmarksApi.checkUrl(url).mapEither(
+    suspend fun checkUrl(url: String): Result<CheckUrlResult, BookmarkError> =
+        apiProvider.value.bookmarksApi.checkUrl(url).mapEither(
             success = checkUrlMapper::map,
             failure = errorMapper::map,
         )
-    }
 
     suspend fun saveBookmark(saveBookmark: SaveBookmark): Result<Bookmark, BookmarkError> {
         val request = bookmarkMapper.map(saveBookmark)
@@ -58,21 +55,18 @@ class BookmarksRepository(
         )
     }
 
-    suspend fun archiveBookmark(id: Long): Result<Unit, BookmarkError> {
-        return apiProvider.value.bookmarksApi.archiveBookmark(id)
+    suspend fun archiveBookmark(id: Long): Result<Unit, BookmarkError> =
+        apiProvider.value.bookmarksApi.archiveBookmark(id)
             .onSuccess { bookmarksDao.delete(id) }
             .mapError(errorMapper::map)
-    }
 
-    suspend fun unarchiveBookmark(id: Long): Result<Unit, BookmarkError> {
-        return apiProvider.value.bookmarksApi.unarchiveBookmark(id)
+    suspend fun unarchiveBookmark(id: Long): Result<Unit, BookmarkError> =
+        apiProvider.value.bookmarksApi.unarchiveBookmark(id)
             .onSuccess { bookmarksDao.delete(id) }
             .mapError(errorMapper::map)
-    }
 
-    suspend fun deleteBookmark(id: Long): Result<Unit, BookmarkError> {
-        return apiProvider.value.bookmarksApi.deleteBookmark(id)
+    suspend fun deleteBookmark(id: Long): Result<Unit, BookmarkError> =
+        apiProvider.value.bookmarksApi.deleteBookmark(id)
             .onSuccess { bookmarksDao.delete(id) }
             .mapError(errorMapper::map)
-    }
 }

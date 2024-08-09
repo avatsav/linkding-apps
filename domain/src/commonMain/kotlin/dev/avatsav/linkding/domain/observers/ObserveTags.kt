@@ -9,15 +9,12 @@ import kotlinx.coroutines.flow.Flow
 import me.tatarka.inject.annotations.Inject
 
 @Inject
-class ObserveTags(private val repository: TagsRepository) :
-    PagedObserver<ObserveTags.Param, Tag>() {
+class ObserveTags(private val repository: TagsRepository) : PagedObserver<ObserveTags.Param, Tag>() {
 
-    override fun createObservable(params: Param): Flow<PagingData<Tag>> {
-        return repository.getTagsPaged(
-            pagingConfig = params.pagingConfig,
-            selectedTags = params.selectedTags,
-        )
-    }
+    override fun createObservable(params: Param): Flow<PagingData<Tag>> = repository.getTagsPaged(
+        pagingConfig = params.pagingConfig,
+        selectedTags = params.selectedTags,
+    )
 
     data class Param(
         val selectedTags: List<Tag> = emptyList(),

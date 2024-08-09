@@ -13,19 +13,17 @@ interface LinkdingApiComponent {
     fun provideLinkdingConnectionApi(
         appInfo: AppInfo,
         appLogger: Logger,
-    ): LinkdingConnectionApi {
-        return LinkdingConnectionApi {
-            httpClient(httpClientEngine)
-            logging {
-                logger = object : io.ktor.client.plugins.logging.Logger {
-                    override fun log(message: String) {
-                        appLogger.d { message }
-                    }
+    ): LinkdingConnectionApi = LinkdingConnectionApi {
+        httpClient(httpClientEngine)
+        logging {
+            logger = object : io.ktor.client.plugins.logging.Logger {
+                override fun log(message: String) {
+                    appLogger.d { message }
                 }
-                level = when {
-                    appInfo.debug -> LogLevel.HEADERS
-                    else -> LogLevel.NONE
-                }
+            }
+            level = when {
+                appInfo.debug -> LogLevel.HEADERS
+                else -> LogLevel.NONE
             }
         }
     }

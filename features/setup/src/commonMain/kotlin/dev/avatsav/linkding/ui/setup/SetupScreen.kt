@@ -41,16 +41,14 @@ import me.tatarka.inject.annotations.Inject
 
 @Inject
 class SetupUiFactory : Ui.Factory {
-    override fun create(screen: Screen, context: CircuitContext): Ui<*>? {
-        return when (screen) {
-            is SetupScreen -> {
-                ui<SetupUiState> { state, modifier ->
-                    SetupApiConfig(state, modifier)
-                }
+    override fun create(screen: Screen, context: CircuitContext): Ui<*>? = when (screen) {
+        is SetupScreen -> {
+            ui<SetupUiState> { state, modifier ->
+                SetupApiConfig(state, modifier)
             }
-
-            else -> null
         }
+
+        else -> null
     }
 }
 

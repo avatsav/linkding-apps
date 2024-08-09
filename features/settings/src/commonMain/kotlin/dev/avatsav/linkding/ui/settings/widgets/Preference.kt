@@ -228,10 +228,8 @@ internal object PreferenceDefaults {
     }
 }
 
-private fun CornerBasedShape.start(): CornerBasedShape {
-    return copy(topStart = CornerSize(28.dp), topEnd = CornerSize(28.dp))
-}
+private fun CornerBasedShape.start(): CornerBasedShape =
+    copy(topStart = CornerSize(28.dp), topEnd = CornerSize(28.dp))
 
-private fun CornerBasedShape.end(): CornerBasedShape {
-    return copy(bottomStart = CornerSize(28.dp), bottomEnd = CornerSize(28.dp))
-}
+private fun CornerBasedShape.end(): CornerBasedShape =
+    copy(bottomStart = CornerSize(28.dp), bottomEnd = CornerSize(28.dp))

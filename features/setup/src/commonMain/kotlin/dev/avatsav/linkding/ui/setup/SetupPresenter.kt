@@ -34,11 +34,9 @@ class SetupUiPresenterFactory(
         screen: Screen,
         navigator: Navigator,
         context: CircuitContext,
-    ): Presenter<*>? {
-        return when (screen) {
-            is SetupScreen -> presenterFactory(navigator)
-            else -> null
-        }
+    ): Presenter<*>? = when (screen) {
+        is SetupScreen -> presenterFactory(navigator)
+        else -> null
     }
 }
 

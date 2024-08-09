@@ -30,12 +30,11 @@ class TagsPagingSource(
         private const val FIRST_PAGE = 1
     }
 
-    override fun getRefreshKey(state: PagingState<Int, Tag>): Int? {
-        return state.anchorPosition?.let { anchorPosition ->
+    override fun getRefreshKey(state: PagingState<Int, Tag>): Int? =
+        state.anchorPosition?.let { anchorPosition ->
             val anchorPage = state.closestPageToPosition(anchorPosition)
             anchorPage?.prevKey?.plus(1) ?: anchorPage?.nextKey?.minus(1)
         }
-    }
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Tag> =
         withContext(dispatchers.io) {

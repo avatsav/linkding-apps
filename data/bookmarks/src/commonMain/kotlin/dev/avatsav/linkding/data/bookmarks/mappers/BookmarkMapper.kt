@@ -14,13 +14,11 @@ import me.tatarka.inject.annotations.Inject
 @Inject
 class BookmarkMapper {
 
-    fun map(response: LinkdingBookmarksResponse): BookmarksResult {
-        return BookmarksResult(
-            bookmarks = response.results.map { map(it) },
-            previousPage = response.previous,
-            nextPage = response.next,
-        )
-    }
+    fun map(response: LinkdingBookmarksResponse): BookmarksResult = BookmarksResult(
+        bookmarks = response.results.map { map(it) },
+        previousPage = response.previous,
+        nextPage = response.next,
+    )
 
     fun map(linkdingBookmark: LinkdingBookmark) =
         Bookmark(

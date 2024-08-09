@@ -9,15 +9,11 @@ import me.tatarka.inject.annotations.Inject
 @Inject
 class TagMapper {
 
-    fun map(response: LinkdingTagsResponse): TagsResult {
-        return TagsResult(
-            tags = response.results.map { map(it) },
-            nextPage = response.next,
-            previousPage = response.previous,
-        )
-    }
+    fun map(response: LinkdingTagsResponse): TagsResult = TagsResult(
+        tags = response.results.map { map(it) },
+        nextPage = response.next,
+        previousPage = response.previous,
+    )
 
-    fun map(tag: LinkdingTag): Tag {
-        return Tag(tag.id, tag.name)
-    }
+    fun map(tag: LinkdingTag): Tag = Tag(tag.id, tag.name)
 }

@@ -160,9 +160,7 @@ private fun SwipeDismissBackgroundContent(
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
-private fun SwipeToDismissBoxValue.willDismiss(): Boolean {
-    return this == StartToEnd || this == EndToStart
-}
+private fun SwipeToDismissBoxValue.willDismiss(): Boolean = this == StartToEnd || this == EndToStart
 
 // https://issuetracker.google.com/issues/252334353#comment16
 @Composable

@@ -49,16 +49,14 @@ import me.tatarka.inject.annotations.Inject
 
 @Inject
 class SettingsUiFactory : Ui.Factory {
-    override fun create(screen: Screen, context: CircuitContext): Ui<*>? {
-        return when (screen) {
-            is SettingsScreen -> {
-                ui<SettingsUiState> { state, modifier ->
-                    Settings(state, modifier)
-                }
+    override fun create(screen: Screen, context: CircuitContext): Ui<*>? = when (screen) {
+        is SettingsScreen -> {
+            ui<SettingsUiState> { state, modifier ->
+                Settings(state, modifier)
             }
-
-            else -> null
         }
+
+        else -> null
     }
 }
 
@@ -192,17 +190,15 @@ private fun MadeInMunich() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Inject
-suspend fun OverlayHost.showResetConfirmationDialog(): DialogResult {
-    return show(
-        alertDialogOverlay(
-            title = { Text("Confirm Reset") },
-            text = { Text("Are you sure you want to reset the api configuration?") },
-            confirmButton = { onClick ->
-                Button(onClick = onClick) { Text("Yes") }
-            },
-            dismissButton = { onClick ->
-                OutlinedButton(onClick = onClick) { Text("No") }
-            },
-        ),
-    )
-}
+suspend fun OverlayHost.showResetConfirmationDialog(): DialogResult = show(
+    alertDialogOverlay(
+        title = { Text("Confirm Reset") },
+        text = { Text("Are you sure you want to reset the api configuration?") },
+        confirmButton = { onClick ->
+            Button(onClick = onClick) { Text("Yes") }
+        },
+        dismissButton = { onClick ->
+            OutlinedButton(onClick = onClick) { Text("No") }
+        },
+    ),
+)

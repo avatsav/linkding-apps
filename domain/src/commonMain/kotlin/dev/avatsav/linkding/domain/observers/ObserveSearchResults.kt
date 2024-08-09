@@ -12,8 +12,7 @@ import kotlinx.coroutines.flow.flowOf
 import me.tatarka.inject.annotations.Inject
 
 @Inject
-class ObserveSearchResults(private val repository: BookmarksRepository) :
-    PagedObserver<ObserveSearchResults.Param, Bookmark>() {
+class ObserveSearchResults(private val repository: BookmarksRepository) : PagedObserver<ObserveSearchResults.Param, Bookmark>() {
 
     override fun createObservable(params: Param): Flow<PagingData<Bookmark>> {
         if (params.query.isBlank()) return flowOf(PagingData.empty())

@@ -16,11 +16,10 @@ class DefaultLinkdingTagsApi(private val httpClient: HttpClient) : LinkdingTagsA
         offset: Int,
         limit: Int,
         query: String,
-    ): Result<LinkdingTagsResponse, LinkdingError> {
-        return httpClient.get<LinkdingTagsResponse, LinkdingErrorResponse> {
+    ): Result<LinkdingTagsResponse, LinkdingError> =
+        httpClient.get<LinkdingTagsResponse, LinkdingErrorResponse> {
             endpointTags()
             parameterPage(offset, limit)
             parameterQuery(query)
         }.toLinkdingResult()
-    }
 }

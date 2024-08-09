@@ -15,9 +15,8 @@ class CheckBookmarkUrl(
     private val dispatchers: AppCoroutineDispatchers,
 ) : Interactor<String, CheckUrlResult, String>() {
 
-    override suspend fun doWork(param: String): Result<CheckUrlResult, String> {
-        return withContext(dispatchers.io) {
+    override suspend fun doWork(param: String): Result<CheckUrlResult, String> =
+        withContext(dispatchers.io) {
             repository.checkUrl(param).mapError { it.message }
         }
-    }
 }

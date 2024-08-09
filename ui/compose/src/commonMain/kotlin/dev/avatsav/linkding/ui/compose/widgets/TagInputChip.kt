@@ -14,7 +14,7 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun TagInputChip(
-    modifier: Modifier,
+    modifier: Modifier = Modifier,
     label: @Composable () -> Unit,
     onClick: () -> Unit,
 ) {

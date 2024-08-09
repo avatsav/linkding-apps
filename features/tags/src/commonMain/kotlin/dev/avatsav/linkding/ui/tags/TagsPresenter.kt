@@ -26,11 +26,9 @@ class TagsUiPresenterFactory(
         screen: Screen,
         navigator: Navigator,
         context: CircuitContext,
-    ): Presenter<*>? {
-        return when (screen) {
-            is TagsScreen -> presenterFactory(navigator, screen)
-            else -> null
-        }
+    ): Presenter<*>? = when (screen) {
+        is TagsScreen -> presenterFactory(navigator, screen)
+        else -> null
     }
 }
 

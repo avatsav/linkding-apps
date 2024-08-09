@@ -13,10 +13,17 @@ internal fun Project.configureSpotless() {
     configure<SpotlessExtension> {
         lineEndings = LineEnding.PLATFORM_NATIVE
         val ktLintVersion = findVersion("ktlint")
+        val ktLintCompose = findVersion("ktlintCompose")
         kotlin {
             target("src/**/*.kt")
             targetExclude("${layout.buildDirectory}/**/*.kt")
             ktlint(ktLintVersion)
+                .editorConfigOverride(
+                    mapOf("android" to "true"),
+                )
+//                .customRuleSets(
+//                    listOf("io.nlopez.compose.rules:ktlint:$ktLintCompose"),
+//                )
         }
         kotlinGradle {
             target("*.kts")

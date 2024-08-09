@@ -38,16 +38,14 @@ import androidx.paging.PagingConfig
  * item with the given key will be kept as the first visible one.
  */
 public fun <T : Any> LazyPagingItems<T>.itemKey(
-  key: ((item: T) -> Any)? = null
-): (index: Int) -> Any {
-  return { index ->
+    key: ((item: T) -> Any)? = null,
+): (index: Int) -> Any = { index ->
     if (key == null) {
-      getPagingPlaceholderKey(index)
+        getPagingPlaceholderKey(index)
     } else {
-      val item = peek(index)
-      if (item == null) getPagingPlaceholderKey(index) else key(item)
+        val item = peek(index)
+        if (item == null) getPagingPlaceholderKey(index) else key(item)
     }
-  }
 }
 
 /**
@@ -68,14 +66,12 @@ public fun <T : Any> LazyPagingItems<T>.itemKey(
  * such type will be considered compatible.
  */
 public fun <T : Any> LazyPagingItems<T>.itemContentType(
-  contentType: ((item: T) -> Any?)? = null
-): (index: Int) -> Any? {
-  return { index ->
+    contentType: ((item: T) -> Any?)? = null,
+): (index: Int) -> Any? = { index ->
     if (contentType == null) {
-      null
+        null
     } else {
-      val item = peek(index)
-      if (item == null) PagingPlaceholderContentType else contentType(item)
+        val item = peek(index)
+        if (item == null) PagingPlaceholderContentType else contentType(item)
     }
-  }
 }

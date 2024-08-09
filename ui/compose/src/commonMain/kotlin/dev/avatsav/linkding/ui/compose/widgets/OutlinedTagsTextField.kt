@@ -207,18 +207,10 @@ private inline fun tagValueChange(
     onValueChange(textFieldValue)
 }
 
-private fun String.isEscaping(): Boolean {
-    return hasSpace() || hasNewLine()
-}
+private fun String.isEscaping(): Boolean = hasSpace() || hasNewLine()
 
-private fun String.removeEscapingCharacters(): String {
-    return replace(" ", "").replace("\n", "")
-}
+private fun String.removeEscapingCharacters(): String = replace(" ", "").replace("\n", "")
 
-private fun String.hasNewLine(): Boolean {
-    return indexOf('\n') != -1
-}
+private fun String.hasNewLine(): Boolean = indexOf('\n') != -1
 
-private fun String.hasSpace(): Boolean {
-    return indexOf(' ') != -1
-}
+private fun String.hasSpace(): Boolean = indexOf(' ') != -1

@@ -11,9 +11,8 @@ import me.tatarka.inject.annotations.Provides
 actual interface PreferencesPlatformComponent {
     @Provides
     @AppScope
-    fun provideSettings(sharedPrefs: SharedPreferences): ObservableSettings {
-        return SharedPreferencesSettings(sharedPrefs)
-    }
+    fun provideSettings(sharedPrefs: SharedPreferences): ObservableSettings =
+        SharedPreferencesSettings(sharedPrefs)
 
     @Provides
     @AppScope

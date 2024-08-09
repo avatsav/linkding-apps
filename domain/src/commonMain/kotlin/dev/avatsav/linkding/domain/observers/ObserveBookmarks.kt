@@ -11,18 +11,16 @@ import kotlinx.coroutines.flow.Flow
 import me.tatarka.inject.annotations.Inject
 
 @Inject
-class ObserveBookmarks(private val repository: BookmarksRepository) :
-    PagedObserver<ObserveBookmarks.Param, Bookmark>() {
+class ObserveBookmarks(private val repository: BookmarksRepository) : PagedObserver<ObserveBookmarks.Param, Bookmark>() {
 
-    override fun createObservable(params: Param): Flow<PagingData<Bookmark>> {
-        return repository.getBookmarksPaged(
+    override fun createObservable(params: Param): Flow<PagingData<Bookmark>> =
+        repository.getBookmarksPaged(
             cached = params.cached,
             pagingConfig = params.pagingConfig,
             query = params.query,
             category = params.category,
             tags = params.tags.map { it.name },
         )
-    }
 
     data class Param(
         val cached: Boolean,

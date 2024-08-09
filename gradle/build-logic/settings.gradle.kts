@@ -1,6 +1,5 @@
 @file:Suppress("UnstableApiUsage")
 
-
 dependencyResolutionManagement {
     repositories {
         google()
@@ -15,4 +14,3 @@ dependencyResolutionManagement {
 }
 
 include(":convention")
-

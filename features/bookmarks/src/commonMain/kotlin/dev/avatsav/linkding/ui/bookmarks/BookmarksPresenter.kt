@@ -53,11 +53,9 @@ class BookmarksUiPresenterFactory(
         screen: Screen,
         navigator: Navigator,
         context: CircuitContext,
-    ): Presenter<*>? {
-        return when (screen) {
-            is BookmarksScreen -> presenterFactory(navigator)
-            else -> null
-        }
+    ): Presenter<*>? = when (screen) {
+        is BookmarksScreen -> presenterFactory(navigator)
+        else -> null
     }
 }
 

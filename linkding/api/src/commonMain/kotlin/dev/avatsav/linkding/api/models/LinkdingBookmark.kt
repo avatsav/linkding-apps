@@ -19,23 +19,19 @@ data class LinkdingBookmark(
     @SerialName("date_added") val dateAdded: Instant? = null,
     @SerialName("date_modified") val dateModified: Instant? = null,
 ) {
-    fun getSafeTitle(): String {
-        return if (title.isNotBlank()) {
-            title
-        } else if (websiteTitle.isNotBlank()) {
-            websiteTitle
-        } else {
-            ""
-        }
+    fun getSafeTitle(): String = if (title.isNotBlank()) {
+        title
+    } else if (websiteTitle.isNotBlank()) {
+        websiteTitle
+    } else {
+        ""
     }
 
-    fun getSafeDescription(): String {
-        return if (description.isNotBlank()) {
-            description
-        } else if (websiteDescription.isNotBlank()) {
-            websiteDescription
-        } else {
-            ""
-        }
+    fun getSafeDescription(): String = if (description.isNotBlank()) {
+        description
+    } else if (websiteDescription.isNotBlank()) {
+        websiteDescription
+    } else {
+        ""
     }
 }

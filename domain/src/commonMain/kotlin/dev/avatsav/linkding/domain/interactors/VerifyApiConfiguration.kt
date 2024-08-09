@@ -14,11 +14,10 @@ class VerifyApiConfiguration(
     private val dispatchers: AppCoroutineDispatchers,
 ) : Interactor<VerifyApiConfiguration.Param, Unit, ConfigurationError>() {
 
-    override suspend fun doWork(param: Param): Result<Unit, ConfigurationError> {
-        return withContext(dispatchers.io) {
+    override suspend fun doWork(param: Param): Result<Unit, ConfigurationError> =
+        withContext(dispatchers.io) {
             apiConnectionTester.test(param.hostUrl, param.apiKey)
         }
-    }
 
     data class Param(val hostUrl: String, val apiKey: String)
 }

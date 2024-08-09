@@ -19,9 +19,7 @@ package androidx.paging.compose
 import dev.avatsav.linkding.parcelize.Parcelable
 import dev.avatsav.linkding.parcelize.Parcelize
 
-internal fun getPagingPlaceholderKey(index: Int): Any {
-    return PagingPlaceholderKey(index)
-}
+internal fun getPagingPlaceholderKey(index: Int): Any = PagingPlaceholderKey(index)
 
 internal object PagingPlaceholderContentType
 

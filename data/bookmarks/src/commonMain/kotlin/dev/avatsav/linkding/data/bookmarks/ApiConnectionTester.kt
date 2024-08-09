@@ -15,8 +15,6 @@ class ApiConnectionTester(
     suspend fun test(
         hostUrl: String,
         apiKey: String,
-    ): Result<Unit, ConfigurationError> {
-        return connectionApi.connect(hostUrl, apiKey)
-            .mapError(errorMapper::map)
-    }
+    ): Result<Unit, ConfigurationError> = connectionApi.connect(hostUrl, apiKey)
+        .mapError(errorMapper::map)
 }

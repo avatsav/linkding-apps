@@ -8,7 +8,5 @@ import me.tatarka.inject.annotations.Provides
 actual interface PlatformNetworkMonitorComponent {
     @Provides
     @AppScope
-    fun provideNetworkMonitor(): NetworkMonitor {
-        return EmptyNetworkMonitor()
-    }
+    fun provideNetworkMonitor(): NetworkMonitor = EmptyNetworkMonitor()
 }

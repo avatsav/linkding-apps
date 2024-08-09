@@ -7,8 +7,8 @@ import dev.avatsav.linkding.api.models.ApiResponse
 import dev.avatsav.linkding.api.models.LinkdingError
 import dev.avatsav.linkding.api.models.LinkdingErrorResponse
 
-internal inline fun <T> ApiResponse<T, LinkdingErrorResponse>.toLinkdingResult(): Result<T, LinkdingError> {
-    return when (this) {
+internal inline fun <T> ApiResponse<T, LinkdingErrorResponse>.toLinkdingResult(): Result<T, LinkdingError> =
+    when (this) {
         is ApiResponse.Success -> Ok(this.body)
         is ApiResponse.Error -> when (this) {
             is ApiResponse.ClientError -> Err(LinkdingError.Unauthorized(derivedErrorMessage("Unauthorized")))
@@ -16,8 +16,6 @@ internal inline fun <T> ApiResponse<T, LinkdingErrorResponse>.toLinkdingResult()
             else -> Err(LinkdingError.Other(derivedErrorMessage("Unknown")))
         }
     }
-}
 
-internal inline fun ApiResponse.Error<LinkdingErrorResponse>.derivedErrorMessage(default: String = ""): String {
-    return body?.detail ?: message ?: default
-}
+internal inline fun ApiResponse.Error<LinkdingErrorResponse>.derivedErrorMessage(default: String = ""): String =
+    body?.detail ?: message ?: default

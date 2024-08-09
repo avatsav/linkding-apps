@@ -34,12 +34,11 @@ class RemoteBookmarksPagingSource(
         private const val FIRST_PAGE = 1
     }
 
-    override fun getRefreshKey(state: PagingState<Int, Bookmark>): Int? {
-        return state.anchorPosition?.let { anchorPosition ->
+    override fun getRefreshKey(state: PagingState<Int, Bookmark>): Int? =
+        state.anchorPosition?.let { anchorPosition ->
             val anchorPage = state.closestPageToPosition(anchorPosition)
             anchorPage?.prevKey?.plus(1) ?: anchorPage?.nextKey?.minus(1)
         }
-    }
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Bookmark> =
         withContext(dispatchers.io) {

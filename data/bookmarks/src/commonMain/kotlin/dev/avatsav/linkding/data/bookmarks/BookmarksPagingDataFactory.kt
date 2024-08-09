@@ -21,12 +21,10 @@ class BookmarksPagingDataFactory(
         cached: Boolean,
         pagingConfig: PagingConfig,
         param: Param,
-    ): Flow<PagingData<Bookmark>> {
-        return if (cached) {
-            cachedBookmarksFlow(pagingConfig, param)
-        } else {
-            remoteBookmarksFlow(pagingConfig, param)
-        }
+    ): Flow<PagingData<Bookmark>> = if (cached) {
+        cachedBookmarksFlow(pagingConfig, param)
+    } else {
+        remoteBookmarksFlow(pagingConfig, param)
     }
 
     private fun remoteBookmarksFlow(pagingConfig: PagingConfig, param: Param) = Pager(

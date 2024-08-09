@@ -9,7 +9,5 @@ interface LoggerComponent {
 
     @AppScope
     @Provides
-    fun provideLogger(appInfo: AppInfo): Logger {
-        return KermitLogger(appInfo)
-    }
+    fun provideLogger(appInfo: AppInfo): Logger = KermitLogger(appInfo)
 }

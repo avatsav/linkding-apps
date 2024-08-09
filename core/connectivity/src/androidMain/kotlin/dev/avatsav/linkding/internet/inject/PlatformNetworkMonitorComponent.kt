@@ -26,6 +26,5 @@ actual interface PlatformNetworkMonitorComponent {
     }
 }
 
-internal fun Context.isPermissionGranted(permission: String): Boolean {
-    return ContextCompat.checkSelfPermission(this, permission) == PERMISSION_GRANTED
-}
+internal fun Context.isPermissionGranted(permission: String): Boolean =
+    ContextCompat.checkSelfPermission(this, permission) == PERMISSION_GRANTED

@@ -31,8 +31,8 @@ class LinkdingConnectionApi internal constructor(clientConfig: LinkdingClientCon
     suspend fun connect(
         hostUrl: LinkdingHostUrl,
         apiKey: LinkdingApiKey,
-    ): Result<Unit, LinkdingError> {
-        return httpClient.get<LinkdingBookmarksResponse, LinkdingErrorResponse> {
+    ): Result<Unit, LinkdingError> =
+        httpClient.get<LinkdingBookmarksResponse, LinkdingErrorResponse> {
             header(HttpHeaders.Authorization, "Token $apiKey")
             url {
                 takeFrom(Url(hostUrl))
@@ -40,5 +40,4 @@ class LinkdingConnectionApi internal constructor(clientConfig: LinkdingClientCon
             endpointBookmarks()
             parameterPage(0, 1)
         }.toLinkdingResult().map { }
-    }
 }
