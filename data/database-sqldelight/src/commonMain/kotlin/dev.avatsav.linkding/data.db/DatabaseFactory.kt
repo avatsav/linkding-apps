@@ -1,10 +1,8 @@
-package dev.avatsav.linkding.data.db.sqldelight
+package dev.avatsav.linkding.data.db
 
 import app.cash.sqldelight.db.SqlDriver
-import dev.avatsav.linkding.data.db.Bookmarks
-import dev.avatsav.linkding.data.db.Database
-import dev.avatsav.linkding.data.db.sqldelight.adapters.InstantColumnAdapter
-import dev.avatsav.linkding.data.db.sqldelight.adapters.StringSetColumnAdapter
+import dev.avatsav.linkding.data.db.adapters.InstantColumnAdapter
+import dev.avatsav.linkding.data.db.adapters.StringSetColumnAdapter
 import me.tatarka.inject.annotations.Inject
 
 @Inject

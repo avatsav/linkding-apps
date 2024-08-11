@@ -1,4 +1,4 @@
-package dev.avatsav.linkding.data.db.sqldelight.adapters
+package dev.avatsav.linkding.data.db.adapters
 
 import app.cash.sqldelight.ColumnAdapter
 import kotlinx.datetime.Instant

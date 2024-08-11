@@ -1,7 +1,6 @@
-package dev.avatsav.linkding.data.db.sqldelight.daos
+package dev.avatsav.linkding.data.db.daos
 
 import dev.avatsav.linkding.data.db.Database
-import dev.avatsav.linkding.data.db.daos.BookmarksDao
 import dev.avatsav.linkding.data.model.Bookmark
 import me.tatarka.inject.annotations.Inject
 
