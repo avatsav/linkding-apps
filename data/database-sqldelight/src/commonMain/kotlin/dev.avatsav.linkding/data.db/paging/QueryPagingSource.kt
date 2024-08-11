@@ -1,4 +1,4 @@
-package dev.avatsav.linkding.data.db.sqldelight.paging
+package dev.avatsav.linkding.data.db.paging
 
 /*
  * Copyright (C) 2016 Square, Inc.

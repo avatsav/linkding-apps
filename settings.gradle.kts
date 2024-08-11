@@ -35,6 +35,7 @@ include(
     ":data:models",
     ":data:bookmarks",
     ":data:database",
+    ":data:database-sqldelight",
     ":domain",
     ":ui:theme",
     ":ui:screens",
