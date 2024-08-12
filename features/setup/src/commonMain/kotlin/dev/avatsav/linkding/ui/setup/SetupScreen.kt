@@ -115,7 +115,7 @@ fun SetupApiConfig(
                     }
                 },
                 keyboardOptions = KeyboardOptions(
-                    autoCorrect = false,
+                    autoCorrectEnabled = false,
                     keyboardType = KeyboardType.Uri,
                     imeAction = ImeAction.Next,
                 ),

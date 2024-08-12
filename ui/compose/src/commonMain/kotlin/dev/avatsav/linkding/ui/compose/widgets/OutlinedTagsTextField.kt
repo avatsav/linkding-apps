@@ -15,6 +15,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.OutlinedTextFieldDefaults.Container
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
@@ -73,7 +74,7 @@ fun OutlinedTagsTextField(
                     colors = OutlinedTextFieldDefaults.colors(),
                     contentPadding = OutlinedTextFieldDefaults.contentPadding(),
                     container = {
-                        OutlinedTextFieldDefaults.ContainerBox(
+                        Container(
                             enabled = true,
                             isError = false,
                             interactionSource = interactionSource,

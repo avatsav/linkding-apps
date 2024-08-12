@@ -1,5 +1,3 @@
-@file:Suppress("UnstableApiUsage", "DSL_SCOPE_VIOLATION")
-
 import dev.avatsav.gradle.addKspDependencyForAllTargets
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 

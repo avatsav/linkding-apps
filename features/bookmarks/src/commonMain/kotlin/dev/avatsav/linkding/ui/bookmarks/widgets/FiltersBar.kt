@@ -51,14 +51,14 @@ fun FiltersBar(
     ) {
         item(selectedCategory) {
             CategoryFilter(
-                modifier = Modifier.animateItemPlacement(),
+                modifier = Modifier.animateItem(),
                 selected = selectedCategory,
                 onSelect = onSelectCategory,
             )
         }
         item {
             FilterChip(
-                modifier = Modifier.animateItemPlacement(),
+                modifier = Modifier.animateItem(),
                 selected = true,
                 onClick = {
                     scope.launch {
@@ -75,7 +75,7 @@ fun FiltersBar(
         items(selectedTags.size, key = { selectedTags[it].id }) { index ->
             val item = selectedTags[index]
             TagInputChip(
-                modifier = Modifier.animateItemPlacement(),
+                modifier = Modifier.animateItem(),
                 onClick = { onRemoveTag(item) },
                 label = { Text(item.name) },
             )

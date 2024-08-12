@@ -1,7 +1,6 @@
 package dev.avatsav.linkding.ui.bookmarks
 
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.pulltorefresh.PullToRefreshState
 import androidx.compose.runtime.Immutable
 import androidx.paging.compose.LazyPagingItems
 import com.slack.circuit.runtime.CircuitUiEvent
@@ -17,12 +16,12 @@ data class BookmarksUiState(
     val bookmarks: LazyPagingItems<Bookmark>,
     val searchResults: LazyPagingItems<Bookmark>,
     val selectedTags: List<Tag>,
-    val pullToRefreshState: PullToRefreshState,
     val isOnline: Boolean,
     val eventSink: (BookmarksUiEvent) -> Unit,
 ) : CircuitUiState
 
 sealed interface BookmarksUiEvent : CircuitUiEvent {
+    data object Refresh : BookmarksUiEvent
     data class ToggleArchive(val bookmark: Bookmark) : BookmarksUiEvent
     data class Delete(val bookmark: Bookmark) : BookmarksUiEvent
     data class Open(val bookmark: Bookmark) : BookmarksUiEvent

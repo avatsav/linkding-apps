@@ -1,7 +1,5 @@
 package dev.avatsav.linkding.ui.bookmarks
 
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -9,7 +7,6 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.paging.LoadState
 import androidx.paging.PagingConfig
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.slack.circuit.retained.collectAsRetainedState
@@ -70,7 +67,6 @@ class BookmarksPresenter(
     private val connectivityObserver: ConnectivityObserver,
 ) : Presenter<BookmarksUiState> {
 
-    @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     override fun present(): BookmarksUiState {
         val coroutineScope = rememberCoroutineScope()
@@ -90,25 +86,8 @@ class BookmarksPresenter(
             .collectAsRetainedState()
 
         var searchQuery by rememberRetained { mutableStateOf("") }
-
         var category by rememberRetained { mutableStateOf(BookmarkCategory.All) }
-
         val selectedTags = rememberRetained { mutableStateListOf<Tag>() }
-
-        val pullToRefreshState = rememberPullToRefreshState()
-
-        LaunchedEffect(pullToRefreshState.isRefreshing) {
-            bookmarks.refresh()
-        }
-
-        LaunchedEffect(bookmarks.loadState) {
-            when (bookmarks.loadState.refresh) {
-                is LoadState.Loading -> Unit
-                is LoadState.Error, is LoadState.NotLoading -> {
-                    pullToRefreshState.endRefresh()
-                }
-            }
-        }
 
         LaunchedEffect(category, selectedTags.size) {
             retainedObserveBookmarks(
@@ -145,9 +124,12 @@ class BookmarksPresenter(
             searchResults = searchResults,
             selectedTags = selectedTags,
             isOnline = isOnline,
-            pullToRefreshState = pullToRefreshState,
         ) { event ->
             when (event) {
+                is BookmarksUiEvent.Refresh -> coroutineScope.launch {
+                    bookmarks.refresh()
+                }
+
                 is ToggleArchive -> coroutineScope.launch {
                     if (event.bookmark.archived) {
                         unarchiveBookmark(event.bookmark.id)
