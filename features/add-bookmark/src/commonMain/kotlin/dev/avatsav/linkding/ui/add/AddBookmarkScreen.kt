@@ -115,7 +115,7 @@ fun AddBookmark(
                 value = url,
                 label = { Text(text = "URL") },
                 keyboardOptions = KeyboardOptions(
-                    autoCorrect = false,
+                    autoCorrectEnabled = false,
                     keyboardType = KeyboardType.Uri,
                     imeAction = ImeAction.Next,
                 ),

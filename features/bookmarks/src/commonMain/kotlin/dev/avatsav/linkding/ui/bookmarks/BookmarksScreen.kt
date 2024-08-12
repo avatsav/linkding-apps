@@ -1,13 +1,12 @@
 package dev.avatsav.linkding.ui.bookmarks
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.animation.core.tween
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.calculateEndPadding
@@ -30,8 +29,9 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SearchBar
+import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.pulltorefresh.PullToRefreshContainer
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -40,15 +40,15 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import androidx.paging.LoadState
 import androidx.paging.compose.itemKey
 import com.slack.circuit.overlay.LocalOverlayHost
 import com.slack.circuit.runtime.CircuitContext
@@ -106,13 +106,16 @@ fun Bookmarks(
         }
     }
 
-    val searchBarBackgroundElevation: Dp by animateDpAsState(
-        targetValue = if (scrolledToTop) 0.dp else 8.dp,
-        animationSpec = tween(),
+    val searchBarBgSurfaceElevation: Dp by animateDpAsState(
+        if (scrolledToTop) 0.dp else 8.dp,
     )
-    val searchBarTonalElevation: Dp by animateDpAsState(
-        targetValue = if (scrolledToTop && !searchActive) 8.dp else 0.dp,
-        animationSpec = tween(),
+
+    val searchBarContainerColor by animateColorAsState(
+        if (scrolledToTop && !searchActive) {
+            MaterialTheme.colorScheme.surfaceVariant
+        } else {
+            MaterialTheme.colorScheme.surface
+        },
     )
 
     Scaffold(
@@ -121,7 +124,7 @@ fun Bookmarks(
             Column(
                 modifier = Modifier.background(
                     MaterialTheme.colorScheme.surfaceColorAtElevation(
-                        searchBarBackgroundElevation,
+                        searchBarBgSurfaceElevation,
                     ),
                 ),
             ) {
@@ -137,38 +140,51 @@ fun Bookmarks(
                     modifier = Modifier.fillMaxWidth()
                         .padding(horizontal = searchBarHorizontalPadding)
                         .padding(bottom = searchBarBottomPadding),
-                    query = searchQuery,
-                    onQueryChange = { searchQuery = it },
-                    onSearch = {
-                        eventSink(Search(searchQuery))
-                        focusManager.clearFocus()
-                    },
-                    active = searchActive,
-                    onActiveChange = { searchActive = it },
-                    placeholder = { Text("Search for words or #tags") },
-                    leadingIcon = {
-                        Icon(
-                            imageVector = if (state.isOnline) Icons.Default.Search else Icons.Default.CloudOff,
-                            contentDescription = "Search Icon",
-                        )
-                    },
-                    trailingIcon = {
-                        IconButton(
-                            onClick = {
-                                if (searchActive) {
-                                    searchActive = false
-                                } else {
-                                    eventSink(ShowSettings)
+                    inputField = {
+                        SearchBarDefaults.InputField(
+                            query = searchQuery,
+                            onQueryChange = { searchQuery = it },
+                            onSearch = {
+                                eventSink(Search(searchQuery))
+                                focusManager.clearFocus()
+                            },
+                            expanded = searchActive,
+                            onExpandedChange = { searchActive = it },
+                            enabled = true,
+                            placeholder = { Text("Search for words or #tags") },
+                            leadingIcon = {
+                                Icon(
+                                    imageVector = if (state.isOnline) Icons.Default.Search else Icons.Default.CloudOff,
+                                    contentDescription = "Search Icon",
+                                )
+                            },
+                            trailingIcon = {
+                                IconButton(
+                                    onClick = {
+                                        if (searchActive) {
+                                            searchActive = false
+                                        } else {
+                                            eventSink(ShowSettings)
+                                        }
+                                    },
+                                ) {
+                                    Icon(
+                                        imageVector = if (searchActive) Icons.Default.Close else Icons.Outlined.Settings,
+                                        contentDescription = if (searchActive) "Close" else "Settings",
+                                    )
                                 }
                             },
-                        ) {
-                            Icon(
-                                imageVector = if (searchActive) Icons.Default.Close else Icons.Outlined.Settings,
-                                contentDescription = if (searchActive) "Close" else "Settings",
-                            )
-                        }
+                            interactionSource = null,
+                        )
                     },
-                    tonalElevation = searchBarTonalElevation,
+                    expanded = searchActive,
+                    onExpandedChange = { searchActive = it },
+                    colors = SearchBarDefaults.colors(
+                        containerColor = searchBarContainerColor,
+                    ),
+                    shape = SearchBarDefaults.inputFieldShape,
+                    shadowElevation = SearchBarDefaults.ShadowElevation,
+                    windowInsets = SearchBarDefaults.windowInsets,
                 ) {
                     LazyColumn(
                         modifier = Modifier.fillMaxSize(),
@@ -235,12 +251,16 @@ fun Bookmarks(
             }
         },
     ) { paddingValues ->
-        Box(
+        val refreshing by rememberUpdatedState(state.bookmarks.loadState.refresh == LoadState.Loading)
+
+        PullToRefreshBox(
             modifier = Modifier.padding(
                 top = paddingValues.calculateTopPadding(),
                 start = paddingValues.calculateStartPadding(LayoutDirection.Ltr),
                 end = paddingValues.calculateEndPadding(LayoutDirection.Ltr),
-            ).nestedScroll(state.pullToRefreshState.nestedScrollConnection).fillMaxSize(),
+            ),
+            isRefreshing = refreshing,
+            onRefresh = { eventSink(BookmarksUiEvent.Refresh) },
         ) {
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
@@ -286,15 +306,11 @@ fun Bookmarks(
                                     }
                                 }
                             },
-                            modifier = Modifier.animateItemPlacement(),
+                            modifier = Modifier.animateItem(),
                         )
                     }
                 }
             }
-            PullToRefreshContainer(
-                modifier = Modifier.align(Alignment.TopCenter),
-                state = state.pullToRefreshState,
-            )
         }
     }
 }

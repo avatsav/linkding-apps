@@ -1,5 +1,3 @@
-@file:Suppress("UnstableApiUsage", "DSL_SCOPE_VIOLATION")
-
 plugins {
     id("convention.android.application")
     id("convention.compose")

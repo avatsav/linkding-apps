@@ -16,6 +16,10 @@ class ComposePlugin : Plugin<Project> {
 
             // https://www.jetbrains.com/help/kotlin-multiplatform-dev/compose-compiler.html#stabilityconfigurationfile
             stabilityConfigurationFile.set(rootProject.file("compose-stability.conf"))
+
+            val reportsDir = layout.buildDirectory.dir("compose-reports")
+            reportsDestination.set(reportsDir)
+            metricsDestination.set(reportsDir)
         }
     }
 }
