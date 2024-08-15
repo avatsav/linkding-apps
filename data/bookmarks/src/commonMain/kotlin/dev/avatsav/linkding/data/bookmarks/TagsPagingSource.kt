@@ -6,7 +6,6 @@ import com.github.michaelbull.result.fold
 import com.github.michaelbull.result.mapEither
 import dev.avatsav.linkding.AppCoroutineDispatchers
 import dev.avatsav.linkding.Logger
-import dev.avatsav.linkding.api.LinkdingApiProvider
 import dev.avatsav.linkding.data.bookmarks.mappers.BookmarkErrorMapper
 import dev.avatsav.linkding.data.bookmarks.mappers.TagMapper
 import dev.avatsav.linkding.data.model.Tag
