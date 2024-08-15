@@ -6,7 +6,6 @@ import com.github.michaelbull.result.Result
 import com.github.michaelbull.result.mapEither
 import com.github.michaelbull.result.mapError
 import com.github.michaelbull.result.onSuccess
-import dev.avatsav.linkding.api.LinkdingApiProvider
 import dev.avatsav.linkding.data.bookmarks.mappers.BookmarkErrorMapper
 import dev.avatsav.linkding.data.bookmarks.mappers.BookmarkMapper
 import dev.avatsav.linkding.data.bookmarks.mappers.CheckUrlResultMapper
