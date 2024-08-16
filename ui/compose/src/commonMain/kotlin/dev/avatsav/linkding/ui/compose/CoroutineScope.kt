@@ -14,10 +14,23 @@ import kotlinx.coroutines.cancel
  */
 @Composable
 fun rememberRetainedCoroutineScope(): CoroutineScope = rememberRetained("coroutine_scope") {
-    object : RememberObserver {
-        val scope = CoroutineScope(Dispatchers.Main + Job())
-        override fun onAbandoned() = onForgotten()
-        override fun onForgotten() = scope.cancel()
-        override fun onRemembered() = Unit
+    RememberObserverHolder(
+        value = CoroutineScope(context = Dispatchers.Main + Job()),
+        onDestroy = CoroutineScope::cancel,
+    )
+}.value
+
+internal class RememberObserverHolder<T>(
+    val value: T,
+    private val onDestroy: (T) -> Unit,
+) : RememberObserver {
+    override fun onAbandoned() {
+        onDestroy(value)
     }
-}.scope
+
+    override fun onForgotten() {
+        onDestroy(value)
+    }
+
+    override fun onRemembered() = Unit
+}
