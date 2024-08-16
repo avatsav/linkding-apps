@@ -5,10 +5,11 @@ import dev.avatsav.linkding.inject.UserScope
 import me.tatarka.inject.annotations.Component
 import me.tatarka.inject.annotations.Provides
 
+@Component
 @UserScope
 abstract class AndroidUserComponent(
     @get:Provides val apiConfig: ApiConfig,
-    @Component uiComponent: AndroidActivityComponent,
+    @Component val uiComponent: AndroidActivityComponent,
 ) : SharedUserComponent {
     companion object
 }
