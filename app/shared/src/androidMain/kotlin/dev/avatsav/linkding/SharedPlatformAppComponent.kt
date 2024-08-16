@@ -3,6 +3,8 @@ package dev.avatsav.linkding
 import android.app.Application
 import android.content.pm.ApplicationInfo
 import dev.avatsav.linkding.inject.AppScope
+import io.ktor.client.engine.HttpClientEngineFactory
+import io.ktor.client.engine.okhttp.OkHttp
 import me.tatarka.inject.annotations.Provides
 
 actual interface SharedPlatformAppComponent {
@@ -20,4 +22,8 @@ actual interface SharedPlatformAppComponent {
             version = packageInfo.versionName,
         )
     }
+
+    @AppScope
+    @Provides
+    fun provideHttpClientEngineFactory(): HttpClientEngineFactory<*> = OkHttp
 }

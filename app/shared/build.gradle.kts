@@ -32,6 +32,16 @@ kotlin {
             api(projects.features.tags)
             api(projects.kim.annotations)
         }
+        androidMain.dependencies {
+            implementation(libs.ktor.client.okhttp)
+        }
+        jvmMain.dependencies {
+            implementation(libs.ktor.client.okhttp)
+        }
+        iosMain.dependencies {
+            implementation(libs.ktor.client.darwin)
+        }
+
         targets.withType<KotlinNativeTarget>().configureEach {
             binaries.framework {
                 isStatic = true

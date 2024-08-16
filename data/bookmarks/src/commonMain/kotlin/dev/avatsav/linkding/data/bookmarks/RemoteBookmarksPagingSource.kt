@@ -5,7 +5,7 @@ import androidx.paging.PagingState
 import com.github.michaelbull.result.fold
 import com.github.michaelbull.result.mapEither
 import dev.avatsav.linkding.AppCoroutineDispatchers
-import dev.avatsav.linkding.Logger
+import dev.avatsav.linkding.api.LinkdingBookmarksApi
 import dev.avatsav.linkding.data.bookmarks.mappers.BookmarkErrorMapper
 import dev.avatsav.linkding.data.bookmarks.mappers.BookmarkMapper
 import dev.avatsav.linkding.data.bookmarks.mappers.toLinkding
@@ -22,11 +22,10 @@ class RemoteBookmarksPagingSource(
     @Assisted private val query: String,
     @Assisted private val category: BookmarkCategory,
     @Assisted private val tags: List<String>,
-    private val apiProvider: LinkdingApiProvider,
+    private val bookmarksApi: LinkdingBookmarksApi,
     private val mapper: BookmarkMapper,
     private val errorMapper: BookmarkErrorMapper,
     private val dispatchers: AppCoroutineDispatchers,
-    private val logger: Logger,
 ) : PagingSource<Int, Bookmark>() {
 
     companion object {
@@ -44,7 +43,7 @@ class RemoteBookmarksPagingSource(
             val position = params.key ?: FIRST_PAGE
             val offset = if (position == FIRST_PAGE) 0 else params.loadSize * (position - 1) + 1
 
-            apiProvider.bookmarksApi.getBookmarks(
+            bookmarksApi.getBookmarks(
                 offset = offset,
                 limit = params.loadSize,
                 query = query,

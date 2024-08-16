@@ -15,13 +15,5 @@ kotlin {
             api(libs.kotlinResult)
             api(libs.paging.common)
         }
-
-        jvmMain.dependencies {
-            implementation(libs.ktor.client.okhttp)
-        }
-
-        iosMain.dependencies {
-            implementation(libs.ktor.client.darwin)
-        }
     }
 }

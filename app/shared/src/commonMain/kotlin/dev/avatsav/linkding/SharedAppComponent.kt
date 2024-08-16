@@ -1,6 +1,6 @@
 package dev.avatsav.linkding
 
-import dev.avatsav.linkding.data.bookmarks.inject.LinkdingComponent
+import dev.avatsav.linkding.data.bookmarks.inject.AuthenticationComponent
 import dev.avatsav.linkding.data.db.inject.DatabaseComponent
 import dev.avatsav.linkding.inject.AppScope
 import dev.avatsav.linkding.inject.LoggerComponent
@@ -19,7 +19,7 @@ interface SharedAppComponent :
     LoggerComponent,
     PreferencesComponent,
     ConnectivityComponent,
-    LinkdingComponent,
+    AuthenticationComponent,
     DatabaseComponent {
 
     @AppScope

@@ -5,10 +5,11 @@ import androidx.paging.PagingState
 import com.github.michaelbull.result.fold
 import com.github.michaelbull.result.mapEither
 import dev.avatsav.linkding.AppCoroutineDispatchers
-import dev.avatsav.linkding.Logger
+import dev.avatsav.linkding.api.LinkdingTagsApi
 import dev.avatsav.linkding.data.bookmarks.mappers.BookmarkErrorMapper
 import dev.avatsav.linkding.data.bookmarks.mappers.TagMapper
 import dev.avatsav.linkding.data.model.Tag
+import dev.avatsav.linkding.inject.UserScope
 import me.tatarka.inject.annotations.Assisted
 import me.tatarka.inject.annotations.Inject
 import kotlinx.coroutines.withContext
@@ -16,13 +17,13 @@ import kotlinx.coroutines.withContext
 typealias TagsPagingSourceFactory = (List<Tag>) -> TagsPagingSource
 
 @Inject
+@UserScope
 class TagsPagingSource(
     @Assisted private val selectedTags: List<Tag>,
-    private val apiProvider: LinkdingApiProvider,
+    private val tagsApi: LinkdingTagsApi,
     private val mapper: TagMapper,
     private val errorMapper: BookmarkErrorMapper,
     private val dispatchers: AppCoroutineDispatchers,
-    private val logger: Logger,
 ) : PagingSource<Int, Tag>() {
 
     companion object {
@@ -40,7 +41,7 @@ class TagsPagingSource(
             val position = params.key ?: FIRST_PAGE
             val offset = if (position == FIRST_PAGE) 0 else params.loadSize * (position - 1) + 1
 
-            apiProvider.tagsApi.getTags(offset, params.loadSize)
+            tagsApi.getTags(offset, params.loadSize)
                 .mapEither(
                     success = mapper::map,
                     failure = errorMapper::map,

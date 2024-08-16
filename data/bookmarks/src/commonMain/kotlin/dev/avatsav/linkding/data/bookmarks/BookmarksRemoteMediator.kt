@@ -7,13 +7,14 @@ import androidx.paging.RemoteMediator
 import com.github.michaelbull.result.fold
 import com.github.michaelbull.result.mapEither
 import dev.avatsav.linkding.AppCoroutineDispatchers
-import dev.avatsav.linkding.Logger
+import dev.avatsav.linkding.api.LinkdingBookmarksApi
 import dev.avatsav.linkding.data.bookmarks.mappers.BookmarkErrorMapper
 import dev.avatsav.linkding.data.bookmarks.mappers.BookmarkMapper
 import dev.avatsav.linkding.data.bookmarks.mappers.toLinkding
 import dev.avatsav.linkding.data.db.daos.PagingBookmarksDao
 import dev.avatsav.linkding.data.model.Bookmark
 import dev.avatsav.linkding.data.model.BookmarkCategory
+import dev.avatsav.linkding.inject.UserScope
 import me.tatarka.inject.annotations.Assisted
 import me.tatarka.inject.annotations.Inject
 import kotlinx.coroutines.withContext
@@ -22,16 +23,16 @@ typealias BookmarksRemoteMediatorFactory = (String, BookmarkCategory, List<Strin
 
 @OptIn(ExperimentalPagingApi::class)
 @Inject
+@UserScope
 class BookmarksRemoteMediator(
     @Assisted private val query: String,
     @Assisted private val category: BookmarkCategory,
     @Assisted private val tags: List<String>,
-    private val apiProvider: Lazy<LinkdingApiProvider>,
+    private val bookmarksApi: LinkdingBookmarksApi,
     private val bookmarksDao: PagingBookmarksDao,
     private val dispatchers: AppCoroutineDispatchers,
     private val bookmarkMapper: BookmarkMapper,
     private val errorMapper: BookmarkErrorMapper,
-    private val logger: Logger,
 ) : RemoteMediator<Int, Bookmark>() {
 
     override suspend fun load(
@@ -49,7 +50,7 @@ class BookmarksRemoteMediator(
             }
         }
 
-        apiProvider.value.bookmarksApi.getBookmarks(
+        bookmarksApi.getBookmarks(
             query = query,
             tags = tags,
             category = category.toLinkding(),

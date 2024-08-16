@@ -6,6 +6,7 @@ import com.github.michaelbull.result.Result
 import com.github.michaelbull.result.mapEither
 import com.github.michaelbull.result.mapError
 import com.github.michaelbull.result.onSuccess
+import dev.avatsav.linkding.api.LinkdingBookmarksApi
 import dev.avatsav.linkding.data.bookmarks.mappers.BookmarkErrorMapper
 import dev.avatsav.linkding.data.bookmarks.mappers.BookmarkMapper
 import dev.avatsav.linkding.data.bookmarks.mappers.CheckUrlResultMapper
@@ -20,7 +21,7 @@ import kotlinx.coroutines.flow.Flow
 
 @Inject
 class BookmarksRepository(
-    private val apiProvider: Lazy<LinkdingApiProvider>,
+    private val bookmarksApi: LinkdingBookmarksApi,
     private val bookmarksDao: BookmarksDao,
     private val bookmarksPagingDataFactory: BookmarksPagingDataFactory,
     private val bookmarkMapper: BookmarkMapper,
@@ -41,31 +42,31 @@ class BookmarksRepository(
     )
 
     suspend fun checkUrl(url: String): Result<CheckUrlResult, BookmarkError> =
-        apiProvider.value.bookmarksApi.checkUrl(url).mapEither(
+        bookmarksApi.checkUrl(url).mapEither(
             success = checkUrlMapper::map,
             failure = errorMapper::map,
         )
 
     suspend fun saveBookmark(saveBookmark: SaveBookmark): Result<Bookmark, BookmarkError> {
         val request = bookmarkMapper.map(saveBookmark)
-        return apiProvider.value.bookmarksApi.saveBookmark(request).mapEither(
+        return bookmarksApi.saveBookmark(request).mapEither(
             success = bookmarkMapper::map,
             failure = errorMapper::map,
         )
     }
 
     suspend fun archiveBookmark(id: Long): Result<Unit, BookmarkError> =
-        apiProvider.value.bookmarksApi.archiveBookmark(id)
+        bookmarksApi.archiveBookmark(id)
             .onSuccess { bookmarksDao.delete(id) }
             .mapError(errorMapper::map)
 
     suspend fun unarchiveBookmark(id: Long): Result<Unit, BookmarkError> =
-        apiProvider.value.bookmarksApi.unarchiveBookmark(id)
+        bookmarksApi.unarchiveBookmark(id)
             .onSuccess { bookmarksDao.delete(id) }
             .mapError(errorMapper::map)
 
     suspend fun deleteBookmark(id: Long): Result<Unit, BookmarkError> =
-        apiProvider.value.bookmarksApi.deleteBookmark(id)
+        bookmarksApi.deleteBookmark(id)
             .onSuccess { bookmarksDao.delete(id) }
             .mapError(errorMapper::map)
 }

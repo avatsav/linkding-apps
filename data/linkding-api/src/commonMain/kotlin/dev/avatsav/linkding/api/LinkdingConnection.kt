@@ -16,25 +16,25 @@ import io.ktor.http.Url
 import io.ktor.http.takeFrom
 
 @LinkdingDsl
-fun LinkdingConnection(
+fun LinkdingAuthentication(
     block: LinkdingClientConfig.() -> Unit,
-): LinkdingConnection {
+): LinkdingAuthentication {
     val clientConfig = LinkdingClientConfig().apply(block)
-    return DefaultLinkdingConnection(clientConfig)
+    return DefaultLinkdingAuthentication(clientConfig)
 }
 
-interface LinkdingConnection {
-    suspend fun connect(
+interface LinkdingAuthentication {
+    suspend fun authenticate(
         hostUrl: LinkdingHostUrl,
         apiKey: LinkdingApiKey,
     ): Result<Unit, LinkdingError>
 }
 
-internal class DefaultLinkdingConnection(clientConfig: LinkdingClientConfig) : LinkdingConnection {
+internal class DefaultLinkdingAuthentication(clientConfig: LinkdingClientConfig) : LinkdingAuthentication {
 
     private val httpClient: HttpClient = HttpClientFactory.buildHttpClient(clientConfig)
 
-    override suspend fun connect(
+    override suspend fun authenticate(
         hostUrl: LinkdingHostUrl,
         apiKey: LinkdingApiKey,
     ): Result<Unit, LinkdingError> =
