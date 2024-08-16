@@ -7,3 +7,6 @@ annotation class AppScope
 
 @Scope
 annotation class UiScope
+
+@Scope
+annotation class UserScope

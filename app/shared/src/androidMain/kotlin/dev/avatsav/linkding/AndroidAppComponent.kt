@@ -11,7 +11,6 @@ import me.tatarka.inject.annotations.Provides
 abstract class AndroidAppComponent(
     @get:Provides val application: Application,
 ) : SharedAppComponent {
-
     abstract val appPreferences: AppPreferences
 
     companion object
