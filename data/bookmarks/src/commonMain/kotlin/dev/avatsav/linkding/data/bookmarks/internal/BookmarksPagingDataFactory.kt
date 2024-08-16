@@ -1,4 +1,4 @@
-package dev.avatsav.linkding.data.bookmarks
+package dev.avatsav.linkding.data.bookmarks.internal
 
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
@@ -7,13 +7,11 @@ import androidx.paging.PagingData
 import dev.avatsav.linkding.data.db.daos.PagingBookmarksDao
 import dev.avatsav.linkding.data.model.Bookmark
 import dev.avatsav.linkding.data.model.BookmarkCategory
-import dev.avatsav.linkding.inject.UserScope
 import me.tatarka.inject.annotations.Inject
 import kotlinx.coroutines.flow.Flow
 
 @OptIn(ExperimentalPagingApi::class)
 @Inject
-@UserScope
 class BookmarksPagingDataFactory(
     private val bookmarksRemoteMediatorFactory: BookmarksRemoteMediatorFactory,
     private val remoteBookmarksPagingSourceFactory: RemoteBookmarksPagingSourceFactory,

@@ -31,6 +31,7 @@ include(
     ":core:connectivity",
     ":core:parcelize",
     ":data:models",
+    ":data:auth",
     ":data:bookmarks",
     ":data:database",
     ":data:database-sqldelight",

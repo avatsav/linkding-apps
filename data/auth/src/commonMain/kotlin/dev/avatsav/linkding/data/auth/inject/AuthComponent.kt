@@ -1,14 +1,16 @@
-package dev.avatsav.linkding.data.bookmarks.inject
+package dev.avatsav.linkding.data.auth.inject
 
 import dev.avatsav.linkding.AppInfo
 import dev.avatsav.linkding.Logger
 import dev.avatsav.linkding.api.LinkdingAuthentication
+import dev.avatsav.linkding.data.auth.AuthRepository
+import dev.avatsav.linkding.data.auth.internal.LinkdingAuthRepository
 import dev.avatsav.linkding.inject.AppScope
 import io.ktor.client.engine.HttpClientEngineFactory
 import io.ktor.client.plugins.logging.LogLevel
 import me.tatarka.inject.annotations.Provides
 
-interface AuthenticationComponent {
+interface AuthComponent {
 
     @Provides
     @AppScope
@@ -30,4 +32,8 @@ interface AuthenticationComponent {
             }
         }
     }
+
+    @AppScope
+    val LinkdingAuthRepository.bind: AuthRepository
+        @Provides get() = this
 }

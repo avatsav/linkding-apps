@@ -1,4 +1,4 @@
-package dev.avatsav.linkding.data.bookmarks
+package dev.avatsav.linkding.data.bookmarks.internal
 
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadType
@@ -8,13 +8,12 @@ import com.github.michaelbull.result.fold
 import com.github.michaelbull.result.mapEither
 import dev.avatsav.linkding.AppCoroutineDispatchers
 import dev.avatsav.linkding.api.LinkdingBookmarksApi
-import dev.avatsav.linkding.data.bookmarks.mappers.BookmarkErrorMapper
-import dev.avatsav.linkding.data.bookmarks.mappers.BookmarkMapper
-import dev.avatsav.linkding.data.bookmarks.mappers.toLinkding
+import dev.avatsav.linkding.data.bookmarks.internal.mappers.BookmarkErrorMapper
+import dev.avatsav.linkding.data.bookmarks.internal.mappers.BookmarkMapper
+import dev.avatsav.linkding.data.bookmarks.internal.mappers.toLinkding
 import dev.avatsav.linkding.data.db.daos.PagingBookmarksDao
 import dev.avatsav.linkding.data.model.Bookmark
 import dev.avatsav.linkding.data.model.BookmarkCategory
-import dev.avatsav.linkding.inject.UserScope
 import me.tatarka.inject.annotations.Assisted
 import me.tatarka.inject.annotations.Inject
 import kotlinx.coroutines.withContext
@@ -23,7 +22,6 @@ typealias BookmarksRemoteMediatorFactory = (String, BookmarkCategory, List<Strin
 
 @OptIn(ExperimentalPagingApi::class)
 @Inject
-@UserScope
 class BookmarksRemoteMediator(
     @Assisted private val query: String,
     @Assisted private val category: BookmarkCategory,

@@ -1,4 +1,4 @@
-package dev.avatsav.linkding.data.bookmarks
+package dev.avatsav.linkding.data.bookmarks.internal
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
@@ -6,9 +6,9 @@ import com.github.michaelbull.result.fold
 import com.github.michaelbull.result.mapEither
 import dev.avatsav.linkding.AppCoroutineDispatchers
 import dev.avatsav.linkding.api.LinkdingBookmarksApi
-import dev.avatsav.linkding.data.bookmarks.mappers.BookmarkErrorMapper
-import dev.avatsav.linkding.data.bookmarks.mappers.BookmarkMapper
-import dev.avatsav.linkding.data.bookmarks.mappers.toLinkding
+import dev.avatsav.linkding.data.bookmarks.internal.mappers.BookmarkErrorMapper
+import dev.avatsav.linkding.data.bookmarks.internal.mappers.BookmarkMapper
+import dev.avatsav.linkding.data.bookmarks.internal.mappers.toLinkding
 import dev.avatsav.linkding.data.model.Bookmark
 import dev.avatsav.linkding.data.model.BookmarkCategory
 import me.tatarka.inject.annotations.Assisted

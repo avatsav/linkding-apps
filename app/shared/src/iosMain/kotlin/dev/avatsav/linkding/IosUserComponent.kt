@@ -9,7 +9,7 @@ import me.tatarka.inject.annotations.Provides
 @UserScope
 abstract class IosUserComponent(
     @get:Provides val apiConfig: ApiConfig,
-    @Component uiComponent: IosUiViewControllerComponent,
+    @Component val uiComponent: IosUiViewControllerComponent,
 ) : SharedUserComponent {
     companion object
 }

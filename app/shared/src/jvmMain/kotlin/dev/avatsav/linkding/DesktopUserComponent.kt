@@ -9,7 +9,7 @@ import me.tatarka.inject.annotations.Provides
 @UserScope
 abstract class DesktopUserComponent(
     @get:Provides val apiConfig: ApiConfig,
-    @Component uiComponent: DesktopUiComponent,
+    @Component val uiComponent: DesktopUiComponent,
 ) : SharedUserComponent {
     companion object
 }

@@ -6,6 +6,10 @@ import dev.avatsav.linkding.api.Linkding
 import dev.avatsav.linkding.api.LinkdingApiConfig
 import dev.avatsav.linkding.api.LinkdingBookmarksApi
 import dev.avatsav.linkding.api.LinkdingTagsApi
+import dev.avatsav.linkding.data.bookmarks.BookmarksRepository
+import dev.avatsav.linkding.data.bookmarks.TagsRepository
+import dev.avatsav.linkding.data.bookmarks.internal.LinkdingBookmarksRepository
+import dev.avatsav.linkding.data.bookmarks.internal.LinkdingTagsRepository
 import dev.avatsav.linkding.data.model.ApiConfig
 import dev.avatsav.linkding.inject.UserScope
 import io.ktor.client.engine.HttpClientEngineFactory
@@ -48,4 +52,12 @@ interface LinkdingComponent {
     @Provides
     @UserScope
     fun provideTagsApi(linkding: Linkding): LinkdingTagsApi = linkding.tags
+
+    @UserScope
+    val LinkdingBookmarksRepository.bind: BookmarksRepository
+        @Provides get() = this
+
+    @UserScope
+    val LinkdingTagsRepository.bind: TagsRepository
+        @Provides get() = this
 }

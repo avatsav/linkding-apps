@@ -1,4 +1,4 @@
-package dev.avatsav.linkding.data.bookmarks.mappers
+package dev.avatsav.linkding.data.bookmarks.internal.mappers
 
 import dev.avatsav.linkding.api.models.LinkdingBookmark
 import dev.avatsav.linkding.api.models.LinkdingBookmarkCategory
