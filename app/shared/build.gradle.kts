@@ -33,6 +33,12 @@ kotlin {
             api(projects.features.settings)
             api(projects.features.tags)
             api(projects.kim.annotations)
+
+            api(libs.circuit.foundation)
+            api(libs.circuit.runtime)
+            api(libs.circuit.foundation)
+            api(libs.circuit.overlay)
+            api(libs.circuit.runtime)
         }
 
         targets.withType<KotlinNativeTarget>().configureEach {

@@ -10,7 +10,7 @@ kotlin {
             implementation(projects.core.base)
             implementation(projects.core.logging)
             implementation(projects.core.preferences)
-            implementation(projects.domain)
+            implementation(projects.data.auth)
             implementation(compose.foundation)
             implementation(compose.material3)
             implementation(compose.materialIconsExtended)
@@ -25,6 +25,6 @@ kotlin {
 }
 
 android {
-    namespace = "dev.avatsav.linkding.ui.setup"
+    namespace = "dev.avatsav.linkding.ui.root"
     buildFeatures.compose = true
 }

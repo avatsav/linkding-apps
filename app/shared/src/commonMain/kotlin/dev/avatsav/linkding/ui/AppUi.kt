@@ -1,4 +1,4 @@
-package dev.avatsav.linkding.ui.root
+package dev.avatsav.linkding.ui
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
@@ -21,7 +21,6 @@ import com.slack.circuitx.gesturenavigation.GestureNavigationDecoration
 import dev.avatsav.linkding.Logger
 import dev.avatsav.linkding.data.model.prefs.AppTheme
 import dev.avatsav.linkding.prefs.AppPreferences
-import dev.avatsav.linkding.ui.UrlScreen
 import dev.avatsav.linkding.ui.theme.LinkdingTheme
 import me.tatarka.inject.annotations.Inject
 import kotlinx.collections.immutable.ImmutableList

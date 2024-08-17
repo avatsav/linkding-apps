@@ -3,7 +3,9 @@ package dev.avatsav.linkding.data.auth.inject
 import dev.avatsav.linkding.AppInfo
 import dev.avatsav.linkding.Logger
 import dev.avatsav.linkding.api.LinkdingAuthentication
+import dev.avatsav.linkding.data.auth.AuthManager
 import dev.avatsav.linkding.data.auth.AuthRepository
+import dev.avatsav.linkding.data.auth.DefaultAuthManager
 import dev.avatsav.linkding.data.auth.internal.LinkdingAuthRepository
 import dev.avatsav.linkding.inject.AppScope
 import io.ktor.client.engine.HttpClientEngineFactory
@@ -35,5 +37,9 @@ interface AuthComponent {
 
     @AppScope
     val LinkdingAuthRepository.bind: AuthRepository
+        @Provides get() = this
+
+    @AppScope
+    val DefaultAuthManager.bind: AuthManager
         @Provides get() = this
 }

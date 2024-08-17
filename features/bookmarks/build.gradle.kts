@@ -27,5 +27,5 @@ kotlin {
 }
 
 android {
-    namespace = "dev.avatsav.linkding.ui.setup"
+    namespace = "dev.avatsav.linkding.ui.bookmarks"
 }
