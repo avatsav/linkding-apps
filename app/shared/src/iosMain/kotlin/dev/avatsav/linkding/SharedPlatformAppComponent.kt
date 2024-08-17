@@ -1,8 +1,6 @@
 package dev.avatsav.linkding
 
 import dev.avatsav.linkding.inject.AppScope
-import io.ktor.client.engine.HttpClientEngineFactory
-import io.ktor.client.engine.darwin.Darwin
 import me.tatarka.inject.annotations.Provides
 import platform.Foundation.NSBundle
 import platform.Foundation.NSUserDefaults
@@ -19,10 +17,6 @@ actual interface SharedPlatformAppComponent {
         version = NSBundle.mainBundle.infoDictionary?.get("CFBundleShortVersionString") as? String
             ?: "",
     )
-
-    @AppScope
-    @Provides
-    fun provideHttpClientEngineFactory(): HttpClientEngineFactory<*> = Darwin
 
     @AppScope
     @Provides

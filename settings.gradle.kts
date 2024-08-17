@@ -33,6 +33,7 @@ include(
     ":data:models",
     ":data:auth",
     ":data:bookmarks",
+    ":data:network",
     ":data:database",
     ":data:database-sqldelight",
     ":data:linkding-api",

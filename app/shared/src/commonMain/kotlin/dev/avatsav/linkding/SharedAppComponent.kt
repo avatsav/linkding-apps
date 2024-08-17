@@ -2,6 +2,7 @@ package dev.avatsav.linkding
 
 import dev.avatsav.linkding.data.auth.inject.AuthComponent
 import dev.avatsav.linkding.data.db.inject.DatabaseComponent
+import dev.avatsav.linkding.data.network.inject.NetworkComponent
 import dev.avatsav.linkding.inject.AppScope
 import dev.avatsav.linkding.inject.LoggerComponent
 import dev.avatsav.linkding.internet.inject.ConnectivityComponent
@@ -16,6 +17,7 @@ expect interface SharedPlatformAppComponent
 
 interface SharedAppComponent :
     SharedPlatformAppComponent,
+    NetworkComponent,
     LoggerComponent,
     PreferencesComponent,
     ConnectivityComponent,

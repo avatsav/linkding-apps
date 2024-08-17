@@ -19,6 +19,7 @@ kotlin {
             api(projects.core.logging)
             api(projects.core.preferences)
             api(projects.core.connectivity)
+            api(projects.data.network)
             api(projects.data.linkdingApi)
             api(projects.data.auth)
             api(projects.data.bookmarks)
@@ -32,15 +33,6 @@ kotlin {
             api(projects.features.settings)
             api(projects.features.tags)
             api(projects.kim.annotations)
-        }
-        androidMain.dependencies {
-            implementation(libs.ktor.client.okhttp)
-        }
-        jvmMain.dependencies {
-            implementation(libs.ktor.client.okhttp)
-        }
-        iosMain.dependencies {
-            implementation(libs.ktor.client.darwin)
         }
 
         targets.withType<KotlinNativeTarget>().configureEach {
