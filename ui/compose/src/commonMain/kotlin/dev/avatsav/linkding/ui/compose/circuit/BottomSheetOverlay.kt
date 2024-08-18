@@ -1,7 +1,7 @@
 // Copyright (C) 2022 Slack Technologies, LLC
 // SPDX-License-Identifier: Apache-2.0
 
-package dev.avatsav.linkding.ui.compose.widgets
+package dev.avatsav.linkding.ui.compose.circuit
 
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import com.slack.circuit.foundation.internal.BackHandler
 import com.slack.circuit.overlay.Overlay
 import com.slack.circuit.overlay.OverlayNavigator
+import dev.avatsav.linkding.ui.compose.widgets.OffsetStatusBar
 import kotlinx.coroutines.launch
 
 /**

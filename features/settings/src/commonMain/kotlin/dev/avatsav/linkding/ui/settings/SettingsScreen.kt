@@ -30,8 +30,8 @@ import com.slack.circuit.runtime.screen.Screen
 import com.slack.circuit.runtime.ui.Ui
 import com.slack.circuit.runtime.ui.ui
 import com.slack.circuitx.overlays.DialogResult
-import com.slack.circuitx.overlays.alertDialogOverlay
 import dev.avatsav.linkding.ui.SettingsScreen
+import dev.avatsav.linkding.ui.compose.circuit.alertDialogOverlay
 import dev.avatsav.linkding.ui.settings.SettingsUiEvent.Close
 import dev.avatsav.linkding.ui.settings.SettingsUiEvent.ResetApiConfig
 import dev.avatsav.linkding.ui.settings.SettingsUiEvent.SetAppTheme

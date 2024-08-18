@@ -25,7 +25,7 @@ import androidx.compose.ui.unit.dp
 import com.slack.circuit.overlay.OverlayHost
 import dev.avatsav.linkding.data.model.Bookmark
 import dev.avatsav.linkding.ui.bookmarks.widgets.BookmarkContent
-import dev.avatsav.linkding.ui.compose.widgets.BottomSheetOverlay
+import dev.avatsav.linkding.ui.compose.circuit.BottomSheetOverlay
 
 suspend fun OverlayHost.showDeleteBookmarkAction(bookmark: Bookmark): ActionResult = show(
     BottomSheetOverlay(

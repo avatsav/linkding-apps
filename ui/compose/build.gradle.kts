@@ -14,6 +14,7 @@ kotlin {
             api(projects.thirdparty.paging.compose)
             api(libs.circuit.foundation)
             api(libs.circuit.overlay)
+            api(libs.circuitx.overlays)
         }
     }
 }
