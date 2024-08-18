@@ -32,7 +32,6 @@ kotlin {
             api(projects.features.addBookmark)
             api(projects.features.settings)
             api(projects.features.tags)
-            api(projects.kim.annotations)
 
             api(libs.circuit.foundation)
             api(libs.circuit.runtime)
@@ -58,4 +57,3 @@ ksp {
 }
 
 addKspDependencyForAllTargets(libs.kotlin.inject.compiler)
-addKspDependencyForAllTargets(projects.kim.compiler)

@@ -5,8 +5,6 @@ import com.slack.circuit.runtime.presenter.Presenter
 import com.slack.circuit.runtime.ui.Ui
 import dev.avatsav.linkding.inject.Named
 import dev.avatsav.linkding.inject.UiScope
-import dev.avatsav.linkding.ui.AppUi
-import dev.avatsav.linkding.ui.DefaultAppUi
 import dev.avatsav.linkding.ui.root.inject.RootComponent
 import dev.avatsav.linkding.ui.setup.inject.SetupComponent
 import me.tatarka.inject.annotations.Provides
@@ -26,8 +24,4 @@ interface SharedUiComponent :
         .addUiFactories(uiFactories)
         .addPresenterFactories(presenterFactories)
         .build()
-
-    @UiScope
-    val DefaultAppUi.bind: AppUi
-        @Provides get() = this
 }

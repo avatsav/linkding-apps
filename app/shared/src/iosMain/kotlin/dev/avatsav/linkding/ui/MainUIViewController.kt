@@ -26,12 +26,12 @@ fun MainUIViewController(
     val backstack = rememberSaveableBackStack(root = RootScreen(null))
     val navigator = rememberCircuitNavigator(backstack, onRootPop = { /* no-op */ })
     val uiViewController = LocalUIViewController.current
-    appUi.Content(
-        backStack = backstack,
-        navigator = navigator,
-        modifier = Modifier.fillMaxSize(),
-        userComponentFactory = userComponentFactory,
-        onOpenUrl = { uiViewController.launchUrl(it) },
+    appUi(
+        backstack,
+        navigator,
+        userComponentFactory,
+        { uiViewController.launchUrl(it) },
+        Modifier.fillMaxSize(),
     )
 }
 

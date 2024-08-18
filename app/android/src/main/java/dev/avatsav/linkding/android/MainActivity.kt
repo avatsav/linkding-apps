@@ -10,7 +10,6 @@ import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.browser.customtabs.CustomTabsIntent
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.Lifecycle
@@ -44,17 +43,12 @@ class MainActivity : ComponentActivity() {
             val backstack = rememberSaveableBackStack(root = RootScreen(sharedLink))
             val navigator = rememberCircuitNavigator(backstack)
 
-            activityComponent.appUi.Content(
-                backStack = backstack,
-                navigator = navigator,
-                modifier = Modifier.fillMaxSize(),
-                userComponentFactory = { apiConfig ->
-                    AndroidUserComponent.create(
-                        apiConfig,
-                        activityComponent,
-                    )
-                },
-                onOpenUrl = { url -> launchUrl(url) },
+            activityComponent.appUi(
+                backstack,
+                navigator,
+                { AndroidUserComponent.create(it, activityComponent) },
+                { launchUrl(it) },
+                Modifier,
             )
         }
     }

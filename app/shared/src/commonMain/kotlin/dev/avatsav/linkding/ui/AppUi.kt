@@ -4,133 +4,76 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import com.slack.circuit.backstack.SaveableBackStack
 import com.slack.circuit.foundation.Circuit
-import com.slack.circuit.foundation.CircuitCompositionLocals
-import com.slack.circuit.foundation.CircuitContent
-import com.slack.circuit.foundation.NavigableCircuitContent
+import com.slack.circuit.overlay.ContentWithOverlays
 import com.slack.circuit.retained.LocalRetainedStateRegistry
 import com.slack.circuit.retained.continuityRetainedStateRegistry
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.screen.PopResult
 import com.slack.circuit.runtime.screen.Screen
-import com.slack.circuitx.gesturenavigation.GestureNavigationDecoration
 import dev.avatsav.linkding.CircuitInstance
 import dev.avatsav.linkding.Logger
-import dev.avatsav.linkding.SharedUserComponent
 import dev.avatsav.linkding.UserComponentFactory
 import dev.avatsav.linkding.data.auth.AuthManager
-import dev.avatsav.linkding.data.auth.AuthState
-import dev.avatsav.linkding.data.model.ApiConfig
 import dev.avatsav.linkding.data.model.prefs.AppTheme
 import dev.avatsav.linkding.inject.Named
 import dev.avatsav.linkding.prefs.AppPreferences
 import dev.avatsav.linkding.ui.theme.LinkdingTheme
+import me.tatarka.inject.annotations.Assisted
 import me.tatarka.inject.annotations.Inject
 import kotlinx.collections.immutable.ImmutableList
 
-interface AppUi {
-    @Composable
-    fun Content(
+typealias AppUi =
+    @Composable (
         backStack: SaveableBackStack,
         navigator: Navigator,
-        modifier: Modifier,
         userComponentFactory: UserComponentFactory,
         onOpenUrl: (String) -> Boolean,
-    )
-}
+        modifier: Modifier,
+    ) -> Unit
 
 @Inject
-class DefaultAppUi(
-    private val preferences: AppPreferences,
-    private val authManager: AuthManager,
-    @Named(CircuitInstance.UNAUTHENTICATED) private val circuit: Circuit,
-    private val logger: Logger,
-) : AppUi {
-
-    @Composable
-    override fun Content(
-        backStack: SaveableBackStack,
-        navigator: Navigator,
-        modifier: Modifier,
-        userComponentFactory: UserComponentFactory,
-        onOpenUrl: (String) -> Boolean,
-    ) {
-        val linkdingNavigator: Navigator = remember(navigator) {
-            LinkdingNavigator(navigator, onOpenUrl, logger)
-        }
-        val authState by authManager.state
-            .collectAsState(null)
-
-        CompositionLocalProvider(
-            LocalRetainedStateRegistry provides continuityRetainedStateRegistry(),
-        ) {
-            LinkdingTheme(
-                darkTheme = preferences.shouldUseDarkTheme(),
-                dynamicColors = preferences.shouldUseDynamicColors(),
-            ) {
-                when (val state = authState) {
-                    is AuthState.Authenticated -> {
-                        BookmarkContent(
-                            apiConfig = state.apiConfig,
-                            backStack,
-                            linkdingNavigator,
-                            userComponentFactory,
-                            modifier,
-                        )
-                    }
-
-                    is AuthState.Unauthenticated -> {
-                        CircuitCompositionLocals(circuit) {
-                            CircuitContent(
-                                screen = SetupScreen,
-                                modifier = modifier,
-                            )
-                        }
-                    }
-
-                    else -> {
-                        CircuitCompositionLocals(circuit) {
-                            CircuitContent(
-                                screen = RootScreen(null),
-                                modifier = modifier,
-                            )
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-
 @Composable
-fun BookmarkContent(
-    apiConfig: ApiConfig,
-    backStack: SaveableBackStack,
-    navigator: Navigator,
-    userComponentFactory: UserComponentFactory,
-    modifier: Modifier = Modifier,
+fun AppUi(
+    @Named(CircuitInstance.UNAUTHENTICATED) circuit: Circuit,
+    preferences: AppPreferences,
+    authManager: AuthManager,
+    logger: Logger,
+    @Assisted backStack: SaveableBackStack,
+    @Assisted navigator: Navigator,
+    @Assisted userComponentFactory: UserComponentFactory,
+    @Assisted onOpenUrl: (String) -> Boolean,
+    @Assisted modifier: Modifier = Modifier,
 ) {
-    val userComponent: SharedUserComponent = remember(apiConfig) {
-        userComponentFactory(apiConfig)
-    }
-    LaunchedEffect(Unit) {
-        navigator.goToAndResetRoot(BookmarksScreen)
+    val linkdingNavigator: Navigator = remember(navigator) {
+        LinkdingNavigator(navigator, onOpenUrl, logger)
     }
 
-    userComponent.authenticatedContent { circuit ->
-        CircuitCompositionLocals(circuit) {
-            NavigableCircuitContent(
-                backStack = backStack,
-                navigator = navigator,
-                decoration = GestureNavigationDecoration(onBackInvoked = navigator::pop),
-                modifier = modifier.fillMaxSize(),
-            )
+    val authState by authManager.state
+        .collectAsState(null)
+
+    CompositionLocalProvider(
+        LocalRetainedStateRegistry provides continuityRetainedStateRegistry(),
+    ) {
+        LinkdingTheme(
+            darkTheme = preferences.shouldUseDarkTheme(),
+            dynamicColors = preferences.shouldUseDynamicColors(),
+        ) {
+            ContentWithOverlays {
+                Home(
+                    authState = authState,
+                    circuit = circuit,
+                    backStack = backStack,
+                    navigator = linkdingNavigator,
+                    userComponentFactory = userComponentFactory,
+                    modifier = modifier.fillMaxSize(),
+                )
+            }
         }
     }
 }
