@@ -17,12 +17,10 @@ import dev.avatsav.linkding.data.model.BookmarkCategory
 import dev.avatsav.linkding.data.model.BookmarkError
 import dev.avatsav.linkding.data.model.CheckUrlResult
 import dev.avatsav.linkding.data.model.SaveBookmark
-import dev.avatsav.linkding.inject.UserScope
 import me.tatarka.inject.annotations.Inject
 import kotlinx.coroutines.flow.Flow
 
 @Inject
-@UserScope
 class LinkdingBookmarksRepository(
     private val bookmarksApi: LinkdingBookmarksApi,
     private val bookmarksDao: BookmarksDao,

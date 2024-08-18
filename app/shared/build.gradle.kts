@@ -39,6 +39,8 @@ kotlin {
             api(libs.circuit.foundation)
             api(libs.circuit.overlay)
             api(libs.circuit.runtime)
+            api(libs.circuitx.gestureNavigation)
+            api(libs.kermit)
         }
 
         targets.withType<KotlinNativeTarget>().configureEach {

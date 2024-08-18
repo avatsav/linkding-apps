@@ -20,7 +20,6 @@ import dev.avatsav.linkding.data.model.AuthError.InvalidHostname
 import dev.avatsav.linkding.data.model.AuthError.Other
 import dev.avatsav.linkding.domain.interactors.Authenticate
 import dev.avatsav.linkding.prefs.AppPreferences
-import dev.avatsav.linkding.ui.BookmarksScreen
 import dev.avatsav.linkding.ui.SetupScreen
 import me.tatarka.inject.annotations.Assisted
 import me.tatarka.inject.annotations.Inject
@@ -83,8 +82,8 @@ class SetupPresenter(
                             }
                         }.onSuccess {
                             appPreferences.setApiConfig(ApiConfig(event.hostUrl, event.apiKey))
-                            navigator.goTo(BookmarksScreen)
-                            navigator.resetRoot(BookmarksScreen)
+//                            navigator.goTo(BookmarksScreen)
+//                            navigator.resetRoot(BookmarksScreen)
                         }
                     }
                 }

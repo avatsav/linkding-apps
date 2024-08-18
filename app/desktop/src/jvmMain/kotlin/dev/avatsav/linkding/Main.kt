@@ -34,10 +34,17 @@ fun main() = application {
         val navigator = rememberCircuitNavigator(backstack) { /* no-op */ }
 
         uiComponent.appUi.Content(
-            backstack,
-            navigator,
-            { launchUrl(it) },
-            Modifier,
+            backStack = backstack,
+            navigator = navigator,
+            modifier = Modifier,
+            userComponentFactory = { apiConfig ->
+                DesktopUserComponent.create(
+                    apiConfig,
+                    uiComponent,
+                )
+            },
+            onOpenUrl = { launchUrl(it) },
+
         )
     }
 }

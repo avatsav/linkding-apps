@@ -10,6 +10,7 @@ import platform.UIKit.UIViewController
 @UiScope
 abstract class IosUiViewControllerComponent(
     @Component val appComponent: IosAppComponent,
+    @get:Provides val userComponentFactory: UserComponentFactory,
 ) : SharedUiComponent {
 
     abstract val uiViewControllerFactory: () -> UIViewController

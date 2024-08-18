@@ -6,9 +6,9 @@ import com.russhwolf.settings.coroutines.toFlowSettings
 import com.russhwolf.settings.get
 import com.russhwolf.settings.set
 import dev.avatsav.linkding.AppCoroutineDispatchers
-import dev.avatsav.linkding.Logger
 import dev.avatsav.linkding.data.model.ApiConfig
 import dev.avatsav.linkding.data.model.prefs.AppTheme
+import me.tatarka.inject.annotations.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
@@ -24,9 +24,9 @@ private const val APP_THEME_LIGHT_VALUE = "light"
 private const val APP_THEME_DARK_VALUE = "dark"
 
 @OptIn(ExperimentalSettingsApi::class)
-internal class DefaultAppPreferences(
+@Inject
+class DefaultAppPreferences(
     private val settings: ObservableSettings,
-    private val logger: Logger,
     dispatchers: AppCoroutineDispatchers,
 ) : AppPreferences {
 

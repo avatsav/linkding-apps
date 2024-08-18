@@ -10,6 +10,7 @@ import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.browser.customtabs.CustomTabsIntent
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.Lifecycle
@@ -19,6 +20,7 @@ import com.slack.circuit.backstack.rememberSaveableBackStack
 import com.slack.circuit.foundation.rememberCircuitNavigator
 import dev.avatsav.linkding.AndroidActivityComponent
 import dev.avatsav.linkding.AndroidAppComponent
+import dev.avatsav.linkding.AndroidUserComponent
 import dev.avatsav.linkding.create
 import dev.avatsav.linkding.data.model.prefs.AppTheme
 import dev.avatsav.linkding.ui.RootScreen
@@ -43,10 +45,16 @@ class MainActivity : ComponentActivity() {
             val navigator = rememberCircuitNavigator(backstack)
 
             activityComponent.appUi.Content(
-                backstack,
-                navigator,
-                { url -> launchUrl(url) },
-                Modifier,
+                backStack = backstack,
+                navigator = navigator,
+                modifier = Modifier.fillMaxSize(),
+                userComponentFactory = { apiConfig ->
+                    AndroidUserComponent.create(
+                        apiConfig,
+                        activityComponent,
+                    )
+                },
+                onOpenUrl = { url -> launchUrl(url) },
             )
         }
     }
