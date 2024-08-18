@@ -22,7 +22,7 @@ import dev.avatsav.linkding.AndroidAppComponent
 import dev.avatsav.linkding.AndroidUserComponent
 import dev.avatsav.linkding.create
 import dev.avatsav.linkding.data.model.prefs.AppTheme
-import dev.avatsav.linkding.ui.RootScreen
+import dev.avatsav.linkding.ui.SetupScreen
 import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
@@ -39,8 +39,9 @@ class MainActivity : ComponentActivity() {
             }
         }
 
+        // TODO: Pass the sharedLink to the appUi
         setContent {
-            val backstack = rememberSaveableBackStack(root = RootScreen(sharedLink))
+            val backstack = rememberSaveableBackStack(root = SetupScreen)
             val navigator = rememberCircuitNavigator(backstack)
 
             activityComponent.appUi(

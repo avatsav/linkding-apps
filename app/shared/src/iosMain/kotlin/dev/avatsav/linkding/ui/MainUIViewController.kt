@@ -23,7 +23,7 @@ fun MainUIViewController(
     appUi: AppUi,
     userComponentFactory: UserComponentFactory,
 ): UIViewController = ComposeUIViewController {
-    val backstack = rememberSaveableBackStack(root = RootScreen(null))
+    val backstack = rememberSaveableBackStack(root = SetupScreen)
     val navigator = rememberCircuitNavigator(backstack, onRootPop = { /* no-op */ })
     val uiViewController = LocalUIViewController.current
     appUi(

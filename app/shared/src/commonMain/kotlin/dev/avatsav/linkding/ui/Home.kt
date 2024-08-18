@@ -1,9 +1,17 @@
 package dev.avatsav.linkding.ui
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.slack.circuit.backstack.SaveableBackStack
 import com.slack.circuit.foundation.Circuit
@@ -47,12 +55,7 @@ fun Home(
         }
 
         else -> {
-            CircuitCompositionLocals(circuit) {
-                CircuitContent(
-                    screen = RootScreen(null),
-                    modifier = modifier,
-                )
-            }
+            SplashScreen()
         }
     }
 }
@@ -83,4 +86,23 @@ private fun AuthenticatedContent(
             )
         }
     }
+}
+
+@Composable
+private fun SplashScreen(
+    modifier: Modifier = Modifier,
+) {
+    Scaffold(
+        modifier = modifier,
+        content = { padding ->
+            Column(
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.padding(padding).background(MaterialTheme.colorScheme.surface)
+                    .fillMaxSize(),
+            ) {
+                CircularProgressIndicator()
+            }
+        },
+    )
 }

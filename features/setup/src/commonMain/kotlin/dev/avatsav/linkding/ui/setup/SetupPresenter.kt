@@ -82,8 +82,6 @@ class SetupPresenter(
                             }
                         }.onSuccess {
                             appPreferences.setApiConfig(ApiConfig(event.hostUrl, event.apiKey))
-//                            navigator.goTo(BookmarksScreen)
-//                            navigator.resetRoot(BookmarksScreen)
                         }
                     }
                 }

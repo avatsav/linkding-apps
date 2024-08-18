@@ -11,7 +11,7 @@ import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
 import com.slack.circuit.backstack.rememberSaveableBackStack
 import com.slack.circuit.foundation.rememberCircuitNavigator
-import dev.avatsav.linkding.ui.RootScreen
+import dev.avatsav.linkding.ui.SetupScreen
 import java.awt.Desktop
 import java.net.URI
 
@@ -30,7 +30,7 @@ fun main() = application {
     ) {
         val uiComponent = remember(appComponent) { DesktopUiComponent.create(appComponent) }
 
-        val backstack = rememberSaveableBackStack(root = RootScreen(null))
+        val backstack = rememberSaveableBackStack(root = SetupScreen)
         val navigator = rememberCircuitNavigator(backstack) { /* no-op */ }
 
         uiComponent.appUi(

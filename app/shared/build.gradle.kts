@@ -25,7 +25,6 @@ kotlin {
             api(projects.data.bookmarks)
             api(projects.data.databaseSqldelight)
             api(projects.domain)
-            api(projects.ui.root)
             api(projects.ui.theme)
             api(projects.features.setup)
             api(projects.features.bookmarks)
@@ -46,7 +45,6 @@ kotlin {
             binaries.framework {
                 isStatic = true
                 baseName = "LinkdingKt"
-                export(projects.ui.root)
             }
         }
     }

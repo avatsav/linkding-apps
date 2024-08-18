@@ -8,9 +8,6 @@ import dev.avatsav.linkding.parcelize.Parcelize
 abstract class LinkdingScreen(val name: String) : Screen
 
 @Parcelize
-data class RootScreen(val sharedUrl: String?) : LinkdingScreen("Root")
-
-@Parcelize
 data object SetupScreen : LinkdingScreen("Setup")
 
 @Parcelize

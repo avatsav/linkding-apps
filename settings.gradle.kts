@@ -41,7 +41,6 @@ include(
     ":ui:theme",
     ":ui:screens",
     ":ui:compose",
-    ":ui:root",
     ":features:bookmarks",
     ":features:add-bookmark",
     ":features:setup",
