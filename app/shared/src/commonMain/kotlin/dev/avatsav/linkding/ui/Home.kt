@@ -69,7 +69,7 @@ private fun AuthenticatedContent(
     modifier: Modifier = Modifier,
 ) {
     val userComponent: SharedUserComponent = remember(apiConfig) {
-        userComponentFactory(apiConfig)
+        userComponentFactory.create(apiConfig)
     }
 
     LaunchedEffect(Unit) {

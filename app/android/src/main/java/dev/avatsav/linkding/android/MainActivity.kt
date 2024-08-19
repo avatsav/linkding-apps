@@ -19,7 +19,6 @@ import com.slack.circuit.backstack.rememberSaveableBackStack
 import com.slack.circuit.foundation.rememberCircuitNavigator
 import dev.avatsav.linkding.AndroidActivityComponent
 import dev.avatsav.linkding.AndroidAppComponent
-import dev.avatsav.linkding.AndroidUserComponent
 import dev.avatsav.linkding.create
 import dev.avatsav.linkding.data.model.prefs.AppTheme
 import dev.avatsav.linkding.ui.SetupScreen
@@ -47,7 +46,6 @@ class MainActivity : ComponentActivity() {
             activityComponent.appUi(
                 backstack,
                 navigator,
-                { AndroidUserComponent.create(it, activityComponent) },
                 { launchUrl(it) },
                 Modifier,
             )

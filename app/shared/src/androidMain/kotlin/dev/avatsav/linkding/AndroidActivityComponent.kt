@@ -15,5 +15,9 @@ abstract class AndroidActivityComponent(
 
     abstract val appUi: AppUi
 
+    @Provides
+    @UiScope
+    fun userComponentFactory(): UserComponentFactory = AndroidUserComponentFactory(this)
+
     companion object
 }

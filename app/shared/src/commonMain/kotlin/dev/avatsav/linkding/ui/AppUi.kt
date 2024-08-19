@@ -32,7 +32,6 @@ typealias AppUi =
     @Composable (
         backStack: SaveableBackStack,
         navigator: Navigator,
-        userComponentFactory: UserComponentFactory,
         onOpenUrl: (String) -> Boolean,
         modifier: Modifier,
     ) -> Unit
@@ -44,9 +43,9 @@ fun AppUi(
     preferences: AppPreferences,
     authManager: AuthManager,
     logger: Logger,
+    userComponentFactory: UserComponentFactory,
     @Assisted backStack: SaveableBackStack,
     @Assisted navigator: Navigator,
-    @Assisted userComponentFactory: UserComponentFactory,
     @Assisted onOpenUrl: (String) -> Boolean,
     @Assisted modifier: Modifier = Modifier,
 ) {

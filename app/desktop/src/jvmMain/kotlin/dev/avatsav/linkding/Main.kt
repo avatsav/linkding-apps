@@ -36,7 +36,6 @@ fun main() = application {
         uiComponent.appUi(
             backstack,
             navigator,
-            { DesktopUserComponent.create(it, uiComponent) },
             { launchUrl(it) },
             Modifier,
         )
