@@ -6,7 +6,8 @@ import com.slack.circuit.runtime.ui.Ui
 import dev.avatsav.linkding.data.bookmarks.inject.LinkdingComponent
 import dev.avatsav.linkding.inject.Named
 import dev.avatsav.linkding.inject.UserScope
-import dev.avatsav.linkding.ui.AuthenticatedContent
+import dev.avatsav.linkding.ui.AuthenticatedAppUi
+import dev.avatsav.linkding.ui.DefaultAuthenticatedAppUi
 import dev.avatsav.linkding.ui.add.inject.AddBookmarkComponent
 import dev.avatsav.linkding.ui.bookmarks.inject.BookmarksComponent
 import dev.avatsav.linkding.ui.settings.inject.SettingsComponent
@@ -20,7 +21,11 @@ interface SharedUserComponent :
     SettingsComponent,
     TagsComponent {
 
-    abstract val authenticatedContent: AuthenticatedContent
+    abstract val authenticatedAppUi: AuthenticatedAppUi
+
+    @UserScope
+    val DefaultAuthenticatedAppUi.bind: AuthenticatedAppUi
+        @Provides get() = this
 
     @Provides
     @UserScope

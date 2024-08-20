@@ -24,54 +24,59 @@ import dev.avatsav.linkding.data.model.prefs.AppTheme
 import dev.avatsav.linkding.inject.Named
 import dev.avatsav.linkding.prefs.AppPreferences
 import dev.avatsav.linkding.ui.theme.LinkdingTheme
-import me.tatarka.inject.annotations.Assisted
 import me.tatarka.inject.annotations.Inject
 import kotlinx.collections.immutable.ImmutableList
 
-typealias AppUi =
-    @Composable (
+interface AppUi {
+    @Composable
+    fun Content(
         backStack: SaveableBackStack,
         navigator: Navigator,
         onOpenUrl: (String) -> Boolean,
         modifier: Modifier,
-    ) -> Unit
+    )
+}
 
 @Inject
-@Composable
-fun AppUi(
-    @Named(CircuitInstance.UNAUTHENTICATED) circuit: Circuit,
-    preferences: AppPreferences,
-    authManager: AuthManager,
-    logger: Logger,
-    userComponentFactory: UserComponentFactory,
-    @Assisted backStack: SaveableBackStack,
-    @Assisted navigator: Navigator,
-    @Assisted onOpenUrl: (String) -> Boolean,
-    @Assisted modifier: Modifier = Modifier,
-) {
-    val linkdingNavigator: Navigator = remember(navigator) {
-        LinkdingNavigator(navigator, onOpenUrl, logger)
-    }
+class DefaultAppUi(
+    @Named(CircuitInstance.UNAUTHENTICATED) private val circuit: Circuit,
+    private val preferences: AppPreferences,
+    private val authManager: AuthManager,
+    private val logger: Logger,
+    private val userComponentFactory: UserComponentFactory,
+) : AppUi {
 
-    val authState by authManager.state
-        .collectAsState(null)
-
-    CompositionLocalProvider(
-        LocalRetainedStateRegistry provides continuityRetainedStateRegistry(),
+    @Composable
+    override fun Content(
+        backStack: SaveableBackStack,
+        navigator: Navigator,
+        onOpenUrl: (String) -> Boolean,
+        modifier: Modifier,
     ) {
-        LinkdingTheme(
-            darkTheme = preferences.shouldUseDarkTheme(),
-            dynamicColors = preferences.shouldUseDynamicColors(),
+        val linkdingNavigator: Navigator = remember(navigator) {
+            LinkdingNavigator(navigator, onOpenUrl, logger)
+        }
+
+        val authState by authManager.state
+            .collectAsState(null)
+
+        CompositionLocalProvider(
+            LocalRetainedStateRegistry provides continuityRetainedStateRegistry(),
         ) {
-            ContentWithOverlays {
-                Home(
-                    authState = authState,
-                    circuit = circuit,
-                    backStack = backStack,
-                    navigator = linkdingNavigator,
-                    userComponentFactory = userComponentFactory,
-                    modifier = modifier.fillMaxSize(),
-                )
+            LinkdingTheme(
+                darkTheme = preferences.shouldUseDarkTheme(),
+                dynamicColors = preferences.shouldUseDynamicColors(),
+            ) {
+                ContentWithOverlays {
+                    Home(
+                        authState = authState,
+                        circuit = circuit,
+                        backStack = backStack,
+                        navigator = linkdingNavigator,
+                        userComponentFactory = userComponentFactory,
+                        modifier = modifier.fillMaxSize(),
+                    )
+                }
             }
         }
     }

@@ -43,7 +43,7 @@ class MainActivity : ComponentActivity() {
             val backstack = rememberSaveableBackStack(root = SetupScreen)
             val navigator = rememberCircuitNavigator(backstack)
 
-            activityComponent.appUi(
+            activityComponent.appUi.Content(
                 backstack,
                 navigator,
                 { launchUrl(it) },

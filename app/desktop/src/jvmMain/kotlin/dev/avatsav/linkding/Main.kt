@@ -33,7 +33,7 @@ fun main() = application {
         val backstack = rememberSaveableBackStack(root = SetupScreen)
         val navigator = rememberCircuitNavigator(backstack) { /* no-op */ }
 
-        uiComponent.appUi(
+        uiComponent.appUi.Content(
             backstack,
             navigator,
             { launchUrl(it) },

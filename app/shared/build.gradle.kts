@@ -14,21 +14,12 @@ android {
 
 kotlin {
     sourceSets {
-
-        // Add ksp source sets to use kotlin-inject generated classes
-        iosArm64Main {
-            kotlin.srcDir("build/generated/ksp/iosArm64/iosArm64Main/kotlin")
-        }
-
-        iosSimulatorArm64Main {
-            kotlin.srcDir("build/generated/ksp/iosSimulatorArm64/iosSimulatorArm64Main/kotlin")
-        }
-
         commonMain.dependencies {
             api(projects.core.base)
             api(projects.core.logging)
             api(projects.core.preferences)
             api(projects.core.connectivity)
+            api(projects.data.models)
             api(projects.data.network)
             api(projects.data.linkdingApi)
             api(projects.data.auth)
@@ -55,6 +46,7 @@ kotlin {
             binaries.framework {
                 isStatic = true
                 baseName = "LinkdingKt"
+                export(projects.data.models)
             }
         }
     }

@@ -24,7 +24,7 @@ fun MainUIViewController(
     val backstack = rememberSaveableBackStack(root = SetupScreen)
     val navigator = rememberCircuitNavigator(backstack, onRootPop = { /* no-op */ })
     val uiViewController = LocalUIViewController.current
-    appUi(
+    appUi.Content(
         backstack,
         navigator,
         { uiViewController.launchUrl(it) },

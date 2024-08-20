@@ -76,7 +76,7 @@ private fun AuthenticatedContent(
         navigator.goToAndResetRoot(BookmarksScreen)
     }
 
-    userComponent.authenticatedContent { circuit ->
+    userComponent.authenticatedAppUi.Content { circuit ->
         CircuitCompositionLocals(circuit) {
             NavigableCircuitContent(
                 backStack = backStack,
