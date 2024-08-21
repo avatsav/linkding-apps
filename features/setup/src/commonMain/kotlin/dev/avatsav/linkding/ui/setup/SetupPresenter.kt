@@ -15,12 +15,11 @@ import com.slack.circuit.runtime.presenter.Presenter
 import com.slack.circuit.runtime.screen.Screen
 import dev.avatsav.linkding.Logger
 import dev.avatsav.linkding.data.model.ApiConfig
-import dev.avatsav.linkding.data.model.ConfigurationError.InvalidApiKey
-import dev.avatsav.linkding.data.model.ConfigurationError.InvalidHostname
-import dev.avatsav.linkding.data.model.ConfigurationError.Other
-import dev.avatsav.linkding.domain.interactors.VerifyApiConfiguration
+import dev.avatsav.linkding.data.model.AuthError.InvalidApiKey
+import dev.avatsav.linkding.data.model.AuthError.InvalidHostname
+import dev.avatsav.linkding.data.model.AuthError.Other
+import dev.avatsav.linkding.domain.interactors.Authenticate
 import dev.avatsav.linkding.prefs.AppPreferences
-import dev.avatsav.linkding.ui.BookmarksScreen
 import dev.avatsav.linkding.ui.SetupScreen
 import me.tatarka.inject.annotations.Assisted
 import me.tatarka.inject.annotations.Inject
@@ -43,7 +42,7 @@ class SetupUiPresenterFactory(
 @Inject
 class SetupPresenter(
     @Assisted private val navigator: Navigator,
-    private val verifyApiConfiguration: VerifyApiConfiguration,
+    private val authenticate: Authenticate,
     private val appPreferences: AppPreferences,
     private val logger: Logger,
 ) : Presenter<SetupUiState> {
@@ -52,7 +51,7 @@ class SetupPresenter(
     override fun present(): SetupUiState {
         val scope = rememberCoroutineScope()
 
-        val verifying by verifyApiConfiguration.inProgress.collectAsState(false)
+        val verifying by authenticate.inProgress.collectAsState(false)
 
         var invalidHostUrl by rememberSaveable { mutableStateOf(false) }
         var invalidApiKey by rememberSaveable { mutableStateOf(false) }
@@ -70,8 +69,8 @@ class SetupPresenter(
                     invalidApiKey = false
                     errorMessage = ""
                     scope.launch {
-                        verifyApiConfiguration(
-                            VerifyApiConfiguration.Param(
+                        authenticate(
+                            Authenticate.Param(
                                 event.hostUrl,
                                 event.apiKey,
                             ),
@@ -83,8 +82,6 @@ class SetupPresenter(
                             }
                         }.onSuccess {
                             appPreferences.setApiConfig(ApiConfig(event.hostUrl, event.apiKey))
-                            navigator.goTo(BookmarksScreen)
-                            navigator.resetRoot(BookmarksScreen)
                         }
                     }
                 }

@@ -19,24 +19,34 @@ kotlin {
             api(projects.core.logging)
             api(projects.core.preferences)
             api(projects.core.connectivity)
+            api(projects.data.models)
+            api(projects.data.network)
             api(projects.data.linkdingApi)
+            api(projects.data.auth)
             api(projects.data.bookmarks)
             api(projects.data.databaseSqldelight)
             api(projects.domain)
-            api(projects.ui.root)
             api(projects.ui.theme)
             api(projects.features.setup)
             api(projects.features.bookmarks)
             api(projects.features.addBookmark)
             api(projects.features.settings)
             api(projects.features.tags)
-            api(projects.kim.annotations)
+
+            api(libs.circuit.foundation)
+            api(libs.circuit.runtime)
+            api(libs.circuit.foundation)
+            api(libs.circuit.overlay)
+            api(libs.circuit.runtime)
+            api(libs.circuitx.gestureNavigation)
+            api(libs.kermit)
         }
+
         targets.withType<KotlinNativeTarget>().configureEach {
             binaries.framework {
                 isStatic = true
                 baseName = "LinkdingKt"
-                export(projects.ui.root)
+                export(projects.data.models)
             }
         }
     }
@@ -47,4 +57,3 @@ ksp {
 }
 
 addKspDependencyForAllTargets(libs.kotlin.inject.compiler)
-addKspDependencyForAllTargets(projects.kim.compiler)

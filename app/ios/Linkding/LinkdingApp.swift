@@ -22,6 +22,6 @@ private func createAppComponent(appDelegate: AppDelegate) -> IosAppComponent {
     return IosAppComponent.companion.create()
 }
 
-private func createUiComponent(appComponent: IosAppComponent) -> IosUiViewControllerComponent {
-    return IosUiViewControllerComponent.companion.create(appComponent: appComponent)
+private func createUiComponent(appComponent: IosAppComponent) -> IosUiComponent {
+    return IosUiComponent.companion.create(appComponent: appComponent)
 }

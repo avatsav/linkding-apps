@@ -17,11 +17,11 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.slack.circuit.backstack.rememberSaveableBackStack
 import com.slack.circuit.foundation.rememberCircuitNavigator
-import dev.avatsav.linkding.AndroidActivityComponent
 import dev.avatsav.linkding.AndroidAppComponent
+import dev.avatsav.linkding.AndroidUiComponent
 import dev.avatsav.linkding.create
 import dev.avatsav.linkding.data.model.prefs.AppTheme
-import dev.avatsav.linkding.ui.RootScreen
+import dev.avatsav.linkding.ui.SetupScreen
 import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
@@ -30,7 +30,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         val sharedLink = getSharedLinkFromIntent()
         val appComponent = AndroidAppComponent.from(this)
-        val activityComponent = AndroidActivityComponent.create(this, appComponent)
+        val activityComponent = AndroidUiComponent.create(this, appComponent)
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -38,14 +38,15 @@ class MainActivity : ComponentActivity() {
             }
         }
 
+        // TODO: Pass the sharedLink to the appUi
         setContent {
-            val backstack = rememberSaveableBackStack(root = RootScreen(sharedLink))
+            val backstack = rememberSaveableBackStack(root = SetupScreen)
             val navigator = rememberCircuitNavigator(backstack)
 
             activityComponent.appUi.Content(
                 backstack,
                 navigator,
-                { url -> launchUrl(url) },
+                { launchUrl(it) },
                 Modifier,
             )
         }

@@ -2,7 +2,7 @@ package dev.avatsav.linkding.ui.bookmarks.inject
 
 import com.slack.circuit.runtime.presenter.Presenter
 import com.slack.circuit.runtime.ui.Ui
-import dev.avatsav.linkding.inject.UiScope
+import dev.avatsav.linkding.inject.UserScope
 import dev.avatsav.linkding.ui.bookmarks.BookmarksUiFactory
 import dev.avatsav.linkding.ui.bookmarks.BookmarksUiPresenterFactory
 import me.tatarka.inject.annotations.IntoSet
@@ -12,12 +12,12 @@ interface BookmarksComponent {
 
     @IntoSet
     @Provides
-    @UiScope
+    @UserScope
     fun bindBookmarksPresenterFactory(factory: BookmarksUiPresenterFactory): Presenter.Factory =
         factory
 
     @IntoSet
     @Provides
-    @UiScope
+    @UserScope
     fun bindBookmarksUiFactoryFactory(factory: BookmarksUiFactory): Ui.Factory = factory
 }

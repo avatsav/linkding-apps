@@ -4,9 +4,9 @@ import LinkdingKt
 import OSLog
 
 struct ComposeView: UIViewControllerRepresentable {
-    private let component: IosUiViewControllerComponent
+    private let component: IosUiComponent
     
-    init(component: IosUiViewControllerComponent) {
+    init(component: IosUiComponent) {
         self.component = component
     }
     
@@ -18,10 +18,10 @@ struct ComposeView: UIViewControllerRepresentable {
 }
 
 struct ContentView: View {
-    private let component: IosUiViewControllerComponent
+    private let component: IosUiComponent
     private let logger: Logger
     
-    init(component: IosUiViewControllerComponent) {
+    init(component: IosUiComponent) {
         self.component = component
         self.logger = Logger()
     }

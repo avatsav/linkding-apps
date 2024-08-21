@@ -3,29 +3,27 @@ package dev.avatsav.linkding
 import com.slack.circuit.foundation.Circuit
 import com.slack.circuit.runtime.presenter.Presenter
 import com.slack.circuit.runtime.ui.Ui
+import dev.avatsav.linkding.inject.Named
 import dev.avatsav.linkding.inject.UiScope
-import dev.avatsav.linkding.ui.add.inject.AddBookmarkComponent
-import dev.avatsav.linkding.ui.bookmarks.inject.BookmarksComponent
-import dev.avatsav.linkding.ui.root.inject.RootComponent
-import dev.avatsav.linkding.ui.settings.inject.SettingsComponent
+import dev.avatsav.linkding.ui.AppUi
+import dev.avatsav.linkding.ui.DefaultAppUi
 import dev.avatsav.linkding.ui.setup.inject.SetupComponent
-import dev.avatsav.linkding.ui.tags.inject.TagsComponent
 import me.tatarka.inject.annotations.Provides
 
-interface SharedUiComponent :
-    RootComponent,
-    SetupComponent,
-    BookmarksComponent,
-    AddBookmarkComponent,
-    SettingsComponent,
-    TagsComponent {
+interface SharedUiComponent : SetupComponent {
+
+    @UiScope
+    val DefaultAppUi.bind: AppUi
+        @Provides get() = this
 
     @UiScope
     @Provides
     fun provideCircuit(
         uiFactories: Set<Ui.Factory>,
         presenterFactories: Set<Presenter.Factory>,
-    ): Circuit = Circuit.Builder()
+    ):
+        @Named(CircuitInstance.UNAUTHENTICATED)
+        Circuit = Circuit.Builder()
         .addUiFactories(uiFactories)
         .addPresenterFactories(presenterFactories)
         .build()
