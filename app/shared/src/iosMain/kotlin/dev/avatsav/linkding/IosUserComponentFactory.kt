@@ -1,11 +1,8 @@
 package dev.avatsav.linkding
 
-import dev.avatsav.linkding.data.model.ApiConfig
-
-class IosUserComponentFactory(private val uiComponent: IosUiViewControllerComponent) : UserComponentFactory {
-    override fun create(apiConfig: ApiConfig): SharedUserComponent {
-        // iOSMain cannot read sources from KSP as they are generated for the each architecture(iOSArm64 etc...)
-        // IosUserComponent.create(apiConfig, uiComponent)
-        TODO()
-    }
-}
+/**
+ * The actual implementation is provided in iosArm64 and ioSimulatorArm64 sourceSets
+ * KSP generated classes are only accessible from their respective arch sourceSets
+ * https://github.com/google/ksp/issues/929
+ */
+expect class IosUserComponentFactory : UserComponentFactory

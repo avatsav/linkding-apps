@@ -8,7 +8,7 @@ import me.tatarka.inject.annotations.Provides
 
 @Component
 @UiScope
-abstract class AndroidActivityComponent(
+abstract class AndroidUiComponent(
     @get:Provides val activity: Activity,
     @Component val applicationComponent: AndroidAppComponent,
 ) : SharedUiComponent {
@@ -17,7 +17,11 @@ abstract class AndroidActivityComponent(
 
     @Provides
     @UiScope
-    fun userComponentFactory(): UserComponentFactory = AndroidUserComponentFactory(this)
+    internal fun uiComponent(): AndroidUiComponent = this
+
+    @UiScope
+    internal val AndroidUserComponentFactory.bind: UserComponentFactory
+        @Provides get() = this
 
     companion object
 }

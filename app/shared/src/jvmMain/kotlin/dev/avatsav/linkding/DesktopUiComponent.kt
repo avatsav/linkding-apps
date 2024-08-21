@@ -14,8 +14,11 @@ abstract class DesktopUiComponent(
     abstract val appUi: AppUi
 
     @Provides
+    internal fun uiComponent(): DesktopUiComponent = this
+
     @UiScope
-    fun userComponentFactory(): UserComponentFactory = DesktopUserComponentFactory(this)
+    internal val DesktopUserComponentFactory.bind: UserComponentFactory
+        @Provides get() = this
 
     companion object
 }

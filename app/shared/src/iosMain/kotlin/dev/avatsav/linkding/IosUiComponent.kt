@@ -1,6 +1,5 @@
 package dev.avatsav.linkding
 
-import dev.avatsav.linkding.data.model.ApiConfig
 import dev.avatsav.linkding.inject.UiScope
 import dev.avatsav.linkding.ui.MainUIViewController
 import me.tatarka.inject.annotations.Component
@@ -9,7 +8,7 @@ import platform.UIKit.UIViewController
 
 @Component
 @UiScope
-abstract class IosUiViewControllerComponent(
+abstract class IosUiComponent(
     @Component val appComponent: IosAppComponent,
 ) : SharedUiComponent {
 
@@ -17,12 +16,11 @@ abstract class IosUiViewControllerComponent(
 
     @Provides
     @UiScope
-    fun userComponentFactory(): UserComponentFactory = object : UserComponentFactory {
-        override fun create(apiConfig: ApiConfig): SharedUserComponent {
-            TODO("Not yet implemented")
-        }
+    internal fun uiComponent(): IosUiComponent = this
 
-    }
+    @UiScope
+    internal val IosUserComponentFactory.bind: UserComponentFactory
+        @Provides get() = this
 
     @Provides
     @UiScope

@@ -9,7 +9,7 @@ import me.tatarka.inject.annotations.Provides
 @UserScope
 abstract class AndroidUserComponent(
     @get:Provides val apiConfig: ApiConfig,
-    @Component val uiComponent: AndroidActivityComponent,
+    @Component val uiComponent: AndroidUiComponent,
 ) : SharedUserComponent {
     companion object
 }

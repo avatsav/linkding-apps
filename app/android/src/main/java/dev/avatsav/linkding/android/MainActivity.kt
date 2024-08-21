@@ -17,8 +17,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.slack.circuit.backstack.rememberSaveableBackStack
 import com.slack.circuit.foundation.rememberCircuitNavigator
-import dev.avatsav.linkding.AndroidActivityComponent
 import dev.avatsav.linkding.AndroidAppComponent
+import dev.avatsav.linkding.AndroidUiComponent
 import dev.avatsav.linkding.create
 import dev.avatsav.linkding.data.model.prefs.AppTheme
 import dev.avatsav.linkding.ui.SetupScreen
@@ -30,7 +30,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         val sharedLink = getSharedLinkFromIntent()
         val appComponent = AndroidAppComponent.from(this)
-        val activityComponent = AndroidActivityComponent.create(this, appComponent)
+        val activityComponent = AndroidUiComponent.create(this, appComponent)
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
