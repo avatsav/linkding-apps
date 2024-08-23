@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -31,7 +32,7 @@ import com.slack.circuit.runtime.ui.Ui
 import com.slack.circuit.runtime.ui.ui
 import com.slack.circuitx.overlays.DialogResult
 import dev.avatsav.linkding.ui.SettingsScreen
-import dev.avatsav.linkding.ui.compose.circuit.alertDialogOverlay
+import dev.avatsav.linkding.ui.circuit.alertDialogOverlay
 import dev.avatsav.linkding.ui.settings.SettingsUiEvent.Close
 import dev.avatsav.linkding.ui.settings.SettingsUiEvent.ResetApiConfig
 import dev.avatsav.linkding.ui.settings.SettingsUiEvent.SetAppTheme
@@ -192,6 +193,7 @@ private fun MadeInMunich() {
 @Inject
 suspend fun OverlayHost.showResetConfirmationDialog(): DialogResult = show(
     alertDialogOverlay(
+        icon = { Icon(imageVector = Icons.AutoMirrored.Filled.Logout, "") },
         title = { Text("Confirm Reset") },
         text = { Text("Are you sure you want to reset the api configuration?") },
         confirmButton = { onClick ->

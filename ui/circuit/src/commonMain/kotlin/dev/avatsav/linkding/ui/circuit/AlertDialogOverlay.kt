@@ -1,10 +1,11 @@
 // Copyright (C) 2022 Slack Technologies, LLC
 // SPDX-License-Identifier: Apache-2.0
 
-package dev.avatsav.linkding.ui.compose.circuit
+package dev.avatsav.linkding.ui.circuit
 
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.AlertDialogDefaults
+import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -15,7 +16,7 @@ import com.slack.circuitx.overlays.DialogResult
 
 /** An overlay that shows an basic [AlertDialog]. */
 @ExperimentalMaterial3Api
-public class BasicAlertDialogOverlay<Model : Any, Result : Any>(
+class BasicAlertDialogOverlay<Model : Any, Result : Any>(
     private val model: Model,
     private val onDismissRequest: () -> Result,
     private val properties: DialogProperties = DialogProperties(),
@@ -23,8 +24,13 @@ public class BasicAlertDialogOverlay<Model : Any, Result : Any>(
 ) : Overlay<Result> {
     @Composable
     override fun Content(navigator: OverlayNavigator<Result>) {
-        @Suppress("DEPRECATION") // This is deprecated in Android, but not available in CM yet
-        AlertDialog(
+        BasicAlertDialog(
+            onDismissRequest = {
+                // This is apparently as close as we can get to an "onDismiss" callback, which
+                // unfortunately has no animation
+                navigator.finish(onDismissRequest())
+            },
+            properties = properties,
             content = {
                 Surface(
                     shape = AlertDialogDefaults.shape,
@@ -33,12 +39,6 @@ public class BasicAlertDialogOverlay<Model : Any, Result : Any>(
                 ) {
                     content(model, navigator::finish)
                 }
-            },
-            properties = properties,
-            onDismissRequest = {
-                // This is apparently as close as we can get to an "onDismiss" callback, which
-                // unfortunately has no animation
-                navigator.finish(onDismissRequest())
             },
         )
     }

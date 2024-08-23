@@ -50,6 +50,7 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
 import androidx.paging.compose.itemKey
+import com.slack.circuit.overlay.ContentWithOverlays
 import com.slack.circuit.overlay.LocalOverlayHost
 import com.slack.circuit.runtime.CircuitContext
 import com.slack.circuit.runtime.screen.Screen
@@ -200,19 +201,6 @@ fun Bookmarks(
                                     bookmark = bookmark,
                                     openBookmark = { toOpen -> eventSink(Open(toOpen)) },
                                     toggleArchive = { toToggle, dismissState ->
-                                        scope.launch {
-                                            when (overlayHost.showArchiveBookmarkAction(toToggle)) {
-                                                ActionResult.Confirmed -> eventSink(
-                                                    ToggleArchive(
-                                                        toToggle,
-                                                    ),
-                                                )
-
-                                                ActionResult.Cancelled,
-                                                ActionResult.Dismissed,
-                                                -> dismissState.reset()
-                                            }
-                                        }
                                     },
                                     deleteBookmark = { toDelete, dismissState ->
                                         scope.launch {
@@ -262,52 +250,59 @@ fun Bookmarks(
             isRefreshing = refreshing,
             onRefresh = { eventSink(BookmarksUiEvent.Refresh) },
         ) {
-            LazyColumn(
-                modifier = Modifier.fillMaxSize(),
-                state = listState,
-                contentPadding = PaddingValues(bottom = 108.dp),
-            ) {
-                item(key = state.bookmarkCategory) {
-                    FiltersBar(
-                        selectedCategory = state.bookmarkCategory,
-                        onSelectCategory = { eventSink(SetBookmarkCategory(it)) },
-                        selectedTags = state.selectedTags.toList(),
-                        onSelectTag = { eventSink(SelectTag(it)) },
-                        onRemoveTag = { eventSink(RemoveTag(it)) },
-                        modifier = Modifier.fillMaxWidth(),
-                    )
-                }
-                items(
-                    count = state.bookmarks.itemCount,
-                    key = state.bookmarks.itemKey { it.localId },
-                ) { index ->
-                    val bookmark = state.bookmarks[index]
-                    if (bookmark != null) {
-                        BookmarkListItem(
-                            bookmark = bookmark,
-                            openBookmark = { toOpen -> eventSink(Open(toOpen)) },
-                            toggleArchive = { toToggle, dismissState ->
-                                scope.launch {
-                                    when (overlayHost.showArchiveBookmarkAction(toToggle)) {
-                                        ActionResult.Confirmed -> eventSink(ToggleArchive(toToggle))
-                                        ActionResult.Cancelled,
-                                        ActionResult.Dismissed,
-                                        -> dismissState.reset()
-                                    }
-                                }
-                            },
-                            deleteBookmark = { toDelete, dismissState ->
-                                scope.launch {
-                                    when (overlayHost.showDeleteBookmarkAction(toDelete)) {
-                                        ActionResult.Confirmed -> eventSink(Delete(toDelete))
-                                        ActionResult.Cancelled,
-                                        ActionResult.Dismissed,
-                                        -> dismissState.reset()
-                                    }
-                                }
-                            },
-                            modifier = Modifier.animateItem(),
+            ContentWithOverlays {
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize(),
+                    state = listState,
+                    contentPadding = PaddingValues(bottom = 108.dp),
+                ) {
+                    item(key = state.bookmarkCategory) {
+                        FiltersBar(
+                            selectedCategory = state.bookmarkCategory,
+                            onSelectCategory = { eventSink(SetBookmarkCategory(it)) },
+                            selectedTags = state.selectedTags.toList(),
+                            onSelectTag = { eventSink(SelectTag(it)) },
+                            onRemoveTag = { eventSink(RemoveTag(it)) },
+                            modifier = Modifier.fillMaxWidth(),
                         )
+                    }
+                    items(
+                        count = state.bookmarks.itemCount,
+                        key = state.bookmarks.itemKey { it.localId },
+                    ) { index ->
+                        val bookmark = state.bookmarks[index]
+                        if (bookmark != null) {
+                            BookmarkListItem(
+                                bookmark = bookmark,
+                                openBookmark = { toOpen -> eventSink(Open(toOpen)) },
+                                toggleArchive = { toToggle, dismissState ->
+                                    scope.launch {
+                                        when (overlayHost.showArchiveBookmarkAction(toToggle)) {
+                                            ActionResult.Confirmed -> eventSink(
+                                                ToggleArchive(
+                                                    toToggle,
+                                                ),
+                                            )
+
+                                            ActionResult.Cancelled,
+                                            ActionResult.Dismissed,
+                                            -> dismissState.reset()
+                                        }
+                                    }
+                                },
+                                deleteBookmark = { toDelete, dismissState ->
+                                    scope.launch {
+                                        when (overlayHost.showDeleteBookmarkAction(toDelete)) {
+                                            ActionResult.Confirmed -> eventSink(Delete(toDelete))
+                                            ActionResult.Cancelled,
+                                            ActionResult.Dismissed,
+                                            -> dismissState.reset()
+                                        }
+                                    }
+                                },
+                                modifier = Modifier.animateItem(),
+                            )
+                        }
                     }
                 }
             }

@@ -1,7 +1,7 @@
 // Copyright (C) 2022 Slack Technologies, LLC
 // SPDX-License-Identifier: Apache-2.0
 
-package dev.avatsav.linkding.ui.compose.circuit
+package dev.avatsav.linkding.ui.circuit
 
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.shape.RoundedCornerShape
