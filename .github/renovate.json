@@ -7,7 +7,7 @@
     {
       "groupName": "Kotlin, KSP and Compose",
       "groupSlug": "kotlin",
-      "matchPackageNames": [
+      "matchPackagePrefixes": [
         "com.google.devtools.ksp",
         "org.jetbrains.kotlin",
         "org.jetbrains.compose"
