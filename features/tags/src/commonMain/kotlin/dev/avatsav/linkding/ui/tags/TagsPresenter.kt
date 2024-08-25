@@ -12,7 +12,7 @@ import dev.avatsav.linkding.Logger
 import dev.avatsav.linkding.domain.observers.ObserveTags
 import dev.avatsav.linkding.ui.TagsScreen
 import dev.avatsav.linkding.ui.TagsScreenResult
-import dev.avatsav.linkding.ui.compose.rememberRetainedCachedPagingFlow
+import dev.avatsav.linkding.ui.circuit.rememberRetainedCachedPagingFlow
 import dev.avatsav.linkding.ui.tags.TagsUiEvent.Close
 import dev.avatsav.linkding.ui.tags.TagsUiEvent.SelectTag
 import me.tatarka.inject.annotations.Assisted
