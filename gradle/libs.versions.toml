@@ -88,7 +88,7 @@ androidx-test-rules = "androidx.test:rules:1.6.1"
 androidx-test-runner = "androidx.test:runner:1.6.2"
 androidx-test-junit = "androidx.test.ext:junit-ktx:1.2.1"
 androidx-test-espresso = "androidx.test.espresso:espresso-core:3.6.1"
-turbine = "app.cash.turbine:turbine:1.1.0"
+turbine = "app.cash.turbine:turbine:1.2.0"
 kotest-assertions = { module = "io.kotest:kotest-assertions-core", version.ref = "kotest" }
 
 circuit-foundation = { module = "com.slack.circuit:circuit-foundation", version.ref = "circuit" }
