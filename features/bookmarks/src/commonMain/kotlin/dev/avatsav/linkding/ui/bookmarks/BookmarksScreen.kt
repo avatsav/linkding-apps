@@ -5,7 +5,6 @@ import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -50,12 +49,10 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
 import androidx.paging.compose.itemKey
+import com.slack.circuit.codegen.annotations.CircuitInject
 import com.slack.circuit.overlay.ContentWithOverlays
 import com.slack.circuit.overlay.LocalOverlayHost
-import com.slack.circuit.runtime.CircuitContext
-import com.slack.circuit.runtime.screen.Screen
-import com.slack.circuit.runtime.ui.Ui
-import com.slack.circuit.runtime.ui.ui
+import dev.avatsav.linkding.inject.UserScope
 import dev.avatsav.linkding.ui.BookmarksScreen
 import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.AddBookmark
 import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.Delete
@@ -68,23 +65,10 @@ import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.ShowSettings
 import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.ToggleArchive
 import dev.avatsav.linkding.ui.bookmarks.widgets.BookmarkListItem
 import dev.avatsav.linkding.ui.bookmarks.widgets.FiltersBar
-import me.tatarka.inject.annotations.Inject
 import kotlinx.coroutines.launch
 
-@Inject
-class BookmarksUiFactory : Ui.Factory {
-    override fun create(screen: Screen, context: CircuitContext): Ui<*>? = when (screen) {
-        is BookmarksScreen -> {
-            ui<BookmarksUiState> { state, modifier ->
-                Bookmarks(state, modifier)
-            }
-        }
-
-        else -> null
-    }
-}
-
-@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
+@CircuitInject(BookmarksScreen::class, UserScope::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Bookmarks(
     state: BookmarksUiState,

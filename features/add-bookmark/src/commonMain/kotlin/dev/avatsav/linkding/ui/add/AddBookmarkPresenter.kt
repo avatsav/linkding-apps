@@ -9,38 +9,23 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import com.github.michaelbull.result.onFailure
 import com.github.michaelbull.result.onSuccess
-import com.slack.circuit.runtime.CircuitContext
+import com.slack.circuit.codegen.annotations.CircuitInject
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
-import com.slack.circuit.runtime.screen.Screen
 import dev.avatsav.linkding.Logger
 import dev.avatsav.linkding.data.model.CheckUrlResult
 import dev.avatsav.linkding.data.model.SaveBookmark
 import dev.avatsav.linkding.domain.interactors.AddBookmark
 import dev.avatsav.linkding.domain.interactors.CheckBookmarkUrl
+import dev.avatsav.linkding.inject.UserScope
 import dev.avatsav.linkding.ui.AddBookmarkScreen
 import me.tatarka.inject.annotations.Assisted
-import me.tatarka.inject.annotations.Inject
 import kotlinx.coroutines.launch
 
-@Inject
-class AddBookmarkPresenterFactory(
-    private val presenterFactory: (Navigator, String?) -> AddBookmarkPresenter,
-) : Presenter.Factory {
-    override fun create(
-        screen: Screen,
-        navigator: Navigator,
-        context: CircuitContext,
-    ): Presenter<*>? = when (screen) {
-        is AddBookmarkScreen -> presenterFactory(navigator, screen.sharedUrl)
-        else -> null
-    }
-}
-
-@Inject
+@CircuitInject(AddBookmarkScreen::class, UserScope::class)
 class AddBookmarkPresenter(
+    @Assisted private val screen: AddBookmarkScreen,
     @Assisted private val navigator: Navigator,
-    @Assisted private val sharedUrl: String?,
     private val addBookmark: AddBookmark,
     private val checkBookmarkUrl: CheckBookmarkUrl,
     private val logger: Logger,
@@ -57,7 +42,7 @@ class AddBookmarkPresenter(
         val saving by addBookmark.inProgress.collectAsState(false)
 
         return AddBookmarkUiState(
-            sharedUrl = sharedUrl,
+            sharedUrl = screen.sharedUrl,
             checkingUrl = checkingUrl,
             checkUrlResult = checkUrlResult,
             saving = saving,

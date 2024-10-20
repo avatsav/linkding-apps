@@ -1,6 +1,9 @@
+import dev.avatsav.gradle.addKspDependencyForAllTargets
+
 plugins {
     id("convention.android.library")
     id("convention.kotlin.multiplatform")
+    alias(libs.plugins.ksp)
 }
 
 kotlin {
@@ -26,3 +29,5 @@ kotlin {
 android {
     namespace = "dev.avatsav.linkding.internet"
 }
+
+addKspDependencyForAllTargets(libs.kotlin.inject.anvil.compiler)

@@ -8,7 +8,10 @@ import com.russhwolf.settings.set
 import dev.avatsav.linkding.AppCoroutineDispatchers
 import dev.avatsav.linkding.data.model.ApiConfig
 import dev.avatsav.linkding.data.model.prefs.AppTheme
+import dev.avatsav.linkding.inject.AppScope
 import me.tatarka.inject.annotations.Inject
+import software.amazon.lastmile.kotlin.inject.anvil.ContributesBinding
+import software.amazon.lastmile.kotlin.inject.anvil.SingleIn
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
@@ -25,6 +28,8 @@ private const val APP_THEME_DARK_VALUE = "dark"
 
 @OptIn(ExperimentalSettingsApi::class)
 @Inject
+@SingleIn(AppScope::class)
+@ContributesBinding(AppScope::class)
 class DefaultAppPreferences(
     private val settings: ObservableSettings,
     dispatchers: AppCoroutineDispatchers,

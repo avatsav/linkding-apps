@@ -5,10 +5,15 @@ import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities.NET_CAPABILITY_INTERNET
 import android.net.NetworkRequest
+import dev.avatsav.linkding.inject.AppScope
 import me.tatarka.inject.annotations.Inject
+import software.amazon.lastmile.kotlin.inject.anvil.ContributesBinding
+import software.amazon.lastmile.kotlin.inject.anvil.SingleIn
 
 @Inject
 @SuppressLint("MissingPermission")
+@SingleIn(AppScope::class)
+@ContributesBinding(AppScope::class)
 class AndroidNetworkMonitor(
     private val connectivityManager: ConnectivityManager,
 ) : NetworkMonitor {

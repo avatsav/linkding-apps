@@ -6,6 +6,8 @@ import dev.avatsav.linkding.data.model.ApiConfig
 import dev.avatsav.linkding.inject.AppScope
 import dev.avatsav.linkding.prefs.AppPreferences
 import me.tatarka.inject.annotations.Inject
+import software.amazon.lastmile.kotlin.inject.anvil.ContributesBinding
+import software.amazon.lastmile.kotlin.inject.anvil.SingleIn
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
@@ -21,7 +23,8 @@ interface AuthManager {
 }
 
 @Inject
-@AppScope
+@SingleIn(AppScope::class)
+@ContributesBinding(AppScope::class)
 class DefaultAuthManager(private val appPreferences: AppPreferences) : AuthManager {
     override val state: Flow<AuthState> = appPreferences.observeApiConfig()
         .distinctUntilChanged()

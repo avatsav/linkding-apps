@@ -4,10 +4,11 @@ import android.app.Application
 import android.content.pm.ApplicationInfo
 import dev.avatsav.linkding.inject.AppScope
 import me.tatarka.inject.annotations.Provides
+import software.amazon.lastmile.kotlin.inject.anvil.SingleIn
 
 actual interface SharedPlatformAppComponent {
 
-    @AppScope
+    @SingleIn(AppScope::class)
     @Provides
     fun provideAppInfo(application: Application): AppInfo {
         val packageManager = application.packageManager
@@ -17,7 +18,7 @@ actual interface SharedPlatformAppComponent {
         return AppInfo(
             packageName = application.packageName,
             debug = (applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE) != 0,
-            version = packageInfo.versionName,
+            version = packageInfo.versionName!!,
         )
     }
 }

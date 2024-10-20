@@ -1,7 +1,11 @@
+import dev.avatsav.gradle.addKspDependencyForAllTargets
+import dev.avatsav.gradle.configureKspForCircuitCodegen
+
 plugins {
     id("convention.android.library")
     id("convention.kotlin.multiplatform")
     id("convention.compose")
+    alias(libs.plugins.ksp)
 }
 
 kotlin {
@@ -30,3 +34,8 @@ kotlin {
 android {
     namespace = "dev.avatsav.linkding.ui.bookmarks"
 }
+
+configureKspForCircuitCodegen()
+addKspDependencyForAllTargets(libs.circuit.codegen)
+addKspDependencyForAllTargets(libs.kotlin.inject.compiler)
+addKspDependencyForAllTargets(libs.kotlin.inject.anvil.compiler)

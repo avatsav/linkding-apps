@@ -1,24 +1,25 @@
 package dev.avatsav.linkding
 
+import dev.avatsav.linkding.inject.AppScope
 import dev.avatsav.linkding.inject.UiScope
 import dev.avatsav.linkding.ui.AppUi
-import me.tatarka.inject.annotations.Component
 import me.tatarka.inject.annotations.Provides
+import software.amazon.lastmile.kotlin.inject.anvil.ContributesSubcomponent
+import software.amazon.lastmile.kotlin.inject.anvil.SingleIn
 
-@Component
-@UiScope
-abstract class DesktopUiComponent(
-    @Component val appComponent: DesktopAppComponent,
-) : SharedUiComponent {
+@SingleIn(UiScope::class)
+@ContributesSubcomponent(UiScope::class)
+interface DesktopUiComponent {
 
-    abstract val appUi: AppUi
+    val appUi: AppUi
 
     @Provides
-    internal fun uiComponent(): DesktopUiComponent = this
+    fun uiComponent(): DesktopUiComponent = this
 
-    @UiScope
-    internal val DesktopUserComponentFactory.bind: UserComponentFactory
-        @Provides get() = this
+    @ContributesSubcomponent.Factory(AppScope::class)
+    interface Factory {
+        fun createUiComponent(): DesktopUiComponent
+    }
 
     companion object
 }

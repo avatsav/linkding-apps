@@ -6,10 +6,15 @@ import dev.avatsav.linkding.AppCoroutineDispatchers
 import dev.avatsav.linkding.data.db.Database
 import dev.avatsav.linkding.data.db.paging.QueryPagingSource
 import dev.avatsav.linkding.data.model.Bookmark
+import dev.avatsav.linkding.inject.AppScope
 import me.tatarka.inject.annotations.Inject
+import software.amazon.lastmile.kotlin.inject.anvil.ContributesBinding
+import software.amazon.lastmile.kotlin.inject.anvil.SingleIn
 import kotlinx.datetime.Instant
 
 @Inject
+@ContributesBinding(AppScope::class)
+@SingleIn(AppScope::class)
 class SqlDelightPagingBookmarksDao(
     private val db: Database,
     private val bookmarksDao: BookmarksDao,

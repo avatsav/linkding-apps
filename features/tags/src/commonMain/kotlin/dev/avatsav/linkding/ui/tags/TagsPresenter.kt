@@ -4,35 +4,20 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.paging.PagingConfig
 import androidx.paging.compose.collectAsLazyPagingItems
-import com.slack.circuit.runtime.CircuitContext
+import com.slack.circuit.codegen.annotations.CircuitInject
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
-import com.slack.circuit.runtime.screen.Screen
 import dev.avatsav.linkding.Logger
 import dev.avatsav.linkding.domain.observers.ObserveTags
+import dev.avatsav.linkding.inject.UserScope
 import dev.avatsav.linkding.ui.TagsScreen
 import dev.avatsav.linkding.ui.TagsScreenResult
 import dev.avatsav.linkding.ui.circuit.rememberRetainedCachedPagingFlow
 import dev.avatsav.linkding.ui.tags.TagsUiEvent.Close
 import dev.avatsav.linkding.ui.tags.TagsUiEvent.SelectTag
 import me.tatarka.inject.annotations.Assisted
-import me.tatarka.inject.annotations.Inject
 
-@Inject
-class TagsUiPresenterFactory(
-    private val presenterFactory: (Navigator, TagsScreen) -> TagsPresenter,
-) : Presenter.Factory {
-    override fun create(
-        screen: Screen,
-        navigator: Navigator,
-        context: CircuitContext,
-    ): Presenter<*>? = when (screen) {
-        is TagsScreen -> presenterFactory(navigator, screen)
-        else -> null
-    }
-}
-
-@Inject
+@CircuitInject(TagsScreen::class, UserScope::class)
 class TagsPresenter(
     @Assisted private val navigator: Navigator,
     @Assisted private val screen: TagsScreen,

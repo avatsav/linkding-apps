@@ -1,10 +1,9 @@
 package dev.avatsav.linkding
 
 import dev.avatsav.linkding.inject.AppScope
-import me.tatarka.inject.annotations.Component
+import software.amazon.lastmile.kotlin.inject.anvil.MergeComponent
 
-@Component
-@AppScope
-abstract class DesktopAppComponent : SharedAppComponent {
+@MergeComponent(AppScope::class)
+abstract class DesktopAppComponent {
     companion object
 }

@@ -5,26 +5,21 @@ import com.slack.circuit.runtime.presenter.Presenter
 import com.slack.circuit.runtime.ui.Ui
 import dev.avatsav.linkding.inject.Named
 import dev.avatsav.linkding.inject.UiScope
-import dev.avatsav.linkding.ui.AppUi
-import dev.avatsav.linkding.ui.DefaultAppUi
-import dev.avatsav.linkding.ui.setup.inject.SetupComponent
 import me.tatarka.inject.annotations.Provides
+import software.amazon.lastmile.kotlin.inject.anvil.ContributesTo
+import software.amazon.lastmile.kotlin.inject.anvil.SingleIn
 
-interface SharedUiComponent : SetupComponent {
+@ContributesTo(UiScope::class)
+interface SharedUiComponent {
 
-    @UiScope
-    val DefaultAppUi.bind: AppUi
-        @Provides get() = this
-
-    @UiScope
     @Provides
+    @SingleIn(UiScope::class)
+    @Named(CircuitInstance.UNAUTHENTICATED)
     fun provideCircuit(
         uiFactories: Set<Ui.Factory>,
         presenterFactories: Set<Presenter.Factory>,
-    ):
-        @Named(CircuitInstance.UNAUTHENTICATED)
-        Circuit = Circuit.Builder()
-        .addUiFactories(uiFactories)
-        .addPresenterFactories(presenterFactories)
+    ): Circuit = Circuit.Builder()
+//        .addUiFactories(uiFactories)
+//        .addPresenterFactories(presenterFactories)
         .build()
 }

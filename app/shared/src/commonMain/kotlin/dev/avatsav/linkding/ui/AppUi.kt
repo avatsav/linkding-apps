@@ -18,13 +18,15 @@ import com.slack.circuit.runtime.screen.PopResult
 import com.slack.circuit.runtime.screen.Screen
 import dev.avatsav.linkding.CircuitInstance
 import dev.avatsav.linkding.Logger
-import dev.avatsav.linkding.UserComponentFactory
 import dev.avatsav.linkding.data.auth.AuthManager
 import dev.avatsav.linkding.data.model.prefs.AppTheme
 import dev.avatsav.linkding.inject.Named
+import dev.avatsav.linkding.inject.UiScope
 import dev.avatsav.linkding.prefs.AppPreferences
 import dev.avatsav.linkding.ui.theme.LinkdingTheme
 import me.tatarka.inject.annotations.Inject
+import software.amazon.lastmile.kotlin.inject.anvil.ContributesBinding
+import software.amazon.lastmile.kotlin.inject.anvil.SingleIn
 import kotlinx.collections.immutable.ImmutableList
 
 interface AppUi {
@@ -38,12 +40,13 @@ interface AppUi {
 }
 
 @Inject
+@ContributesBinding(UiScope::class)
+@SingleIn(UiScope::class)
 class DefaultAppUi(
     @Named(CircuitInstance.UNAUTHENTICATED) private val circuit: Circuit,
     private val preferences: AppPreferences,
     private val authManager: AuthManager,
     private val logger: Logger,
-    private val userComponentFactory: UserComponentFactory,
 ) : AppUi {
 
     @Composable
@@ -73,7 +76,6 @@ class DefaultAppUi(
                         circuit = circuit,
                         backStack = backStack,
                         navigator = linkdingNavigator,
-                        userComponentFactory = userComponentFactory,
                         modifier = modifier.fillMaxSize(),
                     )
                 }

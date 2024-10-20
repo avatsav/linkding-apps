@@ -1,6 +1,9 @@
+import dev.avatsav.gradle.configureKspForCircuitCodegen
+
 plugins {
     id("convention.android.application")
     id("convention.compose")
+    alias(libs.plugins.ksp)
 }
 
 android {
@@ -50,6 +53,13 @@ dependencies {
     implementation(libs.androidx.browser)
     implementation(libs.androidx.splashscreen)
     implementation(libs.kotlin.coroutines.android)
+    implementation(libs.kotlin.inject.runtime)
+    implementation(libs.kotlin.inject.anvil.runtime)
+    implementation(libs.circuit.runtime)
+
+    ksp(libs.kotlin.inject.compiler)
+    ksp(libs.kotlin.inject.anvil.compiler)
+    ksp(libs.circuit.codegen)
 
     debugImplementation(libs.leakCanary)
 
@@ -61,3 +71,5 @@ dependencies {
     androidTestImplementation(libs.androidx.test.junit)
     androidTestImplementation(libs.androidx.test.espresso)
 }
+
+configureKspForCircuitCodegen()

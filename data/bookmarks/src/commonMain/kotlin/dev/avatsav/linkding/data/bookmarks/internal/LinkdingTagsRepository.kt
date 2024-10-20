@@ -5,10 +5,13 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import dev.avatsav.linkding.data.bookmarks.TagsRepository
 import dev.avatsav.linkding.data.model.Tag
+import dev.avatsav.linkding.inject.UserScope
 import me.tatarka.inject.annotations.Inject
+import software.amazon.lastmile.kotlin.inject.anvil.ContributesBinding
 import kotlinx.coroutines.flow.Flow
 
 @Inject
+@ContributesBinding(UserScope::class)
 class LinkdingTagsRepository(private val pagingSourceFactory: TagsPagingSourceFactory) : TagsRepository {
 
     override fun getTagsPaged(

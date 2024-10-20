@@ -1,18 +1,19 @@
 [versions]
-agp = "8.6.0"
-kotlin = "2.0.20"
+agp = "8.7.1"
+kotlin = "2.0.21"
 coroutines = "1.9.0"
-ksp = "2.0.20-1.0.25"
+ksp = "2.0.21-1.0.25"
 spotless = "6.25.0"
 multiplatform-settings = "1.2.0"
 ktor = "2.3.12"
 datetime = "0.6.1"
-compose-multiplatform = "1.7.0-beta02"
+compose-multiplatform = "1.7.0"
 kotlin-inject = "0.7.2"
+kotlin-inject-anvil = "0.0.5"
 paging = "3.3.2"
 circuit = "0.24.0"
 kotlinResult = "2.0.0"
-androidxActivity = "1.9.2"
+androidxActivity = "1.9.3"
 sqldelight = "2.0.2"
 stately = "2.1.0"
 kotlinPoet = "1.18.1"
@@ -20,9 +21,9 @@ kotest = "5.9.1"
 ktlint = "1.3.1"
 ktlintCompose = "0.4.12"
 
-compileSdk = "34"
+compileSdk = "35"
 minSdk = "30"
-targetSdk = "34"
+targetSdk = "35"
 jvmToolchain = "21"
 
 [plugins]
@@ -78,6 +79,10 @@ multiplatform-settings-coroutines = { module = "com.russhwolf:multiplatform-sett
 kotlin-inject-compiler = { module = "me.tatarka.inject:kotlin-inject-compiler-ksp", version.ref = "kotlin-inject" }
 kotlin-inject-runtime = { module = "me.tatarka.inject:kotlin-inject-runtime", version.ref = "kotlin-inject" }
 
+kotlin-inject-anvil-compiler = { module = "software.amazon.lastmile.kotlin.inject.anvil:compiler", version.ref = "kotlin-inject-anvil" }
+kotlin-inject-anvil-runtime = { module = "software.amazon.lastmile.kotlin.inject.anvil:runtime", version.ref = "kotlin-inject-anvil" }
+kotlin-inject-anvil-runtime-optional = { module = "software.amazon.lastmile.kotlin.inject.anvil:runtime-optional", version.ref = "kotlin-inject-anvil" }
+
 kotlinResult = { module = "com.michael-bull.kotlin-result:kotlin-result", version.ref = "kotlinResult" }
 kotlinResultCoroutines = { module = "com.michael-bull.kotlin-result:kotlin-result-coroutines", version.ref = "kotlinResult" }
 
@@ -88,13 +93,15 @@ androidx-test-rules = "androidx.test:rules:1.6.1"
 androidx-test-runner = "androidx.test:runner:1.6.2"
 androidx-test-junit = "androidx.test.ext:junit-ktx:1.2.1"
 androidx-test-espresso = "androidx.test.espresso:espresso-core:3.6.1"
-turbine = "app.cash.turbine:turbine:1.1.0"
+turbine = "app.cash.turbine:turbine:1.2.0"
 kotest-assertions = { module = "io.kotest:kotest-assertions-core", version.ref = "kotest" }
 
 circuit-foundation = { module = "com.slack.circuit:circuit-foundation", version.ref = "circuit" }
 circuit-runtime = { module = "com.slack.circuit:circuit-runtime", version.ref = "circuit" }
 circuit-overlay = { module = "com.slack.circuit:circuit-overlay", version.ref = "circuit" }
 circuit-retained = { module = "com.slack.circuit:circuit-retained", version.ref = "circuit" }
+circuit-codegen = { module = "com.slack.circuit:circuit-codegen", version.ref = "circuit" }
+circuit-codegen-annotations = { module = "com.slack.circuit:circuit-codegen-annotations", version.ref = "circuit" }
 circuitx-gestureNavigation = { module = "com.slack.circuit:circuitx-gesture-navigation", version.ref = "circuit" }
 circuitx-overlays = { module = "com.slack.circuit:circuitx-overlays", version.ref = "circuit" }
 
@@ -114,3 +121,4 @@ kotlin-gradlePlugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", ve
 spotless-gradlePlugin = { module = "com.diffplug.spotless:spotless-plugin-gradle", version.ref = "spotless" }
 compose-gradlePlugin = { module = "org.jetbrains.compose:compose-gradle-plugin", version.ref = "compose-multiplatform" }
 composeCompiler-gradlePlugin = { module = "org.jetbrains.kotlin:compose-compiler-gradle-plugin", version.ref = "kotlin" }
+ksp-gradlePlugin = { module = "com.google.devtools.ksp:com.google.devtools.ksp.gradle.plugin", version.ref = "ksp" }

@@ -18,8 +18,6 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.slack.circuit.backstack.rememberSaveableBackStack
 import com.slack.circuit.foundation.rememberCircuitNavigator
 import dev.avatsav.linkding.AndroidAppComponent
-import dev.avatsav.linkding.AndroidUiComponent
-import dev.avatsav.linkding.create
 import dev.avatsav.linkding.data.model.prefs.AppTheme
 import dev.avatsav.linkding.ui.SetupScreen
 import kotlinx.coroutines.launch
@@ -30,7 +28,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         val sharedLink = getSharedLinkFromIntent()
         val appComponent = AndroidAppComponent.from(this)
-        val activityComponent = AndroidUiComponent.create(this, appComponent)
+        val activityComponent = appComponent.createUiComponent(this)
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -79,5 +77,5 @@ private fun ComponentActivity.enableEdgeToEdge(appTheme: AppTheme) {
     enableEdgeToEdge(statusBarStyle = style, navigationBarStyle = style)
 }
 
-private fun AndroidAppComponent.Companion.from(context: Context): AndroidAppComponent =
+private fun AndroidAppComponent.from(context: Context): AndroidAppComponent =
     (context.applicationContext as LinkdingApplication).component

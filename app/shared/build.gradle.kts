@@ -1,4 +1,6 @@
+
 import dev.avatsav.gradle.addKspDependencyForAllTargets
+import dev.avatsav.gradle.configureKspForCircuitCodegen
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 
 plugins {
@@ -28,10 +30,10 @@ kotlin {
             api(projects.domain)
             api(projects.ui.theme)
             api(projects.features.setup)
-            api(projects.features.bookmarks)
-            api(projects.features.addBookmark)
-            api(projects.features.settings)
-            api(projects.features.tags)
+//            api(projects.features.bookmarks)
+//            api(projects.features.addBookmark)
+//            api(projects.features.settings)
+//            api(projects.features.tags)
 
             api(libs.circuit.foundation)
             api(libs.circuit.runtime)
@@ -40,6 +42,11 @@ kotlin {
             api(libs.circuit.runtime)
             api(libs.circuitx.gestureNavigation)
             api(libs.kermit)
+
+            implementation(libs.circuit.codegen.annotations)
+            implementation(libs.kotlin.inject.runtime)
+            implementation(libs.kotlin.inject.anvil.runtime)
+            implementation(libs.kotlin.inject.anvil.runtime.optional)
         }
 
         targets.withType<KotlinNativeTarget>().configureEach {
@@ -52,8 +59,7 @@ kotlin {
     }
 }
 
-ksp {
-    arg("me.tatarka.inject.generateCompanionExtensions", "true")
-}
-
+configureKspForCircuitCodegen()
+addKspDependencyForAllTargets(libs.circuit.codegen)
 addKspDependencyForAllTargets(libs.kotlin.inject.compiler)
+addKspDependencyForAllTargets(libs.kotlin.inject.anvil.compiler)

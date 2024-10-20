@@ -1,30 +1,31 @@
 package dev.avatsav.linkding
 
+import dev.avatsav.linkding.inject.AppScope
 import dev.avatsav.linkding.inject.UiScope
 import dev.avatsav.linkding.ui.MainUIViewController
-import me.tatarka.inject.annotations.Component
 import me.tatarka.inject.annotations.Provides
 import platform.UIKit.UIViewController
+import software.amazon.lastmile.kotlin.inject.anvil.ContributesSubcomponent
+import software.amazon.lastmile.kotlin.inject.anvil.SingleIn
 
-@Component
-@UiScope
-abstract class IosUiComponent(
-    @Component val appComponent: IosAppComponent,
-) : SharedUiComponent {
+@SingleIn(UiScope::class)
+@ContributesSubcomponent(UiScope::class)
+interface IosUiComponent {
 
-    abstract val uiViewControllerFactory: () -> UIViewController
-
-    @Provides
-    @UiScope
-    internal fun uiComponent(): IosUiComponent = this
-
-    @UiScope
-    internal val IosUserComponentFactory.bind: UserComponentFactory
-        @Provides get() = this
+    val uiViewControllerFactory: () -> UIViewController
 
     @Provides
-    @UiScope
+    @SingleIn(UiScope::class)
+    fun uiComponent(): IosUiComponent = this
+
+    @Provides
+    @SingleIn(UiScope::class)
     fun uiViewController(impl: MainUIViewController): UIViewController = impl()
+
+    @ContributesSubcomponent.Factory(AppScope::class)
+    interface Factory {
+        fun createUiComponent(): IosUiComponent
+    }
 
     companion object
 }

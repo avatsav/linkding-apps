@@ -2,9 +2,14 @@ package dev.avatsav.linkding.data.db.daos
 
 import dev.avatsav.linkding.data.db.Database
 import dev.avatsav.linkding.data.model.Bookmark
+import dev.avatsav.linkding.inject.AppScope
 import me.tatarka.inject.annotations.Inject
+import software.amazon.lastmile.kotlin.inject.anvil.ContributesBinding
+import software.amazon.lastmile.kotlin.inject.anvil.SingleIn
 
 @Inject
+@SingleIn(AppScope::class)
+@ContributesBinding(AppScope::class)
 class SqlDelightBookmarksDao(private val db: Database) : BookmarksDao {
 
     override fun insert(bookmark: Bookmark) {

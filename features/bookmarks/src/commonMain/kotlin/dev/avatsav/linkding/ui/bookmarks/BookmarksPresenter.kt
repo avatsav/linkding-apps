@@ -9,12 +9,11 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.paging.PagingConfig
 import androidx.paging.compose.collectAsLazyPagingItems
+import com.slack.circuit.codegen.annotations.CircuitInject
 import com.slack.circuit.retained.collectAsRetainedState
 import com.slack.circuit.retained.rememberRetained
-import com.slack.circuit.runtime.CircuitContext
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
-import com.slack.circuit.runtime.screen.Screen
 import dev.avatsav.linkding.data.model.BookmarkCategory
 import dev.avatsav.linkding.data.model.Tag
 import dev.avatsav.linkding.domain.interactors.ArchiveBookmark
@@ -22,6 +21,7 @@ import dev.avatsav.linkding.domain.interactors.DeleteBookmark
 import dev.avatsav.linkding.domain.interactors.UnarchiveBookmark
 import dev.avatsav.linkding.domain.observers.ObserveBookmarks
 import dev.avatsav.linkding.domain.observers.ObserveSearchResults
+import dev.avatsav.linkding.inject.UserScope
 import dev.avatsav.linkding.internet.ConnectivityObserver
 import dev.avatsav.linkding.ui.AddBookmarkScreen
 import dev.avatsav.linkding.ui.BookmarksScreen
@@ -39,24 +39,9 @@ import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.ShowSettings
 import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.ToggleArchive
 import dev.avatsav.linkding.ui.circuit.rememberRetainedCachedPagingFlow
 import me.tatarka.inject.annotations.Assisted
-import me.tatarka.inject.annotations.Inject
 import kotlinx.coroutines.launch
 
-@Inject
-class BookmarksUiPresenterFactory(
-    private val presenterFactory: (Navigator) -> BookmarksPresenter,
-) : Presenter.Factory {
-    override fun create(
-        screen: Screen,
-        navigator: Navigator,
-        context: CircuitContext,
-    ): Presenter<*>? = when (screen) {
-        is BookmarksScreen -> presenterFactory(navigator)
-        else -> null
-    }
-}
-
-@Inject
+@CircuitInject(BookmarksScreen::class, UserScope::class)
 class BookmarksPresenter(
     @Assisted private val navigator: Navigator,
     private val observeBookmarks: ObserveBookmarks,

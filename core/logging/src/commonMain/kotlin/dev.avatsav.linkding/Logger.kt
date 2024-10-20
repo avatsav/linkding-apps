@@ -1,7 +1,10 @@
 package dev.avatsav.linkding
 
 import co.touchlab.kermit.Severity
+import dev.avatsav.linkding.inject.AppScope
 import me.tatarka.inject.annotations.Inject
+import software.amazon.lastmile.kotlin.inject.anvil.ContributesBinding
+import software.amazon.lastmile.kotlin.inject.anvil.SingleIn
 import co.touchlab.kermit.Logger as Kermit
 
 interface Logger {
@@ -13,7 +16,9 @@ interface Logger {
 }
 
 @Inject
-internal class KermitLogger(appInfo: AppInfo) : Logger {
+@SingleIn(AppScope::class)
+@ContributesBinding(AppScope::class)
+class KermitLogger(appInfo: AppInfo) : Logger {
     init {
         Kermit.setMinSeverity(
             when {

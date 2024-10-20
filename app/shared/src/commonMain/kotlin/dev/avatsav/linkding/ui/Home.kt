@@ -9,19 +9,13 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.slack.circuit.backstack.SaveableBackStack
 import com.slack.circuit.foundation.Circuit
 import com.slack.circuit.foundation.CircuitCompositionLocals
 import com.slack.circuit.foundation.CircuitContent
-import com.slack.circuit.foundation.NavigableCircuitContent
 import com.slack.circuit.runtime.Navigator
-import com.slack.circuitx.gesturenavigation.GestureNavigationDecoration
-import dev.avatsav.linkding.SharedUserComponent
-import dev.avatsav.linkding.UserComponentFactory
 import dev.avatsav.linkding.data.auth.AuthState
 import dev.avatsav.linkding.data.model.ApiConfig
 
@@ -31,7 +25,6 @@ fun Home(
     circuit: Circuit,
     backStack: SaveableBackStack,
     navigator: Navigator,
-    userComponentFactory: UserComponentFactory,
     modifier: Modifier = Modifier,
 ) {
     when (authState) {
@@ -40,7 +33,6 @@ fun Home(
                 apiConfig = authState.apiConfig,
                 backStack,
                 navigator,
-                userComponentFactory,
                 modifier,
             )
         }
@@ -65,27 +57,26 @@ private fun AuthenticatedContent(
     apiConfig: ApiConfig,
     backStack: SaveableBackStack,
     navigator: Navigator,
-    userComponentFactory: UserComponentFactory,
     modifier: Modifier = Modifier,
 ) {
-    val userComponent: SharedUserComponent = remember(apiConfig) {
-        userComponentFactory.create(apiConfig)
-    }
-
-    LaunchedEffect(Unit) {
-        navigator.goToAndResetRoot(BookmarksScreen)
-    }
-
-    userComponent.authenticatedAppUi.Content { circuit ->
-        CircuitCompositionLocals(circuit) {
-            NavigableCircuitContent(
-                backStack = backStack,
-                navigator = navigator,
-                decoration = GestureNavigationDecoration(onBackInvoked = navigator::pop),
-                modifier = modifier.fillMaxSize(),
-            )
-        }
-    }
+//    val userComponent: UserComponent = remember(apiConfig) {
+//        userComponentFactory.create(apiConfig)
+//    }
+//
+//    LaunchedEffect(Unit) {
+//        navigator.goToAndResetRoot(BookmarksScreen)
+//    }
+//
+//    userComponent.authenticatedAppUi.Content { circuit ->
+//        CircuitCompositionLocals(circuit) {
+//            NavigableCircuitContent(
+//                backStack = backStack,
+//                navigator = navigator,
+//                decoration = GestureNavigationDecoration(onBackInvoked = navigator::pop),
+//                modifier = modifier.fillMaxSize(),
+//            )
+//        }
+//    }
 }
 
 @Composable

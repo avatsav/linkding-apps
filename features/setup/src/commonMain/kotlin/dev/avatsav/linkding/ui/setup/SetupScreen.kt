@@ -31,27 +31,12 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import com.slack.circuit.runtime.CircuitContext
-import com.slack.circuit.runtime.screen.Screen
-import com.slack.circuit.runtime.ui.Ui
-import com.slack.circuit.runtime.ui.ui
+import com.slack.circuit.codegen.annotations.CircuitInject
+import dev.avatsav.linkding.inject.UiScope
 import dev.avatsav.linkding.ui.SetupScreen
 import dev.avatsav.linkding.ui.setup.SetupUiEvent.SaveConfiguration
-import me.tatarka.inject.annotations.Inject
 
-@Inject
-class SetupUiFactory : Ui.Factory {
-    override fun create(screen: Screen, context: CircuitContext): Ui<*>? = when (screen) {
-        is SetupScreen -> {
-            ui<SetupUiState> { state, modifier ->
-                SetupApiConfig(state, modifier)
-            }
-        }
-
-        else -> null
-    }
-}
-
+@CircuitInject(SetupScreen::class, UiScope::class)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SetupApiConfig(
