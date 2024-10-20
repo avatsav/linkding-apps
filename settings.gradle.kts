@@ -48,6 +48,6 @@ include(
     ":features:settings",
     ":features:tags",
     ":thirdparty:paging:compose",
-//    ":kim:annotations",
-//    ":kim:compiler",
+    ":codegen:annotations",
+    ":codegen:compiler",
 )
