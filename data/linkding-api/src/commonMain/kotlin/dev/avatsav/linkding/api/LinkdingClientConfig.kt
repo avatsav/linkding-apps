@@ -3,7 +3,7 @@ package dev.avatsav.linkding.api
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.HttpClientEngineConfig
 import io.ktor.client.engine.HttpClientEngineFactory
-import io.ktor.client.plugins.logging.Logging
+import io.ktor.client.plugins.logging.LoggingConfig
 
 typealias LinkdingHostUrl = String
 typealias LinkdingApiKey = String
@@ -18,7 +18,7 @@ data class LinkdingApiConfig(
 class LinkdingClientConfig {
 
     internal var httpClientBuilder: (() -> HttpClient)? = null
-    internal var httpClientLoggingBlock: (Logging.Config.() -> Unit)? = null
+    internal var httpClientLoggingBlock: (LoggingConfig.() -> Unit)? = null
 
     fun <T : HttpClientEngineConfig> httpClient(
         engineFactory: HttpClientEngineFactory<T>,
@@ -28,7 +28,7 @@ class LinkdingClientConfig {
         }
     }
 
-    fun logging(block: Logging.Config.() -> Unit) {
+    fun logging(block: LoggingConfig.() -> Unit) {
         httpClientLoggingBlock = block
     }
 }
