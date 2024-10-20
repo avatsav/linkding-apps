@@ -1,10 +1,12 @@
 package dev.avatsav.linkding.internet
 
+import android.annotation.SuppressLint
 import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities.NET_CAPABILITY_INTERNET
 import android.net.NetworkRequest
 
+@SuppressLint("MissingPermission")
 class AndroidNetworkMonitor(
     private val connectivityManager: ConnectivityManager,
 ) : NetworkMonitor {
