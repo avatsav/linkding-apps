@@ -23,7 +23,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AutoMode
 import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material.icons.filled.LightMode
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SegmentedButton
@@ -47,11 +46,11 @@ import dev.avatsav.linkding.ui.compose.onCondition
 @Composable
 fun PreferenceColumnScope.SwitchPreference(
     title: String,
+    description: String?,
     shape: Shape,
     checked: Boolean,
-    modifier: Modifier = Modifier,
-    description: String? = null,
     onCheckedChange: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     Preference(
         title = title,
@@ -67,13 +66,12 @@ fun PreferenceColumnScope.SwitchPreference(
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PreferenceColumnScope.ThemePreference(
     shape: Shape,
     selected: AppTheme,
-    modifier: Modifier = Modifier,
     onSelect: (AppTheme) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     val options = AppTheme.entries
     Preference(
