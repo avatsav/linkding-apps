@@ -42,6 +42,7 @@ kotlin {
             implementation(libs.kotlin.inject.runtime)
             implementation(libs.kimchi.circuit.annotations)
             implementation(libs.kimchi.annotations)
+            implementation(projects.codegen.annotations)
         }
 
         targets.withType<KotlinNativeTarget>().configureEach {
@@ -61,3 +62,4 @@ ksp {
 addKspDependencyForAllTargets(libs.kotlin.inject.compiler)
 addKspDependencyForAllTargets(libs.kimchi.circuit.compiler)
 addKspDependencyForAllTargets(libs.kimchi.compiler)
+addKspDependencyForAllTargets(projects.codegen.compiler)

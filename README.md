@@ -1,9 +1,9 @@
-# Linkding Apps (WIP)
+# Linkding Apps
 
-Android and iOS app for [Linkding](https://github.com/sissbruecker/linkding) self-hosted bookmarking service.
+Unofficial Android and iOS app for [Linkding](https://github.com/sissbruecker/linkding) self-hosted bookmarking service.
 
 > [!WARNING]  
-> This repository is under heavy development.
+> This is work-in-in progress.
 
 ## Motivation
 
@@ -15,7 +15,7 @@ This project owes it's multiplatform foundation to the excellent [Tivi](https://
 
 - Kotlin Multiplatform + Compose Multiplatform.
 - [circuit](https://slackhq.github.io/circuit/) for compose powered UI state management.
-- [kotlin-inject](https://github.com/evant/kotlin-inject) for DI.
+- [kotlin-inject](https://github.com/evant/kotlin-inject) and [kimchi](https://github.com/r0adkll/kimchi/)for DI.
 - [kotlin-result](https://github.com/michaelbull/kotlin-result) for result types.
 - Icons generated with [Icon Kitchen](https://icon.kitchen)
 
