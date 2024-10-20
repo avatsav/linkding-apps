@@ -1,12 +1,7 @@
 package dev.avatsav.linkding.inject
 
-import me.tatarka.inject.annotations.Scope
+abstract class AppScope private constructor()
 
-@Scope
-annotation class AppScope
+abstract class UiScope private constructor()
 
-@Scope
-annotation class UiScope
-
-@Scope
-annotation class UserScope
+abstract class UserScope private constructor()

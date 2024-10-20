@@ -22,27 +22,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
-import com.slack.circuit.runtime.CircuitContext
-import com.slack.circuit.runtime.screen.Screen
-import com.slack.circuit.runtime.ui.Ui
-import com.slack.circuit.runtime.ui.ui
+import com.r0adkll.kimchi.circuit.annotations.CircuitInject
+import dev.avatsav.linkding.inject.UserScope
 import dev.avatsav.linkding.ui.TagsScreen
 import dev.avatsav.linkding.ui.compose.none
-import me.tatarka.inject.annotations.Inject
 
-@Inject
-class TagsUiFactory : Ui.Factory {
-    override fun create(screen: Screen, context: CircuitContext): Ui<*>? = when (screen) {
-        is TagsScreen -> {
-            ui<TagsUiState> { state, modifier ->
-                Tags(state, modifier)
-            }
-        }
-
-        else -> null
-    }
-}
-
+@CircuitInject(TagsScreen::class, UserScope::class)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Tags(

@@ -1,7 +1,10 @@
+import dev.avatsav.gradle.addKspDependencyForAllTargets
+
 plugins {
     id("convention.android.library")
     id("convention.kotlin.multiplatform")
     alias(libs.plugins.sqldelight)
+    alias(libs.plugins.ksp)
 }
 
 kotlin {
@@ -44,3 +47,5 @@ sqldelight {
 android {
     namespace = "dev.avatsav.linkding.data.db"
 }
+
+addKspDependencyForAllTargets(libs.kimchi.compiler)

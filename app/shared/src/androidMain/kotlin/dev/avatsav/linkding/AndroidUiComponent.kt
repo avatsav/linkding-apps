@@ -1,27 +1,23 @@
 package dev.avatsav.linkding
 
 import android.app.Activity
+import com.r0adkll.kimchi.annotations.ContributesSubcomponent
+import dev.avatsav.linkding.inject.AppScope
 import dev.avatsav.linkding.inject.UiScope
+import dev.avatsav.linkding.inject.annotations.SingleIn
 import dev.avatsav.linkding.ui.AppUi
-import me.tatarka.inject.annotations.Component
-import me.tatarka.inject.annotations.Provides
 
-@Component
-@UiScope
-abstract class AndroidUiComponent(
-    @get:Provides val activity: Activity,
-    @Component val applicationComponent: AndroidAppComponent,
-) : SharedUiComponent {
+@SingleIn(UiScope::class)
+@ContributesSubcomponent(
+    scope = UiScope::class,
+    parentScope = AppScope::class,
+)
+interface AndroidUiComponent {
 
-    abstract val appUi: AppUi
+    val appUi: AppUi
 
-    @Provides
-    @UiScope
-    internal fun uiComponent(): AndroidUiComponent = this
-
-    @UiScope
-    internal val AndroidUserComponentFactory.bind: UserComponentFactory
-        @Provides get() = this
-
-    companion object
+    @ContributesSubcomponent.Factory
+    interface Factory {
+        fun create(activity: Activity): AndroidUiComponent
+    }
 }

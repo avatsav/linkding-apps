@@ -2,7 +2,7 @@ import SwiftUI
 import LinkdingKt
 
 class AppDelegate: UIResponder, UIApplicationDelegate {
-    lazy var applicationComponent: IosAppComponent = createAppComponent(appDelegate: self)
+    lazy var applicationComponent: MergedIosAppComponent = createAppComponent(appDelegate: self)
 }
 
 @main
@@ -18,10 +18,14 @@ struct LinkdingApp: App {
     }
 }
 
-private func createAppComponent(appDelegate: AppDelegate) -> IosAppComponent {
-    return IosAppComponent.companion.create()
+private func createAppComponent(appDelegate: AppDelegate) -> MergedIosAppComponent {
+    let component = IosAppComponent.companion.createIosAppComponent()
+    IosComponentHolder().addComponent(component: component)
+    return component
 }
 
-private func createUiComponent(appComponent: IosAppComponent) -> IosUiComponent {
-    return IosUiComponent.companion.create(appComponent: appComponent)
+private func createUiComponent(appComponent: MergedIosAppComponent) -> IosUiComponent {
+    let component = appComponent.createUiComponent()
+    IosComponentHolder().addComponent(component: component)
+    return component
 }

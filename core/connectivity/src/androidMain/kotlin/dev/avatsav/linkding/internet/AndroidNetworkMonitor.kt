@@ -5,9 +5,7 @@ import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities.NET_CAPABILITY_INTERNET
 import android.net.NetworkRequest
-import me.tatarka.inject.annotations.Inject
 
-@Inject
 @SuppressLint("MissingPermission")
 class AndroidNetworkMonitor(
     private val connectivityManager: ConnectivityManager,

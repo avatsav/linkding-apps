@@ -7,15 +7,19 @@ import android.net.ConnectivityManager
 import androidx.core.content.ContextCompat
 import androidx.core.content.PermissionChecker.PERMISSION_GRANTED
 import androidx.core.content.getSystemService
+import com.r0adkll.kimchi.annotations.ContributesTo
 import dev.avatsav.linkding.inject.AppScope
+import dev.avatsav.linkding.inject.annotations.SingleIn
 import dev.avatsav.linkding.internet.AndroidNetworkMonitor
 import dev.avatsav.linkding.internet.EmptyNetworkMonitor
 import dev.avatsav.linkding.internet.NetworkMonitor
 import me.tatarka.inject.annotations.Provides
 
-actual interface PlatformNetworkMonitorComponent {
+@ContributesTo(AppScope::class)
+interface AndroidNetworkMonitorComponent {
+
     @Provides
-    @AppScope
+    @SingleIn(AppScope::class)
     fun provideNetworkMonitor(application: Application): NetworkMonitor {
         val context = application.applicationContext
         val connectivityManager: ConnectivityManager? = context.getSystemService()

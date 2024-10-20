@@ -1,7 +1,10 @@
+import dev.avatsav.gradle.addKspDependencyForAllTargets
+
 plugins {
     id("convention.android.library")
     id("convention.kotlin.multiplatform")
     id("convention.compose")
+    alias(libs.plugins.ksp)
 }
 
 kotlin {
@@ -21,6 +24,8 @@ kotlin {
             api(projects.ui.theme)
             api(projects.ui.screens)
             api(libs.circuit.foundation)
+
+            implementation(libs.kimchi.circuit.annotations)
         }
     }
 }
@@ -28,3 +33,7 @@ kotlin {
 android {
     namespace = "dev.avatsav.linkding.ui.tags"
 }
+
+addKspDependencyForAllTargets(libs.kotlin.inject.compiler)
+addKspDependencyForAllTargets(libs.kimchi.circuit.compiler)
+addKspDependencyForAllTargets(libs.kimchi.compiler)

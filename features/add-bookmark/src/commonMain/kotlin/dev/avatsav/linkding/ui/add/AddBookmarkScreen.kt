@@ -36,10 +36,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import com.slack.circuit.runtime.CircuitContext
-import com.slack.circuit.runtime.screen.Screen
-import com.slack.circuit.runtime.ui.Ui
-import com.slack.circuit.runtime.ui.ui
+import com.r0adkll.kimchi.circuit.annotations.CircuitInject
+import dev.avatsav.linkding.inject.UserScope
 import dev.avatsav.linkding.ui.AddBookmarkScreen
 import dev.avatsav.linkding.ui.add.AddBookmarkUiEvent.Close
 import dev.avatsav.linkding.ui.add.AddBookmarkUiEvent.Save
@@ -47,22 +45,9 @@ import dev.avatsav.linkding.ui.compose.widgets.OutlinedTagsTextField
 import dev.avatsav.linkding.ui.compose.widgets.PlaceholderVisualTransformation
 import dev.avatsav.linkding.ui.compose.widgets.SmallCircularProgressIndicator
 import dev.avatsav.linkding.ui.compose.widgets.TagsTextFieldValue
-import me.tatarka.inject.annotations.Inject
 import kotlinx.coroutines.delay
 
-@Inject
-class AddBookmarkUiFactory : Ui.Factory {
-    override fun create(screen: Screen, context: CircuitContext): Ui<*>? = when (screen) {
-        is AddBookmarkScreen -> {
-            ui<AddBookmarkUiState> { state, modifier ->
-                AddBookmark(state, modifier)
-            }
-        }
-
-        else -> null
-    }
-}
-
+@CircuitInject(AddBookmarkScreen::class, UserScope::class)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddBookmark(

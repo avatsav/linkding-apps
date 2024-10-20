@@ -35,11 +35,13 @@ kotlin {
 
             api(libs.circuit.foundation)
             api(libs.circuit.runtime)
-            api(libs.circuit.foundation)
             api(libs.circuit.overlay)
             api(libs.circuit.runtime)
             api(libs.circuitx.gestureNavigation)
-            api(libs.kermit)
+
+            implementation(libs.kotlin.inject.runtime)
+            implementation(libs.kimchi.circuit.annotations)
+            implementation(libs.kimchi.annotations)
         }
 
         targets.withType<KotlinNativeTarget>().configureEach {
@@ -57,3 +59,5 @@ ksp {
 }
 
 addKspDependencyForAllTargets(libs.kotlin.inject.compiler)
+addKspDependencyForAllTargets(libs.kimchi.circuit.compiler)
+addKspDependencyForAllTargets(libs.kimchi.compiler)

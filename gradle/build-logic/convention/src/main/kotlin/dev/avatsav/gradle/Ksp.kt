@@ -6,18 +6,9 @@ import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.getByType
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType
+import java.util.Locale
 
-/**
- *
- * https://github.com/chrisbanes/tivi/blob/cbf022598832f881109fc8526d4f6b0e3c93a347/gradle/build-logic/convention/src/main/kotlin/app/tivi/gradle/KotlinMultiplatformConventionPlugin.kt#L83-L105
- */
-fun Project.addKspDependencyForAllTargets(dependencyNotation: Any) =
-    addKspDependencyForAllTargets("", dependencyNotation)
-
-private fun Project.addKspDependencyForAllTargets(
-    configurationNameSuffix: String,
-    dependencyNotation: Any,
-) {
+fun Project.addKspDependencyForAllTargets(dependencyNotation: Any) {
     val kmpExtension = extensions.getByType<KotlinMultiplatformExtension>()
     dependencies {
         kmpExtension.targets
@@ -28,9 +19,19 @@ private fun Project.addKspDependencyForAllTargets(
             }
             .forEach { target ->
                 add(
-                    "ksp${target.targetName.capitalized()}$configurationNameSuffix",
+                    "ksp${target.targetName.capitalized()}",
                     dependencyNotation,
                 )
             }
+    }
+}
+
+fun String.capitalized(): CharSequence = let<CharSequence, CharSequence> {
+    if (it.isEmpty()) {
+        it
+    } else {
+        it[0].titlecase(
+            Locale.getDefault(),
+        ) + it.substring(1)
     }
 }

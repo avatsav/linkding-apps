@@ -1,24 +1,22 @@
 package dev.avatsav.linkding
 
+import com.r0adkll.kimchi.annotations.ContributesSubcomponent
+import dev.avatsav.linkding.inject.AppScope
 import dev.avatsav.linkding.inject.UiScope
+import dev.avatsav.linkding.inject.annotations.SingleIn
 import dev.avatsav.linkding.ui.AppUi
-import me.tatarka.inject.annotations.Component
-import me.tatarka.inject.annotations.Provides
 
-@Component
-@UiScope
-abstract class DesktopUiComponent(
-    @Component val appComponent: DesktopAppComponent,
-) : SharedUiComponent {
+@SingleIn(UiScope::class)
+@ContributesSubcomponent(
+    scope = UiScope::class,
+    parentScope = AppScope::class,
+)
+interface DesktopUiComponent {
 
-    abstract val appUi: AppUi
+    val appUi: AppUi
 
-    @Provides
-    internal fun uiComponent(): DesktopUiComponent = this
-
-    @UiScope
-    internal val DesktopUserComponentFactory.bind: UserComponentFactory
-        @Provides get() = this
-
-    companion object
+    @ContributesSubcomponent.Factory
+    interface Factory {
+        fun create(): DesktopUiComponent
+    }
 }

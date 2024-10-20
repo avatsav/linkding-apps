@@ -1,6 +1,7 @@
 plugins {
     id("convention.android.application")
     id("convention.compose")
+    alias(libs.plugins.ksp)
 }
 
 android {
@@ -50,6 +51,14 @@ dependencies {
     implementation(libs.androidx.browser)
     implementation(libs.androidx.splashscreen)
     implementation(libs.kotlin.coroutines.android)
+    implementation(libs.kotlin.inject.runtime)
+    implementation(libs.kimchi.annotations)
+    implementation(libs.kimchi.circuit.annotations)
+    implementation(libs.circuit.runtime)
+
+    ksp(libs.kotlin.inject.compiler)
+    ksp(libs.kimchi.compiler)
+    ksp(libs.kimchi.circuit.compiler)
 
     debugImplementation(libs.leakCanary)
 

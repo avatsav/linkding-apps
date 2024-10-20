@@ -1,7 +1,10 @@
 package dev.avatsav.linkding.internet
 
+import com.r0adkll.kimchi.annotations.ContributesBinding
 import dev.avatsav.linkding.AppCoroutineScope
 import dev.avatsav.linkding.Logger
+import dev.avatsav.linkding.inject.AppScope
+import dev.avatsav.linkding.inject.annotations.SingleIn
 import me.tatarka.inject.annotations.Inject
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.SharingStarted
@@ -15,6 +18,8 @@ interface ConnectivityObserver {
 }
 
 @Inject
+@SingleIn(AppScope::class)
+@ContributesBinding(AppScope::class)
 class DefaultConnectivityObserver(
     private val networkMonitor: NetworkMonitor,
     appCoroutineScope: AppCoroutineScope,

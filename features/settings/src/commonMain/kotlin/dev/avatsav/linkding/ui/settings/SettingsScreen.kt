@@ -24,13 +24,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.r0adkll.kimchi.circuit.annotations.CircuitInject
 import com.slack.circuit.overlay.LocalOverlayHost
 import com.slack.circuit.overlay.OverlayHost
-import com.slack.circuit.runtime.CircuitContext
-import com.slack.circuit.runtime.screen.Screen
-import com.slack.circuit.runtime.ui.Ui
-import com.slack.circuit.runtime.ui.ui
 import com.slack.circuitx.overlays.DialogResult
+import dev.avatsav.linkding.inject.UserScope
 import dev.avatsav.linkding.ui.SettingsScreen
 import dev.avatsav.linkding.ui.circuit.alertDialogOverlay
 import dev.avatsav.linkding.ui.settings.SettingsUiEvent.Close
@@ -48,19 +46,7 @@ import dev.avatsav.linkding.ui.settings.widgets.ThemePreference
 import me.tatarka.inject.annotations.Inject
 import kotlinx.coroutines.launch
 
-@Inject
-class SettingsUiFactory : Ui.Factory {
-    override fun create(screen: Screen, context: CircuitContext): Ui<*>? = when (screen) {
-        is SettingsScreen -> {
-            ui<SettingsUiState> { state, modifier ->
-                Settings(state, modifier)
-            }
-        }
-
-        else -> null
-    }
-}
-
+@CircuitInject(SettingsScreen::class, UserScope::class)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Settings(

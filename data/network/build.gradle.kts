@@ -1,6 +1,9 @@
+import dev.avatsav.gradle.addKspDependencyForAllTargets
+
 plugins {
     id("convention.android.library")
     id("convention.kotlin.multiplatform")
+    alias(libs.plugins.ksp)
 }
 
 android {
@@ -24,3 +27,5 @@ kotlin {
         }
     }
 }
+
+addKspDependencyForAllTargets(libs.kimchi.compiler)

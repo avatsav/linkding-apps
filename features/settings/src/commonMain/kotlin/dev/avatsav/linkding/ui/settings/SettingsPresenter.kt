@@ -4,14 +4,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import com.r0adkll.kimchi.circuit.annotations.CircuitInject
 import com.slack.circuit.retained.collectAsRetainedState
-import com.slack.circuit.runtime.CircuitContext
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
-import com.slack.circuit.runtime.screen.Screen
 import dev.avatsav.linkding.AppInfo
 import dev.avatsav.linkding.Logger
 import dev.avatsav.linkding.data.model.prefs.AppTheme
+import dev.avatsav.linkding.inject.UserScope
 import dev.avatsav.linkding.prefs.AppPreferences
 import dev.avatsav.linkding.ui.SettingsScreen
 import dev.avatsav.linkding.ui.SetupScreen
@@ -20,20 +20,7 @@ import me.tatarka.inject.annotations.Assisted
 import me.tatarka.inject.annotations.Inject
 import kotlinx.coroutines.launch
 
-@Inject
-class SettingsUiPresenterFactory(
-    private val presenterFactory: (Navigator) -> SettingsPresenter,
-) : Presenter.Factory {
-    override fun create(
-        screen: Screen,
-        navigator: Navigator,
-        context: CircuitContext,
-    ): Presenter<*>? = when (screen) {
-        is SettingsScreen -> presenterFactory(navigator)
-        else -> null
-    }
-}
-
+@CircuitInject(SettingsScreen::class, UserScope::class)
 @Inject
 class SettingsPresenter(
     @Assisted private val navigator: Navigator,

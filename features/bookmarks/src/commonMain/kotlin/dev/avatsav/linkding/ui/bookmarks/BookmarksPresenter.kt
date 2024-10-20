@@ -9,12 +9,11 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.paging.PagingConfig
 import androidx.paging.compose.collectAsLazyPagingItems
+import com.r0adkll.kimchi.circuit.annotations.CircuitInject
 import com.slack.circuit.retained.collectAsRetainedState
 import com.slack.circuit.retained.rememberRetained
-import com.slack.circuit.runtime.CircuitContext
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
-import com.slack.circuit.runtime.screen.Screen
 import dev.avatsav.linkding.data.model.BookmarkCategory
 import dev.avatsav.linkding.data.model.Tag
 import dev.avatsav.linkding.domain.interactors.ArchiveBookmark
@@ -22,6 +21,7 @@ import dev.avatsav.linkding.domain.interactors.DeleteBookmark
 import dev.avatsav.linkding.domain.interactors.UnarchiveBookmark
 import dev.avatsav.linkding.domain.observers.ObserveBookmarks
 import dev.avatsav.linkding.domain.observers.ObserveSearchResults
+import dev.avatsav.linkding.inject.UserScope
 import dev.avatsav.linkding.internet.ConnectivityObserver
 import dev.avatsav.linkding.ui.AddBookmarkScreen
 import dev.avatsav.linkding.ui.BookmarksScreen
@@ -42,20 +42,7 @@ import me.tatarka.inject.annotations.Assisted
 import me.tatarka.inject.annotations.Inject
 import kotlinx.coroutines.launch
 
-@Inject
-class BookmarksUiPresenterFactory(
-    private val presenterFactory: (Navigator) -> BookmarksPresenter,
-) : Presenter.Factory {
-    override fun create(
-        screen: Screen,
-        navigator: Navigator,
-        context: CircuitContext,
-    ): Presenter<*>? = when (screen) {
-        is BookmarksScreen -> presenterFactory(navigator)
-        else -> null
-    }
-}
-
+@CircuitInject(BookmarksScreen::class, UserScope::class)
 @Inject
 class BookmarksPresenter(
     @Assisted private val navigator: Navigator,

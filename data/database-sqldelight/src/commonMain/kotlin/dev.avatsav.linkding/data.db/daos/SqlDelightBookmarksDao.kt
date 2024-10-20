@@ -1,10 +1,15 @@
 package dev.avatsav.linkding.data.db.daos
 
+import com.r0adkll.kimchi.annotations.ContributesBinding
 import dev.avatsav.linkding.data.db.Database
 import dev.avatsav.linkding.data.model.Bookmark
+import dev.avatsav.linkding.inject.AppScope
+import dev.avatsav.linkding.inject.annotations.SingleIn
 import me.tatarka.inject.annotations.Inject
 
 @Inject
+@SingleIn(AppScope::class)
+@ContributesBinding(AppScope::class)
 class SqlDelightBookmarksDao(private val db: Database) : BookmarksDao {
 
     override fun insert(bookmark: Bookmark) {

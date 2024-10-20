@@ -1,6 +1,9 @@
 package dev.avatsav.linkding
 
 import co.touchlab.kermit.Severity
+import com.r0adkll.kimchi.annotations.ContributesBinding
+import dev.avatsav.linkding.inject.AppScope
+import dev.avatsav.linkding.inject.annotations.SingleIn
 import me.tatarka.inject.annotations.Inject
 import co.touchlab.kermit.Logger as Kermit
 
@@ -13,7 +16,9 @@ interface Logger {
 }
 
 @Inject
-internal class KermitLogger(appInfo: AppInfo) : Logger {
+@SingleIn(AppScope::class)
+@ContributesBinding(AppScope::class)
+class KermitLogger(appInfo: AppInfo) : Logger {
     init {
         Kermit.setMinSeverity(
             when {

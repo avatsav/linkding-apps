@@ -1,9 +1,11 @@
 package dev.avatsav.linkding.data.auth
 
+import com.r0adkll.kimchi.annotations.ContributesBinding
 import dev.avatsav.linkding.data.auth.AuthState.Authenticated
 import dev.avatsav.linkding.data.auth.AuthState.Unauthenticated
 import dev.avatsav.linkding.data.model.ApiConfig
 import dev.avatsav.linkding.inject.AppScope
+import dev.avatsav.linkding.inject.annotations.SingleIn
 import dev.avatsav.linkding.prefs.AppPreferences
 import me.tatarka.inject.annotations.Inject
 import kotlinx.coroutines.flow.Flow
@@ -21,7 +23,8 @@ interface AuthManager {
 }
 
 @Inject
-@AppScope
+@SingleIn(AppScope::class)
+@ContributesBinding(AppScope::class)
 class DefaultAuthManager(private val appPreferences: AppPreferences) : AuthManager {
     override val state: Flow<AuthState> = appPreferences.observeApiConfig()
         .distinctUntilChanged()

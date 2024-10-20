@@ -1,6 +1,5 @@
 package dev.avatsav.linkding
 
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.DpSize
@@ -11,12 +10,20 @@ import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
 import com.slack.circuit.backstack.rememberSaveableBackStack
 import com.slack.circuit.foundation.rememberCircuitNavigator
+import dev.avatsav.linkding.inject.ComponentHolder
 import dev.avatsav.linkding.ui.SetupScreen
+import kimchi.merge.dev.avatsav.linkding.createDesktopAppComponent
 import java.awt.Desktop
 import java.net.URI
 
 fun main() = application {
-    val appComponent = remember { DesktopAppComponent.create() }
+    val appComponent = DesktopAppComponent.createDesktopAppComponent()
+        .also { ComponentHolder.components += it }
+
+    val uiComponent: DesktopUiComponent =
+        ComponentHolder.component<DesktopUiComponent.Factory>()
+            .create()
+            .also { ComponentHolder.components += it }
 
     val windowState = rememberWindowState(
         size = DpSize(450.dp, 900.dp),
@@ -28,8 +35,6 @@ fun main() = application {
         state = windowState,
         onCloseRequest = ::exitApplication,
     ) {
-        val uiComponent = remember(appComponent) { DesktopUiComponent.create(appComponent) }
-
         val backstack = rememberSaveableBackStack(root = SetupScreen)
         val navigator = rememberCircuitNavigator(backstack) { /* no-op */ }
 
