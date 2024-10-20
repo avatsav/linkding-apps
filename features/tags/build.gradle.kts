@@ -24,6 +24,8 @@ kotlin {
             api(projects.ui.theme)
             api(projects.ui.screens)
             api(libs.circuit.foundation)
+
+            implementation(libs.kimchi.circuit.annotations)
         }
     }
 }

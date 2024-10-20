@@ -35,11 +35,9 @@ kotlin {
 
             api(libs.circuit.foundation)
             api(libs.circuit.runtime)
-            api(libs.circuit.foundation)
             api(libs.circuit.overlay)
             api(libs.circuit.runtime)
             api(libs.circuitx.gestureNavigation)
-            api(libs.kermit)
 
             implementation(libs.kotlin.inject.runtime)
             implementation(libs.kimchi.circuit.annotations)

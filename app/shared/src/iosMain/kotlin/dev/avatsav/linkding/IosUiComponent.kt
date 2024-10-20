@@ -23,6 +23,6 @@ interface IosUiComponent {
 
     @ContributesSubcomponent.Factory
     interface Factory {
-        fun create(): IosUiComponent
+        fun createUiComponent(): IosUiComponent
     }
 }

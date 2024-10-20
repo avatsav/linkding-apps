@@ -25,4 +25,6 @@ abstract class IosAppComponent {
     @SingleIn(AppScope::class)
     @Provides
     fun provideNsUserDefaults(): NSUserDefaults = NSUserDefaults.standardUserDefaults
+
+    companion object
 }

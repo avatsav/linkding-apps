@@ -12,7 +12,6 @@ kotlin {
             api(libs.circuit.foundation)
             api(libs.circuit.overlay)
             api(libs.circuitx.overlays)
-            api(libs.kimchi.circuit.annotations)
             api(libs.paging.common)
         }
     }
