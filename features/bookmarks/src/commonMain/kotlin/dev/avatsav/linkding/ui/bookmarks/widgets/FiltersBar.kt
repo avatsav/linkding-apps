@@ -1,6 +1,5 @@
 package dev.avatsav.linkding.ui.bookmarks.widgets
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.lazy.LazyItemScope
@@ -31,7 +30,6 @@ import dev.avatsav.linkding.ui.tags.showTagsBottomSheet
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun FiltersBar(
     selectedCategory: BookmarkCategory,
@@ -88,8 +86,8 @@ private val bookmarkCategories = BookmarkCategory.entries.toImmutableList()
 @Composable
 private fun LazyItemScope.CategoryFilter(
     selected: BookmarkCategory,
-    modifier: Modifier = Modifier,
     onSelect: (BookmarkCategory) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     var showMenu by remember { mutableStateOf(false) }
 

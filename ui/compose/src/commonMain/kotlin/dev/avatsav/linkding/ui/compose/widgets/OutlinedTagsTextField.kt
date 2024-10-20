@@ -92,12 +92,12 @@ fun OutlinedTagsTextField(
 private fun OutlinedTagsTextField(
     tagsValue: TagsTextFieldValue,
     textValue: TextFieldValue,
+    onTextValueChange: (TextFieldValue) -> Unit,
     modifier: Modifier = Modifier,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     textStyle: TextStyle = LocalTextStyle.current,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     decorationBox: @Composable (innerTextField: @Composable () -> Unit) -> Unit = @Composable { innerTextField -> innerTextField() },
-    onTextValueChange: (TextFieldValue) -> Unit,
 ) {
     val textFieldFocusRequester = remember { FocusRequester() }
 
