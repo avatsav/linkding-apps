@@ -1,20 +1,23 @@
 package dev.avatsav.linkding
 
 import android.app.Activity
+import com.r0adkll.kimchi.annotations.ContributesSubcomponent
 import dev.avatsav.linkding.inject.AppScope
 import dev.avatsav.linkding.inject.UiScope
+import dev.avatsav.linkding.inject.annotations.SingleIn
 import dev.avatsav.linkding.ui.AppUi
-import software.amazon.lastmile.kotlin.inject.anvil.ContributesSubcomponent
-import software.amazon.lastmile.kotlin.inject.anvil.SingleIn
 
 @SingleIn(UiScope::class)
-@ContributesSubcomponent(UiScope::class)
+@ContributesSubcomponent(
+    scope = UiScope::class,
+    parentScope = AppScope::class,
+)
 interface AndroidUiComponent {
 
     val appUi: AppUi
 
-    @ContributesSubcomponent.Factory(AppScope::class)
+    @ContributesSubcomponent.Factory
     interface Factory {
-        fun createUiComponent(activity: Activity): AndroidUiComponent
+        fun create(activity: Activity): AndroidUiComponent
     }
 }

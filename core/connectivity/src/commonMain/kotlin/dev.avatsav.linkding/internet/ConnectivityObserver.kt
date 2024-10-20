@@ -1,11 +1,11 @@
 package dev.avatsav.linkding.internet
 
+import com.r0adkll.kimchi.annotations.ContributesBinding
 import dev.avatsav.linkding.AppCoroutineScope
 import dev.avatsav.linkding.Logger
 import dev.avatsav.linkding.inject.AppScope
+import dev.avatsav.linkding.inject.annotations.SingleIn
 import me.tatarka.inject.annotations.Inject
-import software.amazon.lastmile.kotlin.inject.anvil.ContributesBinding
-import software.amazon.lastmile.kotlin.inject.anvil.SingleIn
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow

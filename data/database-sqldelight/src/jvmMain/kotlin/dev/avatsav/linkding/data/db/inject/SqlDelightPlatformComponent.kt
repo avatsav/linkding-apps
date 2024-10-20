@@ -4,8 +4,8 @@ import app.cash.sqldelight.db.SqlDriver
 import app.cash.sqldelight.driver.jdbc.sqlite.JdbcSqliteDriver
 import dev.avatsav.linkding.data.db.Database
 import dev.avatsav.linkding.inject.AppScope
+import dev.avatsav.linkding.inject.annotations.SingleIn
 import me.tatarka.inject.annotations.Provides
-import software.amazon.lastmile.kotlin.inject.anvil.SingleIn
 
 actual interface SqlDelightPlatformComponent {
 

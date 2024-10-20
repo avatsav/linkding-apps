@@ -6,8 +6,8 @@ import androidx.preference.PreferenceManager
 import com.russhwolf.settings.ObservableSettings
 import com.russhwolf.settings.SharedPreferencesSettings
 import dev.avatsav.linkding.inject.AppScope
+import dev.avatsav.linkding.inject.annotations.SingleIn
 import me.tatarka.inject.annotations.Provides
-import software.amazon.lastmile.kotlin.inject.anvil.SingleIn
 
 actual interface PreferencesPlatformComponent {
     @Provides

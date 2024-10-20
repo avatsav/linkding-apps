@@ -2,13 +2,13 @@ package dev.avatsav.linkding.android
 
 import android.app.Application
 import dev.avatsav.linkding.AndroidAppComponent
+import dev.avatsav.linkding.inject.ComponentHolder
+import kimchi.merge.dev.avatsav.linkding.createAndroidAppComponent
 
 class LinkdingApplication : Application() {
 
-    lateinit var component: AndroidAppComponent
-
     override fun onCreate() {
         super.onCreate()
-        component = AndroidAppComponent::class.create(this)
+        ComponentHolder.components += AndroidAppComponent.createAndroidAppComponent(this)
     }
 }

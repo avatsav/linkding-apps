@@ -9,18 +9,24 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.slack.circuit.backstack.SaveableBackStack
 import com.slack.circuit.foundation.Circuit
 import com.slack.circuit.foundation.CircuitCompositionLocals
 import com.slack.circuit.foundation.CircuitContent
+import com.slack.circuit.foundation.NavigableCircuitContent
 import com.slack.circuit.runtime.Navigator
+import com.slack.circuitx.gesturenavigation.GestureNavigationDecoration
+import dev.avatsav.linkding.UserComponent
 import dev.avatsav.linkding.data.auth.AuthState
 import dev.avatsav.linkding.data.model.ApiConfig
+import dev.avatsav.linkding.inject.ComponentHolder
 
 @Composable
-fun Home(
+fun AppContent(
     authState: AuthState?,
     circuit: Circuit,
     backStack: SaveableBackStack,
@@ -30,7 +36,7 @@ fun Home(
     when (authState) {
         is AuthState.Authenticated -> {
             AuthenticatedContent(
-                apiConfig = authState.apiConfig,
+                authState.apiConfig,
                 backStack,
                 navigator,
                 modifier,
@@ -38,16 +44,11 @@ fun Home(
         }
 
         is AuthState.Unauthenticated -> {
-            CircuitCompositionLocals(circuit) {
-                CircuitContent(
-                    screen = SetupScreen,
-                    modifier = modifier,
-                )
-            }
+            SetupScreen(circuit, modifier)
         }
 
         else -> {
-            SplashScreen()
+            SplashScreen(modifier)
         }
     }
 }
@@ -59,24 +60,39 @@ private fun AuthenticatedContent(
     navigator: Navigator,
     modifier: Modifier = Modifier,
 ) {
-//    val userComponent: UserComponent = remember(apiConfig) {
-//        userComponentFactory.create(apiConfig)
-//    }
-//
-//    LaunchedEffect(Unit) {
-//        navigator.goToAndResetRoot(BookmarksScreen)
-//    }
-//
-//    userComponent.authenticatedAppUi.Content { circuit ->
-//        CircuitCompositionLocals(circuit) {
-//            NavigableCircuitContent(
-//                backStack = backStack,
-//                navigator = navigator,
-//                decoration = GestureNavigationDecoration(onBackInvoked = navigator::pop),
-//                modifier = modifier.fillMaxSize(),
-//            )
-//        }
-//    }
+    val userComponent = remember(apiConfig) {
+        ComponentHolder.component<UserComponent.Factory>()
+            .create(apiConfig)
+            .also { component ->
+                ComponentHolder.updateComponent(component)
+            }
+    }
+
+    LaunchedEffect(Unit) {
+        navigator.goToAndResetRoot(BookmarksScreen)
+    }
+
+    CircuitCompositionLocals(userComponent.circuit) {
+        NavigableCircuitContent(
+            backStack = backStack,
+            navigator = navigator,
+            decoration = GestureNavigationDecoration(onBackInvoked = navigator::pop),
+            modifier = modifier.fillMaxSize(),
+        )
+    }
+}
+
+@Composable
+private fun SetupScreen(
+    circuit: Circuit,
+    modifier: Modifier = Modifier,
+) {
+    CircuitCompositionLocals(circuit) {
+        CircuitContent(
+            screen = SetupScreen,
+            modifier = modifier,
+        )
+    }
 }
 
 @Composable

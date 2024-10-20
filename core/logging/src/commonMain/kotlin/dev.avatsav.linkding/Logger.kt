@@ -1,10 +1,10 @@
 package dev.avatsav.linkding
 
 import co.touchlab.kermit.Severity
+import com.r0adkll.kimchi.annotations.ContributesBinding
 import dev.avatsav.linkding.inject.AppScope
+import dev.avatsav.linkding.inject.annotations.SingleIn
 import me.tatarka.inject.annotations.Inject
-import software.amazon.lastmile.kotlin.inject.anvil.ContributesBinding
-import software.amazon.lastmile.kotlin.inject.anvil.SingleIn
 import co.touchlab.kermit.Logger as Kermit
 
 interface Logger {

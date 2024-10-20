@@ -6,6 +6,7 @@ import com.github.michaelbull.result.Result
 import com.github.michaelbull.result.mapEither
 import com.github.michaelbull.result.mapError
 import com.github.michaelbull.result.onSuccess
+import com.r0adkll.kimchi.annotations.ContributesBinding
 import dev.avatsav.linkding.api.LinkdingBookmarksApi
 import dev.avatsav.linkding.data.bookmarks.BookmarksRepository
 import dev.avatsav.linkding.data.bookmarks.internal.mappers.BookmarkErrorMapper
@@ -19,7 +20,6 @@ import dev.avatsav.linkding.data.model.CheckUrlResult
 import dev.avatsav.linkding.data.model.SaveBookmark
 import dev.avatsav.linkding.inject.UserScope
 import me.tatarka.inject.annotations.Inject
-import software.amazon.lastmile.kotlin.inject.anvil.ContributesBinding
 import kotlinx.coroutines.flow.Flow
 
 @Inject

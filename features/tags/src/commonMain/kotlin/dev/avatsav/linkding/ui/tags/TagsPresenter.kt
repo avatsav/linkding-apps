@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.paging.PagingConfig
 import androidx.paging.compose.collectAsLazyPagingItems
-import com.slack.circuit.codegen.annotations.CircuitInject
+import com.r0adkll.kimchi.circuit.annotations.CircuitInject
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
 import dev.avatsav.linkding.Logger
@@ -16,8 +16,10 @@ import dev.avatsav.linkding.ui.circuit.rememberRetainedCachedPagingFlow
 import dev.avatsav.linkding.ui.tags.TagsUiEvent.Close
 import dev.avatsav.linkding.ui.tags.TagsUiEvent.SelectTag
 import me.tatarka.inject.annotations.Assisted
+import me.tatarka.inject.annotations.Inject
 
 @CircuitInject(TagsScreen::class, UserScope::class)
+@Inject
 class TagsPresenter(
     @Assisted private val navigator: Navigator,
     @Assisted private val screen: TagsScreen,

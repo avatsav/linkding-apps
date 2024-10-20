@@ -1,5 +1,6 @@
 package dev.avatsav.linkding.data.bookmarks.inject
 
+import com.r0adkll.kimchi.annotations.ContributesTo
 import dev.avatsav.linkding.AppInfo
 import dev.avatsav.linkding.Logger
 import dev.avatsav.linkding.api.Linkding
@@ -8,11 +9,10 @@ import dev.avatsav.linkding.api.LinkdingBookmarksApi
 import dev.avatsav.linkding.api.LinkdingTagsApi
 import dev.avatsav.linkding.data.model.ApiConfig
 import dev.avatsav.linkding.inject.UserScope
+import dev.avatsav.linkding.inject.annotations.SingleIn
 import io.ktor.client.engine.HttpClientEngineFactory
 import io.ktor.client.plugins.logging.LogLevel
 import me.tatarka.inject.annotations.Provides
-import software.amazon.lastmile.kotlin.inject.anvil.ContributesTo
-import software.amazon.lastmile.kotlin.inject.anvil.SingleIn
 
 @ContributesTo(UserScope::class)
 interface LinkdingComponent {

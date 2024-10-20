@@ -9,7 +9,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import com.github.michaelbull.result.onFailure
 import com.github.michaelbull.result.onSuccess
-import com.slack.circuit.codegen.annotations.CircuitInject
+import com.r0adkll.kimchi.circuit.annotations.CircuitInject
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
 import dev.avatsav.linkding.Logger
@@ -22,9 +22,11 @@ import dev.avatsav.linkding.inject.UiScope
 import dev.avatsav.linkding.prefs.AppPreferences
 import dev.avatsav.linkding.ui.SetupScreen
 import me.tatarka.inject.annotations.Assisted
+import me.tatarka.inject.annotations.Inject
 import kotlinx.coroutines.launch
 
 @CircuitInject(SetupScreen::class, UiScope::class)
+@Inject
 class SetupPresenter(
     @Assisted private val navigator: Navigator,
     private val authenticate: Authenticate,

@@ -8,3 +8,12 @@ interface NetworkMonitor {
         fun onConnectivityChange(isOnline: Boolean)
     }
 }
+
+class EmptyNetworkMonitor : NetworkMonitor {
+    override val isOnline: Boolean
+        get() = true
+
+    override fun close() {}
+
+    override fun setListener(listener: NetworkMonitor.Listener) {}
+}

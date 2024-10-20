@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import com.slack.circuit.codegen.annotations.CircuitInject
+import com.r0adkll.kimchi.circuit.annotations.CircuitInject
 import com.slack.circuit.retained.collectAsRetainedState
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
@@ -17,9 +17,11 @@ import dev.avatsav.linkding.ui.SettingsScreen
 import dev.avatsav.linkding.ui.SetupScreen
 import dev.avatsav.linkding.ui.UrlScreen
 import me.tatarka.inject.annotations.Assisted
+import me.tatarka.inject.annotations.Inject
 import kotlinx.coroutines.launch
 
 @CircuitInject(SettingsScreen::class, UserScope::class)
+@Inject
 class SettingsPresenter(
     @Assisted private val navigator: Navigator,
     private val preferences: AppPreferences,

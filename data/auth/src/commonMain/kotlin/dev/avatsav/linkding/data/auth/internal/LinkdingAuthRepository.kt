@@ -2,14 +2,14 @@ package dev.avatsav.linkding.data.auth.internal
 
 import com.github.michaelbull.result.Result
 import com.github.michaelbull.result.mapError
+import com.r0adkll.kimchi.annotations.ContributesBinding
 import dev.avatsav.linkding.api.LinkdingAuthentication
 import dev.avatsav.linkding.data.auth.AuthRepository
 import dev.avatsav.linkding.data.auth.internal.mappers.AuthErrorMapper
 import dev.avatsav.linkding.data.model.AuthError
 import dev.avatsav.linkding.inject.AppScope
+import dev.avatsav.linkding.inject.annotations.SingleIn
 import me.tatarka.inject.annotations.Inject
-import software.amazon.lastmile.kotlin.inject.anvil.ContributesBinding
-import software.amazon.lastmile.kotlin.inject.anvil.SingleIn
 
 @Inject
 @ContributesBinding(AppScope::class)

@@ -8,26 +8,23 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import com.r0adkll.kimchi.annotations.ContributesBinding
 import com.slack.circuit.backstack.SaveableBackStack
 import com.slack.circuit.foundation.Circuit
 import com.slack.circuit.overlay.ContentWithOverlays
 import com.slack.circuit.retained.LocalRetainedStateRegistry
 import com.slack.circuit.retained.continuityRetainedStateRegistry
 import com.slack.circuit.runtime.Navigator
-import com.slack.circuit.runtime.screen.PopResult
 import com.slack.circuit.runtime.screen.Screen
-import dev.avatsav.linkding.CircuitInstance
 import dev.avatsav.linkding.Logger
 import dev.avatsav.linkding.data.auth.AuthManager
 import dev.avatsav.linkding.data.model.prefs.AppTheme
-import dev.avatsav.linkding.inject.Named
 import dev.avatsav.linkding.inject.UiScope
+import dev.avatsav.linkding.inject.annotations.SingleIn
+import dev.avatsav.linkding.inject.qualifier.Unauthenticated
 import dev.avatsav.linkding.prefs.AppPreferences
 import dev.avatsav.linkding.ui.theme.LinkdingTheme
 import me.tatarka.inject.annotations.Inject
-import software.amazon.lastmile.kotlin.inject.anvil.ContributesBinding
-import software.amazon.lastmile.kotlin.inject.anvil.SingleIn
-import kotlinx.collections.immutable.ImmutableList
 
 interface AppUi {
     @Composable
@@ -39,11 +36,11 @@ interface AppUi {
     )
 }
 
-@Inject
 @ContributesBinding(UiScope::class)
 @SingleIn(UiScope::class)
+@Inject
 class DefaultAppUi(
-    @Named(CircuitInstance.UNAUTHENTICATED) private val circuit: Circuit,
+    @Unauthenticated private val circuit: Circuit,
     private val preferences: AppPreferences,
     private val authManager: AuthManager,
     private val logger: Logger,
@@ -56,8 +53,8 @@ class DefaultAppUi(
         onOpenUrl: (String) -> Boolean,
         modifier: Modifier,
     ) {
-        val linkdingNavigator: Navigator = remember(navigator) {
-            LinkdingNavigator(navigator, onOpenUrl, logger)
+        val appNavigator: Navigator = remember(navigator) {
+            AppNavigator(navigator, onOpenUrl, logger)
         }
 
         val authState by authManager.state
@@ -71,11 +68,11 @@ class DefaultAppUi(
                 dynamicColors = preferences.shouldUseDynamicColors(),
             ) {
                 ContentWithOverlays {
-                    Home(
+                    AppContent(
                         authState = authState,
                         circuit = circuit,
                         backStack = backStack,
-                        navigator = linkdingNavigator,
+                        navigator = appNavigator,
                         modifier = modifier.fillMaxSize(),
                     )
                 }
@@ -97,38 +94,6 @@ private fun AppPreferences.shouldUseDarkTheme(): Boolean {
 @Composable
 private fun AppPreferences.shouldUseDynamicColors(): Boolean =
     remember { observeUseDynamicColors() }.collectAsState(initial = true).value
-
-private class LinkdingNavigator(
-    private val navigator: Navigator,
-    private val onOpenUrl: (String) -> Boolean,
-    private val logger: Logger,
-) : Navigator {
-    override fun goTo(screen: Screen): Boolean {
-        logger.d { "goTo. Screen: $screen. Current stack: ${peekBackStack()}" }
-        return when (screen) {
-            is UrlScreen -> onOpenUrl(screen.url)
-            else -> navigator.goTo(screen)
-        }
-    }
-
-    override fun pop(result: PopResult?): Screen? {
-        logger.d { "pop. Current stack: ${peekBackStack()} " }
-        return navigator.pop(result)
-    }
-
-    override fun resetRoot(
-        newRoot: Screen,
-        saveState: Boolean,
-        restoreState: Boolean,
-    ): ImmutableList<Screen> {
-        logger.d { "resetRoot: newRoot:$newRoot. Current stack: ${peekBackStack()}" }
-        return navigator.resetRoot(newRoot, saveState, restoreState)
-    }
-
-    override fun peek(): Screen? = navigator.peek()
-
-    override fun peekBackStack(): ImmutableList<Screen> = navigator.peekBackStack()
-}
 
 fun Navigator.goToAndResetRoot(
     screen: Screen,

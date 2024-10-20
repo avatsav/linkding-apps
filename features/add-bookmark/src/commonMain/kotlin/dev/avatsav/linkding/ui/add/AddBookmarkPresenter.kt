@@ -9,7 +9,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import com.github.michaelbull.result.onFailure
 import com.github.michaelbull.result.onSuccess
-import com.slack.circuit.codegen.annotations.CircuitInject
+import com.r0adkll.kimchi.circuit.annotations.CircuitInject
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
 import dev.avatsav.linkding.Logger
@@ -20,9 +20,11 @@ import dev.avatsav.linkding.domain.interactors.CheckBookmarkUrl
 import dev.avatsav.linkding.inject.UserScope
 import dev.avatsav.linkding.ui.AddBookmarkScreen
 import me.tatarka.inject.annotations.Assisted
+import me.tatarka.inject.annotations.Inject
 import kotlinx.coroutines.launch
 
 @CircuitInject(AddBookmarkScreen::class, UserScope::class)
+@Inject
 class AddBookmarkPresenter(
     @Assisted private val screen: AddBookmarkScreen,
     @Assisted private val navigator: Navigator,

@@ -1,6 +1,5 @@
 package dev.avatsav.linkding.android
 
-import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.net.Uri
@@ -18,7 +17,9 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.slack.circuit.backstack.rememberSaveableBackStack
 import com.slack.circuit.foundation.rememberCircuitNavigator
 import dev.avatsav.linkding.AndroidAppComponent
+import dev.avatsav.linkding.AndroidUiComponent
 import dev.avatsav.linkding.data.model.prefs.AppTheme
+import dev.avatsav.linkding.inject.ComponentHolder
 import dev.avatsav.linkding.ui.SetupScreen
 import kotlinx.coroutines.launch
 
@@ -27,9 +28,13 @@ class MainActivity : ComponentActivity() {
         installSplashScreen()
         super.onCreate(savedInstanceState)
         val sharedLink = getSharedLinkFromIntent()
-        val appComponent = AndroidAppComponent.from(this)
-        val activityComponent = appComponent.createUiComponent(this)
 
+        val appComponent: AndroidAppComponent = ComponentHolder.component()
+        val component = ComponentHolder.component<AndroidUiComponent.Factory>()
+            .create(this)
+            .also {
+                ComponentHolder.components += it
+            }
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 appComponent.appPreferences.observeAppTheme().collect(::enableEdgeToEdge)
@@ -41,7 +46,7 @@ class MainActivity : ComponentActivity() {
             val backstack = rememberSaveableBackStack(root = SetupScreen)
             val navigator = rememberCircuitNavigator(backstack)
 
-            activityComponent.appUi.Content(
+            component.appUi.Content(
                 backstack,
                 navigator,
                 { launchUrl(it) },
@@ -76,6 +81,3 @@ private fun ComponentActivity.enableEdgeToEdge(appTheme: AppTheme) {
     }
     enableEdgeToEdge(statusBarStyle = style, navigationBarStyle = style)
 }
-
-private fun AndroidAppComponent.from(context: Context): AndroidAppComponent =
-    (context.applicationContext as LinkdingApplication).component

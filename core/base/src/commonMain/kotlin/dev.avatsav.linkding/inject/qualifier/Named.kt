@@ -1,4 +1,4 @@
-package dev.avatsav.linkding.inject
+package dev.avatsav.linkding.inject.qualifier
 
 import me.tatarka.inject.annotations.Qualifier
 

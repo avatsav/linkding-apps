@@ -22,7 +22,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
-import com.slack.circuit.codegen.annotations.CircuitInject
+import com.r0adkll.kimchi.circuit.annotations.CircuitInject
 import dev.avatsav.linkding.inject.UserScope
 import dev.avatsav.linkding.ui.TagsScreen
 import dev.avatsav.linkding.ui.compose.none

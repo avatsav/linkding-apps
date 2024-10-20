@@ -1,8 +1,8 @@
 package dev.avatsav.linkding.internet
 
+import com.r0adkll.kimchi.annotations.ContributesBinding
 import dev.avatsav.linkding.inject.AppScope
-import software.amazon.lastmile.kotlin.inject.anvil.ContributesBinding
-import software.amazon.lastmile.kotlin.inject.anvil.SingleIn
+import dev.avatsav.linkding.inject.annotations.SingleIn
 
 @SingleIn(AppScope::class)
 @ContributesBinding(AppScope::class)

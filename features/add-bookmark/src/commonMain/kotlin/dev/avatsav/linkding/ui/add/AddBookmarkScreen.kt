@@ -36,7 +36,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import com.slack.circuit.codegen.annotations.CircuitInject
+import com.r0adkll.kimchi.circuit.annotations.CircuitInject
 import dev.avatsav.linkding.inject.UserScope
 import dev.avatsav.linkding.ui.AddBookmarkScreen
 import dev.avatsav.linkding.ui.add.AddBookmarkUiEvent.Close

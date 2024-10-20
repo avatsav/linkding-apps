@@ -10,10 +10,9 @@ kotlin {
         commonMain.dependencies {
             api(libs.kotlin.coroutines.core)
             api(libs.kotlin.inject.runtime)
-            api(libs.kotlin.inject.anvil.runtime)
-            api(libs.kotlin.inject.anvil.runtime.optional)
+            api(libs.kimchi.annotations)
         }
     }
 }
 
-addKspDependencyForAllTargets(libs.kotlin.inject.anvil.compiler)
+addKspDependencyForAllTargets(libs.kimchi.compiler)
