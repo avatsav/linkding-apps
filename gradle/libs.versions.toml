@@ -58,7 +58,7 @@ kotlin-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-co
 kotlin-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutines" }
 kotlin-serialization-json = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3"
 kotlin-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "datetime" }
-kotlin-atomicfu = "org.jetbrains.kotlinx:atomicfu:0.25.0"
+kotlin-atomicfu = "org.jetbrains.kotlinx:atomicfu:0.26.0"
 
 ksp = { module = "com.google.devtools.ksp:symbol-processing-api", version.ref = "ksp" }
 kotlinPoet = { module = "com.squareup:kotlinpoet", version.ref = "kotlinPoet" }
