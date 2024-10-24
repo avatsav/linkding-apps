@@ -1,6 +1,6 @@
 package dev.avatsav.linkding.api.models
 
-import io.ktor.utils.io.errors.IOException
+import kotlinx.io.IOException
 import kotlinx.serialization.SerializationException
 
 internal sealed interface ApiResponse<out T, out E> {

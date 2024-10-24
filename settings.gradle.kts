@@ -26,7 +26,6 @@ include(
     ":app:android",
     ":app:desktop",
     ":core:base",
-    ":core:logging",
     ":core:preferences",
     ":core:connectivity",
     ":core:parcelize",

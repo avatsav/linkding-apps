@@ -9,7 +9,6 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             implementation(projects.core.base)
-            implementation(projects.core.logging)
             implementation(projects.data.auth)
             implementation(projects.data.bookmarks)
             implementation(libs.kotlin.atomicfu)

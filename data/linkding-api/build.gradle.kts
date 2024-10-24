@@ -7,7 +7,6 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             implementation(projects.core.base)
-            implementation(projects.core.logging)
             implementation(libs.kotlin.serialization.json)
             implementation(libs.kotlin.datetime)
             implementation(libs.ktor.client.contentNegotiation)

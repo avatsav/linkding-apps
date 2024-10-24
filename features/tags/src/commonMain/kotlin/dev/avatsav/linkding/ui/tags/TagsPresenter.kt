@@ -7,7 +7,6 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import com.r0adkll.kimchi.circuit.annotations.CircuitInject
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
-import dev.avatsav.linkding.Logger
 import dev.avatsav.linkding.domain.observers.ObserveTags
 import dev.avatsav.linkding.inject.UserScope
 import dev.avatsav.linkding.ui.TagsScreen
@@ -24,7 +23,6 @@ class TagsPresenter(
     @Assisted private val navigator: Navigator,
     @Assisted private val screen: TagsScreen,
     private val observeTags: ObserveTags,
-    private val logger: Logger,
 ) : Presenter<TagsUiState> {
 
     @Composable

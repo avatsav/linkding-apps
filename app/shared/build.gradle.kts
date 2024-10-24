@@ -16,7 +16,6 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             api(projects.core.base)
-            api(projects.core.logging)
             api(projects.core.preferences)
             api(projects.core.connectivity)
             api(projects.data.models)

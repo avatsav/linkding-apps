@@ -11,7 +11,7 @@ kotlin {
             api(libs.kotlin.coroutines.core)
             api(libs.kotlin.inject.runtime)
             api(libs.kimchi.annotations)
-            implementation(libs.kermit)
+            api(libs.kermit)
             implementation(libs.uuid)
         }
     }

@@ -7,12 +7,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import co.touchlab.kermit.Logger
 import com.github.michaelbull.result.onFailure
 import com.github.michaelbull.result.onSuccess
 import com.r0adkll.kimchi.circuit.annotations.CircuitInject
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
-import dev.avatsav.linkding.Logger
 import dev.avatsav.linkding.data.model.CheckUrlResult
 import dev.avatsav.linkding.data.model.SaveBookmark
 import dev.avatsav.linkding.domain.interactors.AddBookmark
@@ -30,7 +30,6 @@ class AddBookmarkPresenter(
     @Assisted private val navigator: Navigator,
     private val addBookmark: AddBookmark,
     private val checkBookmarkUrl: CheckBookmarkUrl,
-    private val logger: Logger,
 ) : Presenter<AddBookmarkUiState> {
 
     @Composable
@@ -71,7 +70,7 @@ class AddBookmarkPresenter(
                     checkBookmarkUrl(event.url).onSuccess {
                         checkUrlResult = it
                     }.onFailure {
-                        logger.e { "CheckError: $it" }
+                        Logger.e { "CheckError: $it" }
                     }
                 }
             }

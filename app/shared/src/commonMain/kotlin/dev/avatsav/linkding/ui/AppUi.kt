@@ -16,7 +16,6 @@ import com.slack.circuit.retained.LocalRetainedStateRegistry
 import com.slack.circuit.retained.continuityRetainedStateRegistry
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.screen.Screen
-import dev.avatsav.linkding.Logger
 import dev.avatsav.linkding.data.auth.AuthManager
 import dev.avatsav.linkding.data.model.prefs.AppTheme
 import dev.avatsav.linkding.inject.UiScope
@@ -43,7 +42,6 @@ class DefaultAppUi(
     @Unauthenticated private val circuit: Circuit,
     private val preferences: AppPreferences,
     private val authManager: AuthManager,
-    private val logger: Logger,
 ) : AppUi {
 
     @Composable
@@ -54,7 +52,7 @@ class DefaultAppUi(
         modifier: Modifier,
     ) {
         val appNavigator: Navigator = remember(navigator) {
-            AppNavigator(navigator, onOpenUrl, logger)
+            AppNavigator(navigator, onOpenUrl)
         }
 
         val authState by authManager.state
