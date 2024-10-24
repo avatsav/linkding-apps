@@ -1,8 +1,8 @@
 package dev.avatsav.linkding.data.auth.inject
 
+import co.touchlab.kermit.Logger
 import com.r0adkll.kimchi.annotations.ContributesTo
 import dev.avatsav.linkding.AppInfo
-import dev.avatsav.linkding.Logger
 import dev.avatsav.linkding.api.LinkdingAuthentication
 import dev.avatsav.linkding.inject.AppScope
 import dev.avatsav.linkding.inject.annotations.SingleIn
@@ -18,13 +18,12 @@ interface AuthComponent {
     fun provideLinkdingAuthentication(
         httpClientEngineFactory: HttpClientEngineFactory<*>,
         appInfo: AppInfo,
-        appLogger: Logger,
     ): LinkdingAuthentication = LinkdingAuthentication {
         httpClient(httpClientEngineFactory)
         logging {
             logger = object : io.ktor.client.plugins.logging.Logger {
                 override fun log(message: String) {
-                    appLogger.d { message }
+                    Logger.d { message }
                 }
             }
             level = when {

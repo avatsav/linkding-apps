@@ -9,7 +9,6 @@ import com.slack.circuit.retained.collectAsRetainedState
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
 import dev.avatsav.linkding.AppInfo
-import dev.avatsav.linkding.Logger
 import dev.avatsav.linkding.data.model.prefs.AppTheme
 import dev.avatsav.linkding.inject.UserScope
 import dev.avatsav.linkding.prefs.AppPreferences
@@ -26,7 +25,6 @@ class SettingsPresenter(
     @Assisted private val navigator: Navigator,
     private val preferences: AppPreferences,
     private val appInfo: AppInfo,
-    private val logger: Logger,
 ) : Presenter<SettingsUiState> {
 
     @Composable

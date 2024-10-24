@@ -1,7 +1,6 @@
 package dev.avatsav.linkding.internet
 
 import app.cash.turbine.test
-import dev.avatsav.linkding.Logger
 import dev.avatsav.linkding.internet.fake.FakeNetworkMonitor
 import io.kotest.matchers.shouldBe
 import kotlin.test.Test
@@ -16,8 +15,7 @@ class ConnectivityObserverTest {
 
     private val appCoroutineScope = TestScope(UnconfinedTestDispatcher())
     private val networkMonitor = FakeNetworkMonitor()
-    private val victim =
-        DefaultConnectivityObserver(networkMonitor, appCoroutineScope, FakeLogger())
+    private val victim = DefaultConnectivityObserver(networkMonitor, appCoroutineScope)
 
     @Test
     fun `network changes emit new states distinctly`() = runTest {
@@ -34,5 +32,3 @@ class ConnectivityObserverTest {
         networkMonitor.closed shouldBe true
     }
 }
-
-class FakeLogger : Logger

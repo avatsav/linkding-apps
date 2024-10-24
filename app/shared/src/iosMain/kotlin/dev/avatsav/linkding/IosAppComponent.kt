@@ -1,6 +1,7 @@
 package dev.avatsav.linkding
 
 import com.r0adkll.kimchi.annotations.MergeComponent
+import dev.avatsav.linkding.initializers.AppInitializer
 import dev.avatsav.linkding.inject.AppScope
 import dev.avatsav.linkding.inject.annotations.SingleIn
 import me.tatarka.inject.annotations.Provides
@@ -12,6 +13,8 @@ import kotlin.experimental.ExperimentalNativeApi
 @MergeComponent(AppScope::class)
 @OptIn(ExperimentalNativeApi::class)
 abstract class IosAppComponent {
+
+    abstract val appInitializer: AppInitializer
 
     @SingleIn(AppScope::class)
     @Provides

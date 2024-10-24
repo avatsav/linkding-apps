@@ -9,7 +9,6 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             implementation(projects.core.base)
-            implementation(projects.core.logging)
             implementation(projects.core.preferences)
             implementation(projects.data.linkdingApi)
             implementation(libs.ktor.client.core)

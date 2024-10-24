@@ -1,8 +1,8 @@
 package dev.avatsav.linkding.internet
 
+import co.touchlab.kermit.Logger
 import com.r0adkll.kimchi.annotations.ContributesBinding
 import dev.avatsav.linkding.AppCoroutineScope
-import dev.avatsav.linkding.Logger
 import dev.avatsav.linkding.inject.AppScope
 import dev.avatsav.linkding.inject.annotations.SingleIn
 import me.tatarka.inject.annotations.Inject
@@ -23,12 +23,11 @@ interface ConnectivityObserver {
 class DefaultConnectivityObserver(
     private val networkMonitor: NetworkMonitor,
     appCoroutineScope: AppCoroutineScope,
-    private val logger: Logger,
 ) : ConnectivityObserver {
 
     override val observeIsOnline: StateFlow<Boolean> = callbackFlow {
         networkMonitor.setListener { isOnline ->
-            logger.d { "Connectivity changed, isOnline=$isOnline" }
+            Logger.d { "Connectivity changed, isOnline=$isOnline" }
             trySend(isOnline)
         }
         awaitClose {

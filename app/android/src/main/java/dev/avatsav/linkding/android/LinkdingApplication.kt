@@ -10,5 +10,6 @@ class LinkdingApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         ComponentHolder.components += AndroidAppComponent.createAndroidAppComponent(this)
+            .also { it.appInitializer.initialize() }
     }
 }

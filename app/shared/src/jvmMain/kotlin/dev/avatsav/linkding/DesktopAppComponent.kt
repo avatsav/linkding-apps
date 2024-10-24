@@ -1,6 +1,7 @@
 package dev.avatsav.linkding
 
 import com.r0adkll.kimchi.annotations.MergeComponent
+import dev.avatsav.linkding.initializers.AppInitializer
 import dev.avatsav.linkding.inject.AppScope
 import dev.avatsav.linkding.inject.annotations.SingleIn
 import me.tatarka.inject.annotations.Provides
@@ -8,7 +9,9 @@ import java.util.prefs.Preferences
 
 @SingleIn(AppScope::class)
 @MergeComponent(AppScope::class)
-abstract class DesktopAppComponent {
+interface DesktopAppComponent {
+
+    val appInitializer: AppInitializer
 
     @SingleIn(AppScope::class)
     @Provides
