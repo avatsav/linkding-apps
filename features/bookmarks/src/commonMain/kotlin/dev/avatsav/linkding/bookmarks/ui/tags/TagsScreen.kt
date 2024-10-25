@@ -1,4 +1,4 @@
-package dev.avatsav.linkding.ui.tags
+package dev.avatsav.linkding.bookmarks.ui.tags
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.WindowInsets

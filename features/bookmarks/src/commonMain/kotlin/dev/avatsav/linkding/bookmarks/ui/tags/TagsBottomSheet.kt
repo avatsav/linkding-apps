@@ -1,4 +1,4 @@
-package dev.avatsav.linkding.ui.tags
+package dev.avatsav.linkding.bookmarks.ui.tags
 
 import com.slack.circuit.foundation.CircuitContent
 import com.slack.circuit.foundation.NavEvent

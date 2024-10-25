@@ -44,7 +44,6 @@ include(
     ":features:bookmarks",
     ":features:setup",
     ":features:settings",
-    ":features:tags",
     ":thirdparty:paging:compose",
     ":codegen:annotations",
     ":codegen:compiler",

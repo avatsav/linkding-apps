@@ -21,12 +21,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import com.slack.circuit.overlay.LocalOverlayHost
+import dev.avatsav.linkding.bookmarks.ui.tags.mapToTag
+import dev.avatsav.linkding.bookmarks.ui.tags.showTagsBottomSheet
 import dev.avatsav.linkding.data.model.BookmarkCategory
 import dev.avatsav.linkding.data.model.Tag
 import dev.avatsav.linkding.ui.TagsScreenResult
 import dev.avatsav.linkding.ui.compose.widgets.TagInputChip
-import dev.avatsav.linkding.ui.tags.mapToTag
-import dev.avatsav.linkding.ui.tags.showTagsBottomSheet
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.launch
 

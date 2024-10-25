@@ -1,4 +1,4 @@
-package dev.avatsav.linkding.ui.tags
+package dev.avatsav.linkding.bookmarks.ui.tags
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -7,13 +7,13 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import com.r0adkll.kimchi.circuit.annotations.CircuitInject
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
+import dev.avatsav.linkding.bookmarks.ui.tags.TagsUiEvent.Close
+import dev.avatsav.linkding.bookmarks.ui.tags.TagsUiEvent.SelectTag
 import dev.avatsav.linkding.domain.observers.ObserveTags
 import dev.avatsav.linkding.inject.UserScope
 import dev.avatsav.linkding.ui.TagsScreen
 import dev.avatsav.linkding.ui.TagsScreenResult
 import dev.avatsav.linkding.ui.circuit.rememberRetainedCachedPagingFlow
-import dev.avatsav.linkding.ui.tags.TagsUiEvent.Close
-import dev.avatsav.linkding.ui.tags.TagsUiEvent.SelectTag
 import me.tatarka.inject.annotations.Assisted
 import me.tatarka.inject.annotations.Inject
 

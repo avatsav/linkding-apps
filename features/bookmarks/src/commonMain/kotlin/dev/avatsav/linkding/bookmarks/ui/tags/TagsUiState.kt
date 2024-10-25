@@ -1,4 +1,4 @@
-package dev.avatsav.linkding.ui.tags
+package dev.avatsav.linkding.bookmarks.ui.tags
 
 import androidx.compose.runtime.Immutable
 import androidx.paging.compose.LazyPagingItems

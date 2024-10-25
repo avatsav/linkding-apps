@@ -15,7 +15,6 @@ kotlin {
             implementation(projects.domain)
             implementation(projects.ui.compose)
             implementation(projects.ui.circuit)
-            implementation(projects.features.tags)
             implementation(compose.foundation)
             implementation(compose.material3)
             implementation(compose.materialIconsExtended)

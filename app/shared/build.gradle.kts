@@ -29,7 +29,6 @@ kotlin {
             api(projects.features.setup)
             api(projects.features.bookmarks)
             api(projects.features.settings)
-            api(projects.features.tags)
 
             api(libs.circuit.foundation)
             api(libs.circuit.runtime)
