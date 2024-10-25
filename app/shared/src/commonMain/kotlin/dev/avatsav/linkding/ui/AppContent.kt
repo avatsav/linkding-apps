@@ -89,7 +89,7 @@ private fun SetupScreen(
 ) {
     CircuitCompositionLocals(circuit) {
         CircuitContent(
-            screen = SetupScreen,
+            screen = AuthScreen,
             modifier = modifier,
         )
     }

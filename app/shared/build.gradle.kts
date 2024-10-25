@@ -26,11 +26,9 @@ kotlin {
             api(projects.data.databaseSqldelight)
             api(projects.domain)
             api(projects.ui.theme)
-            api(projects.features.setup)
+            api(projects.features.auth)
             api(projects.features.bookmarks)
-            api(projects.features.addBookmark)
             api(projects.features.settings)
-            api(projects.features.tags)
 
             api(libs.circuit.foundation)
             api(libs.circuit.runtime)

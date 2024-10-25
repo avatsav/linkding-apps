@@ -15,7 +15,6 @@ kotlin {
             implementation(projects.domain)
             implementation(projects.ui.compose)
             implementation(projects.ui.circuit)
-            implementation(projects.features.tags)
             implementation(compose.foundation)
             implementation(compose.material3)
             implementation(compose.materialIconsExtended)
@@ -32,7 +31,7 @@ kotlin {
 }
 
 android {
-    namespace = "dev.avatsav.linkding.ui.bookmarks"
+    namespace = "dev.avatsav.linkding.bookmarks.ui"
 }
 
 addKspDependencyForAllTargets(libs.kimchi.circuit.compiler)

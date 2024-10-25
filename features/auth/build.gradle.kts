@@ -13,13 +13,13 @@ kotlin {
             implementation(projects.core.base)
             implementation(projects.core.preferences)
             implementation(projects.domain)
-            implementation(projects.ui.compose)
             implementation(projects.ui.circuit)
+            implementation(projects.ui.compose)
             implementation(compose.foundation)
             implementation(compose.material3)
-            implementation(compose.materialIconsExtended)
+            implementation(compose.components.resources)
             implementation(libs.circuit.retained)
-            implementation(libs.circuit.overlay)
+            implementation(libs.kotlin.inject.runtime)
             api(projects.ui.theme)
             api(projects.ui.screens)
             api(libs.circuit.foundation)
@@ -30,9 +30,9 @@ kotlin {
 }
 
 android {
-    namespace = "dev.avatsav.linkding.settings.ui"
+    namespace = "dev.avatsav.linkding.auth.ui"
 }
 
-addKspDependencyForAllTargets(libs.kimchi.circuit.compiler)
 addKspDependencyForAllTargets(libs.kotlin.inject.compiler)
 addKspDependencyForAllTargets(libs.kimchi.compiler)
+addKspDependencyForAllTargets(libs.kimchi.circuit.compiler)
