@@ -1,4 +1,4 @@
-package dev.avatsav.linkding.ui.setup
+package dev.avatsav.linkding.auth.ui
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -32,15 +32,15 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.r0adkll.kimchi.circuit.annotations.CircuitInject
+import dev.avatsav.linkding.auth.ui.SetupUiEvent.SaveConfiguration
 import dev.avatsav.linkding.inject.UiScope
-import dev.avatsav.linkding.ui.SetupScreen
-import dev.avatsav.linkding.ui.setup.SetupUiEvent.SaveConfiguration
+import dev.avatsav.linkding.ui.AuthScreen
 
-@CircuitInject(SetupScreen::class, UiScope::class)
+@CircuitInject(AuthScreen::class, UiScope::class)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SetupApiConfig(
-    state: SetupUiState,
+fun AuthScreen(
+    state: AuthUiState,
     modifier: Modifier = Modifier,
 ) {
     // https://issuetracker.google.com/issues/256100927#comment1

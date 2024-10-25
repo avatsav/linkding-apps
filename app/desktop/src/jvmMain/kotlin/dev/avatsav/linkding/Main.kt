@@ -11,7 +11,7 @@ import androidx.compose.ui.window.rememberWindowState
 import com.slack.circuit.backstack.rememberSaveableBackStack
 import com.slack.circuit.foundation.rememberCircuitNavigator
 import dev.avatsav.linkding.inject.ComponentHolder
-import dev.avatsav.linkding.ui.SetupScreen
+import dev.avatsav.linkding.ui.AuthScreen
 import kimchi.merge.dev.avatsav.linkding.createDesktopAppComponent
 import java.awt.Desktop
 import java.net.URI
@@ -36,7 +36,7 @@ fun main() = application {
         state = windowState,
         onCloseRequest = ::exitApplication,
     ) {
-        val backstack = rememberSaveableBackStack(root = SetupScreen)
+        val backstack = rememberSaveableBackStack(root = AuthScreen)
         val navigator = rememberCircuitNavigator(backstack) { /* no-op */ }
 
         uiComponent.appUi.Content(

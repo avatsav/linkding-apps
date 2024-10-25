@@ -1,4 +1,4 @@
-package dev.avatsav.linkding.ui.setup
+package dev.avatsav.linkding.auth.ui
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -18,19 +18,19 @@ import dev.avatsav.linkding.data.model.AuthError.Other
 import dev.avatsav.linkding.domain.interactors.Authenticate
 import dev.avatsav.linkding.inject.UiScope
 import dev.avatsav.linkding.prefs.AppPreferences
-import dev.avatsav.linkding.ui.SetupScreen
+import dev.avatsav.linkding.ui.AuthScreen
 import me.tatarka.inject.annotations.Inject
 import kotlinx.coroutines.launch
 
-@CircuitInject(SetupScreen::class, UiScope::class)
+@CircuitInject(AuthScreen::class, UiScope::class)
 @Inject
-class SetupPresenter(
+class AuthPresenter(
     private val authenticate: Authenticate,
     private val appPreferences: AppPreferences,
-) : Presenter<SetupUiState> {
+) : Presenter<AuthUiState> {
 
     @Composable
-    override fun present(): SetupUiState {
+    override fun present(): AuthUiState {
         val scope = rememberCoroutineScope()
 
         val verifying by authenticate.inProgress.collectAsState(false)
@@ -39,7 +39,7 @@ class SetupPresenter(
         var invalidApiKey by rememberSaveable { mutableStateOf(false) }
         var errorMessage by rememberSaveable { mutableStateOf("") }
 
-        return SetupUiState(
+        return AuthUiState(
             verifying = verifying,
             invalidHostUrl = invalidHostUrl,
             invalidApiKey = invalidApiKey,

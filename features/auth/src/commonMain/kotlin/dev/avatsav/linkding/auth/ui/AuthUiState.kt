@@ -1,11 +1,11 @@
-package dev.avatsav.linkding.ui.setup
+package dev.avatsav.linkding.auth.ui
 
 import androidx.compose.runtime.Immutable
 import com.slack.circuit.runtime.CircuitUiEvent
 import com.slack.circuit.runtime.CircuitUiState
 
 @Immutable
-data class SetupUiState(
+data class AuthUiState(
     val verifying: Boolean = false,
     val saving: Boolean = false,
     val invalidHostUrl: Boolean = false,

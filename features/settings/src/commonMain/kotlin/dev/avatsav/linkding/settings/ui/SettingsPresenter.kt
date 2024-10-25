@@ -1,4 +1,4 @@
-package dev.avatsav.linkding.ui.settings
+package dev.avatsav.linkding.settings.ui
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -12,8 +12,8 @@ import dev.avatsav.linkding.AppInfo
 import dev.avatsav.linkding.data.model.prefs.AppTheme
 import dev.avatsav.linkding.inject.UserScope
 import dev.avatsav.linkding.prefs.AppPreferences
+import dev.avatsav.linkding.ui.AuthScreen
 import dev.avatsav.linkding.ui.SettingsScreen
-import dev.avatsav.linkding.ui.SetupScreen
 import dev.avatsav.linkding.ui.UrlScreen
 import me.tatarka.inject.annotations.Assisted
 import me.tatarka.inject.annotations.Inject
@@ -58,8 +58,8 @@ class SettingsPresenter(
 
                 SettingsUiEvent.ResetApiConfig -> coroutineScope.launch {
                     preferences.setApiConfig(null)
-                    navigator.goTo(SetupScreen)
-                    navigator.resetRoot(SetupScreen)
+                    navigator.goTo(AuthScreen)
+                    navigator.resetRoot(AuthScreen)
                 }
 
                 SettingsUiEvent.ShowSourceCode -> navigator.goTo(UrlScreen("https://github.com/avatsav/linkding-apps"))

@@ -1,4 +1,4 @@
-package dev.avatsav.linkding.ui.settings.widgets
+package dev.avatsav.linkding.settings.ui.widgets
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.tween
@@ -218,7 +218,7 @@ object PreferenceDefaults {
     private val baseShape: CornerBasedShape
         get() = RoundedCornerShape(4.dp)
 
-    fun itemShape(index: Int, count: Int, baseShape: CornerBasedShape = this.baseShape): Shape {
+    fun itemShape(index: Int, count: Int, baseShape: CornerBasedShape = PreferenceDefaults.baseShape): Shape {
         if (count == 1) return baseShape
         return when (index) {
             0 -> baseShape.start()

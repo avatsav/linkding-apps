@@ -42,7 +42,7 @@ include(
     ":ui:compose",
     ":ui:circuit",
     ":features:bookmarks",
-    ":features:setup",
+    ":features:auth",
     ":features:settings",
     ":thirdparty:paging:compose",
     ":codegen:annotations",

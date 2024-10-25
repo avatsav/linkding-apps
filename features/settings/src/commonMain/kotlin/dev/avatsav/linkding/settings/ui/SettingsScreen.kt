@@ -1,4 +1,4 @@
-package dev.avatsav.linkding.ui.settings
+package dev.avatsav.linkding.settings.ui
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -29,20 +29,20 @@ import com.slack.circuit.overlay.LocalOverlayHost
 import com.slack.circuit.overlay.OverlayHost
 import com.slack.circuitx.overlays.DialogResult
 import dev.avatsav.linkding.inject.UserScope
+import dev.avatsav.linkding.settings.ui.SettingsUiEvent.Close
+import dev.avatsav.linkding.settings.ui.SettingsUiEvent.ResetApiConfig
+import dev.avatsav.linkding.settings.ui.SettingsUiEvent.SetAppTheme
+import dev.avatsav.linkding.settings.ui.SettingsUiEvent.ShowLicenses
+import dev.avatsav.linkding.settings.ui.SettingsUiEvent.ShowPrivacyPolicy
+import dev.avatsav.linkding.settings.ui.SettingsUiEvent.ShowSourceCode
+import dev.avatsav.linkding.settings.ui.SettingsUiEvent.ToggleUseDynamicColors
+import dev.avatsav.linkding.settings.ui.widgets.Preference
+import dev.avatsav.linkding.settings.ui.widgets.PreferenceDefaults
+import dev.avatsav.linkding.settings.ui.widgets.PreferenceSection
+import dev.avatsav.linkding.settings.ui.widgets.SwitchPreference
+import dev.avatsav.linkding.settings.ui.widgets.ThemePreference
 import dev.avatsav.linkding.ui.SettingsScreen
 import dev.avatsav.linkding.ui.circuit.alertDialogOverlay
-import dev.avatsav.linkding.ui.settings.SettingsUiEvent.Close
-import dev.avatsav.linkding.ui.settings.SettingsUiEvent.ResetApiConfig
-import dev.avatsav.linkding.ui.settings.SettingsUiEvent.SetAppTheme
-import dev.avatsav.linkding.ui.settings.SettingsUiEvent.ShowLicenses
-import dev.avatsav.linkding.ui.settings.SettingsUiEvent.ShowPrivacyPolicy
-import dev.avatsav.linkding.ui.settings.SettingsUiEvent.ShowSourceCode
-import dev.avatsav.linkding.ui.settings.SettingsUiEvent.ToggleUseDynamicColors
-import dev.avatsav.linkding.ui.settings.widgets.Preference
-import dev.avatsav.linkding.ui.settings.widgets.PreferenceDefaults
-import dev.avatsav.linkding.ui.settings.widgets.PreferenceSection
-import dev.avatsav.linkding.ui.settings.widgets.SwitchPreference
-import dev.avatsav.linkding.ui.settings.widgets.ThemePreference
 import me.tatarka.inject.annotations.Inject
 import kotlinx.coroutines.launch
 

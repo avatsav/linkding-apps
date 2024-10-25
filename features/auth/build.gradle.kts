@@ -30,7 +30,7 @@ kotlin {
 }
 
 android {
-    namespace = "dev.avatsav.linkding.ui.setup"
+    namespace = "dev.avatsav.linkding.auth.ui"
 }
 
 addKspDependencyForAllTargets(libs.kotlin.inject.compiler)

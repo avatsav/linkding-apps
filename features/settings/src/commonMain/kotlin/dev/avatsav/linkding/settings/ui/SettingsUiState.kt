@@ -1,4 +1,4 @@
-package dev.avatsav.linkding.ui.settings
+package dev.avatsav.linkding.settings.ui
 
 import androidx.compose.runtime.Immutable
 import com.slack.circuit.runtime.CircuitUiEvent

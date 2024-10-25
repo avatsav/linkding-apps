@@ -8,7 +8,7 @@ import dev.avatsav.linkding.parcelize.Parcelize
 abstract class LinkdingScreen(val name: String) : Screen
 
 @Parcelize
-data object SetupScreen : LinkdingScreen("Setup")
+data object AuthScreen : LinkdingScreen("Auth")
 
 @Parcelize
 data object BookmarksScreen : LinkdingScreen("Bookmarks")
