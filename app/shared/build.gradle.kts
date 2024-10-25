@@ -21,12 +21,16 @@ kotlin {
             api(projects.data.models)
             api(projects.data.network)
             api(projects.data.linkdingApi)
-            api(projects.data.auth)
             api(projects.data.bookmarks)
             api(projects.data.databaseSqldelight)
+
             api(projects.domain)
             api(projects.ui.theme)
-            api(projects.features.auth)
+
+            api(projects.features.auth.api)
+            api(projects.features.auth.impl)
+            api(projects.features.auth.ui)
+
             api(projects.features.bookmarks)
             api(projects.features.settings)
 

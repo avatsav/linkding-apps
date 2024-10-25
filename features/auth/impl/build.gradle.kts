@@ -8,14 +8,11 @@ plugins {
 kotlin {
     sourceSets {
         commonMain.dependencies {
-            api(libs.kotlin.atomicfu)
-            api(libs.kotlin.coroutines.core)
-            api(libs.kotlin.inject.runtime)
-            api(libs.kimchi.annotations)
-            api(libs.kermit)
-            api(libs.kotlinResult)
-            api(libs.kotlinResultCoroutines)
-            implementation(libs.uuid)
+            implementation(projects.features.auth.api)
+            implementation(projects.core.base)
+            implementation(projects.core.preferences)
+            implementation(projects.data.models)
+            implementation(projects.data.linkdingApi)
         }
     }
 }

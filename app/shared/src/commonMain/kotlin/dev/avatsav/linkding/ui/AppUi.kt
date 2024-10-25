@@ -16,7 +16,7 @@ import com.slack.circuit.retained.LocalRetainedStateRegistry
 import com.slack.circuit.retained.continuityRetainedStateRegistry
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.screen.Screen
-import dev.avatsav.linkding.data.auth.AuthManager
+import dev.avatsav.linkding.auth.api.AuthManager
 import dev.avatsav.linkding.data.model.prefs.AppTheme
 import dev.avatsav.linkding.inject.UiScope
 import dev.avatsav.linkding.inject.annotations.SingleIn

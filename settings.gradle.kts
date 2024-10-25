@@ -30,7 +30,6 @@ include(
     ":core:connectivity",
     ":core:parcelize",
     ":data:models",
-    ":data:auth",
     ":data:bookmarks",
     ":data:network",
     ":data:database",
@@ -41,8 +40,12 @@ include(
     ":ui:screens",
     ":ui:compose",
     ":ui:circuit",
+
+    ":features:auth:ui",
+    ":features:auth:api",
+    ":features:auth:impl",
+
     ":features:bookmarks",
-    ":features:auth",
     ":features:settings",
     ":thirdparty:paging:compose",
     ":codegen:annotations",

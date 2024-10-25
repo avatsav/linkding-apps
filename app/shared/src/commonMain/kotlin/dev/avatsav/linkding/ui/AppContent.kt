@@ -21,7 +21,7 @@ import com.slack.circuit.foundation.NavigableCircuitContent
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuitx.gesturenavigation.GestureNavigationDecoration
 import dev.avatsav.linkding.UserComponent
-import dev.avatsav.linkding.data.auth.AuthState
+import dev.avatsav.linkding.auth.api.AuthState
 import dev.avatsav.linkding.data.model.ApiConfig
 import dev.avatsav.linkding.inject.ComponentHolder
 
