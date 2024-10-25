@@ -1,4 +1,4 @@
-package dev.avatsav.linkding.ui.bookmarks
+package dev.avatsav.linkding.bookmarks.ui.list
 
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Immutable

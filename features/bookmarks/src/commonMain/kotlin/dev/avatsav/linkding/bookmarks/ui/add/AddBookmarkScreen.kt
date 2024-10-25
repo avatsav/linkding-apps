@@ -1,4 +1,4 @@
-package dev.avatsav.linkding.ui.add
+package dev.avatsav.linkding.bookmarks.ui.add
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.Arrangement
@@ -37,10 +37,10 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.r0adkll.kimchi.circuit.annotations.CircuitInject
+import dev.avatsav.linkding.bookmarks.ui.add.AddBookmarkUiEvent.Close
+import dev.avatsav.linkding.bookmarks.ui.add.AddBookmarkUiEvent.Save
 import dev.avatsav.linkding.inject.UserScope
 import dev.avatsav.linkding.ui.AddBookmarkScreen
-import dev.avatsav.linkding.ui.add.AddBookmarkUiEvent.Close
-import dev.avatsav.linkding.ui.add.AddBookmarkUiEvent.Save
 import dev.avatsav.linkding.ui.compose.widgets.OutlinedTagsTextField
 import dev.avatsav.linkding.ui.compose.widgets.PlaceholderVisualTransformation
 import dev.avatsav.linkding.ui.compose.widgets.SmallCircularProgressIndicator

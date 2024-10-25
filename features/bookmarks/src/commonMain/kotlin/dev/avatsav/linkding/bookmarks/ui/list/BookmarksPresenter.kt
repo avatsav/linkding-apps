@@ -1,4 +1,4 @@
-package dev.avatsav.linkding.ui.bookmarks
+package dev.avatsav.linkding.bookmarks.ui.list
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -14,6 +14,16 @@ import com.slack.circuit.retained.collectAsRetainedState
 import com.slack.circuit.retained.rememberRetained
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
+import dev.avatsav.linkding.bookmarks.ui.list.BookmarksUiEvent.AddBookmark
+import dev.avatsav.linkding.bookmarks.ui.list.BookmarksUiEvent.ClearSearch
+import dev.avatsav.linkding.bookmarks.ui.list.BookmarksUiEvent.Delete
+import dev.avatsav.linkding.bookmarks.ui.list.BookmarksUiEvent.Open
+import dev.avatsav.linkding.bookmarks.ui.list.BookmarksUiEvent.RemoveTag
+import dev.avatsav.linkding.bookmarks.ui.list.BookmarksUiEvent.Search
+import dev.avatsav.linkding.bookmarks.ui.list.BookmarksUiEvent.SelectTag
+import dev.avatsav.linkding.bookmarks.ui.list.BookmarksUiEvent.SetBookmarkCategory
+import dev.avatsav.linkding.bookmarks.ui.list.BookmarksUiEvent.ShowSettings
+import dev.avatsav.linkding.bookmarks.ui.list.BookmarksUiEvent.ToggleArchive
 import dev.avatsav.linkding.data.model.BookmarkCategory
 import dev.avatsav.linkding.data.model.Tag
 import dev.avatsav.linkding.domain.interactors.ArchiveBookmark
@@ -27,16 +37,6 @@ import dev.avatsav.linkding.ui.AddBookmarkScreen
 import dev.avatsav.linkding.ui.BookmarksScreen
 import dev.avatsav.linkding.ui.SettingsScreen
 import dev.avatsav.linkding.ui.UrlScreen
-import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.AddBookmark
-import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.ClearSearch
-import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.Delete
-import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.Open
-import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.RemoveTag
-import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.Search
-import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.SelectTag
-import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.SetBookmarkCategory
-import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.ShowSettings
-import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.ToggleArchive
 import dev.avatsav.linkding.ui.circuit.rememberRetainedCachedPagingFlow
 import me.tatarka.inject.annotations.Assisted
 import me.tatarka.inject.annotations.Inject

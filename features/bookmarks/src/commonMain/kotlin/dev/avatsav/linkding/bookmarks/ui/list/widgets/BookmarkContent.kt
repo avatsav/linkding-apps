@@ -1,4 +1,4 @@
-package dev.avatsav.linkding.ui.bookmarks.widgets
+package dev.avatsav.linkding.bookmarks.ui.list.widgets
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

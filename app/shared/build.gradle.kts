@@ -28,7 +28,6 @@ kotlin {
             api(projects.ui.theme)
             api(projects.features.setup)
             api(projects.features.bookmarks)
-            api(projects.features.addBookmark)
             api(projects.features.settings)
             api(projects.features.tags)
 

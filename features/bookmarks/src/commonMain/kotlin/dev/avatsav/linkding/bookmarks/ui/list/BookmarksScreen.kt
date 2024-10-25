@@ -1,4 +1,4 @@
-package dev.avatsav.linkding.ui.bookmarks
+package dev.avatsav.linkding.bookmarks.ui.list
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
@@ -52,19 +52,19 @@ import androidx.paging.compose.itemKey
 import com.r0adkll.kimchi.circuit.annotations.CircuitInject
 import com.slack.circuit.overlay.ContentWithOverlays
 import com.slack.circuit.overlay.LocalOverlayHost
+import dev.avatsav.linkding.bookmarks.ui.list.BookmarksUiEvent.AddBookmark
+import dev.avatsav.linkding.bookmarks.ui.list.BookmarksUiEvent.Delete
+import dev.avatsav.linkding.bookmarks.ui.list.BookmarksUiEvent.Open
+import dev.avatsav.linkding.bookmarks.ui.list.BookmarksUiEvent.RemoveTag
+import dev.avatsav.linkding.bookmarks.ui.list.BookmarksUiEvent.Search
+import dev.avatsav.linkding.bookmarks.ui.list.BookmarksUiEvent.SelectTag
+import dev.avatsav.linkding.bookmarks.ui.list.BookmarksUiEvent.SetBookmarkCategory
+import dev.avatsav.linkding.bookmarks.ui.list.BookmarksUiEvent.ShowSettings
+import dev.avatsav.linkding.bookmarks.ui.list.BookmarksUiEvent.ToggleArchive
+import dev.avatsav.linkding.bookmarks.ui.list.widgets.BookmarkListItem
+import dev.avatsav.linkding.bookmarks.ui.list.widgets.FiltersBar
 import dev.avatsav.linkding.inject.UserScope
 import dev.avatsav.linkding.ui.BookmarksScreen
-import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.AddBookmark
-import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.Delete
-import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.Open
-import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.RemoveTag
-import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.Search
-import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.SelectTag
-import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.SetBookmarkCategory
-import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.ShowSettings
-import dev.avatsav.linkding.ui.bookmarks.BookmarksUiEvent.ToggleArchive
-import dev.avatsav.linkding.ui.bookmarks.widgets.BookmarkListItem
-import dev.avatsav.linkding.ui.bookmarks.widgets.FiltersBar
 import kotlinx.coroutines.launch
 
 @CircuitInject(BookmarksScreen::class, UserScope::class)

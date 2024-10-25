@@ -1,4 +1,4 @@
-package dev.avatsav.linkding.ui.add
+package dev.avatsav.linkding.bookmarks.ui.add
 
 import androidx.compose.runtime.Immutable
 import com.slack.circuit.runtime.CircuitUiEvent

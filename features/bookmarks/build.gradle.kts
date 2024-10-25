@@ -32,7 +32,7 @@ kotlin {
 }
 
 android {
-    namespace = "dev.avatsav.linkding.ui.bookmarks"
+    namespace = "dev.avatsav.linkding.bookmarks.ui"
 }
 
 addKspDependencyForAllTargets(libs.kimchi.circuit.compiler)

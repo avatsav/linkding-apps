@@ -42,7 +42,6 @@ include(
     ":ui:compose",
     ":ui:circuit",
     ":features:bookmarks",
-    ":features:add-bookmark",
     ":features:setup",
     ":features:settings",
     ":features:tags",

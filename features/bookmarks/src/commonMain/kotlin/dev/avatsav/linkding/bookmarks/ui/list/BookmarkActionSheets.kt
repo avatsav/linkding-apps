@@ -1,4 +1,4 @@
-package dev.avatsav.linkding.ui.bookmarks
+package dev.avatsav.linkding.bookmarks.ui.list
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -23,8 +23,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import com.slack.circuit.overlay.OverlayHost
+import dev.avatsav.linkding.bookmarks.ui.list.widgets.BookmarkContent
 import dev.avatsav.linkding.data.model.Bookmark
-import dev.avatsav.linkding.ui.bookmarks.widgets.BookmarkContent
 import dev.avatsav.linkding.ui.circuit.BottomSheetOverlay
 
 suspend fun OverlayHost.showDeleteBookmarkAction(bookmark: Bookmark): ActionResult = show(

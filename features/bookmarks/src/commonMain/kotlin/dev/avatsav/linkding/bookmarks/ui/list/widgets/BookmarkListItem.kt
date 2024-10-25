@@ -1,4 +1,4 @@
-package dev.avatsav.linkding.ui.bookmarks.widgets
+package dev.avatsav.linkding.bookmarks.ui.list.widgets
 
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.Spring
