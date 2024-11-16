@@ -1,22 +1,25 @@
 # Linkding Apps
 
-Unofficial Android and iOS app for [Linkding](https://github.com/sissbruecker/linkding) self-hosted bookmarking service.
+ Unofficial Android and iOS app for [Linkding](https://github.com/sissbruecker/linkding) self-hosted
+bookmarking service.
 
 > [!WARNING]  
 > This is work-in-in progress.
 
 ## Motivation
 
-I developed this app for personal use, aiming to integrate with my Linkding instance while also serving as a playground for exploring architecture, Gradle, diverse libraries, design patterns, API design, and more.
+I developed this app for personal use, aiming to integrate with my Linkding instance while also
+serving as a playground for exploring architecture, Gradle, diverse libraries, design patterns, API
+design, and more.
 
-This project owes it's multiplatform foundation to the excellent [Tivi](https://github.com/chrisbanes/tivi) project.
+This project owes it's multiplatform foundation to the
+excellent [Tivi](https://github.com/chrisbanes/tivi) project.
 
 ## Colophon
 
-- Kotlin Multiplatform + Compose Multiplatform.
-- [circuit](https://slackhq.github.io/circuit/) for compose powered UI state management.
-- [kotlin-inject](https://github.com/evant/kotlin-inject) and [kimchi](https://github.com/r0adkll/kimchi/)for DI.
-- [kotlin-result](https://github.com/michaelbull/kotlin-result) for result types.
+- Kotlin + Compose Multiplatform.
+- Presentation: [Circuit](https://slackhq.github.io/circuit/)
+- DI; [kotlin-inject](https://github.com/evant/kotlin-inject) and [kotlin-inject-anvil](https://github.com/amzn/kotlin-inject-anvil)
 - Icons generated with [Icon Kitchen](https://icon.kitchen)
 
 ## License
