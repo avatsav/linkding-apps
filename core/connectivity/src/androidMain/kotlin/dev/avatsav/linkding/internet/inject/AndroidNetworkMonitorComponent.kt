@@ -7,13 +7,13 @@ import android.net.ConnectivityManager
 import androidx.core.content.ContextCompat
 import androidx.core.content.PermissionChecker.PERMISSION_GRANTED
 import androidx.core.content.getSystemService
-import dev.avatsav.linkding.inject.AppScope
-import dev.avatsav.linkding.inject.annotations.SingleIn
 import dev.avatsav.linkding.internet.AndroidNetworkMonitor
 import dev.avatsav.linkding.internet.EmptyNetworkMonitor
 import dev.avatsav.linkding.internet.NetworkMonitor
 import me.tatarka.inject.annotations.Provides
+import software.amazon.lastmile.kotlin.inject.anvil.AppScope
 import software.amazon.lastmile.kotlin.inject.anvil.ContributesTo
+import software.amazon.lastmile.kotlin.inject.anvil.SingleIn
 
 @ContributesTo(AppScope::class)
 interface AndroidNetworkMonitorComponent {

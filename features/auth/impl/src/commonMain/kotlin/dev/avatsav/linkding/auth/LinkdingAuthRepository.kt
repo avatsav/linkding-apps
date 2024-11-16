@@ -8,11 +8,11 @@ import dev.avatsav.linkding.auth.api.AuthRepository
 import dev.avatsav.linkding.auth.mappers.AuthErrorMapper
 import dev.avatsav.linkding.data.model.ApiConfig
 import dev.avatsav.linkding.data.model.AuthError
-import dev.avatsav.linkding.inject.AppScope
-import dev.avatsav.linkding.inject.annotations.SingleIn
 import dev.avatsav.linkding.prefs.AppPreferences
 import me.tatarka.inject.annotations.Inject
+import software.amazon.lastmile.kotlin.inject.anvil.AppScope
 import software.amazon.lastmile.kotlin.inject.anvil.ContributesBinding
+import software.amazon.lastmile.kotlin.inject.anvil.SingleIn
 
 @Inject
 @ContributesBinding(AppScope::class)

@@ -3,8 +3,8 @@ package dev.avatsav.linkding.logger
 import co.touchlab.kermit.Severity
 import dev.avatsav.linkding.AppInfo
 import dev.avatsav.linkding.Initializer
-import dev.avatsav.linkding.inject.AppScope
 import me.tatarka.inject.annotations.Inject
+import software.amazon.lastmile.kotlin.inject.anvil.AppScope
 import software.amazon.lastmile.kotlin.inject.anvil.ContributesBinding
 
 @Inject

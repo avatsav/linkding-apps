@@ -1,10 +1,10 @@
 package dev.avatsav.linkding
 
 import dev.avatsav.linkding.initializers.AppInitializer
-import dev.avatsav.linkding.inject.AppScope
-import dev.avatsav.linkding.inject.annotations.SingleIn
 import me.tatarka.inject.annotations.Provides
+import software.amazon.lastmile.kotlin.inject.anvil.AppScope
 import software.amazon.lastmile.kotlin.inject.anvil.MergeComponent
+import software.amazon.lastmile.kotlin.inject.anvil.SingleIn
 import java.util.prefs.Preferences
 
 @SingleIn(AppScope::class)

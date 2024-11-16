@@ -18,12 +18,12 @@ import com.slack.circuit.runtime.screen.Screen
 import dev.avatsav.linkding.auth.api.AuthManager
 import dev.avatsav.linkding.data.model.prefs.AppTheme
 import dev.avatsav.linkding.inject.UiScope
-import dev.avatsav.linkding.inject.annotations.SingleIn
 import dev.avatsav.linkding.inject.qualifier.Unauthenticated
 import dev.avatsav.linkding.prefs.AppPreferences
 import dev.avatsav.linkding.ui.theme.LinkdingTheme
 import me.tatarka.inject.annotations.Inject
 import software.amazon.lastmile.kotlin.inject.anvil.ContributesBinding
+import software.amazon.lastmile.kotlin.inject.anvil.SingleIn
 
 interface AppUi {
     @Composable

@@ -4,9 +4,9 @@ import com.slack.circuit.foundation.Circuit
 import dev.avatsav.linkding.data.model.ApiConfig
 import dev.avatsav.linkding.inject.UiScope
 import dev.avatsav.linkding.inject.UserScope
-import dev.avatsav.linkding.inject.annotations.SingleIn
 import dev.avatsav.linkding.inject.qualifier.Authenticated
 import software.amazon.lastmile.kotlin.inject.anvil.ContributesSubcomponent
+import software.amazon.lastmile.kotlin.inject.anvil.SingleIn
 
 @SingleIn(UserScope::class)
 @ContributesSubcomponent(UserScope::class)
