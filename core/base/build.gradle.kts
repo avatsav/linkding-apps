@@ -11,6 +11,8 @@ kotlin {
             api(libs.kotlin.atomicfu)
             api(libs.kotlin.coroutines.core)
             api(libs.kotlin.inject.runtime)
+            api(libs.anvil.runtime)
+            api(libs.anvil.runtime.optional)
             api(libs.kimchi.annotations)
             api(libs.kermit)
             api(libs.kotlinResult)
@@ -22,3 +24,4 @@ kotlin {
 
 addKspDependencyForAllTargets(libs.kotlin.inject.compiler)
 addKspDependencyForAllTargets(libs.kimchi.compiler)
+addKspDependencyForAllTargets(libs.anvil.compiler)

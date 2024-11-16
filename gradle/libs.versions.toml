@@ -9,6 +9,7 @@ ktor = "3.0.1"
 datetime = "0.6.1"
 compose-multiplatform = "1.7.1"
 kotlin-inject = "0.7.2"
+anvil = "0.1.0"
 paging = "3.3.4"
 circuit = "0.25.0"
 kotlinResult = "2.0.0"
@@ -79,6 +80,10 @@ multiplatform-settings-coroutines = { module = "com.russhwolf:multiplatform-sett
 
 kotlin-inject-compiler = { module = "me.tatarka.inject:kotlin-inject-compiler-ksp", version.ref = "kotlin-inject" }
 kotlin-inject-runtime = { module = "me.tatarka.inject:kotlin-inject-runtime", version.ref = "kotlin-inject" }
+
+anvil-compiler = { module = "software.amazon.lastmile.kotlin.inject.anvil:compiler", version.ref = "anvil" }
+anvil-runtime = { module = "software.amazon.lastmile.kotlin.inject.anvil:runtime", version.ref = "anvil" }
+anvil-runtime-optional = { module = "software.amazon.lastmile.kotlin.inject.anvil:runtime-optional", version.ref = "anvil" }
 
 kimchi-annotations = { module = "com.r0adkll.kimchi:kimchi-annotations", version.ref = "kimchi" }
 kimchi-compiler = { module = "com.r0adkll.kimchi:kimchi-compiler", version.ref = "kimchi" }
