@@ -18,7 +18,6 @@ kotlin {
             api(projects.data.models)
             api(libs.kotlin.datetime)
             api(libs.kotlin.coroutines.core)
-            api(libs.kotlin.inject.runtime)
             api(libs.paging.common)
         }
         androidMain.dependencies {
@@ -48,3 +47,4 @@ android {
 }
 
 addKspDependencyForAllTargets(libs.kimchi.compiler)
+addKspDependencyForAllTargets(libs.anvil.compiler)
