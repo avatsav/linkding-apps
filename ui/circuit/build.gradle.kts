@@ -11,7 +11,7 @@ kotlin {
             implementation(projects.ui.compose)
             api(libs.circuit.foundation)
             api(libs.circuit.retained)
-            api(libs.circuit.codegen.annotations)
+            api(projects.thirdparty.circuitCodegenAnnotations)
             api(libs.circuit.overlay)
             api(libs.circuitx.overlays)
             api(libs.paging.common)

@@ -13,6 +13,12 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        maven("https://oss.sonatype.org/content/repositories/snapshots") {
+            name = "snapshots-maven-central"
+        }
+        maven("https://s01.oss.sonatype.org/content/repositories/snapshots") {
+            name = "snapshots-maven-central-s01"
+        }
     }
 }
 
@@ -48,6 +54,9 @@ include(
     ":features:bookmarks",
     ":features:settings",
     ":thirdparty:paging:compose",
+    ":thirdparty:circuit-codegen",
+    ":thirdparty:circuit-codegen-annotations",
+
     ":codegen:annotations",
     ":codegen:compiler",
 )

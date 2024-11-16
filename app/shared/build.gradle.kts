@@ -43,7 +43,7 @@ kotlin {
             implementation(libs.kotlin.inject.runtime)
             implementation(libs.anvil.runtime)
             implementation(libs.anvil.runtime.optional)
-            implementation(libs.circuit.codegen.annotations)
+            implementation(projects.thirdparty.circuitCodegenAnnotations)
             implementation(projects.codegen.annotations)
         }
 
@@ -64,5 +64,5 @@ ksp {
 
 addKspDependencyForAllTargets(libs.kotlin.inject.compiler)
 addKspDependencyForAllTargets(libs.anvil.compiler)
-addKspDependencyForAllTargets(libs.circuit.codegen)
+addKspDependencyForAllTargets(projects.thirdparty.circuitCodegen)
 addKspDependencyForAllTargets(projects.codegen.compiler)

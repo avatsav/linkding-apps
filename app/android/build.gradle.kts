@@ -55,7 +55,7 @@ dependencies {
     implementation(libs.circuit.runtime)
 
     ksp(libs.kotlin.inject.compiler)
-    ksp(libs.circuit.codegen)
+    ksp(projects.thirdparty.circuitCodegen)
     ksp(libs.anvil.compiler)
 
     debugImplementation(libs.leakCanary)

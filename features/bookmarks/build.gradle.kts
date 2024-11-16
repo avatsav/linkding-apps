@@ -36,4 +36,4 @@ ksp {
 
 addKspDependencyForAllTargets(libs.kotlin.inject.compiler)
 addKspDependencyForAllTargets(libs.anvil.compiler)
-addKspDependencyForAllTargets(libs.circuit.codegen)
+addKspDependencyForAllTargets(projects.thirdparty.circuitCodegen)
