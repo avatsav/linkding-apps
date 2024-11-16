@@ -20,7 +20,6 @@ kotlinPoet = "2.0.0"
 kotest = "5.9.1"
 ktlint = "1.3.1"
 ktlintCompose = "0.4.18"
-kimchi = "0.4.0"
 uuid = "0.8.4"
 
 compileSdk = "35"
@@ -84,11 +83,6 @@ kotlin-inject-runtime = { module = "me.tatarka.inject:kotlin-inject-runtime", ve
 anvil-compiler = { module = "software.amazon.lastmile.kotlin.inject.anvil:compiler", version.ref = "anvil" }
 anvil-runtime = { module = "software.amazon.lastmile.kotlin.inject.anvil:runtime", version.ref = "anvil" }
 anvil-runtime-optional = { module = "software.amazon.lastmile.kotlin.inject.anvil:runtime-optional", version.ref = "anvil" }
-
-kimchi-annotations = { module = "com.r0adkll.kimchi:kimchi-annotations", version.ref = "kimchi" }
-kimchi-compiler = { module = "com.r0adkll.kimchi:kimchi-compiler", version.ref = "kimchi" }
-kimchi-circuit-annotations = { module = "com.r0adkll.kimchi:kimchi-circuit-annotations", version.ref = "kimchi" }
-kimchi-circuit-compiler = { module = "com.r0adkll.kimchi:kimchi-circuit-compiler", version.ref = "kimchi" }
 
 kotlinResult = { module = "com.michael-bull.kotlin-result:kotlin-result", version.ref = "kotlinResult" }
 kotlinResultCoroutines = { module = "com.michael-bull.kotlin-result:kotlin-result-coroutines", version.ref = "kotlinResult" }

@@ -1,7 +1,7 @@
 package dev.avatsav.linkding.data.network.inject
 
-import com.r0adkll.kimchi.annotations.ContributesTo
 import dev.avatsav.linkding.inject.AppScope
+import software.amazon.lastmile.kotlin.inject.anvil.ContributesTo
 
 expect interface PlatformNetworkComponent
 

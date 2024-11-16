@@ -46,5 +46,4 @@ android {
     namespace = "dev.avatsav.linkding.data.db"
 }
 
-addKspDependencyForAllTargets(libs.kimchi.compiler)
 addKspDependencyForAllTargets(libs.anvil.compiler)

@@ -18,5 +18,4 @@ kotlin {
 }
 
 addKspDependencyForAllTargets(libs.kotlin.inject.compiler)
-addKspDependencyForAllTargets(libs.kimchi.compiler)
 addKspDependencyForAllTargets(libs.anvil.compiler)

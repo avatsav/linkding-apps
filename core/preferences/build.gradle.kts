@@ -26,5 +26,4 @@ android {
     namespace = "dev.avatsav.linkding.prefs"
 }
 
-addKspDependencyForAllTargets(libs.kimchi.compiler)
 addKspDependencyForAllTargets(libs.anvil.compiler)

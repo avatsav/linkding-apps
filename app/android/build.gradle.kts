@@ -52,13 +52,9 @@ dependencies {
     implementation(libs.androidx.splashscreen)
     implementation(libs.kotlin.coroutines.android)
     implementation(libs.kotlin.inject.runtime)
-    implementation(libs.kimchi.annotations)
-    implementation(libs.kimchi.circuit.annotations)
     implementation(libs.circuit.runtime)
 
     ksp(libs.kotlin.inject.compiler)
-    ksp(libs.kimchi.compiler)
-    ksp(libs.kimchi.circuit.compiler)
     ksp(libs.circuit.codegen)
     ksp(libs.anvil.compiler)
 

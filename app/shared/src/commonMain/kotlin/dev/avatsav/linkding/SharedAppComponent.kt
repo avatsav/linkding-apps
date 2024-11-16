@@ -1,9 +1,9 @@
 package dev.avatsav.linkding
 
-import com.r0adkll.kimchi.annotations.ContributesTo
 import dev.avatsav.linkding.inject.AppScope
 import dev.avatsav.linkding.inject.annotations.SingleIn
 import me.tatarka.inject.annotations.Provides
+import software.amazon.lastmile.kotlin.inject.anvil.ContributesTo
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO

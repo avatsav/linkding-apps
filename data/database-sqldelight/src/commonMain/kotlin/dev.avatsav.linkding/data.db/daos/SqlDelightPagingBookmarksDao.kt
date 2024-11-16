@@ -2,7 +2,6 @@ package dev.avatsav.linkding.data.db.daos
 
 import androidx.paging.PagingSource
 import app.cash.sqldelight.Query
-import com.r0adkll.kimchi.annotations.ContributesBinding
 import dev.avatsav.linkding.AppCoroutineDispatchers
 import dev.avatsav.linkding.data.db.Database
 import dev.avatsav.linkding.data.db.paging.QueryPagingSource
@@ -10,6 +9,7 @@ import dev.avatsav.linkding.data.model.Bookmark
 import dev.avatsav.linkding.inject.AppScope
 import dev.avatsav.linkding.inject.annotations.SingleIn
 import me.tatarka.inject.annotations.Inject
+import software.amazon.lastmile.kotlin.inject.anvil.ContributesBinding
 import kotlinx.datetime.Instant
 
 @Inject

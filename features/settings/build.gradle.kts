@@ -35,8 +35,6 @@ ksp {
     arg("kotlin-inject-anvil-contributing-annotations", "com.slack.circuit.codegen.annotations.CircuitInject")
 }
 
-addKspDependencyForAllTargets(libs.kimchi.circuit.compiler)
 addKspDependencyForAllTargets(libs.kotlin.inject.compiler)
-addKspDependencyForAllTargets(libs.kimchi.compiler)
 addKspDependencyForAllTargets(libs.anvil.compiler)
 addKspDependencyForAllTargets(libs.circuit.codegen)

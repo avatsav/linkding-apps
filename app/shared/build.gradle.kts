@@ -41,8 +41,6 @@ kotlin {
             api(libs.circuitx.gestureNavigation)
 
             implementation(libs.kotlin.inject.runtime)
-            implementation(libs.kimchi.circuit.annotations)
-            implementation(libs.kimchi.annotations)
             implementation(libs.anvil.runtime)
             implementation(libs.anvil.runtime.optional)
             implementation(libs.circuit.codegen.annotations)
@@ -69,8 +67,6 @@ ksp {
 }
 
 addKspDependencyForAllTargets(libs.kotlin.inject.compiler)
-addKspDependencyForAllTargets(libs.kimchi.circuit.compiler)
-addKspDependencyForAllTargets(libs.kimchi.compiler)
 addKspDependencyForAllTargets(libs.anvil.compiler)
 addKspDependencyForAllTargets(libs.circuit.codegen)
 addKspDependencyForAllTargets(projects.codegen.compiler)

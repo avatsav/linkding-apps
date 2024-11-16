@@ -1,6 +1,5 @@
 package dev.avatsav.linkding.auth
 
-import com.r0adkll.kimchi.annotations.ContributesBinding
 import dev.avatsav.linkding.auth.api.AuthManager
 import dev.avatsav.linkding.auth.api.AuthState
 import dev.avatsav.linkding.auth.api.AuthState.Authenticated
@@ -10,6 +9,7 @@ import dev.avatsav.linkding.inject.AppScope
 import dev.avatsav.linkding.inject.annotations.SingleIn
 import dev.avatsav.linkding.prefs.AppPreferences
 import me.tatarka.inject.annotations.Inject
+import software.amazon.lastmile.kotlin.inject.anvil.ContributesBinding
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map

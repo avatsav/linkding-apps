@@ -20,8 +20,6 @@ kotlin {
             implementation(projects.domain)
             api(projects.ui.theme)
             api(projects.ui.screens)
-
-            implementation(libs.kimchi.circuit.annotations)
         }
     }
 }
@@ -36,7 +34,5 @@ ksp {
 }
 
 addKspDependencyForAllTargets(libs.kotlin.inject.compiler)
-addKspDependencyForAllTargets(libs.kimchi.compiler)
-addKspDependencyForAllTargets(libs.kimchi.circuit.compiler)
 addKspDependencyForAllTargets(libs.anvil.compiler)
 addKspDependencyForAllTargets(libs.circuit.codegen)

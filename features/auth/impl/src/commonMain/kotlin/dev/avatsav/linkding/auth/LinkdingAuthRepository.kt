@@ -3,7 +3,6 @@ package dev.avatsav.linkding.auth
 import com.github.michaelbull.result.Result
 import com.github.michaelbull.result.mapError
 import com.github.michaelbull.result.onSuccess
-import com.r0adkll.kimchi.annotations.ContributesBinding
 import dev.avatsav.linkding.api.LinkdingAuthentication
 import dev.avatsav.linkding.auth.api.AuthRepository
 import dev.avatsav.linkding.auth.mappers.AuthErrorMapper
@@ -13,6 +12,7 @@ import dev.avatsav.linkding.inject.AppScope
 import dev.avatsav.linkding.inject.annotations.SingleIn
 import dev.avatsav.linkding.prefs.AppPreferences
 import me.tatarka.inject.annotations.Inject
+import software.amazon.lastmile.kotlin.inject.anvil.ContributesBinding
 
 @Inject
 @ContributesBinding(AppScope::class)

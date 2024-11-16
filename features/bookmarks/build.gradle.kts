@@ -21,8 +21,6 @@ kotlin {
             implementation(projects.thirdparty.paging.compose)
             api(projects.ui.theme)
             api(projects.ui.screens)
-
-            implementation(libs.kimchi.circuit.annotations)
         }
     }
 }
@@ -36,8 +34,6 @@ ksp {
     arg("kotlin-inject-anvil-contributing-annotations", "com.slack.circuit.codegen.annotations.CircuitInject")
 }
 
-addKspDependencyForAllTargets(libs.kimchi.circuit.compiler)
 addKspDependencyForAllTargets(libs.kotlin.inject.compiler)
-addKspDependencyForAllTargets(libs.kimchi.compiler)
 addKspDependencyForAllTargets(libs.anvil.compiler)
 addKspDependencyForAllTargets(libs.circuit.codegen)
