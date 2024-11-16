@@ -1,5 +1,6 @@
 package dev.avatsav.linkding.internet
 
+import me.tatarka.inject.annotations.Inject
 import platform.Network.nw_path_get_status
 import platform.Network.nw_path_monitor_cancel
 import platform.Network.nw_path_monitor_create
@@ -12,6 +13,7 @@ import software.amazon.lastmile.kotlin.inject.anvil.AppScope
 import software.amazon.lastmile.kotlin.inject.anvil.ContributesBinding
 import software.amazon.lastmile.kotlin.inject.anvil.SingleIn
 
+@Inject
 @SingleIn(AppScope::class)
 @ContributesBinding(AppScope::class)
 class IosNetworkMonitor : NetworkMonitor {
