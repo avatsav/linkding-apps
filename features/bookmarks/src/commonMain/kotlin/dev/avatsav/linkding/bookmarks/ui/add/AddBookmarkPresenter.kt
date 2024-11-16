@@ -24,8 +24,7 @@ import me.tatarka.inject.annotations.Inject
 import kotlinx.coroutines.launch
 
 @CircuitInject(AddBookmarkScreen::class, UserScope::class)
-@Inject
-class AddBookmarkPresenter(
+class AddBookmarkPresenter @Inject constructor(
     @Assisted private val screen: AddBookmarkScreen,
     @Assisted private val navigator: Navigator,
     private val addBookmark: AddBookmark,

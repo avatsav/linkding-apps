@@ -30,6 +30,4 @@ abstract class AndroidAppComponent(@get:Provides val application: Application) {
             version = packageInfo.versionName!!,
         )
     }
-
-    companion object
 }

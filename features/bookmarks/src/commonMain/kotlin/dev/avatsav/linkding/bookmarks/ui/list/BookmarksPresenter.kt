@@ -43,8 +43,7 @@ import me.tatarka.inject.annotations.Inject
 import kotlinx.coroutines.launch
 
 @CircuitInject(BookmarksScreen::class, UserScope::class)
-@Inject
-class BookmarksPresenter(
+class BookmarksPresenter @Inject constructor(
     @Assisted private val navigator: Navigator,
     private val observeBookmarks: ObserveBookmarks,
     private val observeSearchResults: ObserveSearchResults,

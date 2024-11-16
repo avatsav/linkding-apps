@@ -18,8 +18,7 @@ import me.tatarka.inject.annotations.Assisted
 import me.tatarka.inject.annotations.Inject
 
 @CircuitInject(TagsScreen::class, UserScope::class)
-@Inject
-class TagsPresenter(
+class TagsPresenter @Inject constructor(
     @Assisted private val navigator: Navigator,
     @Assisted private val screen: TagsScreen,
     private val observeTags: ObserveTags,

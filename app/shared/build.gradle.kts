@@ -58,7 +58,6 @@ kotlin {
 }
 
 ksp {
-    arg("me.tatarka.inject.generateCompanionExtensions", "true")
     arg("circuit.codegen.mode", "kotlin_inject_anvil")
     arg("kotlin-inject-anvil-contributing-annotations", "com.slack.circuit.codegen.annotations.CircuitInject")
 }
