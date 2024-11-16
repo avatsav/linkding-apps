@@ -59,6 +59,8 @@ dependencies {
     ksp(libs.kotlin.inject.compiler)
     ksp(libs.kimchi.compiler)
     ksp(libs.kimchi.circuit.compiler)
+    ksp(libs.circuit.codegen)
+    ksp(libs.anvil.compiler)
 
     debugImplementation(libs.leakCanary)
 

@@ -10,6 +10,8 @@ kotlin {
             implementation(projects.ui.theme)
             implementation(projects.ui.compose)
             api(libs.circuit.foundation)
+            implementation(libs.circuit.retained)
+            api(libs.circuit.codegen.annotations)
             api(libs.circuit.overlay)
             api(libs.circuitx.overlays)
             api(libs.paging.common)

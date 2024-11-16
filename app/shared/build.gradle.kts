@@ -43,6 +43,9 @@ kotlin {
             implementation(libs.kotlin.inject.runtime)
             implementation(libs.kimchi.circuit.annotations)
             implementation(libs.kimchi.annotations)
+            implementation(libs.anvil.runtime)
+            implementation(libs.anvil.runtime.optional)
+            implementation(libs.circuit.codegen.annotations)
             implementation(projects.codegen.annotations)
         }
 
@@ -58,9 +61,16 @@ kotlin {
 
 ksp {
     arg("me.tatarka.inject.generateCompanionExtensions", "true")
+    arg("circuit.codegen.mode", "kotlin_inject_anvil")
+    arg(
+        "kotlin-inject-anvil-contributing-annotations",
+        "com.slack.circuit.codegen.annotations.CircuitInject",
+    )
 }
 
 addKspDependencyForAllTargets(libs.kotlin.inject.compiler)
 addKspDependencyForAllTargets(libs.kimchi.circuit.compiler)
 addKspDependencyForAllTargets(libs.kimchi.compiler)
+addKspDependencyForAllTargets(libs.anvil.compiler)
+addKspDependencyForAllTargets(libs.circuit.codegen)
 addKspDependencyForAllTargets(projects.codegen.compiler)
