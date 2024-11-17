@@ -11,23 +11,20 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v4
-
+      - name: Checkout sources
+        uses: actions/checkout@v4
       - name: Set up JDK
         uses: actions/setup-java@v4
         with:
           distribution: 'zulu'
           java-version: 21
-
-      - uses: gradle/gradle-build-action@v3
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
         with:
-          gradle-home-cache-cleanup: true
-
+          cache-disabled: true
       - name: Lint
         run: ./gradlew spotlessCheck lintDebug
-
       - name: Test
         run: ./gradlew testDebugUnitTest
-
       - name: Build
         run: ./gradlew assembleDebug
