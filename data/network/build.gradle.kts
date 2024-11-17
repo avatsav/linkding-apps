@@ -28,4 +28,4 @@ kotlin {
     }
 }
 
-addKspDependencyForAllTargets(libs.kimchi.compiler)
+addKspDependencyForAllTargets(libs.anvil.compiler)

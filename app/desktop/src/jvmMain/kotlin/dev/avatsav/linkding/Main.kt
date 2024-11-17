@@ -12,12 +12,11 @@ import com.slack.circuit.backstack.rememberSaveableBackStack
 import com.slack.circuit.foundation.rememberCircuitNavigator
 import dev.avatsav.linkding.inject.ComponentHolder
 import dev.avatsav.linkding.ui.AuthScreen
-import kimchi.merge.dev.avatsav.linkding.createDesktopAppComponent
 import java.awt.Desktop
 import java.net.URI
 
 fun main() = application {
-    DesktopAppComponent.createDesktopAppComponent()
+    DesktopAppComponent::class.create()
         .also { ComponentHolder.components += it }
         .also { it.appInitializer.initialize() }
 

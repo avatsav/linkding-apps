@@ -1,15 +1,15 @@
 package dev.avatsav.linkding
 
-import com.r0adkll.kimchi.annotations.ContributesTo
 import com.slack.circuit.foundation.Circuit
 import com.slack.circuit.runtime.presenter.Presenter
 import com.slack.circuit.runtime.ui.Ui
 import dev.avatsav.linkding.inject.UiScope
 import dev.avatsav.linkding.inject.UserScope
-import dev.avatsav.linkding.inject.annotations.SingleIn
 import dev.avatsav.linkding.inject.qualifier.Authenticated
 import dev.avatsav.linkding.inject.qualifier.Unauthenticated
 import me.tatarka.inject.annotations.Provides
+import software.amazon.lastmile.kotlin.inject.anvil.ContributesTo
+import software.amazon.lastmile.kotlin.inject.anvil.SingleIn
 
 @ContributesTo(UserScope::class)
 interface AuthenticatedCircuitComponent {

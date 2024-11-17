@@ -11,20 +11,16 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             implementation(projects.core.base)
-            implementation(projects.features.auth.api)
-            implementation(projects.domain)
             implementation(projects.ui.circuit)
             implementation(projects.ui.compose)
             implementation(compose.foundation)
             implementation(compose.material3)
             implementation(compose.components.resources)
-            implementation(libs.circuit.retained)
-            implementation(libs.kotlin.inject.runtime)
+            implementation(projects.features.auth.api)
+            implementation(projects.domain)
             api(projects.ui.theme)
             api(projects.ui.screens)
-            api(libs.circuit.foundation)
-
-            implementation(libs.kimchi.circuit.annotations)
+            implementation(libs.kotlin.inject.runtime)
         }
     }
 }
@@ -33,6 +29,11 @@ android {
     namespace = "dev.avatsav.linkding.auth.ui"
 }
 
+ksp {
+    arg("circuit.codegen.mode", "kotlin_inject_anvil")
+    arg("kotlin-inject-anvil-contributing-annotations", "com.slack.circuit.codegen.annotations.CircuitInject")
+}
+
 addKspDependencyForAllTargets(libs.kotlin.inject.compiler)
-addKspDependencyForAllTargets(libs.kimchi.compiler)
-addKspDependencyForAllTargets(libs.kimchi.circuit.compiler)
+addKspDependencyForAllTargets(libs.anvil.compiler)
+addKspDependencyForAllTargets(libs.circuit.codegen)

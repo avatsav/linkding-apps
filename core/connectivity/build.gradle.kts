@@ -27,4 +27,4 @@ android {
     namespace = "dev.avatsav.linkding.internet"
 }
 
-addKspDependencyForAllTargets(libs.kimchi.compiler)
+addKspDependencyForAllTargets(libs.anvil.compiler)

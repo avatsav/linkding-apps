@@ -1,8 +1,6 @@
 package dev.avatsav.linkding.internet
 
-import com.r0adkll.kimchi.annotations.ContributesBinding
-import dev.avatsav.linkding.inject.AppScope
-import dev.avatsav.linkding.inject.annotations.SingleIn
+import me.tatarka.inject.annotations.Inject
 import platform.Network.nw_path_get_status
 import platform.Network.nw_path_monitor_cancel
 import platform.Network.nw_path_monitor_create
@@ -11,7 +9,11 @@ import platform.Network.nw_path_monitor_set_update_handler
 import platform.Network.nw_path_monitor_start
 import platform.Network.nw_path_status_satisfied
 import platform.darwin.dispatch_get_main_queue
+import software.amazon.lastmile.kotlin.inject.anvil.AppScope
+import software.amazon.lastmile.kotlin.inject.anvil.ContributesBinding
+import software.amazon.lastmile.kotlin.inject.anvil.SingleIn
 
+@Inject
 @SingleIn(AppScope::class)
 @ContributesBinding(AppScope::class)
 class IosNetworkMonitor : NetworkMonitor {

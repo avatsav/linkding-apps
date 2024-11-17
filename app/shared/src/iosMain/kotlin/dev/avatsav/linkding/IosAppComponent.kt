@@ -1,12 +1,12 @@
 package dev.avatsav.linkding
 
-import com.r0adkll.kimchi.annotations.MergeComponent
 import dev.avatsav.linkding.initializers.AppInitializer
-import dev.avatsav.linkding.inject.AppScope
-import dev.avatsav.linkding.inject.annotations.SingleIn
 import me.tatarka.inject.annotations.Provides
 import platform.Foundation.NSBundle
 import platform.Foundation.NSUserDefaults
+import software.amazon.lastmile.kotlin.inject.anvil.AppScope
+import software.amazon.lastmile.kotlin.inject.anvil.MergeComponent
+import software.amazon.lastmile.kotlin.inject.anvil.SingleIn
 import kotlin.experimental.ExperimentalNativeApi
 
 @SingleIn(AppScope::class)
@@ -28,6 +28,7 @@ abstract class IosAppComponent {
     @SingleIn(AppScope::class)
     @Provides
     fun provideNsUserDefaults(): NSUserDefaults = NSUserDefaults.standardUserDefaults
-
-    companion object
 }
+
+@MergeComponent.CreateComponent
+expect fun createIosAppComponent(): IosAppComponent

@@ -9,7 +9,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.paging.PagingConfig
 import androidx.paging.compose.collectAsLazyPagingItems
-import com.r0adkll.kimchi.circuit.annotations.CircuitInject
+import com.slack.circuit.codegen.annotations.CircuitInject
 import com.slack.circuit.retained.collectAsRetainedState
 import com.slack.circuit.retained.rememberRetained
 import com.slack.circuit.runtime.Navigator
@@ -43,8 +43,7 @@ import me.tatarka.inject.annotations.Inject
 import kotlinx.coroutines.launch
 
 @CircuitInject(BookmarksScreen::class, UserScope::class)
-@Inject
-class BookmarksPresenter(
+class BookmarksPresenter @Inject constructor(
     @Assisted private val navigator: Navigator,
     private val observeBookmarks: ObserveBookmarks,
     private val observeSearchResults: ObserveSearchResults,

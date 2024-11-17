@@ -18,14 +18,9 @@ kotlin {
             implementation(compose.foundation)
             implementation(compose.material3)
             implementation(compose.materialIconsExtended)
-            implementation(libs.circuitx.overlays)
-            implementation(libs.circuit.retained)
             implementation(projects.thirdparty.paging.compose)
             api(projects.ui.theme)
             api(projects.ui.screens)
-            api(libs.circuit.foundation)
-
-            implementation(libs.kimchi.circuit.annotations)
         }
     }
 }
@@ -34,6 +29,11 @@ android {
     namespace = "dev.avatsav.linkding.bookmarks.ui"
 }
 
-addKspDependencyForAllTargets(libs.kimchi.circuit.compiler)
+ksp {
+    arg("circuit.codegen.mode", "kotlin_inject_anvil")
+    arg("kotlin-inject-anvil-contributing-annotations", "com.slack.circuit.codegen.annotations.CircuitInject")
+}
+
 addKspDependencyForAllTargets(libs.kotlin.inject.compiler)
-addKspDependencyForAllTargets(libs.kimchi.compiler)
+addKspDependencyForAllTargets(libs.anvil.compiler)
+addKspDependencyForAllTargets(libs.circuit.codegen)

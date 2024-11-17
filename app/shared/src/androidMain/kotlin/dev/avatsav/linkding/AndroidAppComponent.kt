@@ -2,12 +2,12 @@ package dev.avatsav.linkding
 
 import android.app.Application
 import android.content.pm.ApplicationInfo
-import com.r0adkll.kimchi.annotations.MergeComponent
 import dev.avatsav.linkding.initializers.AppInitializer
-import dev.avatsav.linkding.inject.AppScope
-import dev.avatsav.linkding.inject.annotations.SingleIn
 import dev.avatsav.linkding.prefs.AppPreferences
 import me.tatarka.inject.annotations.Provides
+import software.amazon.lastmile.kotlin.inject.anvil.AppScope
+import software.amazon.lastmile.kotlin.inject.anvil.MergeComponent
+import software.amazon.lastmile.kotlin.inject.anvil.SingleIn
 
 @SingleIn(AppScope::class)
 @MergeComponent(AppScope::class)
@@ -30,6 +30,4 @@ abstract class AndroidAppComponent(@get:Provides val application: Application) {
             version = packageInfo.versionName!!,
         )
     }
-
-    companion object
 }

@@ -10,7 +10,7 @@ import androidx.compose.runtime.setValue
 import co.touchlab.kermit.Logger
 import com.github.michaelbull.result.onFailure
 import com.github.michaelbull.result.onSuccess
-import com.r0adkll.kimchi.circuit.annotations.CircuitInject
+import com.slack.circuit.codegen.annotations.CircuitInject
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
 import dev.avatsav.linkding.data.model.CheckUrlResult
@@ -24,8 +24,7 @@ import me.tatarka.inject.annotations.Inject
 import kotlinx.coroutines.launch
 
 @CircuitInject(AddBookmarkScreen::class, UserScope::class)
-@Inject
-class AddBookmarkPresenter(
+class AddBookmarkPresenter @Inject constructor(
     @Assisted private val screen: AddBookmarkScreen,
     @Assisted private val navigator: Navigator,
     private val addBookmark: AddBookmark,
