@@ -1,3 +1,6 @@
+import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
+import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
+
 /*
  * Copyright (C) 2017 The Android Open Source Project
  *
@@ -24,6 +27,12 @@ android {
 }
 
 kotlin {
+    @OptIn(ExperimentalKotlinGradlePluginApi::class)
+    compilerOptions {
+        apiVersion.set(KotlinVersion.KOTLIN_1_9)
+        languageVersion.set(KotlinVersion.KOTLIN_1_9)
+    }
+
     sourceSets {
         commonMain {
             dependencies {
@@ -32,16 +41,19 @@ kotlin {
             }
         }
 
-        jvmMain {
+        val commonJvmAndroid = create("commonJvmAndroidMain") {
+            dependsOn(commonMain.get())
             dependencies {
                 api(libs.androidx.archCore)
             }
         }
 
+        jvmMain {
+            dependsOn(commonJvmAndroid)
+        }
+
         androidMain {
-            dependencies {
-                api(libs.androidx.archCore)
-            }
+            dependsOn(commonJvmAndroid)
         }
 
         commonTest {
