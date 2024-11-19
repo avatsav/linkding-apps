@@ -48,6 +48,7 @@ include(
     ":features:bookmarks",
     ":features:settings",
     ":thirdparty:paging:compose",
+    ":thirdparty:paging:common",
     ":codegen:annotations",
     ":codegen:compiler",
 )
