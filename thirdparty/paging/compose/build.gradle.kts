@@ -19,7 +19,7 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             api(projects.core.parcelize)
-            api(libs.paging.common)
+            api(projects.thirdparty.paging.common)
             api(compose.runtime)
         }
     }

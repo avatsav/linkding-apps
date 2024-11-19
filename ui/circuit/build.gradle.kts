@@ -14,7 +14,7 @@ kotlin {
             api(libs.circuit.codegen.annotations)
             api(libs.circuit.overlay)
             api(libs.circuitx.overlays)
-            api(libs.paging.common)
+            api(projects.thirdparty.paging.common)
         }
     }
 }

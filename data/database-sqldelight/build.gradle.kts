@@ -18,7 +18,7 @@ kotlin {
             api(projects.data.models)
             api(libs.kotlin.datetime)
             api(libs.kotlin.coroutines.core)
-            api(libs.paging.common)
+            api(projects.thirdparty.paging.common)
         }
         androidMain.dependencies {
             implementation(libs.sqldelight.android)

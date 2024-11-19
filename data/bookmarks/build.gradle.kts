@@ -15,7 +15,7 @@ kotlin {
             implementation(libs.ktor.client.core)
             api(projects.data.models)
             api(libs.kotlinResult)
-            api(libs.paging.common)
+            api(projects.thirdparty.paging.common)
         }
     }
 }

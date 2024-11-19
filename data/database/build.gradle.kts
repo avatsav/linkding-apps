@@ -7,7 +7,7 @@ kotlin {
         commonMain.dependencies {
             implementation(projects.core.base)
             api(projects.data.models)
-            api(libs.paging.common)
+            api(projects.thirdparty.paging.common)
         }
     }
 }

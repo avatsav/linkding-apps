@@ -11,7 +11,7 @@ kotlin {
             implementation(libs.kotlinResultCoroutines)
             api(projects.data.models)
             api(libs.kotlinResult)
-            api(libs.paging.common)
+            api(projects.thirdparty.paging.common)
         }
     }
 }
