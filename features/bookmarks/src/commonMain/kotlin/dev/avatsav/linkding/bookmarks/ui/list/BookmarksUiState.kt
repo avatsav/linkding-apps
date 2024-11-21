@@ -1,6 +1,5 @@
 package dev.avatsav.linkding.bookmarks.ui.list
 
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Immutable
 import androidx.paging.compose.LazyPagingItems
 import com.slack.circuit.runtime.CircuitUiEvent
@@ -10,7 +9,6 @@ import dev.avatsav.linkding.data.model.BookmarkCategory
 import dev.avatsav.linkding.data.model.Tag
 
 @Immutable
-@OptIn(ExperimentalMaterial3Api::class)
 data class BookmarksUiState(
     val bookmarkCategory: BookmarkCategory,
     val bookmarks: LazyPagingItems<Bookmark>,

@@ -1,7 +1,6 @@
 package dev.avatsav.linkding.bookmarks.ui.list
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -37,6 +36,7 @@ import dev.avatsav.linkding.ui.AddBookmarkScreen
 import dev.avatsav.linkding.ui.BookmarksScreen
 import dev.avatsav.linkding.ui.SettingsScreen
 import dev.avatsav.linkding.ui.UrlScreen
+import dev.avatsav.linkding.ui.circuit.RetainedLaunchedEffect
 import dev.avatsav.linkding.ui.circuit.rememberRetainedCachedPagingFlow
 import me.tatarka.inject.annotations.Assisted
 import me.tatarka.inject.annotations.Inject
@@ -75,7 +75,7 @@ class BookmarksPresenter @Inject constructor(
         var category by rememberRetained { mutableStateOf(BookmarkCategory.All) }
         val selectedTags = rememberRetained { mutableStateListOf<Tag>() }
 
-        LaunchedEffect(category, selectedTags.size) {
+        RetainedLaunchedEffect(category, selectedTags.size) {
             retainedObserveBookmarks(
                 ObserveBookmarks.Param(
                     cached = true,
@@ -90,7 +90,7 @@ class BookmarksPresenter @Inject constructor(
             )
         }
 
-        LaunchedEffect(searchQuery) {
+        RetainedLaunchedEffect(searchQuery) {
             retainedObserveSearchResults(
                 ObserveSearchResults.Param(
                     query = searchQuery,
