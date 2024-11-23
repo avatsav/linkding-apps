@@ -4,9 +4,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.paging.PagingConfig
+import androidx.paging.cachedIn
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.slack.circuit.codegen.annotations.CircuitInject
 import com.slack.circuit.retained.collectAsRetainedState
@@ -36,10 +36,11 @@ import dev.avatsav.linkding.ui.AddBookmarkScreen
 import dev.avatsav.linkding.ui.BookmarksScreen
 import dev.avatsav.linkding.ui.SettingsScreen
 import dev.avatsav.linkding.ui.UrlScreen
-import dev.avatsav.linkding.ui.circuit.RetainedLaunchedEffect
-import dev.avatsav.linkding.ui.circuit.rememberRetainedCachedPagingFlow
+import dev.avatsav.linkding.ui.circuit.produceRetainedState
+import dev.avatsav.linkding.ui.circuit.rememberRetainedCoroutineScope
 import me.tatarka.inject.annotations.Assisted
 import me.tatarka.inject.annotations.Inject
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.launch
 
 @CircuitInject(BookmarksScreen::class, UserScope::class)
@@ -55,18 +56,8 @@ class BookmarksPresenter @Inject constructor(
 
     @Composable
     override fun present(): BookmarksUiState {
-        val coroutineScope = rememberCoroutineScope()
-
-        // Shame we have to do this to retain the same flow on navigating back.
-        val retainedObserveBookmarks = rememberRetained { observeBookmarks }
-        val bookmarks = retainedObserveBookmarks.flow
-            .rememberRetainedCachedPagingFlow()
-            .collectAsLazyPagingItems()
-
-        val retainedObserveSearchResults = rememberRetained { observeSearchResults }
-        val searchResults = retainedObserveSearchResults.flow
-            .rememberRetainedCachedPagingFlow()
-            .collectAsLazyPagingItems()
+        // https://chrisbanes.me/posts/retaining-beyond-viewmodels/#retained-coroutine-scopes
+        val presenterScope = rememberRetainedCoroutineScope()
 
         val isOnline by connectivityObserver.observeIsOnline
             .collectAsRetainedState()
@@ -75,8 +66,8 @@ class BookmarksPresenter @Inject constructor(
         var category by rememberRetained { mutableStateOf(BookmarkCategory.All) }
         val selectedTags = rememberRetained { mutableStateListOf<Tag>() }
 
-        RetainedLaunchedEffect(category, selectedTags.size) {
-            retainedObserveBookmarks(
+        val bookmarksFlow by produceRetainedState(emptyFlow(), category, selectedTags.size) {
+            observeBookmarks(
                 ObserveBookmarks.Param(
                     cached = true,
                     query = "",
@@ -88,10 +79,12 @@ class BookmarksPresenter @Inject constructor(
                     ),
                 ),
             )
+            value = observeBookmarks.flow.cachedIn(presenterScope)
         }
+        val bookmarks = bookmarksFlow.collectAsLazyPagingItems()
 
-        RetainedLaunchedEffect(searchQuery) {
-            retainedObserveSearchResults(
+        val searchResultsFlow by produceRetainedState(emptyFlow(), searchQuery) {
+            observeSearchResults(
                 ObserveSearchResults.Param(
                     query = searchQuery,
                     category = BookmarkCategory.All,
@@ -102,7 +95,9 @@ class BookmarksPresenter @Inject constructor(
                     ),
                 ),
             )
+            value = observeSearchResults.flow.cachedIn(presenterScope)
         }
+        val searchResults = searchResultsFlow.collectAsLazyPagingItems()
 
         return BookmarksUiState(
             bookmarkCategory = category,
@@ -112,11 +107,11 @@ class BookmarksPresenter @Inject constructor(
             isOnline = isOnline,
         ) { event ->
             when (event) {
-                is BookmarksUiEvent.Refresh -> coroutineScope.launch {
+                is BookmarksUiEvent.Refresh -> presenterScope.launch {
                     bookmarks.refresh()
                 }
 
-                is ToggleArchive -> coroutineScope.launch {
+                is ToggleArchive -> presenterScope.launch {
                     if (event.bookmark.archived) {
                         unarchiveBookmark(event.bookmark.id)
                     } else {
@@ -124,7 +119,7 @@ class BookmarksPresenter @Inject constructor(
                     }
                 }
 
-                is Delete -> coroutineScope.launch {
+                is Delete -> presenterScope.launch {
                     deleteBookmark(event.bookmark.id)
                 }
 
