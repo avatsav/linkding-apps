@@ -16,7 +16,8 @@ class AndroidApplicationPlugin : Plugin<Project> {
         }
         configureAndroid()
         configureJavaToolchain()
-        configureSpotless()
+        configureKtfmt()
+        configureDetekt()
     }
 }
 
