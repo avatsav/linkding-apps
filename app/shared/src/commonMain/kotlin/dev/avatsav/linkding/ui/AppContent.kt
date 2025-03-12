@@ -19,7 +19,7 @@ import com.slack.circuit.foundation.CircuitCompositionLocals
 import com.slack.circuit.foundation.CircuitContent
 import com.slack.circuit.foundation.NavigableCircuitContent
 import com.slack.circuit.runtime.Navigator
-import com.slack.circuitx.gesturenavigation.GestureNavigationDecoration
+import com.slack.circuitx.gesturenavigation.GestureNavigationDecorationFactory
 import dev.avatsav.linkding.UserComponent
 import dev.avatsav.linkding.auth.api.AuthState
 import dev.avatsav.linkding.data.model.ApiConfig
@@ -76,7 +76,7 @@ private fun AuthenticatedContent(
         NavigableCircuitContent(
             backStack = backStack,
             navigator = navigator,
-            decoration = GestureNavigationDecoration(onBackInvoked = navigator::pop),
+            decoratorFactory = GestureNavigationDecorationFactory(onBackInvoked = navigator::pop),
             modifier = modifier.fillMaxSize(),
         )
     }

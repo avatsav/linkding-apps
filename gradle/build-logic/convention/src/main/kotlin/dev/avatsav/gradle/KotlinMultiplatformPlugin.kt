@@ -53,7 +53,8 @@ class KotlinMultiplatformPlugin : Plugin<Project> {
             }
 
             configureKotlin()
-            configureSpotless()
+            configureKtfmt()
+            configureDetekt()
         }
     }
 }

@@ -184,8 +184,7 @@ fun Bookmarks(
                                 BookmarkListItem(
                                     bookmark = bookmark,
                                     openBookmark = { toOpen -> eventSink(Open(toOpen)) },
-                                    toggleArchive = { toToggle, dismissState ->
-                                    },
+                                    toggleArchive = { _, _ -> },
                                     deleteBookmark = { toDelete, dismissState ->
                                         scope.launch {
                                             when (overlayHost.showDeleteBookmarkAction(toDelete)) {
@@ -197,7 +196,7 @@ fun Bookmarks(
 
                                                 ActionResult.Cancelled,
                                                 ActionResult.Dismissed,
-                                                -> dismissState.reset()
+                                                    -> dismissState.reset()
                                             }
                                         }
                                     },
@@ -270,7 +269,7 @@ fun Bookmarks(
 
                                             ActionResult.Cancelled,
                                             ActionResult.Dismissed,
-                                            -> dismissState.reset()
+                                                -> dismissState.reset()
                                         }
                                     }
                                 },
@@ -280,7 +279,7 @@ fun Bookmarks(
                                             ActionResult.Confirmed -> eventSink(Delete(toDelete))
                                             ActionResult.Cancelled,
                                             ActionResult.Dismissed,
-                                            -> dismissState.reset()
+                                                -> dismissState.reset()
                                         }
                                     }
                                 },
