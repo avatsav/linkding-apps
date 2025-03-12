@@ -16,47 +16,39 @@ import dev.avatsav.linkding.ui.TagsScreen
 import dev.avatsav.linkding.ui.TagsScreenResult
 import dev.avatsav.linkding.ui.circuit.produceRetainedState
 import dev.avatsav.linkding.ui.circuit.rememberRetainedCoroutineScope
+import kotlinx.coroutines.flow.emptyFlow
 import me.tatarka.inject.annotations.Assisted
 import me.tatarka.inject.annotations.Inject
-import kotlinx.coroutines.flow.emptyFlow
 
 @CircuitInject(TagsScreen::class, UserScope::class)
-class TagsPresenter @Inject constructor(
-    @Assisted private val navigator: Navigator,
-    @Assisted private val screen: TagsScreen,
-    private val observeTags: ObserveTags,
+class TagsPresenter
+@Inject
+constructor(
+  @Assisted private val navigator: Navigator,
+  @Assisted private val screen: TagsScreen,
+  private val observeTags: ObserveTags,
 ) : Presenter<TagsUiState> {
 
-    @Composable
-    override fun present(): TagsUiState {
-        val presenterScope = rememberRetainedCoroutineScope()
-        val selectedTags = screen.selectedTags.map { it.mapToTag() }
+  @Composable
+  override fun present(): TagsUiState {
+    val presenterScope = rememberRetainedCoroutineScope()
+    val selectedTags = screen.selectedTags.map { it.mapToTag() }
 
-        val tagsFlow by produceRetainedState(emptyFlow()) {
-            observeTags(
-                ObserveTags.Param(
-                    selectedTags,
-                    PagingConfig(
-                        initialLoadSize = 100,
-                        pageSize = 100,
-                    ),
-                ),
-            )
-            value = observeTags.flow.cachedIn(presenterScope)
-        }
-        val tags = tagsFlow.collectAsLazyPagingItems()
+    val tagsFlow by
+      produceRetainedState(emptyFlow()) {
+        observeTags(
+          ObserveTags.Param(selectedTags, PagingConfig(initialLoadSize = 100, pageSize = 100))
+        )
+        value = observeTags.flow.cachedIn(presenterScope)
+      }
+    val tags = tagsFlow.collectAsLazyPagingItems()
 
-        return TagsUiState(
-            selectedTags = selectedTags,
-            tags = tags,
-        ) { event ->
-            when (event) {
-                is SelectTag -> navigator.pop(
-                    TagsScreenResult.Selected(event.tag.mapToScreenParam()),
-                )
+    return TagsUiState(selectedTags = selectedTags, tags = tags) { event ->
+      when (event) {
+        is SelectTag -> navigator.pop(TagsScreenResult.Selected(event.tag.mapToScreenParam()))
 
-                Close -> navigator.pop(TagsScreenResult.Dismissed)
-            }
-        }
+        Close -> navigator.pop(TagsScreenResult.Dismissed)
+      }
     }
+  }
 }

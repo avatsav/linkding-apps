@@ -13,14 +13,16 @@ import dev.avatsav.linkding.api.models.LinkdingTagsResponse
 import io.ktor.client.HttpClient
 
 internal class DefaultLinkdingTagsApi(private val httpClient: HttpClient) : LinkdingTagsApi {
-    override suspend fun getTags(
-        offset: Int,
-        limit: Int,
-        query: String,
-    ): Result<LinkdingTagsResponse, LinkdingError> =
-        httpClient.get<LinkdingTagsResponse, LinkdingErrorResponse> {
-            endpointTags()
-            parameterPage(offset, limit)
-            parameterQuery(query)
-        }.toLinkdingResult()
+  override suspend fun getTags(
+    offset: Int,
+    limit: Int,
+    query: String,
+  ): Result<LinkdingTagsResponse, LinkdingError> =
+    httpClient
+      .get<LinkdingTagsResponse, LinkdingErrorResponse> {
+        endpointTags()
+        parameterPage(offset, limit)
+        parameterQuery(query)
+      }
+      .toLinkdingResult()
 }

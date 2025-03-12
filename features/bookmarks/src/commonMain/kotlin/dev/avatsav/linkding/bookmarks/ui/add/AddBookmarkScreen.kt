@@ -50,137 +50,117 @@ import kotlinx.coroutines.delay
 @CircuitInject(AddBookmarkScreen::class, UserScope::class)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddBookmark(
-    state: AddBookmarkUiState,
-    modifier: Modifier = Modifier,
-) {
-    val eventSink = state.eventSink
+fun AddBookmark(state: AddBookmarkUiState, modifier: Modifier = Modifier) {
+  val eventSink = state.eventSink
 
-    val scrollBehavior =
-        TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
+  val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
 
-    var url by remember { mutableStateOf(state.sharedUrl ?: "") }
-    val tagsValue by remember { mutableStateOf(TagsTextFieldValue()) }
+  var url by remember { mutableStateOf(state.sharedUrl ?: "") }
+  val tagsValue by remember { mutableStateOf(TagsTextFieldValue()) }
 
-    var title by remember { mutableStateOf("") }
-    var description by remember { mutableStateOf("") }
+  var title by remember { mutableStateOf("") }
+  var description by remember { mutableStateOf("") }
 
-    // Debouncing the url text field before unfurling/checking the url
-    LaunchedEffect(url) {
-        if (url.isBlank()) return@LaunchedEffect
-        delay(500)
-        eventSink(AddBookmarkUiEvent.CheckUrl(url))
-    }
+  // Debouncing the url text field before unfurling/checking the url
+  LaunchedEffect(url) {
+    if (url.isBlank()) return@LaunchedEffect
+    delay(500)
+    eventSink(AddBookmarkUiEvent.CheckUrl(url))
+  }
 
-    Scaffold(
-        modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
-        topBar = {
-            LargeTopAppBar(
-                title = { Text(text = "Add Bookmark") },
-                scrollBehavior = scrollBehavior,
-                navigationIcon = {
-                    IconButton(onClick = { eventSink(Close) }) {
-                        Icon(imageVector = Icons.Default.Close, contentDescription = "Close")
-                    }
-                },
-            )
+  Scaffold(
+    modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+    topBar = {
+      LargeTopAppBar(
+        title = { Text(text = "Add Bookmark") },
+        scrollBehavior = scrollBehavior,
+        navigationIcon = {
+          IconButton(onClick = { eventSink(Close) }) {
+            Icon(imageVector = Icons.Default.Close, contentDescription = "Close")
+          }
         },
-    ) { padding ->
-        Column(
-            modifier = Modifier
-                .padding(padding)
-                .padding(horizontal = 16.dp)
-                .animateContentSize()
-                .verticalScroll(rememberScrollState())
-                .fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
-        ) {
-            OutlinedTextField(
-                modifier = Modifier.fillMaxWidth(),
-                value = url,
-                label = { Text(text = "URL") },
-                keyboardOptions = KeyboardOptions(
-                    autoCorrectEnabled = false,
-                    keyboardType = KeyboardType.Uri,
-                    imeAction = ImeAction.Next,
-                ),
-                supportingText = {
-                    if (state.checkUrlResult?.alreadyBookmarked == true) {
-                        Text(
-                            text = "This URL is already bookmarked. Saving will update the existing bookmark.",
-                        )
-                    }
-                },
-                onValueChange = { value ->
-                    url = value
-                },
-            )
-            OutlinedTagsTextField(
-                modifier = Modifier.fillMaxWidth(),
-                value = tagsValue,
-                label = { Text(text = "Tags") },
-            )
+      )
+    },
+  ) { padding ->
+    Column(
+      modifier =
+        Modifier.padding(padding)
+          .padding(horizontal = 16.dp)
+          .animateContentSize()
+          .verticalScroll(rememberScrollState())
+          .fillMaxWidth(),
+      verticalArrangement = Arrangement.spacedBy(16.dp),
+    ) {
+      OutlinedTextField(
+        modifier = Modifier.fillMaxWidth(),
+        value = url,
+        label = { Text(text = "URL") },
+        keyboardOptions =
+          KeyboardOptions(
+            autoCorrectEnabled = false,
+            keyboardType = KeyboardType.Uri,
+            imeAction = ImeAction.Next,
+          ),
+        supportingText = {
+          if (state.checkUrlResult?.alreadyBookmarked == true) {
+            Text(text = "This URL is already bookmarked. Saving will update the existing bookmark.")
+          }
+        },
+        onValueChange = { value -> url = value },
+      )
+      OutlinedTagsTextField(
+        modifier = Modifier.fillMaxWidth(),
+        value = tagsValue,
+        label = { Text(text = "Tags") },
+      )
 
-            OutlinedTextField(
-                modifier = Modifier.fillMaxWidth(),
-                value = title,
-                label = { Text(text = "Title") },
-                visualTransformation = PlaceholderVisualTransformation(
-                    text = state.checkUrlResult?.title ?: "",
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                ),
-                supportingText = {
-                    Text(text = "Optional, leave empty to use title from website.")
-                },
-                trailingIcon = {
-                    if (state.checkingUrl) SmallCircularProgressIndicator()
-                },
-                onValueChange = { title = it },
-            )
-            OutlinedTextField(
-                modifier = Modifier.fillMaxWidth(),
-                value = description,
-                label = { Text(text = "Description") },
-                trailingIcon = {
-                    if (state.checkingUrl) SmallCircularProgressIndicator()
-                },
-                visualTransformation = PlaceholderVisualTransformation(
-                    text = state.checkUrlResult?.description ?: "",
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                ),
-                supportingText = {
-                    Text(text = "Optional, leave empty to use description from website.")
-                },
-                onValueChange = { description = it },
-            )
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Button(
-                    enabled = url.isNotBlank(),
-                    onClick = {
-                        eventSink(
-                            Save(
-                                url,
-                                title,
-                                description,
-                                tagsValue.tags.map { it.value }.toList(),
-                            ),
-                        )
-                    },
-                ) {
-                    Text("Save")
-                }
-                if (state.saving) CircularProgressIndicator()
-            }
-            if (state.errorMessage != null) {
-                Text(
-                    text = state.errorMessage,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.error,
-                )
-            }
+      OutlinedTextField(
+        modifier = Modifier.fillMaxWidth(),
+        value = title,
+        label = { Text(text = "Title") },
+        visualTransformation =
+          PlaceholderVisualTransformation(
+            text = state.checkUrlResult?.title ?: "",
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+          ),
+        supportingText = { Text(text = "Optional, leave empty to use title from website.") },
+        trailingIcon = { if (state.checkingUrl) SmallCircularProgressIndicator() },
+        onValueChange = { title = it },
+      )
+      OutlinedTextField(
+        modifier = Modifier.fillMaxWidth(),
+        value = description,
+        label = { Text(text = "Description") },
+        trailingIcon = { if (state.checkingUrl) SmallCircularProgressIndicator() },
+        visualTransformation =
+          PlaceholderVisualTransformation(
+            text = state.checkUrlResult?.description ?: "",
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+          ),
+        supportingText = { Text(text = "Optional, leave empty to use description from website.") },
+        onValueChange = { description = it },
+      )
+      Row(
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+      ) {
+        Button(
+          enabled = url.isNotBlank(),
+          onClick = {
+            eventSink(Save(url, title, description, tagsValue.tags.map { it.value }.toList()))
+          },
+        ) {
+          Text("Save")
         }
+        if (state.saving) CircularProgressIndicator()
+      }
+      if (state.errorMessage != null) {
+        Text(
+          text = state.errorMessage,
+          fontWeight = FontWeight.Bold,
+          color = MaterialTheme.colorScheme.error,
+        )
+      }
     }
+  }
 }

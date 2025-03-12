@@ -13,23 +13,25 @@ import software.amazon.lastmile.kotlin.inject.anvil.SingleIn
 @ContributesTo(AppScope::class)
 interface AuthComponent {
 
-    @Provides
-    @SingleIn(AppScope::class)
-    fun provideLinkdingAuthentication(
-        httpClientEngineFactory: HttpClientEngineFactory<*>,
-        appInfo: AppInfo,
-    ): LinkdingAuthentication = LinkdingAuthentication {
-        httpClient(httpClientEngineFactory)
-        logging {
-            logger = object : Logger {
-                override fun log(message: String) {
-                    co.touchlab.kermit.Logger.d { message }
-                }
-            }
-            level = when {
-                appInfo.debug -> LogLevel.HEADERS
-                else -> LogLevel.NONE
-            }
+  @Provides
+  @SingleIn(AppScope::class)
+  fun provideLinkdingAuthentication(
+    httpClientEngineFactory: HttpClientEngineFactory<*>,
+    appInfo: AppInfo,
+  ): LinkdingAuthentication = LinkdingAuthentication {
+    httpClient(httpClientEngineFactory)
+    logging {
+      logger =
+        object : Logger {
+          override fun log(message: String) {
+            co.touchlab.kermit.Logger.d { message }
+          }
+        }
+      level =
+        when {
+          appInfo.debug -> LogLevel.HEADERS
+          else -> LogLevel.NONE
         }
     }
+  }
 }

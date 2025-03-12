@@ -8,12 +8,13 @@ import dev.avatsav.linkding.data.model.Tag
 
 @Immutable
 data class TagsUiState(
-    val selectedTags: List<Tag>,
-    val tags: LazyPagingItems<Tag>,
-    val eventSink: (TagsUiEvent) -> Unit,
+  val selectedTags: List<Tag>,
+  val tags: LazyPagingItems<Tag>,
+  val eventSink: (TagsUiEvent) -> Unit,
 ) : CircuitUiState
 
 sealed interface TagsUiEvent : CircuitUiEvent {
-    data class SelectTag(val tag: Tag) : TagsUiEvent
-    data object Close : TagsUiEvent
+  data class SelectTag(val tag: Tag) : TagsUiEvent
+
+  data object Close : TagsUiEvent
 }

@@ -8,7 +8,7 @@ import software.amazon.lastmile.kotlin.inject.anvil.SingleIn
 
 actual interface PlatformNetworkComponent {
 
-    @SingleIn(AppScope::class)
-    @Provides
-    fun provideHttpClientEngineFactory(): HttpClientEngineFactory<*> = OkHttp
+  @SingleIn(AppScope::class)
+  @Provides
+  fun provideHttpClientEngineFactory(): HttpClientEngineFactory<*> = OkHttp
 }

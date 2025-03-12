@@ -32,85 +32,85 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun FiltersBar(
-    selectedCategory: BookmarkCategory,
-    onSelectCategory: (BookmarkCategory) -> Unit,
-    selectedTags: List<Tag>,
-    onSelectTag: (Tag) -> Unit,
-    onRemoveTag: (Tag) -> Unit,
-    modifier: Modifier = Modifier,
+  selectedCategory: BookmarkCategory,
+  onSelectCategory: (BookmarkCategory) -> Unit,
+  selectedTags: List<Tag>,
+  onSelectTag: (Tag) -> Unit,
+  onRemoveTag: (Tag) -> Unit,
+  modifier: Modifier = Modifier,
 ) {
-    val scope = rememberCoroutineScope()
-    val overlayHost = LocalOverlayHost.current
+  val scope = rememberCoroutineScope()
+  val overlayHost = LocalOverlayHost.current
 
-    LazyRow(
-        modifier = modifier,
-        contentPadding = PaddingValues(horizontal = 16.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-    ) {
-        item(selectedCategory) {
-            CategoryFilter(
-                modifier = Modifier.animateItem(),
-                selected = selectedCategory,
-                onSelect = onSelectCategory,
-            )
-        }
-        item {
-            FilterChip(
-                modifier = Modifier.animateItem(),
-                selected = true,
-                onClick = {
-                    scope.launch {
-                        when (val result = overlayHost.showTagsBottomSheet(selectedTags)) {
-                            TagsScreenResult.Dismissed -> {}
-                            is TagsScreenResult.Selected -> onSelectTag(result.tag.mapToTag())
-                        }
-                    }
-                },
-                label = { Text("Tags") },
-                trailingIcon = { Icon(Icons.Default.ArrowDropDown, null) },
-            )
-        }
-        items(selectedTags.size, key = { selectedTags[it].id }) { index ->
-            val item = selectedTags[index]
-            TagInputChip(
-                modifier = Modifier.animateItem(),
-                onClick = { onRemoveTag(item) },
-                label = { Text(item.name) },
-            )
-        }
+  LazyRow(
+    modifier = modifier,
+    contentPadding = PaddingValues(horizontal = 16.dp),
+    horizontalArrangement = Arrangement.spacedBy(8.dp),
+  ) {
+    item(selectedCategory) {
+      CategoryFilter(
+        modifier = Modifier.animateItem(),
+        selected = selectedCategory,
+        onSelect = onSelectCategory,
+      )
     }
+    item {
+      FilterChip(
+        modifier = Modifier.animateItem(),
+        selected = true,
+        onClick = {
+          scope.launch {
+            when (val result = overlayHost.showTagsBottomSheet(selectedTags)) {
+              TagsScreenResult.Dismissed -> {}
+              is TagsScreenResult.Selected -> onSelectTag(result.tag.mapToTag())
+            }
+          }
+        },
+        label = { Text("Tags") },
+        trailingIcon = { Icon(Icons.Default.ArrowDropDown, null) },
+      )
+    }
+    items(selectedTags.size, key = { selectedTags[it].id }) { index ->
+      val item = selectedTags[index]
+      TagInputChip(
+        modifier = Modifier.animateItem(),
+        onClick = { onRemoveTag(item) },
+        label = { Text(item.name) },
+      )
+    }
+  }
 }
 
 private val bookmarkCategories = BookmarkCategory.entries.toImmutableList()
 
 @Composable
 private fun LazyItemScope.CategoryFilter(
-    selected: BookmarkCategory,
-    onSelect: (BookmarkCategory) -> Unit,
-    modifier: Modifier = Modifier,
+  selected: BookmarkCategory,
+  onSelect: (BookmarkCategory) -> Unit,
+  modifier: Modifier = Modifier,
 ) {
-    var showMenu by remember { mutableStateOf(false) }
+  var showMenu by remember { mutableStateOf(false) }
 
-    FilterChip(
-        modifier = modifier,
-        selected = true,
-        onClick = { showMenu = showMenu.not() },
-        label = { Text(selected.name) },
-        trailingIcon = { Icon(Icons.Default.ArrowDropDown, null) },
-    )
-    DropdownMenu(
-        offset = DpOffset(16.dp, 0.dp),
-        expanded = showMenu,
-        onDismissRequest = { showMenu = false },
-    ) {
-        bookmarkCategories.forEach { category ->
-            DropdownMenuItem(
-                onClick = {
-                    onSelect(category)
-                    showMenu = false
-                },
-                text = { Text(category.name) },
-            )
-        }
+  FilterChip(
+    modifier = modifier,
+    selected = true,
+    onClick = { showMenu = showMenu.not() },
+    label = { Text(selected.name) },
+    trailingIcon = { Icon(Icons.Default.ArrowDropDown, null) },
+  )
+  DropdownMenu(
+    offset = DpOffset(16.dp, 0.dp),
+    expanded = showMenu,
+    onDismissRequest = { showMenu = false },
+  ) {
+    bookmarkCategories.forEach { category ->
+      DropdownMenuItem(
+        onClick = {
+          onSelect(category)
+          showMenu = false
+        },
+        text = { Text(category.name) },
+      )
     }
+  }
 }

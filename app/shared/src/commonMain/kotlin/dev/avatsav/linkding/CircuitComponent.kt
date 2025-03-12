@@ -14,29 +14,25 @@ import software.amazon.lastmile.kotlin.inject.anvil.SingleIn
 @ContributesTo(UserScope::class)
 interface AuthenticatedCircuitComponent {
 
-    @Provides
-    @SingleIn(UserScope::class)
-    @Authenticated
-    fun provideCircuit(
-        uiFactories: Set<Ui.Factory>,
-        presenterFactories: Set<Presenter.Factory>,
-    ): Circuit = Circuit.Builder()
-        .addUiFactories(uiFactories)
-        .addPresenterFactories(presenterFactories)
-        .build()
+  @Provides
+  @SingleIn(UserScope::class)
+  @Authenticated
+  fun provideCircuit(
+    uiFactories: Set<Ui.Factory>,
+    presenterFactories: Set<Presenter.Factory>,
+  ): Circuit =
+    Circuit.Builder().addUiFactories(uiFactories).addPresenterFactories(presenterFactories).build()
 }
 
 @ContributesTo(UiScope::class)
 interface UnauthenticatedCircuitComponent {
 
-    @Provides
-    @SingleIn(UiScope::class)
-    @Unauthenticated
-    fun provideCircuit(
-        uiFactories: Set<Ui.Factory>,
-        presenterFactories: Set<Presenter.Factory>,
-    ): Circuit = Circuit.Builder()
-        .addUiFactories(uiFactories)
-        .addPresenterFactories(presenterFactories)
-        .build()
+  @Provides
+  @SingleIn(UiScope::class)
+  @Unauthenticated
+  fun provideCircuit(
+    uiFactories: Set<Ui.Factory>,
+    presenterFactories: Set<Presenter.Factory>,
+  ): Circuit =
+    Circuit.Builder().addUiFactories(uiFactories).addPresenterFactories(presenterFactories).build()
 }

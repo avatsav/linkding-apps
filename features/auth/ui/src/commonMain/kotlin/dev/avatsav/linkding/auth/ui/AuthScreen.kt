@@ -39,104 +39,100 @@ import dev.avatsav.linkding.ui.AuthScreen
 @CircuitInject(AuthScreen::class, UiScope::class)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AuthScreen(
-    state: AuthUiState,
-    modifier: Modifier = Modifier,
-) {
-    // https://issuetracker.google.com/issues/256100927#comment1
-    val eventSink = state.eventSink
+fun AuthScreen(state: AuthUiState, modifier: Modifier = Modifier) {
+  // https://issuetracker.google.com/issues/256100927#comment1
+  val eventSink = state.eventSink
 
-    var hostUrl by remember { mutableStateOf("") }
-    var apiKey by remember { mutableStateOf("") }
+  var hostUrl by remember { mutableStateOf("") }
+  var apiKey by remember { mutableStateOf("") }
 
-    val scrollBehavior =
-        TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
+  val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
 
-    val errorMessage =
-        if (state.invalidApiKey) {
-            "Invalid API Key"
-        } else if (state.invalidHostUrl) {
-            "Unable to reach host"
-        } else {
-            ""
-        }
-
-    Scaffold(
-        modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
-        topBar = {
-            LargeTopAppBar(
-                title = { Text(text = "Setup Linkding") },
-                scrollBehavior = scrollBehavior,
-            )
-        },
-    ) { padding ->
-
-        Column(
-            modifier = Modifier
-                .padding(padding)
-                .padding(horizontal = 16.dp)
-                .verticalScroll(rememberScrollState())
-                .fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
-        ) {
-            val allFieldsFilledOut = hostUrl.isNotEmpty() && apiKey.isNotEmpty()
-
-            Text(text = "Configure settings, so that the app can communicate with your linkding installation.")
-            Spacer(modifier = Modifier.size(8.dp))
-            OutlinedTextField(
-                modifier = Modifier.fillMaxWidth(),
-                value = hostUrl,
-                enabled = !state.loading,
-                singleLine = true,
-                label = { Text(text = "Host URL") },
-                isError = state.invalidHostUrl,
-                supportingText = {
-                    if (errorMessage.isNotBlank() && state.invalidHostUrl) {
-                        Text(
-                            modifier = Modifier.fillMaxWidth(),
-                            text = errorMessage,
-                            color = MaterialTheme.colorScheme.error,
-                        )
-                    }
-                },
-                keyboardOptions = KeyboardOptions(
-                    autoCorrectEnabled = false,
-                    keyboardType = KeyboardType.Uri,
-                    imeAction = ImeAction.Next,
-                ),
-                onValueChange = { hostUrl = it },
-            )
-            OutlinedTextField(
-                modifier = Modifier.fillMaxWidth(),
-                value = apiKey,
-                enabled = !state.loading,
-                singleLine = true,
-                label = { Text(text = "API Key") },
-                isError = state.invalidApiKey,
-                supportingText = {
-                    if (errorMessage.isNotBlank() && state.invalidApiKey) {
-                        Text(
-                            modifier = Modifier.fillMaxWidth(),
-                            text = errorMessage,
-                            color = MaterialTheme.colorScheme.error,
-                        )
-                    }
-                },
-                onValueChange = { apiKey = it },
-            )
-            Spacer(modifier = Modifier.size(12.dp))
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Button(
-                    enabled = allFieldsFilledOut && !state.loading,
-                    onClick = { eventSink(SaveCredentials(hostUrl, apiKey)) },
-                ) {
-                    Text("Save")
-                }
-                if (state.loading) CircularProgressIndicator()
-            }
-        }
+  val errorMessage =
+    if (state.invalidApiKey) {
+      "Invalid API Key"
+    } else if (state.invalidHostUrl) {
+      "Unable to reach host"
+    } else {
+      ""
     }
+
+  Scaffold(
+    modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+    topBar = {
+      LargeTopAppBar(title = { Text(text = "Setup Linkding") }, scrollBehavior = scrollBehavior)
+    },
+  ) { padding ->
+    Column(
+      modifier =
+        Modifier.padding(padding)
+          .padding(horizontal = 16.dp)
+          .verticalScroll(rememberScrollState())
+          .fillMaxWidth(),
+      verticalArrangement = Arrangement.spacedBy(12.dp),
+    ) {
+      val allFieldsFilledOut = hostUrl.isNotEmpty() && apiKey.isNotEmpty()
+
+      Text(
+        text =
+          "Configure settings, so that the app can communicate with your linkding installation."
+      )
+      Spacer(modifier = Modifier.size(8.dp))
+      OutlinedTextField(
+        modifier = Modifier.fillMaxWidth(),
+        value = hostUrl,
+        enabled = !state.loading,
+        singleLine = true,
+        label = { Text(text = "Host URL") },
+        isError = state.invalidHostUrl,
+        supportingText = {
+          if (errorMessage.isNotBlank() && state.invalidHostUrl) {
+            Text(
+              modifier = Modifier.fillMaxWidth(),
+              text = errorMessage,
+              color = MaterialTheme.colorScheme.error,
+            )
+          }
+        },
+        keyboardOptions =
+          KeyboardOptions(
+            autoCorrectEnabled = false,
+            keyboardType = KeyboardType.Uri,
+            imeAction = ImeAction.Next,
+          ),
+        onValueChange = { hostUrl = it },
+      )
+      OutlinedTextField(
+        modifier = Modifier.fillMaxWidth(),
+        value = apiKey,
+        enabled = !state.loading,
+        singleLine = true,
+        label = { Text(text = "API Key") },
+        isError = state.invalidApiKey,
+        supportingText = {
+          if (errorMessage.isNotBlank() && state.invalidApiKey) {
+            Text(
+              modifier = Modifier.fillMaxWidth(),
+              text = errorMessage,
+              color = MaterialTheme.colorScheme.error,
+            )
+          }
+        },
+        onValueChange = { apiKey = it },
+      )
+      Spacer(modifier = Modifier.size(12.dp))
+      Row(
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+      ) {
+        Button(
+          enabled = allFieldsFilledOut && !state.loading,
+          onClick = { eventSink(SaveCredentials(hostUrl, apiKey)) },
+        ) {
+          Text("Save")
+        }
+        if (state.loading) CircularProgressIndicator()
+      }
+    }
+  }
 }

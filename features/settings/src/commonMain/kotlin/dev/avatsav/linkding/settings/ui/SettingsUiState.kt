@@ -9,19 +9,25 @@ import dev.avatsav.linkding.data.model.prefs.AppTheme
 
 @Immutable
 data class SettingsUiState(
-    val appInfo: AppInfo,
-    val apiConfig: ApiConfig?,
-    val appTheme: AppTheme,
-    val useDynamicColors: Boolean,
-    val eventSink: (SettingsUiEvent) -> Unit,
+  val appInfo: AppInfo,
+  val apiConfig: ApiConfig?,
+  val appTheme: AppTheme,
+  val useDynamicColors: Boolean,
+  val eventSink: (SettingsUiEvent) -> Unit,
 ) : CircuitUiState
 
 sealed interface SettingsUiEvent : CircuitUiEvent {
-    data object Close : SettingsUiEvent
-    data class SetAppTheme(val appTheme: AppTheme) : SettingsUiEvent
-    data object ToggleUseDynamicColors : SettingsUiEvent
-    data object ResetApiConfig : SettingsUiEvent
-    data object ShowSourceCode : SettingsUiEvent
-    data object ShowLicenses : SettingsUiEvent
-    data object ShowPrivacyPolicy : SettingsUiEvent
+  data object Close : SettingsUiEvent
+
+  data class SetAppTheme(val appTheme: AppTheme) : SettingsUiEvent
+
+  data object ToggleUseDynamicColors : SettingsUiEvent
+
+  data object ResetApiConfig : SettingsUiEvent
+
+  data object ShowSourceCode : SettingsUiEvent
+
+  data object ShowLicenses : SettingsUiEvent
+
+  data object ShowPrivacyPolicy : SettingsUiEvent
 }

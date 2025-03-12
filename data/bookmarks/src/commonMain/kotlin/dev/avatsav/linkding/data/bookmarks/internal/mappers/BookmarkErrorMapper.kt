@@ -6,5 +6,5 @@ import me.tatarka.inject.annotations.Inject
 
 @Inject
 class BookmarkErrorMapper {
-    fun map(error: LinkdingError) = BookmarkError(error.message)
+  fun map(error: LinkdingError) = BookmarkError(error.message)
 }

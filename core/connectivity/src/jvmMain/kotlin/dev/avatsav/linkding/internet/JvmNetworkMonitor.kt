@@ -9,10 +9,10 @@ import software.amazon.lastmile.kotlin.inject.anvil.SingleIn
 @SingleIn(AppScope::class)
 @ContributesBinding(AppScope::class)
 class JvmNetworkMonitor : NetworkMonitor {
-    override val isOnline: Boolean
-        get() = true
+  override val isOnline: Boolean
+    get() = true
 
-    override fun close() {}
+  override fun close() {}
 
-    override fun setListener(listener: NetworkMonitor.Listener) {}
+  override fun setListener(listener: NetworkMonitor.Listener) {}
 }

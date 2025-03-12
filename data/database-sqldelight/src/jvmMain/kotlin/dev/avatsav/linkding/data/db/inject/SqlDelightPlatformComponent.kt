@@ -9,11 +9,11 @@ import software.amazon.lastmile.kotlin.inject.anvil.SingleIn
 
 actual interface SqlDelightPlatformComponent {
 
-    @Provides
-    @SingleIn(AppScope::class)
-    fun provideSqliteDriver(): SqlDriver {
-        val driver: SqlDriver = JdbcSqliteDriver(JdbcSqliteDriver.IN_MEMORY)
-        Database.Schema.create(driver)
-        return driver
-    }
+  @Provides
+  @SingleIn(AppScope::class)
+  fun provideSqliteDriver(): SqlDriver {
+    val driver: SqlDriver = JdbcSqliteDriver(JdbcSqliteDriver.IN_MEMORY)
+    Database.Schema.create(driver)
+    return driver
+  }
 }

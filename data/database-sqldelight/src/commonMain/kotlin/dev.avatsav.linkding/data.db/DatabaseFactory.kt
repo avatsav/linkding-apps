@@ -8,12 +8,14 @@ import me.tatarka.inject.annotations.Inject
 @Inject
 class DatabaseFactory(private val sqlDriver: SqlDriver) {
 
-    fun createDatabase(): Database = Database(
-        driver = sqlDriver,
-        bookmarksAdapter = Bookmarks.Adapter(
-            tagsAdapter = StringSetColumnAdapter,
-            addedAdapter = InstantColumnAdapter,
-            modifiedAdapter = InstantColumnAdapter,
+  fun createDatabase(): Database =
+    Database(
+      driver = sqlDriver,
+      bookmarksAdapter =
+        Bookmarks.Adapter(
+          tagsAdapter = StringSetColumnAdapter,
+          addedAdapter = InstantColumnAdapter,
+          modifiedAdapter = InstantColumnAdapter,
         ),
     )
 }

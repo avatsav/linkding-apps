@@ -35,87 +35,89 @@ import dev.avatsav.linkding.ui.compose.widgets.SwipeToDismissListItem
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BookmarkListItem(
-    bookmark: Bookmark,
-    openBookmark: (Bookmark) -> Unit,
-    toggleArchive: (Bookmark, SwipeToDismissBoxState) -> Unit,
-    deleteBookmark: (Bookmark, SwipeToDismissBoxState) -> Unit,
-    modifier: Modifier = Modifier,
+  bookmark: Bookmark,
+  openBookmark: (Bookmark) -> Unit,
+  toggleArchive: (Bookmark, SwipeToDismissBoxState) -> Unit,
+  deleteBookmark: (Bookmark, SwipeToDismissBoxState) -> Unit,
+  modifier: Modifier = Modifier,
 ) {
-    var dismissState: SwipeToDismissBoxState? = null
-    Column(modifier) {
-        SwipeToDismissListItem(
-            modifier = Modifier,
-            backgroundColor = MaterialTheme.colorScheme.primaryContainer,
-            startToEndAction = SwipeToDismissAction(
-                onSwipeToDismissTriggered = { dismissState?.let { deleteBookmark(bookmark, it) } },
-                backgroundColour = MaterialTheme.colorScheme.primary,
-                canDismiss = true,
-                content = { dismissing ->
-                    BookmarkSwipeActionContent(
-                        imageVector = Icons.Default.Delete,
-                        text = "Delete",
-                        dismissing = dismissing,
-                    )
-                },
-            ),
-            endToStartAction = SwipeToDismissAction(
-                onSwipeToDismissTriggered = { dismissState?.let { toggleArchive(bookmark, it) } },
-                backgroundColour = MaterialTheme.colorScheme.primary,
-                canDismiss = true,
-                content = { dismissing ->
-                    BookmarkSwipeActionContent(
-                        imageVector = if (bookmark.archived) Icons.Default.Unarchive else Icons.Default.Archive,
-                        text = if (bookmark.archived) "Unarchive" else "Archive",
-                        dismissing = dismissing,
-                    )
-                },
-            ),
-        ) {
-            dismissState = it
-            BookmarkContent(
-                modifier = Modifier
-                    .background(MaterialTheme.colorScheme.surface)
-                    .clickable { openBookmark(bookmark) },
-                bookmark = bookmark,
+  var dismissState: SwipeToDismissBoxState? = null
+  Column(modifier) {
+    SwipeToDismissListItem(
+      modifier = Modifier,
+      backgroundColor = MaterialTheme.colorScheme.primaryContainer,
+      startToEndAction =
+        SwipeToDismissAction(
+          onSwipeToDismissTriggered = { dismissState?.let { deleteBookmark(bookmark, it) } },
+          backgroundColour = MaterialTheme.colorScheme.primary,
+          canDismiss = true,
+          content = { dismissing ->
+            BookmarkSwipeActionContent(
+              imageVector = Icons.Default.Delete,
+              text = "Delete",
+              dismissing = dismissing,
             )
-        }
-        HorizontalDivider(thickness = 0.5.dp)
+          },
+        ),
+      endToStartAction =
+        SwipeToDismissAction(
+          onSwipeToDismissTriggered = { dismissState?.let { toggleArchive(bookmark, it) } },
+          backgroundColour = MaterialTheme.colorScheme.primary,
+          canDismiss = true,
+          content = { dismissing ->
+            BookmarkSwipeActionContent(
+              imageVector =
+                if (bookmark.archived) Icons.Default.Unarchive else Icons.Default.Archive,
+              text = if (bookmark.archived) "Unarchive" else "Archive",
+              dismissing = dismissing,
+            )
+          },
+        ),
+    ) {
+      dismissState = it
+      BookmarkContent(
+        modifier =
+          Modifier.background(MaterialTheme.colorScheme.surface).clickable {
+            openBookmark(bookmark)
+          },
+        bookmark = bookmark,
+      )
     }
+    HorizontalDivider(thickness = 0.5.dp)
+  }
 }
 
 @Composable
 private fun BoxScope.BookmarkSwipeActionContent(
-    imageVector: ImageVector,
-    text: String,
-    dismissing: Boolean,
+  imageVector: ImageVector,
+  text: String,
+  dismissing: Boolean,
 ) {
-    val iconAnimatable = remember { Animatable(if (dismissing) .7f else 1f) }
+  val iconAnimatable = remember { Animatable(if (dismissing) .7f else 1f) }
 
-    LaunchedEffect(Unit) {
-        if (dismissing) {
-            iconAnimatable.snapTo(.7f)
-            iconAnimatable.animateTo(1f, spring(Spring.DampingRatioHighBouncy))
-        }
+  LaunchedEffect(Unit) {
+    if (dismissing) {
+      iconAnimatable.snapTo(.7f)
+      iconAnimatable.animateTo(1f, spring(Spring.DampingRatioHighBouncy))
     }
-    Column(
-        modifier = Modifier
-            .padding(horizontal = 20.dp)
-            .align(Alignment.Center),
-        verticalArrangement = Arrangement.spacedBy(4.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-        Icon(
-            modifier = Modifier
-                .scale(iconAnimatable.value)
-                .size(30.dp),
-            imageVector = imageVector,
-            tint = if (dismissing) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.primary,
-            contentDescription = text,
-        )
-        Text(
-            text = text,
-            style = MaterialTheme.typography.bodySmall,
-            color = if (dismissing) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.primary,
-        )
-    }
+  }
+  Column(
+    modifier = Modifier.padding(horizontal = 20.dp).align(Alignment.Center),
+    verticalArrangement = Arrangement.spacedBy(4.dp),
+    horizontalAlignment = Alignment.CenterHorizontally,
+  ) {
+    Icon(
+      modifier = Modifier.scale(iconAnimatable.value).size(30.dp),
+      imageVector = imageVector,
+      tint =
+        if (dismissing) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.primary,
+      contentDescription = text,
+    )
+    Text(
+      text = text,
+      style = MaterialTheme.typography.bodySmall,
+      color =
+        if (dismissing) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.primary,
+    )
+  }
 }

@@ -5,7 +5,8 @@ import dev.avatsav.linkding.IosUiComponent
 import dev.avatsav.linkding.createIosAppComponent
 
 object IosComponentCreator {
-    fun createAppComponent(): IosAppComponent = createIosAppComponent()
+  fun createAppComponent(): IosAppComponent = createIosAppComponent()
 
-    fun createUiComponent(appComponent: IosAppComponent): IosUiComponent = (appComponent as IosUiComponent.Factory).createUiComponent()
+  fun createUiComponent(appComponent: IosAppComponent): IosUiComponent =
+    (appComponent as IosUiComponent.Factory).createUiComponent()
 }

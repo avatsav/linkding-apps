@@ -9,10 +9,8 @@ import software.amazon.lastmile.kotlin.inject.anvil.SingleIn
 
 actual interface SqlDelightPlatformComponent {
 
-    @Provides
-    @SingleIn(AppScope::class)
-    fun provideSqliteDriver(): SqlDriver = NativeSqliteDriver(
-        schema = Database.Schema,
-        name = "linkding.db",
-    )
+  @Provides
+  @SingleIn(AppScope::class)
+  fun provideSqliteDriver(): SqlDriver =
+    NativeSqliteDriver(schema = Database.Schema, name = "linkding.db")
 }

@@ -10,24 +10,34 @@ import dev.avatsav.linkding.data.model.Tag
 
 @Immutable
 data class BookmarksUiState(
-    val bookmarkCategory: BookmarkCategory,
-    val bookmarks: LazyPagingItems<Bookmark>,
-    val searchResults: LazyPagingItems<Bookmark>,
-    val selectedTags: List<Tag>,
-    val isOnline: Boolean,
-    val eventSink: (BookmarksUiEvent) -> Unit,
+  val bookmarkCategory: BookmarkCategory,
+  val bookmarks: LazyPagingItems<Bookmark>,
+  val searchResults: LazyPagingItems<Bookmark>,
+  val selectedTags: List<Tag>,
+  val isOnline: Boolean,
+  val eventSink: (BookmarksUiEvent) -> Unit,
 ) : CircuitUiState
 
 sealed interface BookmarksUiEvent : CircuitUiEvent {
-    data object Refresh : BookmarksUiEvent
-    data class ToggleArchive(val bookmark: Bookmark) : BookmarksUiEvent
-    data class Delete(val bookmark: Bookmark) : BookmarksUiEvent
-    data class Open(val bookmark: Bookmark) : BookmarksUiEvent
-    data class SetBookmarkCategory(val bookmarkCategory: BookmarkCategory) : BookmarksUiEvent
-    data object AddBookmark : BookmarksUiEvent
-    data object ShowSettings : BookmarksUiEvent
-    data class SelectTag(val tag: Tag) : BookmarksUiEvent
-    data class RemoveTag(val tag: Tag) : BookmarksUiEvent
-    data class Search(val query: String) : BookmarksUiEvent
-    data object ClearSearch : BookmarksUiEvent
+  data object Refresh : BookmarksUiEvent
+
+  data class ToggleArchive(val bookmark: Bookmark) : BookmarksUiEvent
+
+  data class Delete(val bookmark: Bookmark) : BookmarksUiEvent
+
+  data class Open(val bookmark: Bookmark) : BookmarksUiEvent
+
+  data class SetBookmarkCategory(val bookmarkCategory: BookmarkCategory) : BookmarksUiEvent
+
+  data object AddBookmark : BookmarksUiEvent
+
+  data object ShowSettings : BookmarksUiEvent
+
+  data class SelectTag(val tag: Tag) : BookmarksUiEvent
+
+  data class RemoveTag(val tag: Tag) : BookmarksUiEvent
+
+  data class Search(val query: String) : BookmarksUiEvent
+
+  data object ClearSearch : BookmarksUiEvent
 }

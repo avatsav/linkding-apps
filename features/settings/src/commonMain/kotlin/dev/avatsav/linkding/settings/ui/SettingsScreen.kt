@@ -46,154 +46,141 @@ import dev.avatsav.linkding.settings.ui.widgets.SwitchPreference
 import dev.avatsav.linkding.settings.ui.widgets.ThemePreference
 import dev.avatsav.linkding.ui.SettingsScreen
 import dev.avatsav.linkding.ui.circuit.alertDialogOverlay
-import me.tatarka.inject.annotations.Inject
 import kotlinx.coroutines.launch
+import me.tatarka.inject.annotations.Inject
 
 @CircuitInject(SettingsScreen::class, UserScope::class)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Settings(
-    state: SettingsUiState,
-    modifier: Modifier = Modifier,
-) {
-    // https://issuetracker.google.com/issues/256100927#comment1
-    val eventSink = state.eventSink
-    val overlayHost = LocalOverlayHost.current
+fun Settings(state: SettingsUiState, modifier: Modifier = Modifier) {
+  // https://issuetracker.google.com/issues/256100927#comment1
+  val eventSink = state.eventSink
+  val overlayHost = LocalOverlayHost.current
 
-    val coroutineScope = rememberCoroutineScope()
-    val scrollBehavior =
-        TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
+  val coroutineScope = rememberCoroutineScope()
+  val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
 
-    Scaffold(
-        modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
-        topBar = {
-            LargeTopAppBar(
-                title = { Text(text = "Settings") },
-                scrollBehavior = scrollBehavior,
-                navigationIcon = {
-                    IconButton(onClick = { eventSink(Close) }) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Default.ArrowBack,
-                            contentDescription = "Navigate Back",
-                        )
-                    }
-                },
+  Scaffold(
+    modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+    topBar = {
+      LargeTopAppBar(
+        title = { Text(text = "Settings") },
+        scrollBehavior = scrollBehavior,
+        navigationIcon = {
+          IconButton(onClick = { eventSink(Close) }) {
+            Icon(
+              imageVector = Icons.AutoMirrored.Default.ArrowBack,
+              contentDescription = "Navigate Back",
             )
+          }
         },
-    ) { paddingValues ->
-        LazyColumn(
-            contentPadding = PaddingValues(
-                start = 16.dp,
-                end = 16.dp,
-                bottom = 16.dp,
-            ),
-            modifier = Modifier.fillMaxWidth()
-                .padding(
-                    top = paddingValues.calculateTopPadding(),
-                    start = paddingValues.calculateStartPadding(LayoutDirection.Ltr),
-                    end = paddingValues.calculateEndPadding(LayoutDirection.Ltr),
-                )
-                .nestedScroll(scrollBehavior.nestedScrollConnection),
-        ) {
-            item {
-                PreferenceSection("Linkding", modifier = Modifier.padding(vertical = 8.dp)) {
-                    Preference(
-                        shape = PreferenceDefaults.itemShape(0, 3),
-                        title = "Host Url",
-                        description = state.apiConfig?.hostUrl,
-                    )
-                    Preference(
-                        shape = PreferenceDefaults.itemShape(1, 3),
-                        title = "API Key",
-                        description = state.apiConfig?.apiKey,
-                    )
-                    Preference(
-                        shape = PreferenceDefaults.itemShape(2, 3),
-                        title = "Reset",
-                        clickable = true,
-                        onClick = {
-                            coroutineScope.launch {
-                                val result = overlayHost.showResetConfirmationDialog()
-                                if (result == DialogResult.Confirm) eventSink(ResetApiConfig)
-                            }
-                        },
-                    )
-                }
-            }
-            item {
-                PreferenceSection("Appearance", modifier = Modifier.padding(vertical = 8.dp)) {
-                    ThemePreference(
-                        shape = PreferenceDefaults.itemShape(0, 2),
-                        selected = state.appTheme,
-                        onSelect = { if (state.appTheme != it) eventSink(SetAppTheme(it)) },
-                    )
-                    SwitchPreference(
-                        shape = PreferenceDefaults.itemShape(1, 2),
-                        title = "Dynamic colours",
-                        description = "Colors adapt to your wallpaper",
-                        checked = state.useDynamicColors,
-                        onCheckedChange = { eventSink(ToggleUseDynamicColors) },
-                    )
-                }
-            }
-            item {
-                PreferenceSection("About", modifier = Modifier.padding(vertical = 8.dp)) {
-                    Preference(
-                        shape = PreferenceDefaults.itemShape(0, 4),
-                        title = "Version",
-                        description = state.appInfo.version,
-                    )
-                    Preference(
-                        shape = PreferenceDefaults.itemShape(1, 4),
-                        title = "Source code",
-                        description = "Appding repository on Github",
-                        clickable = true,
-                        onClick = { eventSink(ShowSourceCode) },
-                    )
-                    Preference(
-                        shape = PreferenceDefaults.itemShape(2, 4),
-                        title = "Open Source licenses",
-                        clickable = true,
-                        onClick = { eventSink(ShowLicenses) },
-                    )
-                    Preference(
-                        shape = PreferenceDefaults.itemShape(3, 4),
-                        title = "Privacy policy",
-                        clickable = true,
-                        onClick = { eventSink(ShowPrivacyPolicy) },
-                    )
-                }
-            }
-            item {
-                MadeInMunich()
-            }
+      )
+    },
+  ) { paddingValues ->
+    LazyColumn(
+      contentPadding = PaddingValues(start = 16.dp, end = 16.dp, bottom = 16.dp),
+      modifier =
+        Modifier.fillMaxWidth()
+          .padding(
+            top = paddingValues.calculateTopPadding(),
+            start = paddingValues.calculateStartPadding(LayoutDirection.Ltr),
+            end = paddingValues.calculateEndPadding(LayoutDirection.Ltr),
+          )
+          .nestedScroll(scrollBehavior.nestedScrollConnection),
+    ) {
+      item {
+        PreferenceSection("Linkding", modifier = Modifier.padding(vertical = 8.dp)) {
+          Preference(
+            shape = PreferenceDefaults.itemShape(0, 3),
+            title = "Host Url",
+            description = state.apiConfig?.hostUrl,
+          )
+          Preference(
+            shape = PreferenceDefaults.itemShape(1, 3),
+            title = "API Key",
+            description = state.apiConfig?.apiKey,
+          )
+          Preference(
+            shape = PreferenceDefaults.itemShape(2, 3),
+            title = "Reset",
+            clickable = true,
+            onClick = {
+              coroutineScope.launch {
+                val result = overlayHost.showResetConfirmationDialog()
+                if (result == DialogResult.Confirm) eventSink(ResetApiConfig)
+              }
+            },
+          )
         }
+      }
+      item {
+        PreferenceSection("Appearance", modifier = Modifier.padding(vertical = 8.dp)) {
+          ThemePreference(
+            shape = PreferenceDefaults.itemShape(0, 2),
+            selected = state.appTheme,
+            onSelect = { if (state.appTheme != it) eventSink(SetAppTheme(it)) },
+          )
+          SwitchPreference(
+            shape = PreferenceDefaults.itemShape(1, 2),
+            title = "Dynamic colours",
+            description = "Colors adapt to your wallpaper",
+            checked = state.useDynamicColors,
+            onCheckedChange = { eventSink(ToggleUseDynamicColors) },
+          )
+        }
+      }
+      item {
+        PreferenceSection("About", modifier = Modifier.padding(vertical = 8.dp)) {
+          Preference(
+            shape = PreferenceDefaults.itemShape(0, 4),
+            title = "Version",
+            description = state.appInfo.version,
+          )
+          Preference(
+            shape = PreferenceDefaults.itemShape(1, 4),
+            title = "Source code",
+            description = "Appding repository on Github",
+            clickable = true,
+            onClick = { eventSink(ShowSourceCode) },
+          )
+          Preference(
+            shape = PreferenceDefaults.itemShape(2, 4),
+            title = "Open Source licenses",
+            clickable = true,
+            onClick = { eventSink(ShowLicenses) },
+          )
+          Preference(
+            shape = PreferenceDefaults.itemShape(3, 4),
+            title = "Privacy policy",
+            clickable = true,
+            onClick = { eventSink(ShowPrivacyPolicy) },
+          )
+        }
+      }
+      item { MadeInMunich() }
     }
+  }
 }
 
 @Composable
 private fun MadeInMunich() {
-    Text(
-        text = "Made with \uD83E\uDD68 in München",
-        style = MaterialTheme.typography.bodyMedium,
-        modifier = Modifier.fillMaxWidth()
-            .padding(vertical = 16.dp),
-        textAlign = TextAlign.Center,
-    )
+  Text(
+    text = "Made with \uD83E\uDD68 in München",
+    style = MaterialTheme.typography.bodyMedium,
+    modifier = Modifier.fillMaxWidth().padding(vertical = 16.dp),
+    textAlign = TextAlign.Center,
+  )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Inject
-suspend fun OverlayHost.showResetConfirmationDialog(): DialogResult = show(
+suspend fun OverlayHost.showResetConfirmationDialog(): DialogResult =
+  show(
     alertDialogOverlay(
-        icon = { Icon(imageVector = Icons.AutoMirrored.Filled.Logout, "") },
-        title = { Text("Confirm Reset") },
-        text = { Text("Are you sure you want to reset the api configuration?") },
-        confirmButton = { onClick ->
-            Button(onClick = onClick) { Text("Yes") }
-        },
-        dismissButton = { onClick ->
-            OutlinedButton(onClick = onClick) { Text("No") }
-        },
-    ),
-)
+      icon = { Icon(imageVector = Icons.AutoMirrored.Filled.Logout, "") },
+      title = { Text("Confirm Reset") },
+      text = { Text("Are you sure you want to reset the api configuration?") },
+      confirmButton = { onClick -> Button(onClick = onClick) { Text("Yes") } },
+      dismissButton = { onClick -> OutlinedButton(onClick = onClick) { Text("No") } },
+    )
+  )

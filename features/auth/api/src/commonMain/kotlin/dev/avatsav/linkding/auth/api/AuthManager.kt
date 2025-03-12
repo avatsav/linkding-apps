@@ -4,11 +4,13 @@ import dev.avatsav.linkding.data.model.ApiConfig
 import kotlinx.coroutines.flow.Flow
 
 sealed interface AuthState {
-    data class Authenticated(val apiConfig: ApiConfig) : AuthState
-    data object Unauthenticated : AuthState
+  data class Authenticated(val apiConfig: ApiConfig) : AuthState
+
+  data object Unauthenticated : AuthState
 }
 
 interface AuthManager {
-    val state: Flow<AuthState>
-    fun getCurrentState(): AuthState
+  val state: Flow<AuthState>
+
+  fun getCurrentState(): AuthState
 }

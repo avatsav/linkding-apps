@@ -14,40 +14,43 @@ import me.tatarka.inject.annotations.Inject
 @Inject
 class BookmarkMapper {
 
-    fun map(response: LinkdingBookmarksResponse): BookmarksResult = BookmarksResult(
-        bookmarks = response.results.map { map(it) },
-        previousPage = response.previous,
-        nextPage = response.next,
+  fun map(response: LinkdingBookmarksResponse): BookmarksResult =
+    BookmarksResult(
+      bookmarks = response.results.map { map(it) },
+      previousPage = response.previous,
+      nextPage = response.next,
     )
 
-    fun map(linkdingBookmark: LinkdingBookmark) =
-        Bookmark(
-            id = linkdingBookmark.id,
-            url = linkdingBookmark.url,
-            urlHost = Url(linkdingBookmark.url).host,
-            title = linkdingBookmark.getSafeTitle(),
-            description = linkdingBookmark.getSafeDescription(),
-            archived = linkdingBookmark.isArchived,
-            unread = linkdingBookmark.unread,
-            tags = linkdingBookmark.tagNames,
-            added = linkdingBookmark.dateAdded,
-            modified = linkdingBookmark.dateModified,
-        )
+  fun map(linkdingBookmark: LinkdingBookmark) =
+    Bookmark(
+      id = linkdingBookmark.id,
+      url = linkdingBookmark.url,
+      urlHost = Url(linkdingBookmark.url).host,
+      title = linkdingBookmark.getSafeTitle(),
+      description = linkdingBookmark.getSafeDescription(),
+      archived = linkdingBookmark.isArchived,
+      unread = linkdingBookmark.unread,
+      tags = linkdingBookmark.tagNames,
+      added = linkdingBookmark.dateAdded,
+      modified = linkdingBookmark.dateModified,
+    )
 
-    fun map(saveBookmark: SaveBookmark) = LinkdingSaveBookmarkRequest(
-        url = saveBookmark.url,
-        title = saveBookmark.title,
-        description = saveBookmark.description,
-        tagNames = saveBookmark.tags,
-        isArchived = saveBookmark.archived,
-        unread = saveBookmark.unread,
-        shared = saveBookmark.shared,
+  fun map(saveBookmark: SaveBookmark) =
+    LinkdingSaveBookmarkRequest(
+      url = saveBookmark.url,
+      title = saveBookmark.title,
+      description = saveBookmark.description,
+      tagNames = saveBookmark.tags,
+      isArchived = saveBookmark.archived,
+      unread = saveBookmark.unread,
+      shared = saveBookmark.shared,
     )
 }
 
-fun BookmarkCategory.toLinkding(): LinkdingBookmarkCategory = when (this) {
+fun BookmarkCategory.toLinkding(): LinkdingBookmarkCategory =
+  when (this) {
     BookmarkCategory.All -> LinkdingBookmarkCategory.All
     BookmarkCategory.Archived -> LinkdingBookmarkCategory.Archived
     BookmarkCategory.Unread -> LinkdingBookmarkCategory.Unread
     BookmarkCategory.Untagged -> LinkdingBookmarkCategory.Untagged
-}
+  }

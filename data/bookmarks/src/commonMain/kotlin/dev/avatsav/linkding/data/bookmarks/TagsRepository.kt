@@ -6,8 +6,8 @@ import dev.avatsav.linkding.data.model.Tag
 import kotlinx.coroutines.flow.Flow
 
 interface TagsRepository {
-    fun getTagsPaged(
-        pagingConfig: PagingConfig,
-        selectedTags: List<Tag> = emptyList(),
-    ): Flow<PagingData<Tag>>
+  fun getTagsPaged(
+    pagingConfig: PagingConfig,
+    selectedTags: List<Tag> = emptyList(),
+  ): Flow<PagingData<Tag>>
 }

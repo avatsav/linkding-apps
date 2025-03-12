@@ -8,9 +8,7 @@ import software.amazon.lastmile.kotlin.inject.anvil.SingleIn
 @Inject
 @SingleIn(AppScope::class)
 class AppInitializer(private val initializers: Set<Initializer>) : Initializer {
-    override fun initialize() {
-        initializers.forEach {
-            it.initialize()
-        }
-    }
+  override fun initialize() {
+    initializers.forEach { it.initialize() }
+  }
 }

@@ -12,5 +12,5 @@ import kotlinx.coroutines.flow.Flow
 
 @Composable
 fun <T : Any> Flow<PagingData<T>>.rememberRetainedCachedPagingFlow(
-    scope: CoroutineScope = rememberRetainedCoroutineScope(),
+  scope: CoroutineScope = rememberRetainedCoroutineScope()
 ): Flow<PagingData<T>> = rememberRetained(this, scope) { cachedIn(scope) }

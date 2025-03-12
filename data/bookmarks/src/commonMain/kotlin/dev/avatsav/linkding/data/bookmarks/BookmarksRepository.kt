@@ -11,21 +11,21 @@ import dev.avatsav.linkding.data.model.SaveBookmark
 import kotlinx.coroutines.flow.Flow
 
 interface BookmarksRepository {
-    fun getBookmarksPaged(
-        cached: Boolean,
-        pagingConfig: PagingConfig,
-        query: String,
-        category: BookmarkCategory,
-        tags: List<String>,
-    ): Flow<PagingData<Bookmark>>
+  fun getBookmarksPaged(
+    cached: Boolean,
+    pagingConfig: PagingConfig,
+    query: String,
+    category: BookmarkCategory,
+    tags: List<String>,
+  ): Flow<PagingData<Bookmark>>
 
-    suspend fun checkUrl(url: String): Result<CheckUrlResult, BookmarkError>
+  suspend fun checkUrl(url: String): Result<CheckUrlResult, BookmarkError>
 
-    suspend fun saveBookmark(saveBookmark: SaveBookmark): Result<Bookmark, BookmarkError>
+  suspend fun saveBookmark(saveBookmark: SaveBookmark): Result<Bookmark, BookmarkError>
 
-    suspend fun archiveBookmark(id: Long): Result<Unit, BookmarkError>
+  suspend fun archiveBookmark(id: Long): Result<Unit, BookmarkError>
 
-    suspend fun unarchiveBookmark(id: Long): Result<Unit, BookmarkError>
+  suspend fun unarchiveBookmark(id: Long): Result<Unit, BookmarkError>
 
-    suspend fun deleteBookmark(id: Long): Result<Unit, BookmarkError>
+  suspend fun deleteBookmark(id: Long): Result<Unit, BookmarkError>
 }

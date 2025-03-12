@@ -13,40 +13,43 @@ import kotlinx.io.IOException
 import kotlinx.serialization.SerializationException
 
 internal suspend inline fun <reified T, reified E> HttpClient.get(
-    block: HttpRequestBuilder.() -> Unit,
+  block: HttpRequestBuilder.() -> Unit
 ) = request<T, E>(HttpMethod.Get, block)
 
 internal suspend inline fun <reified T, reified E> HttpClient.post(
-    block: HttpRequestBuilder.() -> Unit,
+  block: HttpRequestBuilder.() -> Unit
 ) = request<T, E>(HttpMethod.Post, block)
 
 internal suspend inline fun <reified T, reified E> HttpClient.delete(
-    block: HttpRequestBuilder.() -> Unit,
+  block: HttpRequestBuilder.() -> Unit
 ) = request<T, E>(HttpMethod.Delete, block)
 
 internal suspend inline fun <reified T, reified E> HttpClient.request(
-    httpMethod: HttpMethod,
-    block: HttpRequestBuilder.() -> Unit,
-): ApiResponse<T, E> = try {
-    val response = this@request.request {
+  httpMethod: HttpMethod,
+  block: HttpRequestBuilder.() -> Unit,
+): ApiResponse<T, E> =
+  try {
+    val response =
+      this@request.request {
         method = httpMethod
         block()
-    }
+      }
     ApiResponse.Success(response.body())
-} catch (e: SerializationException) { // client-side serialization errors
+  } catch (e: SerializationException) { // client-side serialization errors
     ApiResponse.SerializationError(e)
-} catch (e: ClientRequestException) { // 4xx errors
+  } catch (e: ClientRequestException) { // 4xx errors
     ApiResponse.ClientError(e.response.status.value, e.errorBody())
-} catch (e: ServerResponseException) { // 5xx errors
+  } catch (e: ServerResponseException) { // 5xx errors
     ApiResponse.ServerError(e.response.status.value, e.errorBody())
-} catch (e: IOException) { // network connectivity errors
+  } catch (e: IOException) { // network connectivity errors
     ApiResponse.ConnectivityError(e)
-} catch (t: Throwable) { // Everything else
+  } catch (t: Throwable) { // Everything else
     ApiResponse.UnknownError(t)
-}
+  }
 
-internal suspend inline fun <reified E> ResponseException.errorBody(): E? = try {
+internal suspend inline fun <reified E> ResponseException.errorBody(): E? =
+  try {
     response.body()
-} catch (e: Exception) {
+  } catch (e: Exception) {
     null
-}
+  }

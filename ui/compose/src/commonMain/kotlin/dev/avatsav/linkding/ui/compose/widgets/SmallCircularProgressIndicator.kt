@@ -8,5 +8,5 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun SmallCircularProgressIndicator(modifier: Modifier = Modifier) {
-    CircularProgressIndicator(modifier = modifier.size(24.dp), strokeWidth = 3.dp)
+  CircularProgressIndicator(modifier = modifier.size(24.dp), strokeWidth = 3.dp)
 }

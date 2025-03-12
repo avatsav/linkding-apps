@@ -26,78 +26,75 @@ import software.amazon.lastmile.kotlin.inject.anvil.ContributesBinding
 import software.amazon.lastmile.kotlin.inject.anvil.SingleIn
 
 interface AppUi {
-    @Composable
-    fun Content(
-        backStack: SaveableBackStack,
-        navigator: Navigator,
-        onOpenUrl: (String) -> Boolean,
-        modifier: Modifier,
-    )
+  @Composable
+  fun Content(
+    backStack: SaveableBackStack,
+    navigator: Navigator,
+    onOpenUrl: (String) -> Boolean,
+    modifier: Modifier,
+  )
 }
 
 @ContributesBinding(UiScope::class)
 @SingleIn(UiScope::class)
 @Inject
 class DefaultAppUi(
-    @Unauthenticated private val circuit: Circuit,
-    private val preferences: AppPreferences,
-    private val authManager: AuthManager,
+  @Unauthenticated private val circuit: Circuit,
+  private val preferences: AppPreferences,
+  private val authManager: AuthManager,
 ) : AppUi {
 
-    @Composable
-    override fun Content(
-        backStack: SaveableBackStack,
-        navigator: Navigator,
-        onOpenUrl: (String) -> Boolean,
-        modifier: Modifier,
+  @Composable
+  override fun Content(
+    backStack: SaveableBackStack,
+    navigator: Navigator,
+    onOpenUrl: (String) -> Boolean,
+    modifier: Modifier,
+  ) {
+    val appNavigator: Navigator = remember(navigator) { AppNavigator(navigator, onOpenUrl) }
+
+    val authState by authManager.state.collectAsState(null)
+
+    CompositionLocalProvider(
+      LocalRetainedStateRegistry provides continuityRetainedStateRegistry()
     ) {
-        val appNavigator: Navigator = remember(navigator) {
-            AppNavigator(navigator, onOpenUrl)
+      LinkdingTheme(
+        darkTheme = preferences.shouldUseDarkTheme(),
+        dynamicColors = preferences.shouldUseDynamicColors(),
+      ) {
+        ContentWithOverlays {
+          AppContent(
+            authState = authState,
+            circuit = circuit,
+            backStack = backStack,
+            navigator = appNavigator,
+            modifier = modifier.fillMaxSize(),
+          )
         }
-
-        val authState by authManager.state
-            .collectAsState(null)
-
-        CompositionLocalProvider(
-            LocalRetainedStateRegistry provides continuityRetainedStateRegistry(),
-        ) {
-            LinkdingTheme(
-                darkTheme = preferences.shouldUseDarkTheme(),
-                dynamicColors = preferences.shouldUseDynamicColors(),
-            ) {
-                ContentWithOverlays {
-                    AppContent(
-                        authState = authState,
-                        circuit = circuit,
-                        backStack = backStack,
-                        navigator = appNavigator,
-                        modifier = modifier.fillMaxSize(),
-                    )
-                }
-            }
-        }
+      }
     }
+  }
 }
 
 @Composable
 private fun AppPreferences.shouldUseDarkTheme(): Boolean {
-    val appTheme = remember { observeAppTheme() }.collectAsState(initial = AppTheme.System)
-    return when (appTheme.value) {
-        AppTheme.System -> isSystemInDarkTheme()
-        AppTheme.Light -> false
-        AppTheme.Dark -> true
-    }
+  val appTheme = remember { observeAppTheme() }.collectAsState(initial = AppTheme.System)
+  return when (appTheme.value) {
+    AppTheme.System -> isSystemInDarkTheme()
+    AppTheme.Light -> false
+    AppTheme.Dark -> true
+  }
 }
 
 @Composable
 private fun AppPreferences.shouldUseDynamicColors(): Boolean =
-    remember { observeUseDynamicColors() }.collectAsState(initial = true).value
+  remember { observeUseDynamicColors() }.collectAsState(initial = true).value
 
 fun Navigator.goToAndResetRoot(
-    screen: Screen,
-    saveState: Boolean = false,
-    restoreState: Boolean = false,
+  screen: Screen,
+  saveState: Boolean = false,
+  restoreState: Boolean = false,
 ) {
-    goTo(screen)
-    resetRoot(screen, saveState, restoreState)
+  goTo(screen)
+  resetRoot(screen, saveState, restoreState)
 }

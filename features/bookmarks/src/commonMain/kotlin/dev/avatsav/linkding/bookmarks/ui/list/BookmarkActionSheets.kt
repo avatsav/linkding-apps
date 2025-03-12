@@ -27,115 +27,88 @@ import dev.avatsav.linkding.bookmarks.ui.list.widgets.BookmarkContent
 import dev.avatsav.linkding.data.model.Bookmark
 import dev.avatsav.linkding.ui.circuit.BottomSheetOverlay
 
-suspend fun OverlayHost.showDeleteBookmarkAction(bookmark: Bookmark): ActionResult = show(
-    BottomSheetOverlay(
-        model = bookmark,
-        onDismiss = { ActionResult.Dismissed },
-    ) { toDelete, overlayNavigator ->
-        DeleteBookmarkActionSheet(
-            bookmark = toDelete,
-            onConfirm = { overlayNavigator.finish(ActionResult.Confirmed) },
-            onCancel = { overlayNavigator.finish(ActionResult.Cancelled) },
-        )
-    },
-)
+suspend fun OverlayHost.showDeleteBookmarkAction(bookmark: Bookmark): ActionResult =
+  show(
+    BottomSheetOverlay(model = bookmark, onDismiss = { ActionResult.Dismissed }) {
+      toDelete,
+      overlayNavigator ->
+      DeleteBookmarkActionSheet(
+        bookmark = toDelete,
+        onConfirm = { overlayNavigator.finish(ActionResult.Confirmed) },
+        onCancel = { overlayNavigator.finish(ActionResult.Cancelled) },
+      )
+    }
+  )
 
-suspend fun OverlayHost.showArchiveBookmarkAction(bookmark: Bookmark): ActionResult = show(
-    BottomSheetOverlay(
-        model = bookmark,
-        onDismiss = { ActionResult.Dismissed },
-    ) { toArchive, overlayNavigator ->
-        ArchiveBookmarkActionSheet(
-            bookmark = toArchive,
-            onConfirm = { overlayNavigator.finish(ActionResult.Confirmed) },
-            onCancel = { overlayNavigator.finish(ActionResult.Cancelled) },
-        )
-    },
-)
+suspend fun OverlayHost.showArchiveBookmarkAction(bookmark: Bookmark): ActionResult =
+  show(
+    BottomSheetOverlay(model = bookmark, onDismiss = { ActionResult.Dismissed }) {
+      toArchive,
+      overlayNavigator ->
+      ArchiveBookmarkActionSheet(
+        bookmark = toArchive,
+        onConfirm = { overlayNavigator.finish(ActionResult.Confirmed) },
+        onCancel = { overlayNavigator.finish(ActionResult.Cancelled) },
+      )
+    }
+  )
 
 enum class ActionResult {
-    Confirmed,
-    Cancelled,
-    Dismissed,
+  Confirmed,
+  Cancelled,
+  Dismissed,
 }
 
 @Composable
-fun DeleteBookmarkActionSheet(
-    bookmark: Bookmark,
-    onConfirm: () -> Unit,
-    onCancel: () -> Unit,
-) {
-    BookmarkActionSheet(
-        titleText = "Delete Bookmark?",
-        imageVector = Icons.Default.Delete,
-        bookmark = bookmark,
-        onConfirm = onConfirm,
-        onCancel = onCancel,
-    )
+fun DeleteBookmarkActionSheet(bookmark: Bookmark, onConfirm: () -> Unit, onCancel: () -> Unit) {
+  BookmarkActionSheet(
+    titleText = "Delete Bookmark?",
+    imageVector = Icons.Default.Delete,
+    bookmark = bookmark,
+    onConfirm = onConfirm,
+    onCancel = onCancel,
+  )
 }
 
 @Composable
-fun ArchiveBookmarkActionSheet(
-    bookmark: Bookmark,
-    onConfirm: () -> Unit,
-    onCancel: () -> Unit,
-) {
-    BookmarkActionSheet(
-        titleText = if (bookmark.archived) "Unarchive Bookmark?" else "Archive Bookmark?",
-        imageVector = if (bookmark.archived) Icons.Default.Unarchive else Icons.Default.Archive,
-        bookmark = bookmark,
-        onConfirm = onConfirm,
-        onCancel = onCancel,
-    )
+fun ArchiveBookmarkActionSheet(bookmark: Bookmark, onConfirm: () -> Unit, onCancel: () -> Unit) {
+  BookmarkActionSheet(
+    titleText = if (bookmark.archived) "Unarchive Bookmark?" else "Archive Bookmark?",
+    imageVector = if (bookmark.archived) Icons.Default.Unarchive else Icons.Default.Archive,
+    bookmark = bookmark,
+    onConfirm = onConfirm,
+    onCancel = onCancel,
+  )
 }
 
 @Composable
 fun BookmarkActionSheet(
-    titleText: String,
-    imageVector: ImageVector,
-    bookmark: Bookmark,
-    onConfirm: () -> Unit,
-    onCancel: () -> Unit,
-    modifier: Modifier = Modifier,
+  titleText: String,
+  imageVector: ImageVector,
+  bookmark: Bookmark,
+  onConfirm: () -> Unit,
+  onCancel: () -> Unit,
+  modifier: Modifier = Modifier,
 ) {
-    Column(
-        modifier = modifier.padding(
-            start = 16.dp,
-            end = 16.dp,
-            top = 12.dp,
-            bottom = 48.dp,
-        ),
-    ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-        ) {
-            Text(
-                text = titleText,
-                style = MaterialTheme.typography.titleLarge,
-            )
-            Icon(
-                imageVector = imageVector,
-                contentDescription = "",
-                tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.size(24.dp),
-            )
-        }
-        Spacer(modifier = Modifier.size(24.dp))
-        Card {
-            BookmarkContent(bookmark = bookmark)
-        }
-        Spacer(modifier = Modifier.size(24.dp))
-        Row(
-            modifier = Modifier.align(Alignment.End),
-            horizontalArrangement = Arrangement.spacedBy(16.dp),
-        ) {
-            OutlinedButton(onClick = { onCancel() }) {
-                Text("Cancel")
-            }
-            Button(onClick = { onConfirm() }) {
-                Text("Confirm")
-            }
-        }
+  Column(modifier = modifier.padding(start = 16.dp, end = 16.dp, top = 12.dp, bottom = 48.dp)) {
+    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+      Text(text = titleText, style = MaterialTheme.typography.titleLarge)
+      Icon(
+        imageVector = imageVector,
+        contentDescription = "",
+        tint = MaterialTheme.colorScheme.onSurfaceVariant,
+        modifier = Modifier.size(24.dp),
+      )
     }
+    Spacer(modifier = Modifier.size(24.dp))
+    Card { BookmarkContent(bookmark = bookmark) }
+    Spacer(modifier = Modifier.size(24.dp))
+    Row(
+      modifier = Modifier.align(Alignment.End),
+      horizontalArrangement = Arrangement.spacedBy(16.dp),
+    ) {
+      OutlinedButton(onClick = { onCancel() }) { Text("Cancel") }
+      Button(onClick = { onConfirm() }) { Text("Confirm") }
+    }
+  }
 }

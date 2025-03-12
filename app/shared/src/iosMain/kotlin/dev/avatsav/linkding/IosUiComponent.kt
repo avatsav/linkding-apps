@@ -12,14 +12,14 @@ import software.amazon.lastmile.kotlin.inject.anvil.SingleIn
 @ContributesSubcomponent(UiScope::class)
 interface IosUiComponent {
 
-    val uiViewControllerFactory: () -> UIViewController
+  val uiViewControllerFactory: () -> UIViewController
 
-    @Provides
-    @SingleIn(UiScope::class)
-    fun uiViewController(impl: MainUIViewController): UIViewController = impl()
+  @Provides
+  @SingleIn(UiScope::class)
+  fun uiViewController(impl: MainUIViewController): UIViewController = impl()
 
-    @ContributesSubcomponent.Factory(AppScope::class)
-    interface Factory {
-        fun createUiComponent(): IosUiComponent
-    }
+  @ContributesSubcomponent.Factory(AppScope::class)
+  interface Factory {
+    fun createUiComponent(): IosUiComponent
+  }
 }

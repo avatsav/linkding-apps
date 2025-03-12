@@ -7,23 +7,24 @@ import dev.avatsav.linkding.data.model.CheckUrlResult
 
 @Immutable
 data class AddBookmarkUiState(
-    val sharedUrl: String? = null,
-    val alreadyBookmarked: Boolean = false,
-    val checkingUrl: Boolean = false,
-    val checkUrlResult: CheckUrlResult? = null,
-    val saving: Boolean = false,
-    val errorMessage: String? = null,
-    val eventSink: (AddBookmarkUiEvent) -> Unit,
+  val sharedUrl: String? = null,
+  val alreadyBookmarked: Boolean = false,
+  val checkingUrl: Boolean = false,
+  val checkUrlResult: CheckUrlResult? = null,
+  val saving: Boolean = false,
+  val errorMessage: String? = null,
+  val eventSink: (AddBookmarkUiEvent) -> Unit,
 ) : CircuitUiState
 
 sealed interface AddBookmarkUiEvent : CircuitUiEvent {
-    data class Save(
-        val url: String,
-        val title: String?,
-        val description: String?,
-        val tags: List<String>,
-    ) : AddBookmarkUiEvent
+  data class Save(
+    val url: String,
+    val title: String?,
+    val description: String?,
+    val tags: List<String>,
+  ) : AddBookmarkUiEvent
 
-    data object Close : AddBookmarkUiEvent
-    data class CheckUrl(val url: String) : AddBookmarkUiEvent
+  data object Close : AddBookmarkUiEvent
+
+  data class CheckUrl(val url: String) : AddBookmarkUiEvent
 }

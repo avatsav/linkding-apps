@@ -7,50 +7,47 @@ import androidx.paging.PagingData
 import dev.avatsav.linkding.data.db.daos.PagingBookmarksDao
 import dev.avatsav.linkding.data.model.Bookmark
 import dev.avatsav.linkding.data.model.BookmarkCategory
-import me.tatarka.inject.annotations.Inject
 import kotlinx.coroutines.flow.Flow
+import me.tatarka.inject.annotations.Inject
 
 @OptIn(ExperimentalPagingApi::class)
 @Inject
 class BookmarksPagingDataFactory(
-    private val bookmarksRemoteMediatorFactory: BookmarksRemoteMediatorFactory,
-    private val remoteBookmarksPagingSourceFactory: RemoteBookmarksPagingSourceFactory,
-    private val pagingBookmarksDao: PagingBookmarksDao,
+  private val bookmarksRemoteMediatorFactory: BookmarksRemoteMediatorFactory,
+  private val remoteBookmarksPagingSourceFactory: RemoteBookmarksPagingSourceFactory,
+  private val pagingBookmarksDao: PagingBookmarksDao,
 ) {
-    fun create(
-        cached: Boolean,
-        pagingConfig: PagingConfig,
-        param: Param,
-    ): Flow<PagingData<Bookmark>> = if (cached) {
-        cachedBookmarksFlow(pagingConfig, param)
+  fun create(
+    cached: Boolean,
+    pagingConfig: PagingConfig,
+    param: Param,
+  ): Flow<PagingData<Bookmark>> =
+    if (cached) {
+      cachedBookmarksFlow(pagingConfig, param)
     } else {
-        remoteBookmarksFlow(pagingConfig, param)
+      remoteBookmarksFlow(pagingConfig, param)
     }
 
-    private fun remoteBookmarksFlow(pagingConfig: PagingConfig, param: Param) = Pager(
+  private fun remoteBookmarksFlow(pagingConfig: PagingConfig, param: Param) =
+    Pager(
         config = pagingConfig,
         pagingSourceFactory = {
-            remoteBookmarksPagingSourceFactory(
-                param.query,
-                param.category,
-                param.tags,
-            )
+          remoteBookmarksPagingSourceFactory(param.query, param.category, param.tags)
         },
-    ).flow
+      )
+      .flow
 
-    private fun cachedBookmarksFlow(pagingConfig: PagingConfig, param: Param) = Pager(
+  private fun cachedBookmarksFlow(pagingConfig: PagingConfig, param: Param) =
+    Pager(
         config = pagingConfig,
-        remoteMediator = bookmarksRemoteMediatorFactory(
-            param.query,
-            param.category,
-            param.tags,
-        ),
+        remoteMediator = bookmarksRemoteMediatorFactory(param.query, param.category, param.tags),
         pagingSourceFactory = { pagingBookmarksDao.bookmarksPagingSource() },
-    ).flow
+      )
+      .flow
 
-    data class Param(
-        val query: String = "",
-        val category: BookmarkCategory = BookmarkCategory.All,
-        val tags: List<String> = emptyList(),
-    )
+  data class Param(
+    val query: String = "",
+    val category: BookmarkCategory = BookmarkCategory.All,
+    val tags: List<String> = emptyList(),
+  )
 }

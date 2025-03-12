@@ -27,89 +27,71 @@ import dev.avatsav.linkding.inject.ComponentHolder
 
 @Composable
 fun AppContent(
-    authState: AuthState?,
-    circuit: Circuit,
-    backStack: SaveableBackStack,
-    navigator: Navigator,
-    modifier: Modifier = Modifier,
+  authState: AuthState?,
+  circuit: Circuit,
+  backStack: SaveableBackStack,
+  navigator: Navigator,
+  modifier: Modifier = Modifier,
 ) {
-    when (authState) {
-        is AuthState.Authenticated -> {
-            AuthenticatedContent(
-                authState.apiConfig,
-                backStack,
-                navigator,
-                modifier,
-            )
-        }
-
-        is AuthState.Unauthenticated -> {
-            SetupScreen(circuit, modifier)
-        }
-
-        else -> {
-            SplashScreen(modifier)
-        }
+  when (authState) {
+    is AuthState.Authenticated -> {
+      AuthenticatedContent(authState.apiConfig, backStack, navigator, modifier)
     }
+
+    is AuthState.Unauthenticated -> {
+      SetupScreen(circuit, modifier)
+    }
+
+    else -> {
+      SplashScreen(modifier)
+    }
+  }
 }
 
 @Composable
 private fun AuthenticatedContent(
-    apiConfig: ApiConfig,
-    backStack: SaveableBackStack,
-    navigator: Navigator,
-    modifier: Modifier = Modifier,
+  apiConfig: ApiConfig,
+  backStack: SaveableBackStack,
+  navigator: Navigator,
+  modifier: Modifier = Modifier,
 ) {
-    val userComponent = remember(apiConfig) {
-        ComponentHolder.component<UserComponent.Factory>()
-            .create(apiConfig)
-            .also { component ->
-                ComponentHolder.updateComponent(component)
-            }
+  val userComponent =
+    remember(apiConfig) {
+      ComponentHolder.component<UserComponent.Factory>().create(apiConfig).also { component ->
+        ComponentHolder.updateComponent(component)
+      }
     }
 
-    LaunchedEffect(Unit) {
-        navigator.goToAndResetRoot(BookmarksScreen)
-    }
+  LaunchedEffect(Unit) { navigator.goToAndResetRoot(BookmarksScreen) }
 
-    CircuitCompositionLocals(userComponent.circuit) {
-        NavigableCircuitContent(
-            backStack = backStack,
-            navigator = navigator,
-            decoratorFactory = GestureNavigationDecorationFactory(onBackInvoked = navigator::pop),
-            modifier = modifier.fillMaxSize(),
-        )
-    }
-}
-
-@Composable
-private fun SetupScreen(
-    circuit: Circuit,
-    modifier: Modifier = Modifier,
-) {
-    CircuitCompositionLocals(circuit) {
-        CircuitContent(
-            screen = AuthScreen,
-            modifier = modifier,
-        )
-    }
-}
-
-@Composable
-private fun SplashScreen(
-    modifier: Modifier = Modifier,
-) {
-    Scaffold(
-        modifier = modifier,
-        content = { padding ->
-            Column(
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.padding(padding).background(MaterialTheme.colorScheme.surface)
-                    .fillMaxSize(),
-            ) {
-                CircularProgressIndicator()
-            }
-        },
+  CircuitCompositionLocals(userComponent.circuit) {
+    NavigableCircuitContent(
+      backStack = backStack,
+      navigator = navigator,
+      decoratorFactory = GestureNavigationDecorationFactory(onBackInvoked = navigator::pop),
+      modifier = modifier.fillMaxSize(),
     )
+  }
+}
+
+@Composable
+private fun SetupScreen(circuit: Circuit, modifier: Modifier = Modifier) {
+  CircuitCompositionLocals(circuit) { CircuitContent(screen = AuthScreen, modifier = modifier) }
+}
+
+@Composable
+private fun SplashScreen(modifier: Modifier = Modifier) {
+  Scaffold(
+    modifier = modifier,
+    content = { padding ->
+      Column(
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier =
+          Modifier.padding(padding).background(MaterialTheme.colorScheme.surface).fillMaxSize(),
+      ) {
+        CircularProgressIndicator()
+      }
+    },
+  )
 }
