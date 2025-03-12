@@ -1,6 +1,8 @@
 package dev.avatsav.linkding.settings.ui
 
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.calculateEndPadding
+import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -23,6 +25,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import com.slack.circuit.codegen.annotations.CircuitInject
 import com.slack.circuit.overlay.LocalOverlayHost
@@ -77,7 +80,7 @@ fun Settings(
                 },
             )
         },
-    ) { padding ->
+    ) { paddingValues ->
         LazyColumn(
             contentPadding = PaddingValues(
                 start = 16.dp,
@@ -85,7 +88,11 @@ fun Settings(
                 bottom = 16.dp,
             ),
             modifier = Modifier.fillMaxWidth()
-                .padding(padding)
+                .padding(
+                    top = paddingValues.calculateTopPadding(),
+                    start = paddingValues.calculateStartPadding(LayoutDirection.Ltr),
+                    end = paddingValues.calculateEndPadding(LayoutDirection.Ltr),
+                )
                 .nestedScroll(scrollBehavior.nestedScrollConnection),
         ) {
             item {
