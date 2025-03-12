@@ -11,9 +11,7 @@ expect interface SqlDelightPlatformComponent
 
 @ContributesTo(AppScope::class)
 interface SqlDelightComponent : SqlDelightPlatformComponent {
-    @SingleIn(AppScope::class)
-    @Provides
-    fun provideSqlDelightDatabase(
-        factory: DatabaseFactory,
-    ): Database = factory.createDatabase()
+  @SingleIn(AppScope::class)
+  @Provides
+  fun provideSqlDelightDatabase(factory: DatabaseFactory): Database = factory.createDatabase()
 }

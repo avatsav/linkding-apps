@@ -6,29 +6,22 @@ import io.ktor.client.engine.HttpClientEngineFactory
 import io.ktor.client.plugins.logging.LoggingConfig
 
 typealias LinkdingHostUrl = String
+
 typealias LinkdingApiKey = String
 
-@LinkdingDsl
-data class LinkdingApiConfig(
-    val hostUrl: LinkdingHostUrl,
-    val apiKey: LinkdingApiKey,
-)
+@LinkdingDsl data class LinkdingApiConfig(val hostUrl: LinkdingHostUrl, val apiKey: LinkdingApiKey)
 
 @LinkdingDsl
 class LinkdingClientConfig {
 
-    internal var httpClientBuilder: (() -> HttpClient)? = null
-    internal var httpClientLoggingBlock: (LoggingConfig.() -> Unit)? = null
+  internal var httpClientBuilder: (() -> HttpClient)? = null
+  internal var httpClientLoggingBlock: (LoggingConfig.() -> Unit)? = null
 
-    fun <T : HttpClientEngineConfig> httpClient(
-        engineFactory: HttpClientEngineFactory<T>,
-    ) {
-        httpClientBuilder = {
-            HttpClient(engineFactory)
-        }
-    }
+  fun <T : HttpClientEngineConfig> httpClient(engineFactory: HttpClientEngineFactory<T>) {
+    httpClientBuilder = { HttpClient(engineFactory) }
+  }
 
-    fun logging(block: LoggingConfig.() -> Unit) {
-        httpClientLoggingBlock = block
-    }
+  fun logging(block: LoggingConfig.() -> Unit) {
+    httpClientLoggingBlock = block
+  }
 }

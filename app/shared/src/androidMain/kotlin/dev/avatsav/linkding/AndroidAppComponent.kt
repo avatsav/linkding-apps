@@ -13,21 +13,21 @@ import software.amazon.lastmile.kotlin.inject.anvil.SingleIn
 @MergeComponent(AppScope::class)
 abstract class AndroidAppComponent(@get:Provides val application: Application) {
 
-    abstract val appPreferences: AppPreferences
+  abstract val appPreferences: AppPreferences
 
-    abstract val appInitializer: AppInitializer
+  abstract val appInitializer: AppInitializer
 
-    @SingleIn(AppScope::class)
-    @Provides
-    fun provideAppInfo(application: Application): AppInfo {
-        val packageManager = application.packageManager
-        val applicationInfo = packageManager.getApplicationInfo(application.packageName, 0)
-        val packageInfo = packageManager.getPackageInfo(application.packageName, 0)
+  @SingleIn(AppScope::class)
+  @Provides
+  fun provideAppInfo(application: Application): AppInfo {
+    val packageManager = application.packageManager
+    val applicationInfo = packageManager.getApplicationInfo(application.packageName, 0)
+    val packageInfo = packageManager.getPackageInfo(application.packageName, 0)
 
-        return AppInfo(
-            packageName = application.packageName,
-            debug = (applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE) != 0,
-            version = packageInfo.versionName!!,
-        )
-    }
+    return AppInfo(
+      packageName = application.packageName,
+      debug = (applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE) != 0,
+      version = packageInfo.versionName!!,
+    )
+  }
 }

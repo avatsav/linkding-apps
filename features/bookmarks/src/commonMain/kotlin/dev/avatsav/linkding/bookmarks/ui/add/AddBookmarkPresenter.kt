@@ -19,60 +19,53 @@ import dev.avatsav.linkding.domain.interactors.AddBookmark
 import dev.avatsav.linkding.domain.interactors.CheckBookmarkUrl
 import dev.avatsav.linkding.inject.UserScope
 import dev.avatsav.linkding.ui.AddBookmarkScreen
+import kotlinx.coroutines.launch
 import me.tatarka.inject.annotations.Assisted
 import me.tatarka.inject.annotations.Inject
-import kotlinx.coroutines.launch
 
 @CircuitInject(AddBookmarkScreen::class, UserScope::class)
-class AddBookmarkPresenter @Inject constructor(
-    @Assisted private val screen: AddBookmarkScreen,
-    @Assisted private val navigator: Navigator,
-    private val addBookmark: AddBookmark,
-    private val checkBookmarkUrl: CheckBookmarkUrl,
+class AddBookmarkPresenter
+@Inject
+constructor(
+  @Assisted private val screen: AddBookmarkScreen,
+  @Assisted private val navigator: Navigator,
+  private val addBookmark: AddBookmark,
+  private val checkBookmarkUrl: CheckBookmarkUrl,
 ) : Presenter<AddBookmarkUiState> {
 
-    @Composable
-    override fun present(): AddBookmarkUiState {
-        val scope = rememberCoroutineScope()
+  @Composable
+  override fun present(): AddBookmarkUiState {
+    val scope = rememberCoroutineScope()
 
-        var checkUrlResult: CheckUrlResult? by rememberSaveable { mutableStateOf(null) }
-        var errorMessage by rememberSaveable { mutableStateOf("") }
+    var checkUrlResult: CheckUrlResult? by rememberSaveable { mutableStateOf(null) }
+    var errorMessage by rememberSaveable { mutableStateOf("") }
 
-        val checkingUrl by checkBookmarkUrl.inProgress.collectAsState(false)
-        val saving by addBookmark.inProgress.collectAsState(false)
+    val checkingUrl by checkBookmarkUrl.inProgress.collectAsState(false)
+    val saving by addBookmark.inProgress.collectAsState(false)
 
-        return AddBookmarkUiState(
-            sharedUrl = screen.sharedUrl,
-            checkingUrl = checkingUrl,
-            checkUrlResult = checkUrlResult,
-            saving = saving,
-            errorMessage = errorMessage,
-        ) { event ->
-            when (event) {
-                AddBookmarkUiEvent.Close -> navigator.pop()
-                is AddBookmarkUiEvent.Save -> scope.launch {
-                    addBookmark(
-                        SaveBookmark(
-                            event.url,
-                            event.title,
-                            event.description,
-                            event.tags.toSet(),
-                        ),
-                    ).onSuccess {
-                        navigator.pop()
-                    }.onFailure {
-                        errorMessage = it.message
-                    }
-                }
+    return AddBookmarkUiState(
+      sharedUrl = screen.sharedUrl,
+      checkingUrl = checkingUrl,
+      checkUrlResult = checkUrlResult,
+      saving = saving,
+      errorMessage = errorMessage,
+    ) { event ->
+      when (event) {
+        AddBookmarkUiEvent.Close -> navigator.pop()
+        is AddBookmarkUiEvent.Save ->
+          scope.launch {
+            addBookmark(SaveBookmark(event.url, event.title, event.description, event.tags.toSet()))
+              .onSuccess { navigator.pop() }
+              .onFailure { errorMessage = it.message }
+          }
 
-                is AddBookmarkUiEvent.CheckUrl -> scope.launch {
-                    checkBookmarkUrl(event.url).onSuccess {
-                        checkUrlResult = it
-                    }.onFailure {
-                        Logger.e { "CheckError: $it" }
-                    }
-                }
-            }
-        }
+        is AddBookmarkUiEvent.CheckUrl ->
+          scope.launch {
+            checkBookmarkUrl(event.url)
+              .onSuccess { checkUrlResult = it }
+              .onFailure { Logger.e { "CheckError: $it" } }
+          }
+      }
     }
+  }
 }

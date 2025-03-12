@@ -9,25 +9,23 @@ import dev.avatsav.linkding.ui.TagsScreenResult
 import dev.avatsav.linkding.ui.circuit.BottomSheetOverlay
 
 suspend fun OverlayHost.showTagsBottomSheet(selectedTags: List<Tag>): TagsScreenResult =
-    show<TagsScreenResult>(
-        BottomSheetOverlay(
-            model = selectedTags,
-            onDismiss = { TagsScreenResult.Dismissed },
-        ) { data, overlayNavigator ->
-            CircuitContent(
-                screen = TagsScreen(data.map { it.mapToScreenParam() }),
-                onNavEvent = { event ->
-                    when (event) {
-                        is NavEvent.Pop -> {
-                            overlayNavigator.finish(
-                                event.result as? TagsScreenResult ?: TagsScreenResult.Dismissed,
-                            )
-                        }
+  show<TagsScreenResult>(
+    BottomSheetOverlay(model = selectedTags, onDismiss = { TagsScreenResult.Dismissed }) {
+      data,
+      overlayNavigator ->
+      CircuitContent(
+        screen = TagsScreen(data.map { it.mapToScreenParam() }),
+        onNavEvent = { event ->
+          when (event) {
+            is NavEvent.Pop -> {
+              overlayNavigator.finish(
+                event.result as? TagsScreenResult ?: TagsScreenResult.Dismissed
+              )
+            }
 
-                        else ->
-                            overlayNavigator.finish(TagsScreenResult.Dismissed)
-                    }
-                },
-            )
+            else -> overlayNavigator.finish(TagsScreenResult.Dismissed)
+          }
         },
-    )
+      )
+    }
+  )

@@ -13,24 +13,21 @@ import kotlin.coroutines.CoroutineContext
 import kotlinx.coroutines.suspendCancellableCoroutine
 
 /**
- * This class is a copy with one change from the original.
- * Using RetainedLaunchedEffect instead of LaunchedEffect
- * so that the producer isn't called on re-entry to the screen.
+ * This class is a copy with one change from the original. Using RetainedLaunchedEffect instead of
+ * LaunchedEffect so that the producer isn't called on re-entry to the screen.
  */
-
 internal class ProduceRetainedStateScopeImpl<T>(
-    state: MutableState<T>,
-    override val coroutineContext: CoroutineContext,
-) : ProduceStateScope<T>,
-    MutableState<T> by state {
+  state: MutableState<T>,
+  override val coroutineContext: CoroutineContext,
+) : ProduceStateScope<T>, MutableState<T> by state {
 
-    override suspend fun awaitDispose(onDispose: () -> Unit): Nothing {
-        try {
-            suspendCancellableCoroutine<Nothing> {}
-        } finally {
-            onDispose()
-        }
+  override suspend fun awaitDispose(onDispose: () -> Unit): Nothing {
+    try {
+      suspendCancellableCoroutine<Nothing> {}
+    } finally {
+      onDispose()
     }
+  }
 }
 
 /**
@@ -61,17 +58,14 @@ internal class ProduceRetainedStateScopeImpl<T>(
  */
 @Composable
 public fun <T> produceRetainedState(
-    initialValue: T,
-    producer: suspend ProduceStateScope<T>.() -> Unit,
+  initialValue: T,
+  producer: suspend ProduceStateScope<T>.() -> Unit,
 ): State<T> {
-    val result = rememberRetained { mutableStateOf(initialValue) }
-    RetainedLaunchedEffect(Unit) {
-        ProduceRetainedStateScopeImpl(
-            result,
-            coroutineContext,
-        ).producer()
-    }
-    return result
+  val result = rememberRetained { mutableStateOf(initialValue) }
+  RetainedLaunchedEffect(Unit) {
+    ProduceRetainedStateScopeImpl(result, coroutineContext).producer()
+  }
+  return result
 }
 
 /**
@@ -103,18 +97,15 @@ public fun <T> produceRetainedState(
  */
 @Composable
 public fun <T> produceRetainedState(
-    initialValue: T,
-    key1: Any?,
-    producer: suspend ProduceStateScope<T>.() -> Unit,
+  initialValue: T,
+  key1: Any?,
+  producer: suspend ProduceStateScope<T>.() -> Unit,
 ): State<T> {
-    val result = rememberRetained { mutableStateOf(initialValue) }
-    RetainedLaunchedEffect(key1) {
-        ProduceRetainedStateScopeImpl(
-            result,
-            coroutineContext,
-        ).producer()
-    }
-    return result
+  val result = rememberRetained { mutableStateOf(initialValue) }
+  RetainedLaunchedEffect(key1) {
+    ProduceRetainedStateScopeImpl(result, coroutineContext).producer()
+  }
+  return result
 }
 
 /**
@@ -146,19 +137,16 @@ public fun <T> produceRetainedState(
  */
 @Composable
 public fun <T> produceRetainedState(
-    initialValue: T,
-    key1: Any?,
-    key2: Any?,
-    producer: suspend ProduceStateScope<T>.() -> Unit,
+  initialValue: T,
+  key1: Any?,
+  key2: Any?,
+  producer: suspend ProduceStateScope<T>.() -> Unit,
 ): State<T> {
-    val result = rememberRetained { mutableStateOf(initialValue) }
-    RetainedLaunchedEffect(key1, key2) {
-        ProduceRetainedStateScopeImpl(
-            result,
-            coroutineContext,
-        ).producer()
-    }
-    return result
+  val result = rememberRetained { mutableStateOf(initialValue) }
+  RetainedLaunchedEffect(key1, key2) {
+    ProduceRetainedStateScopeImpl(result, coroutineContext).producer()
+  }
+  return result
 }
 
 /**
@@ -190,17 +178,17 @@ public fun <T> produceRetainedState(
  */
 @Composable
 public fun <T> produceRetainedState(
-    initialValue: T,
-    key1: Any?,
-    key2: Any?,
-    key3: Any?,
-    producer: suspend ProduceStateScope<T>.() -> Unit,
+  initialValue: T,
+  key1: Any?,
+  key2: Any?,
+  key3: Any?,
+  producer: suspend ProduceStateScope<T>.() -> Unit,
 ): State<T> {
-    val result = rememberRetained { mutableStateOf(initialValue) }
-    RetainedLaunchedEffect(key1, key2, key3) {
-        ProduceRetainedStateScopeImpl(result, coroutineContext).producer()
-    }
-    return result
+  val result = rememberRetained { mutableStateOf(initialValue) }
+  RetainedLaunchedEffect(key1, key2, key3) {
+    ProduceRetainedStateScopeImpl(result, coroutineContext).producer()
+  }
+  return result
 }
 
 /**
@@ -232,16 +220,13 @@ public fun <T> produceRetainedState(
  */
 @Composable
 public fun <T> produceRetainedState(
-    initialValue: T,
-    vararg keys: Any?,
-    producer: suspend ProduceStateScope<T>.() -> Unit,
+  initialValue: T,
+  vararg keys: Any?,
+  producer: suspend ProduceStateScope<T>.() -> Unit,
 ): State<T> {
-    val result = rememberRetained { mutableStateOf(initialValue) }
-    RetainedLaunchedEffect(keys) {
-        ProduceRetainedStateScopeImpl(
-            result,
-            coroutineContext,
-        ).producer()
-    }
-    return result
+  val result = rememberRetained { mutableStateOf(initialValue) }
+  RetainedLaunchedEffect(keys) {
+    ProduceRetainedStateScopeImpl(result, coroutineContext).producer()
+  }
+  return result
 }

@@ -16,39 +16,28 @@ import java.awt.Desktop
 import java.net.URI
 
 fun main() = application {
-    DesktopAppComponent::class.create()
-        .also { ComponentHolder.components += it }
-        .also { it.appInitializer.initialize() }
+  DesktopAppComponent::class.create()
+    .also { ComponentHolder.components += it }
+    .also { it.appInitializer.initialize() }
 
-    val uiComponent: DesktopUiComponent =
-        ComponentHolder.component<DesktopUiComponent.Factory>()
-            .create()
-            .also { ComponentHolder.components += it }
-
-    val windowState = rememberWindowState(
-        size = DpSize(450.dp, 900.dp),
-        position = WindowPosition(Alignment.Center),
-    )
-
-    Window(
-        title = "Linkding",
-        state = windowState,
-        onCloseRequest = ::exitApplication,
-    ) {
-        val backstack = rememberSaveableBackStack(root = AuthScreen)
-        val navigator = rememberCircuitNavigator(backstack) { /* no-op */ }
-
-        uiComponent.appUi.Content(
-            backstack,
-            navigator,
-            { launchUrl(it) },
-            Modifier,
-        )
+  val uiComponent: DesktopUiComponent =
+    ComponentHolder.component<DesktopUiComponent.Factory>().create().also {
+      ComponentHolder.components += it
     }
+
+  val windowState =
+    rememberWindowState(size = DpSize(450.dp, 900.dp), position = WindowPosition(Alignment.Center))
+
+  Window(title = "Linkding", state = windowState, onCloseRequest = ::exitApplication) {
+    val backstack = rememberSaveableBackStack(root = AuthScreen)
+    val navigator = rememberCircuitNavigator(backstack) { /* no-op */ }
+
+    uiComponent.appUi.Content(backstack, navigator, { launchUrl(it) }, Modifier)
+  }
 }
 
 private fun launchUrl(url: String): Boolean {
-    val desktop = Desktop.getDesktop()
-    desktop.browse(URI.create(url))
-    return true
+  val desktop = Desktop.getDesktop()
+  desktop.browse(URI.create(url))
+  return true
 }

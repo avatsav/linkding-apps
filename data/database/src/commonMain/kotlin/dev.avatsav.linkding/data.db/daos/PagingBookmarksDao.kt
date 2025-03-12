@@ -4,8 +4,11 @@ import androidx.paging.PagingSource
 import dev.avatsav.linkding.data.model.Bookmark
 
 interface PagingBookmarksDao {
-    fun bookmarksPagingSource(): PagingSource<Int, Bookmark>
-    fun refresh(bookmarks: List<Bookmark>)
-    fun append(bookmarks: List<Bookmark>)
-    fun countBookmarks(): Long
+  fun bookmarksPagingSource(): PagingSource<Int, Bookmark>
+
+  fun refresh(bookmarks: List<Bookmark>)
+
+  fun append(bookmarks: List<Bookmark>)
+
+  fun countBookmarks(): Long
 }

@@ -14,28 +14,20 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun TagInputChip(
-    label: @Composable () -> Unit,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier,
+  label: @Composable () -> Unit,
+  onClick: () -> Unit,
+  modifier: Modifier = Modifier,
 ) {
-    InputChip(
-        modifier = modifier,
-        selected = false,
-        onClick = { /*NO OP*/ },
-        label = label,
-        colors = InputChipDefaults.inputChipColors(
-            containerColor = MaterialTheme.colorScheme.surface,
-        ),
-        trailingIcon = {
-            IconButton(
-                modifier = Modifier.size(12.dp),
-                onClick = { onClick() },
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Close,
-                    contentDescription = "Remove tag",
-                )
-            }
-        },
-    )
+  InputChip(
+    modifier = modifier,
+    selected = false,
+    onClick = { /*NO OP*/ },
+    label = label,
+    colors = InputChipDefaults.inputChipColors(containerColor = MaterialTheme.colorScheme.surface),
+    trailingIcon = {
+      IconButton(modifier = Modifier.size(12.dp), onClick = { onClick() }) {
+        Icon(imageVector = Icons.Default.Close, contentDescription = "Remove tag")
+      }
+    },
+  )
 }

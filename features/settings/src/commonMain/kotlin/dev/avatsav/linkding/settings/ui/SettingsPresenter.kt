@@ -15,57 +15,52 @@ import dev.avatsav.linkding.prefs.AppPreferences
 import dev.avatsav.linkding.ui.AuthScreen
 import dev.avatsav.linkding.ui.SettingsScreen
 import dev.avatsav.linkding.ui.UrlScreen
+import kotlinx.coroutines.launch
 import me.tatarka.inject.annotations.Assisted
 import me.tatarka.inject.annotations.Inject
-import kotlinx.coroutines.launch
 
 @CircuitInject(SettingsScreen::class, UserScope::class)
 @Inject
 class SettingsPresenter(
-    @Assisted private val navigator: Navigator,
-    private val preferences: AppPreferences,
-    private val appInfo: AppInfo,
+  @Assisted private val navigator: Navigator,
+  private val preferences: AppPreferences,
+  private val appInfo: AppInfo,
 ) : Presenter<SettingsUiState> {
 
-    @Composable
-    override fun present(): SettingsUiState {
-        val coroutineScope = rememberCoroutineScope()
+  @Composable
+  override fun present(): SettingsUiState {
+    val coroutineScope = rememberCoroutineScope()
 
-        val apiConfig by remember { preferences.observeApiConfig() }
-            .collectAsRetainedState(preferences.getApiConfig())
+    val apiConfig by
+      remember { preferences.observeApiConfig() }.collectAsRetainedState(preferences.getApiConfig())
 
-        val useDynamicColors by remember { preferences.observeUseDynamicColors() }
-            .collectAsRetainedState(false)
+    val useDynamicColors by
+      remember { preferences.observeUseDynamicColors() }.collectAsRetainedState(false)
 
-        val appTheme by remember { preferences.observeAppTheme() }
-            .collectAsRetainedState(AppTheme.System)
+    val appTheme by
+      remember { preferences.observeAppTheme() }.collectAsRetainedState(AppTheme.System)
 
-        return SettingsUiState(
-            appInfo,
-            apiConfig,
-            appTheme,
-            useDynamicColors,
-        ) { event ->
-            when (event) {
-                SettingsUiEvent.Close -> navigator.pop()
-                is SettingsUiEvent.SetAppTheme -> coroutineScope.launch {
-                    preferences.setAppTheme(event.appTheme)
-                }
+    return SettingsUiState(appInfo, apiConfig, appTheme, useDynamicColors) { event ->
+      when (event) {
+        SettingsUiEvent.Close -> navigator.pop()
+        is SettingsUiEvent.SetAppTheme ->
+          coroutineScope.launch { preferences.setAppTheme(event.appTheme) }
 
-                SettingsUiEvent.ToggleUseDynamicColors -> coroutineScope.launch {
-                    preferences.toggleUseDynamicColors()
-                }
+        SettingsUiEvent.ToggleUseDynamicColors ->
+          coroutineScope.launch { preferences.toggleUseDynamicColors() }
 
-                SettingsUiEvent.ResetApiConfig -> coroutineScope.launch {
-                    preferences.setApiConfig(null)
-                    navigator.goTo(AuthScreen)
-                    navigator.resetRoot(AuthScreen)
-                }
+        SettingsUiEvent.ResetApiConfig ->
+          coroutineScope.launch {
+            preferences.setApiConfig(null)
+            navigator.goTo(AuthScreen)
+            navigator.resetRoot(AuthScreen)
+          }
 
-                SettingsUiEvent.ShowSourceCode -> navigator.goTo(UrlScreen("https://github.com/avatsav/linkding-apps"))
-                SettingsUiEvent.ShowLicenses -> {}
-                SettingsUiEvent.ShowPrivacyPolicy -> {}
-            }
-        }
+        SettingsUiEvent.ShowSourceCode ->
+          navigator.goTo(UrlScreen("https://github.com/avatsav/linkding-apps"))
+        SettingsUiEvent.ShowLicenses -> {}
+        SettingsUiEvent.ShowPrivacyPolicy -> {}
+      }
     }
+  }
 }

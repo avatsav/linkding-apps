@@ -38,110 +38,104 @@ import dev.avatsav.linkding.ui.SettingsScreen
 import dev.avatsav.linkding.ui.UrlScreen
 import dev.avatsav.linkding.ui.circuit.produceRetainedState
 import dev.avatsav.linkding.ui.circuit.rememberRetainedCoroutineScope
-import me.tatarka.inject.annotations.Assisted
-import me.tatarka.inject.annotations.Inject
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.launch
+import me.tatarka.inject.annotations.Assisted
+import me.tatarka.inject.annotations.Inject
 
 @CircuitInject(BookmarksScreen::class, UserScope::class)
-class BookmarksPresenter @Inject constructor(
-    @Assisted private val navigator: Navigator,
-    private val observeBookmarks: ObserveBookmarks,
-    private val observeSearchResults: ObserveSearchResults,
-    private val deleteBookmark: DeleteBookmark,
-    private val archiveBookmark: ArchiveBookmark,
-    private val unarchiveBookmark: UnarchiveBookmark,
-    private val connectivityObserver: ConnectivityObserver,
+class BookmarksPresenter
+@Inject
+constructor(
+  @Assisted private val navigator: Navigator,
+  private val observeBookmarks: ObserveBookmarks,
+  private val observeSearchResults: ObserveSearchResults,
+  private val deleteBookmark: DeleteBookmark,
+  private val archiveBookmark: ArchiveBookmark,
+  private val unarchiveBookmark: UnarchiveBookmark,
+  private val connectivityObserver: ConnectivityObserver,
 ) : Presenter<BookmarksUiState> {
 
-    @Composable
-    override fun present(): BookmarksUiState {
-        // https://chrisbanes.me/posts/retaining-beyond-viewmodels/#retained-coroutine-scopes
-        val presenterScope = rememberRetainedCoroutineScope()
+  @Composable
+  override fun present(): BookmarksUiState {
+    // https://chrisbanes.me/posts/retaining-beyond-viewmodels/#retained-coroutine-scopes
+    val presenterScope = rememberRetainedCoroutineScope()
 
-        val isOnline by connectivityObserver.observeIsOnline
-            .collectAsRetainedState()
+    val isOnline by connectivityObserver.observeIsOnline.collectAsRetainedState()
 
-        var searchQuery by rememberRetained { mutableStateOf("") }
-        var category by rememberRetained { mutableStateOf(BookmarkCategory.All) }
-        val selectedTags = rememberRetained { mutableStateListOf<Tag>() }
+    var searchQuery by rememberRetained { mutableStateOf("") }
+    var category by rememberRetained { mutableStateOf(BookmarkCategory.All) }
+    val selectedTags = rememberRetained { mutableStateListOf<Tag>() }
 
-        val bookmarksFlow by produceRetainedState(emptyFlow(), category, selectedTags.size) {
-            observeBookmarks(
-                ObserveBookmarks.Param(
-                    cached = true,
-                    query = "",
-                    category = category,
-                    tags = selectedTags,
-                    pagingConfig = PagingConfig(
-                        initialLoadSize = 20,
-                        pageSize = 20,
-                    ),
-                ),
-            )
-            value = observeBookmarks.flow.cachedIn(presenterScope)
-        }
-        val bookmarks = bookmarksFlow.collectAsLazyPagingItems()
+    val bookmarksFlow by
+      produceRetainedState(emptyFlow(), category, selectedTags.size) {
+        observeBookmarks(
+          ObserveBookmarks.Param(
+            cached = true,
+            query = "",
+            category = category,
+            tags = selectedTags,
+            pagingConfig = PagingConfig(initialLoadSize = 20, pageSize = 20),
+          )
+        )
+        value = observeBookmarks.flow.cachedIn(presenterScope)
+      }
+    val bookmarks = bookmarksFlow.collectAsLazyPagingItems()
 
-        val searchResultsFlow by produceRetainedState(emptyFlow(), searchQuery) {
-            observeSearchResults(
-                ObserveSearchResults.Param(
-                    query = searchQuery,
-                    category = BookmarkCategory.All,
-                    tags = emptyList(),
-                    pagingConfig = PagingConfig(
-                        initialLoadSize = 20,
-                        pageSize = 20,
-                    ),
-                ),
-            )
-            value = observeSearchResults.flow.cachedIn(presenterScope)
-        }
-        val searchResults = searchResultsFlow.collectAsLazyPagingItems()
+    val searchResultsFlow by
+      produceRetainedState(emptyFlow(), searchQuery) {
+        observeSearchResults(
+          ObserveSearchResults.Param(
+            query = searchQuery,
+            category = BookmarkCategory.All,
+            tags = emptyList(),
+            pagingConfig = PagingConfig(initialLoadSize = 20, pageSize = 20),
+          )
+        )
+        value = observeSearchResults.flow.cachedIn(presenterScope)
+      }
+    val searchResults = searchResultsFlow.collectAsLazyPagingItems()
 
-        return BookmarksUiState(
-            bookmarkCategory = category,
-            bookmarks = bookmarks,
-            searchResults = searchResults,
-            selectedTags = selectedTags,
-            isOnline = isOnline,
-        ) { event ->
-            when (event) {
-                is BookmarksUiEvent.Refresh -> presenterScope.launch {
-                    bookmarks.refresh()
-                }
+    return BookmarksUiState(
+      bookmarkCategory = category,
+      bookmarks = bookmarks,
+      searchResults = searchResults,
+      selectedTags = selectedTags,
+      isOnline = isOnline,
+    ) { event ->
+      when (event) {
+        is BookmarksUiEvent.Refresh -> presenterScope.launch { bookmarks.refresh() }
 
-                is ToggleArchive -> presenterScope.launch {
-                    if (event.bookmark.archived) {
-                        unarchiveBookmark(event.bookmark.id)
-                    } else {
-                        archiveBookmark(event.bookmark.id)
-                    }
-                }
-
-                is Delete -> presenterScope.launch {
-                    deleteBookmark(event.bookmark.id)
-                }
-
-                is Open -> navigator.goTo(UrlScreen(event.bookmark.url))
-                is SetBookmarkCategory -> {
-                    category = event.bookmarkCategory
-                }
-
-                AddBookmark -> navigator.goTo(AddBookmarkScreen())
-                ShowSettings -> navigator.goTo(SettingsScreen)
-                is RemoveTag -> selectedTags.remove(event.tag)
-                is SelectTag -> {
-                    if (!selectedTags.contains(event.tag)) {
-                        selectedTags.add(0, event.tag)
-                    }
-                }
-
-                is Search -> searchQuery = event.query
-                ClearSearch -> {
-                    searchQuery = ""
-                }
+        is ToggleArchive ->
+          presenterScope.launch {
+            if (event.bookmark.archived) {
+              unarchiveBookmark(event.bookmark.id)
+            } else {
+              archiveBookmark(event.bookmark.id)
             }
+          }
+
+        is Delete -> presenterScope.launch { deleteBookmark(event.bookmark.id) }
+
+        is Open -> navigator.goTo(UrlScreen(event.bookmark.url))
+        is SetBookmarkCategory -> {
+          category = event.bookmarkCategory
         }
+
+        AddBookmark -> navigator.goTo(AddBookmarkScreen())
+        ShowSettings -> navigator.goTo(SettingsScreen)
+        is RemoveTag -> selectedTags.remove(event.tag)
+        is SelectTag -> {
+          if (!selectedTags.contains(event.tag)) {
+            selectedTags.add(0, event.tag)
+          }
+        }
+
+        is Search -> searchQuery = event.query
+        ClearSearch -> {
+          searchQuery = ""
+        }
+      }
     }
+  }
 }

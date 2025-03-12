@@ -17,31 +17,31 @@ import com.slack.circuitx.overlays.DialogResult
 /** An overlay that shows an basic [AlertDialog]. */
 @ExperimentalMaterial3Api
 class BasicAlertDialogOverlay<Model : Any, Result : Any>(
-    private val model: Model,
-    private val onDismissRequest: () -> Result,
-    private val properties: DialogProperties = DialogProperties(),
-    private val content: @Composable (Model, OverlayNavigator<Result>) -> Unit,
+  private val model: Model,
+  private val onDismissRequest: () -> Result,
+  private val properties: DialogProperties = DialogProperties(),
+  private val content: @Composable (Model, OverlayNavigator<Result>) -> Unit,
 ) : Overlay<Result> {
-    @Composable
-    override fun Content(navigator: OverlayNavigator<Result>) {
-        BasicAlertDialog(
-            onDismissRequest = {
-                // This is apparently as close as we can get to an "onDismiss" callback, which
-                // unfortunately has no animation
-                navigator.finish(onDismissRequest())
-            },
-            properties = properties,
-            content = {
-                Surface(
-                    shape = AlertDialogDefaults.shape,
-                    color = AlertDialogDefaults.containerColor,
-                    tonalElevation = AlertDialogDefaults.TonalElevation,
-                ) {
-                    content(model, navigator::finish)
-                }
-            },
-        )
-    }
+  @Composable
+  override fun Content(navigator: OverlayNavigator<Result>) {
+    BasicAlertDialog(
+      onDismissRequest = {
+        // This is apparently as close as we can get to an "onDismiss" callback, which
+        // unfortunately has no animation
+        navigator.finish(onDismissRequest())
+      },
+      properties = properties,
+      content = {
+        Surface(
+          shape = AlertDialogDefaults.shape,
+          color = AlertDialogDefaults.containerColor,
+          tonalElevation = AlertDialogDefaults.TonalElevation,
+        ) {
+          content(model, navigator::finish)
+        }
+      },
+    )
+  }
 }
 
 typealias OnClick = () -> Unit
@@ -53,25 +53,28 @@ typealias OnClick = () -> Unit
  */
 @ExperimentalMaterial3Api
 public fun alertDialogOverlay(
-    confirmButton: @Composable (onClick: OnClick) -> Unit,
-    icon: @Composable (() -> Unit)? = null,
-    title: @Composable (() -> Unit)? = null,
-    text: @Composable (() -> Unit)? = null,
-    dismissButton: (@Composable (onClick: OnClick) -> Unit)?,
-    properties: DialogProperties = DialogProperties(),
-): BasicAlertDialogOverlay<*, DialogResult> = BasicAlertDialogOverlay(
+  confirmButton: @Composable (onClick: OnClick) -> Unit,
+  icon: @Composable (() -> Unit)? = null,
+  title: @Composable (() -> Unit)? = null,
+  text: @Composable (() -> Unit)? = null,
+  dismissButton: (@Composable (onClick: OnClick) -> Unit)?,
+  properties: DialogProperties = DialogProperties(),
+): BasicAlertDialogOverlay<*, DialogResult> =
+  BasicAlertDialogOverlay(
     model = Unit,
     onDismissRequest = { DialogResult.Dismiss },
     properties = properties,
-) { _, navigator ->
+  ) { _, navigator ->
     AlertDialog(
-        onDismissRequest = { navigator.finish(DialogResult.Dismiss) },
-        icon = icon,
-        title = title,
-        text = text,
-        confirmButton = { confirmButton { navigator.finish(DialogResult.Confirm) } },
-        dismissButton =
-        dismissButton?.let { dismissButton -> { dismissButton { navigator.finish(DialogResult.Cancel) } } },
-        properties = properties,
+      onDismissRequest = { navigator.finish(DialogResult.Dismiss) },
+      icon = icon,
+      title = title,
+      text = text,
+      confirmButton = { confirmButton { navigator.finish(DialogResult.Confirm) } },
+      dismissButton =
+        dismissButton?.let { dismissButton ->
+          { dismissButton { navigator.finish(DialogResult.Cancel) } }
+        },
+      properties = properties,
     )
-}
+  }

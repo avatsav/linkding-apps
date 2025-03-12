@@ -8,8 +8,8 @@ import software.amazon.lastmile.kotlin.inject.anvil.AppScope
 import software.amazon.lastmile.kotlin.inject.anvil.SingleIn
 
 actual interface PreferencesPlatformComponent {
-    @Provides
-    @SingleIn(AppScope::class)
-    fun provideSettings(delegate: NSUserDefaults): ObservableSettings =
-        NSUserDefaultsSettings(delegate)
+  @Provides
+  @SingleIn(AppScope::class)
+  fun provideSettings(delegate: NSUserDefaults): ObservableSettings =
+    NSUserDefaultsSettings(delegate)
 }

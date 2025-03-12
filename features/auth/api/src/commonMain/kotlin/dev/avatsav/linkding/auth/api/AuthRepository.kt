@@ -5,8 +5,5 @@ import dev.avatsav.linkding.data.model.AuthError
 
 interface AuthRepository {
 
-    suspend fun authenticate(
-        hostUrl: String,
-        apiKey: String,
-    ): Result<Unit, AuthError>
+  suspend fun authenticate(hostUrl: String, apiKey: String): Result<Unit, AuthError>
 }

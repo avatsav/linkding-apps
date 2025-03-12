@@ -8,48 +8,43 @@ import io.ktor.client.request.parameter
 import io.ktor.http.path
 
 internal fun HttpRequestBuilder.endpointTags(vararg paths: String) {
-    url {
-        path(buildPaths("api", "tags", *paths))
-    }
+  url { path(buildPaths("api", "tags", *paths)) }
 }
 
 internal fun HttpRequestBuilder.endpointBookmarks(vararg paths: String) {
-    url {
-        path(buildPaths("api", "bookmarks", *paths))
-    }
+  url { path(buildPaths("api", "bookmarks", *paths)) }
 }
 
 internal fun HttpRequestBuilder.parameterPage(offset: Int, limit: Int) {
-    parameter("offset", offset.toString())
-    parameter("limit", limit.toString())
+  parameter("offset", offset.toString())
+  parameter("limit", limit.toString())
 }
 
 internal fun HttpRequestBuilder.parameterQuery(query: String) {
-    parameter("q", query)
+  parameter("q", query)
 }
 
 internal fun HttpRequestBuilder.parameterQuery(
-    query: String,
-    category: LinkdingBookmarkCategory,
-    tags: List<String>,
+  query: String,
+  category: LinkdingBookmarkCategory,
+  tags: List<String>,
 ) {
-    val constructedQuery = buildString {
+  val constructedQuery =
+    buildString {
         append("$query ")
         append(tags.joinToString(separator = " ") { "#$it" })
         when (category) {
-            Unread -> append("!unread ")
-            Untagged -> append("!untagged ")
-            else -> {}
+          Unread -> append("!unread ")
+          Untagged -> append("!untagged ")
+          else -> {}
         }
-    }.trim()
-    if (constructedQuery.isNotBlank()) {
-        parameter("q", constructedQuery)
-    }
+      }
+      .trim()
+  if (constructedQuery.isNotBlank()) {
+    parameter("q", constructedQuery)
+  }
 }
 
-/**
- * Post-fixing "/" because linkding api requires it to be present.
- * It's a python + django quirk.
- */
+/** Post-fixing "/" because linkding api requires it to be present. It's a python + django quirk. */
 private fun buildPaths(vararg paths: String): String =
-    paths.joinToString(separator = "/", postfix = "/")
+  paths.joinToString(separator = "/", postfix = "/")

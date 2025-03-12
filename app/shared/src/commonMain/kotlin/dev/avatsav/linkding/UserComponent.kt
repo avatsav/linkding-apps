@@ -12,11 +12,10 @@ import software.amazon.lastmile.kotlin.inject.anvil.SingleIn
 @ContributesSubcomponent(UserScope::class)
 interface UserComponent {
 
-    @Authenticated
-    val circuit: Circuit
+  @Authenticated val circuit: Circuit
 
-    @ContributesSubcomponent.Factory(UiScope::class)
-    interface Factory {
-        fun create(apiConfig: ApiConfig): UserComponent
-    }
+  @ContributesSubcomponent.Factory(UiScope::class)
+  interface Factory {
+    fun create(apiConfig: ApiConfig): UserComponent
+  }
 }

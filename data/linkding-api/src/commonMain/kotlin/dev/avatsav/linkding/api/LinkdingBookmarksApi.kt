@@ -9,23 +9,25 @@ import dev.avatsav.linkding.api.models.LinkdingError
 import dev.avatsav.linkding.api.models.LinkdingSaveBookmarkRequest
 
 interface LinkdingBookmarksApi {
-    suspend fun getBookmarks(
-        offset: Int,
-        limit: Int,
-        query: String = "",
-        category: LinkdingBookmarkCategory = LinkdingBookmarkCategory.All,
-        tags: List<String>,
-    ): Result<LinkdingBookmarksResponse, LinkdingError>
+  suspend fun getBookmarks(
+    offset: Int,
+    limit: Int,
+    query: String = "",
+    category: LinkdingBookmarkCategory = LinkdingBookmarkCategory.All,
+    tags: List<String>,
+  ): Result<LinkdingBookmarksResponse, LinkdingError>
 
-    suspend fun getBookmark(id: Long): Result<LinkdingBookmark, LinkdingError>
+  suspend fun getBookmark(id: Long): Result<LinkdingBookmark, LinkdingError>
 
-    suspend fun saveBookmark(saveBookmark: LinkdingSaveBookmarkRequest): Result<LinkdingBookmark, LinkdingError>
+  suspend fun saveBookmark(
+    saveBookmark: LinkdingSaveBookmarkRequest
+  ): Result<LinkdingBookmark, LinkdingError>
 
-    suspend fun checkUrl(url: String): Result<LinkdingCheckUrlResponse, LinkdingError>
+  suspend fun checkUrl(url: String): Result<LinkdingCheckUrlResponse, LinkdingError>
 
-    suspend fun archiveBookmark(id: Long): Result<Unit, LinkdingError>
+  suspend fun archiveBookmark(id: Long): Result<Unit, LinkdingError>
 
-    suspend fun unarchiveBookmark(id: Long): Result<Unit, LinkdingError>
+  suspend fun unarchiveBookmark(id: Long): Result<Unit, LinkdingError>
 
-    suspend fun deleteBookmark(id: Long): Result<Unit, LinkdingError>
+  suspend fun deleteBookmark(id: Long): Result<Unit, LinkdingError>
 }

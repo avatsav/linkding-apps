@@ -70,225 +70,202 @@ import kotlinx.coroutines.launch
 @CircuitInject(BookmarksScreen::class, UserScope::class)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Bookmarks(
-    state: BookmarksUiState,
-    modifier: Modifier = Modifier,
-) {
-    val eventSink = state.eventSink
-    val overlayHost = LocalOverlayHost.current
-    val focusManager = LocalFocusManager.current
+fun Bookmarks(state: BookmarksUiState, modifier: Modifier = Modifier) {
+  val eventSink = state.eventSink
+  val overlayHost = LocalOverlayHost.current
+  val focusManager = LocalFocusManager.current
 
-    val scope = rememberCoroutineScope()
+  val scope = rememberCoroutineScope()
 
-    var searchActive by rememberSaveable { mutableStateOf(false) }
-    val searchBarHorizontalPadding: Dp by animateDpAsState(if (searchActive) 0.dp else 12.dp)
-    val searchBarBottomPadding: Dp by animateDpAsState(if (searchActive) 0.dp else 12.dp)
+  var searchActive by rememberSaveable { mutableStateOf(false) }
+  val searchBarHorizontalPadding: Dp by animateDpAsState(if (searchActive) 0.dp else 12.dp)
+  val searchBarBottomPadding: Dp by animateDpAsState(if (searchActive) 0.dp else 12.dp)
 
-    val listState = rememberLazyListState()
-    val scrolledToTop by remember {
-        derivedStateOf {
-            listState.firstVisibleItemIndex == 0 && listState.firstVisibleItemScrollOffset == 0
-        }
+  val listState = rememberLazyListState()
+  val scrolledToTop by remember {
+    derivedStateOf {
+      listState.firstVisibleItemIndex == 0 && listState.firstVisibleItemScrollOffset == 0
     }
+  }
 
-    val searchBarBgSurfaceElevation: Dp by animateDpAsState(
-        if (scrolledToTop) 0.dp else 8.dp,
+  val searchBarBgSurfaceElevation: Dp by animateDpAsState(if (scrolledToTop) 0.dp else 8.dp)
+
+  val searchBarContainerColor by
+    animateColorAsState(
+      if (scrolledToTop && !searchActive) {
+        MaterialTheme.colorScheme.surfaceVariant
+      } else {
+        MaterialTheme.colorScheme.surface
+      }
     )
 
-    val searchBarContainerColor by animateColorAsState(
-        if (scrolledToTop && !searchActive) {
-            MaterialTheme.colorScheme.surfaceVariant
-        } else {
-            MaterialTheme.colorScheme.surface
-        },
-    )
+  Scaffold(
+    modifier = modifier,
+    topBar = {
+      Column(
+        modifier =
+          Modifier.background(
+            MaterialTheme.colorScheme.surfaceColorAtElevation(searchBarBgSurfaceElevation)
+          )
+      ) {
+        var searchQuery by rememberSaveable { mutableStateOf("") }
+        LaunchedEffect(searchActive) {
+          if (!searchActive) {
+            searchQuery = ""
+            eventSink(BookmarksUiEvent.ClearSearch)
+          }
+        }
 
-    Scaffold(
-        modifier = modifier,
-        topBar = {
-            Column(
-                modifier = Modifier.background(
-                    MaterialTheme.colorScheme.surfaceColorAtElevation(
-                        searchBarBgSurfaceElevation,
-                    ),
-                ),
-            ) {
-                var searchQuery by rememberSaveable { mutableStateOf("") }
-                LaunchedEffect(searchActive) {
-                    if (!searchActive) {
-                        searchQuery = ""
-                        eventSink(BookmarksUiEvent.ClearSearch)
+        SearchBar(
+          modifier =
+            Modifier.fillMaxWidth()
+              .padding(horizontal = searchBarHorizontalPadding)
+              .padding(bottom = searchBarBottomPadding),
+          inputField = {
+            SearchBarDefaults.InputField(
+              query = searchQuery,
+              onQueryChange = { searchQuery = it },
+              onSearch = {
+                eventSink(Search(searchQuery))
+                focusManager.clearFocus()
+              },
+              expanded = searchActive,
+              onExpandedChange = { searchActive = it },
+              enabled = true,
+              placeholder = { Text("Search for words or #tags") },
+              leadingIcon = {
+                Icon(
+                  imageVector =
+                    if (state.isOnline) Icons.Default.Search else Icons.Default.CloudOff,
+                  contentDescription = "Search Icon",
+                )
+              },
+              trailingIcon = {
+                IconButton(
+                  onClick = {
+                    if (searchActive) {
+                      searchActive = false
+                    } else {
+                      eventSink(ShowSettings)
                     }
-                }
-
-                SearchBar(
-                    modifier = Modifier.fillMaxWidth()
-                        .padding(horizontal = searchBarHorizontalPadding)
-                        .padding(bottom = searchBarBottomPadding),
-                    inputField = {
-                        SearchBarDefaults.InputField(
-                            query = searchQuery,
-                            onQueryChange = { searchQuery = it },
-                            onSearch = {
-                                eventSink(Search(searchQuery))
-                                focusManager.clearFocus()
-                            },
-                            expanded = searchActive,
-                            onExpandedChange = { searchActive = it },
-                            enabled = true,
-                            placeholder = { Text("Search for words or #tags") },
-                            leadingIcon = {
-                                Icon(
-                                    imageVector = if (state.isOnline) Icons.Default.Search else Icons.Default.CloudOff,
-                                    contentDescription = "Search Icon",
-                                )
-                            },
-                            trailingIcon = {
-                                IconButton(
-                                    onClick = {
-                                        if (searchActive) {
-                                            searchActive = false
-                                        } else {
-                                            eventSink(ShowSettings)
-                                        }
-                                    },
-                                ) {
-                                    Icon(
-                                        imageVector = if (searchActive) Icons.Default.Close else Icons.Outlined.Settings,
-                                        contentDescription = if (searchActive) "Close" else "Settings",
-                                    )
-                                }
-                            },
-                            interactionSource = null,
-                        )
-                    },
-                    expanded = searchActive,
-                    onExpandedChange = { searchActive = it },
-                    colors = SearchBarDefaults.colors(
-                        containerColor = searchBarContainerColor,
-                    ),
-                    shape = SearchBarDefaults.inputFieldShape,
-                    shadowElevation = SearchBarDefaults.ShadowElevation,
-                    windowInsets = SearchBarDefaults.windowInsets,
+                  }
                 ) {
-                    LazyColumn(
-                        modifier = Modifier.fillMaxSize(),
-                        contentPadding = PaddingValues(bottom = 56.dp),
-                    ) {
-                        items(
-                            count = state.searchResults.itemCount,
-                            key = state.searchResults.itemKey { it.id },
-                        ) { index ->
-                            val bookmark = state.searchResults[index]
-                            if (bookmark != null) {
-                                BookmarkListItem(
-                                    bookmark = bookmark,
-                                    openBookmark = { toOpen -> eventSink(Open(toOpen)) },
-                                    toggleArchive = { _, _ -> },
-                                    deleteBookmark = { toDelete, dismissState ->
-                                        scope.launch {
-                                            when (overlayHost.showDeleteBookmarkAction(toDelete)) {
-                                                ActionResult.Confirmed -> eventSink(
-                                                    Delete(
-                                                        toDelete,
-                                                    ),
-                                                )
-
-                                                ActionResult.Cancelled,
-                                                ActionResult.Dismissed,
-                                                    -> dismissState.reset()
-                                            }
-                                        }
-                                    },
-                                )
-                            }
-                        }
-                    }
+                  Icon(
+                    imageVector =
+                      if (searchActive) Icons.Default.Close else Icons.Outlined.Settings,
+                    contentDescription = if (searchActive) "Close" else "Settings",
+                  )
                 }
-            }
-        },
-        floatingActionButton = {
-            AnimatedVisibility(
-                visible = !searchActive,
-                enter = scaleIn(),
-                exit = scaleOut(),
-            ) {
-                FloatingActionButton(onClick = { eventSink(AddBookmark) }) {
-                    Icon(
-                        imageVector = Icons.Filled.Add,
-                        contentDescription = "Add Bookmark",
-                    )
-                }
-            }
-        },
-    ) { paddingValues ->
-        val refreshing by rememberUpdatedState(state.bookmarks.loadState.refresh == LoadState.Loading)
-
-        PullToRefreshBox(
-            modifier = Modifier.padding(
-                top = paddingValues.calculateTopPadding(),
-                start = paddingValues.calculateStartPadding(LayoutDirection.Ltr),
-                end = paddingValues.calculateEndPadding(LayoutDirection.Ltr),
-            ),
-            isRefreshing = refreshing,
-            onRefresh = { eventSink(BookmarksUiEvent.Refresh) },
+              },
+              interactionSource = null,
+            )
+          },
+          expanded = searchActive,
+          onExpandedChange = { searchActive = it },
+          colors = SearchBarDefaults.colors(containerColor = searchBarContainerColor),
+          shape = SearchBarDefaults.inputFieldShape,
+          shadowElevation = SearchBarDefaults.ShadowElevation,
+          windowInsets = SearchBarDefaults.windowInsets,
         ) {
-            ContentWithOverlays {
-                LazyColumn(
-                    modifier = Modifier.fillMaxSize(),
-                    state = listState,
-                    contentPadding = PaddingValues(bottom = 108.dp),
-                ) {
-                    item(key = state.bookmarkCategory) {
-                        FiltersBar(
-                            selectedCategory = state.bookmarkCategory,
-                            onSelectCategory = { eventSink(SetBookmarkCategory(it)) },
-                            selectedTags = state.selectedTags.toList(),
-                            onSelectTag = { eventSink(SelectTag(it)) },
-                            onRemoveTag = { eventSink(RemoveTag(it)) },
-                            modifier = Modifier.fillMaxWidth(),
-                        )
-                    }
-                    items(
-                        count = state.bookmarks.itemCount,
-                        key = state.bookmarks.itemKey { it.localId },
-                    ) { index ->
-                        val bookmark = state.bookmarks[index]
-                        if (bookmark != null) {
-                            BookmarkListItem(
-                                bookmark = bookmark,
-                                openBookmark = { toOpen -> eventSink(Open(toOpen)) },
-                                toggleArchive = { toToggle, dismissState ->
-                                    scope.launch {
-                                        when (overlayHost.showArchiveBookmarkAction(toToggle)) {
-                                            ActionResult.Confirmed -> eventSink(
-                                                ToggleArchive(
-                                                    toToggle,
-                                                ),
-                                            )
+          LazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = PaddingValues(bottom = 56.dp),
+          ) {
+            items(
+              count = state.searchResults.itemCount,
+              key = state.searchResults.itemKey { it.id },
+            ) { index ->
+              val bookmark = state.searchResults[index]
+              if (bookmark != null) {
+                BookmarkListItem(
+                  bookmark = bookmark,
+                  openBookmark = { toOpen -> eventSink(Open(toOpen)) },
+                  toggleArchive = { _, _ -> },
+                  deleteBookmark = { toDelete, dismissState ->
+                    scope.launch {
+                      when (overlayHost.showDeleteBookmarkAction(toDelete)) {
+                        ActionResult.Confirmed -> eventSink(Delete(toDelete))
 
-                                            ActionResult.Cancelled,
-                                            ActionResult.Dismissed,
-                                                -> dismissState.reset()
-                                        }
-                                    }
-                                },
-                                deleteBookmark = { toDelete, dismissState ->
-                                    scope.launch {
-                                        when (overlayHost.showDeleteBookmarkAction(toDelete)) {
-                                            ActionResult.Confirmed -> eventSink(Delete(toDelete))
-                                            ActionResult.Cancelled,
-                                            ActionResult.Dismissed,
-                                                -> dismissState.reset()
-                                        }
-                                    }
-                                },
-                                modifier = Modifier.animateItem(),
-                            )
-                        }
+                        ActionResult.Cancelled,
+                        ActionResult.Dismissed -> dismissState.reset()
+                      }
                     }
-                }
+                  },
+                )
+              }
             }
+          }
         }
+      }
+    },
+    floatingActionButton = {
+      AnimatedVisibility(visible = !searchActive, enter = scaleIn(), exit = scaleOut()) {
+        FloatingActionButton(onClick = { eventSink(AddBookmark) }) {
+          Icon(imageVector = Icons.Filled.Add, contentDescription = "Add Bookmark")
+        }
+      }
+    },
+  ) { paddingValues ->
+    val refreshing by rememberUpdatedState(state.bookmarks.loadState.refresh == LoadState.Loading)
+
+    PullToRefreshBox(
+      modifier =
+        Modifier.padding(
+          top = paddingValues.calculateTopPadding(),
+          start = paddingValues.calculateStartPadding(LayoutDirection.Ltr),
+          end = paddingValues.calculateEndPadding(LayoutDirection.Ltr),
+        ),
+      isRefreshing = refreshing,
+      onRefresh = { eventSink(BookmarksUiEvent.Refresh) },
+    ) {
+      ContentWithOverlays {
+        LazyColumn(
+          modifier = Modifier.fillMaxSize(),
+          state = listState,
+          contentPadding = PaddingValues(bottom = 108.dp),
+        ) {
+          item(key = state.bookmarkCategory) {
+            FiltersBar(
+              selectedCategory = state.bookmarkCategory,
+              onSelectCategory = { eventSink(SetBookmarkCategory(it)) },
+              selectedTags = state.selectedTags.toList(),
+              onSelectTag = { eventSink(SelectTag(it)) },
+              onRemoveTag = { eventSink(RemoveTag(it)) },
+              modifier = Modifier.fillMaxWidth(),
+            )
+          }
+          items(count = state.bookmarks.itemCount, key = state.bookmarks.itemKey { it.localId }) {
+            index ->
+            val bookmark = state.bookmarks[index]
+            if (bookmark != null) {
+              BookmarkListItem(
+                bookmark = bookmark,
+                openBookmark = { toOpen -> eventSink(Open(toOpen)) },
+                toggleArchive = { toToggle, dismissState ->
+                  scope.launch {
+                    when (overlayHost.showArchiveBookmarkAction(toToggle)) {
+                      ActionResult.Confirmed -> eventSink(ToggleArchive(toToggle))
+
+                      ActionResult.Cancelled,
+                      ActionResult.Dismissed -> dismissState.reset()
+                    }
+                  }
+                },
+                deleteBookmark = { toDelete, dismissState ->
+                  scope.launch {
+                    when (overlayHost.showDeleteBookmarkAction(toDelete)) {
+                      ActionResult.Confirmed -> eventSink(Delete(toDelete))
+                      ActionResult.Cancelled,
+                      ActionResult.Dismissed -> dismissState.reset()
+                    }
+                  }
+                },
+                modifier = Modifier.animateItem(),
+              )
+            }
+          }
+        }
+      }
     }
+  }
 }

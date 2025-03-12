@@ -30,46 +30,41 @@ import dev.avatsav.linkding.ui.compose.none
 @CircuitInject(TagsScreen::class, UserScope::class)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Tags(
-    state: TagsUiState,
-    modifier: Modifier = Modifier,
-) {
-    // https://issuetracker.google.com/issues/256100927#comment1
-    val eventSink = state.eventSink
+fun Tags(state: TagsUiState, modifier: Modifier = Modifier) {
+  // https://issuetracker.google.com/issues/256100927#comment1
+  val eventSink = state.eventSink
 
-    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
-    Scaffold(
-        modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
-        topBar = {
-            TopAppBar(
-                windowInsets = WindowInsets.none,
-                title = { Text("Tags") },
-                navigationIcon = {
-                    IconButton(onClick = { eventSink(TagsUiEvent.Close) }) {
-                        Icon(
-                            imageVector = Icons.Filled.Close,
-                            contentDescription = "Close",
-                        )
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    scrolledContainerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(16.dp),
-                ),
-                scrollBehavior = scrollBehavior,
-            )
+  val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
+  Scaffold(
+    modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+    topBar = {
+      TopAppBar(
+        windowInsets = WindowInsets.none,
+        title = { Text("Tags") },
+        navigationIcon = {
+          IconButton(onClick = { eventSink(TagsUiEvent.Close) }) {
+            Icon(imageVector = Icons.Filled.Close, contentDescription = "Close")
+          }
         },
-    ) { padding ->
-        LazyColumn(modifier = Modifier.padding(padding)) {
-            items(state.tags.itemCount) { index ->
-                val tag = state.tags[index]
-                if (tag != null) {
-                    ListItem(
-                        modifier = Modifier.clickable { eventSink(TagsUiEvent.SelectTag(tag)) },
-                        headlineContent = { Text(tag.name) },
-                        leadingContent = { Icon(Icons.Default.Tag, null) },
-                    )
-                }
-            }
+        colors =
+          TopAppBarDefaults.topAppBarColors(
+            scrolledContainerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(16.dp)
+          ),
+        scrollBehavior = scrollBehavior,
+      )
+    },
+  ) { padding ->
+    LazyColumn(modifier = Modifier.padding(padding)) {
+      items(state.tags.itemCount) { index ->
+        val tag = state.tags[index]
+        if (tag != null) {
+          ListItem(
+            modifier = Modifier.clickable { eventSink(TagsUiEvent.SelectTag(tag)) },
+            headlineContent = { Text(tag.name) },
+            leadingContent = { Icon(Icons.Default.Tag, null) },
+          )
         }
+      }
     }
+  }
 }

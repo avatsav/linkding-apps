@@ -13,22 +13,22 @@ import kotlinx.coroutines.test.runTest
 @OptIn(ExperimentalCoroutinesApi::class)
 class ConnectivityObserverTest {
 
-    private val appCoroutineScope = TestScope(UnconfinedTestDispatcher())
-    private val networkMonitor = FakeNetworkMonitor()
-    private val victim = DefaultConnectivityObserver(networkMonitor, appCoroutineScope)
+  private val appCoroutineScope = TestScope(UnconfinedTestDispatcher())
+  private val networkMonitor = FakeNetworkMonitor()
+  private val victim = DefaultConnectivityObserver(networkMonitor, appCoroutineScope)
 
-    @Test
-    fun `network changes emit new states distinctly`() = runTest {
-        victim.observeIsOnline.test {
-            awaitItem() shouldBe true // initial value
-            networkMonitor.setConnectivityChanged(false)
-            networkMonitor.setConnectivityChanged(false)
-            networkMonitor.setConnectivityChanged(false)
-            networkMonitor.setConnectivityChanged(true)
-            awaitItem() shouldBe false
-            awaitItem() shouldBe true
-        }
-        appCoroutineScope.cancel()
-        networkMonitor.closed shouldBe true
+  @Test
+  fun `network changes emit new states distinctly`() = runTest {
+    victim.observeIsOnline.test {
+      awaitItem() shouldBe true // initial value
+      networkMonitor.setConnectivityChanged(false)
+      networkMonitor.setConnectivityChanged(false)
+      networkMonitor.setConnectivityChanged(false)
+      networkMonitor.setConnectivityChanged(true)
+      awaitItem() shouldBe false
+      awaitItem() shouldBe true
     }
+    appCoroutineScope.cancel()
+    networkMonitor.closed shouldBe true
+  }
 }

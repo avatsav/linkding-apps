@@ -5,13 +5,10 @@ import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 
-@Composable
-internal expect fun colorScheme(
-    darkTheme: Boolean,
-    dynamicColor: Boolean,
-): ColorScheme
+@Composable internal expect fun colorScheme(darkTheme: Boolean, dynamicColor: Boolean): ColorScheme
 
-val LinkdingLightColorScheme = lightColorScheme(
+val LinkdingLightColorScheme =
+  lightColorScheme(
     primary = md_theme_light_primary,
     onPrimary = md_theme_light_onPrimary,
     primaryContainer = md_theme_light_primaryContainer,
@@ -41,9 +38,10 @@ val LinkdingLightColorScheme = lightColorScheme(
     surfaceTint = md_theme_light_surfaceTint,
     outlineVariant = md_theme_light_outlineVariant,
     scrim = md_theme_light_scrim,
-)
+  )
 
-val LinkdingDarkColorScheme = darkColorScheme(
+val LinkdingDarkColorScheme =
+  darkColorScheme(
     primary = md_theme_dark_primary,
     onPrimary = md_theme_dark_onPrimary,
     primaryContainer = md_theme_dark_primaryContainer,
@@ -73,4 +71,4 @@ val LinkdingDarkColorScheme = darkColorScheme(
     surfaceTint = md_theme_dark_surfaceTint,
     outlineVariant = md_theme_dark_outlineVariant,
     scrim = md_theme_dark_scrim,
-)
+  )

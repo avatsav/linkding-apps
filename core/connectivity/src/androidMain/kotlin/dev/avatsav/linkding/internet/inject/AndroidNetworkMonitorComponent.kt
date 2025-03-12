@@ -18,17 +18,17 @@ import software.amazon.lastmile.kotlin.inject.anvil.SingleIn
 @ContributesTo(AppScope::class)
 interface AndroidNetworkMonitorComponent {
 
-    @Provides
-    @SingleIn(AppScope::class)
-    fun provideNetworkMonitor(application: Application): NetworkMonitor {
-        val context = application.applicationContext
-        val connectivityManager: ConnectivityManager? = context.getSystemService()
-        if (connectivityManager == null || !context.isPermissionGranted(ACCESS_NETWORK_STATE)) {
-            return EmptyNetworkMonitor()
-        }
-        return AndroidNetworkMonitor(connectivityManager)
+  @Provides
+  @SingleIn(AppScope::class)
+  fun provideNetworkMonitor(application: Application): NetworkMonitor {
+    val context = application.applicationContext
+    val connectivityManager: ConnectivityManager? = context.getSystemService()
+    if (connectivityManager == null || !context.isPermissionGranted(ACCESS_NETWORK_STATE)) {
+      return EmptyNetworkMonitor()
     }
+    return AndroidNetworkMonitor(connectivityManager)
+  }
 }
 
 internal fun Context.isPermissionGranted(permission: String): Boolean =
-    ContextCompat.checkSelfPermission(this, permission) == PERMISSION_GRANTED
+  ContextCompat.checkSelfPermission(this, permission) == PERMISSION_GRANTED

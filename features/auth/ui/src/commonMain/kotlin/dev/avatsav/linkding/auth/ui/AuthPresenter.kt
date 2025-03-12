@@ -16,51 +16,45 @@ import dev.avatsav.linkding.data.model.AuthError.InvalidHostname
 import dev.avatsav.linkding.data.model.AuthError.Other
 import dev.avatsav.linkding.inject.UiScope
 import dev.avatsav.linkding.ui.AuthScreen
-import me.tatarka.inject.annotations.Inject
 import kotlinx.coroutines.launch
+import me.tatarka.inject.annotations.Inject
 
 @CircuitInject(AuthScreen::class, UiScope::class)
-class AuthPresenter @Inject constructor(
-    private val authenticate: Authenticate,
-) : Presenter<AuthUiState> {
+class AuthPresenter @Inject constructor(private val authenticate: Authenticate) :
+  Presenter<AuthUiState> {
 
-    @Composable
-    override fun present(): AuthUiState {
-        val scope = rememberCoroutineScope()
+  @Composable
+  override fun present(): AuthUiState {
+    val scope = rememberCoroutineScope()
 
-        val verifying by authenticate.inProgress.collectAsState(false)
+    val verifying by authenticate.inProgress.collectAsState(false)
 
-        var invalidHostUrl by rememberSaveable { mutableStateOf(false) }
-        var invalidApiKey by rememberSaveable { mutableStateOf(false) }
-        var errorMessage by rememberSaveable { mutableStateOf("") }
+    var invalidHostUrl by rememberSaveable { mutableStateOf(false) }
+    var invalidApiKey by rememberSaveable { mutableStateOf(false) }
+    var errorMessage by rememberSaveable { mutableStateOf("") }
 
-        return AuthUiState(
-            verifying = verifying,
-            invalidHostUrl = invalidHostUrl,
-            invalidApiKey = invalidApiKey,
-            errorMessage = errorMessage,
-        ) { event ->
-            when (event) {
-                is AuthUiEvent.SaveCredentials -> {
-                    invalidHostUrl = false
-                    invalidApiKey = false
-                    errorMessage = ""
-                    scope.launch {
-                        authenticate(
-                            Authenticate.Param(
-                                event.hostUrl,
-                                event.apiKey,
-                            ),
-                        ).onFailure { error ->
-                            when (error) {
-                                is InvalidApiKey -> invalidApiKey = true
-                                is InvalidHostname -> invalidHostUrl = true
-                                is Other -> errorMessage = error.message
-                            }
-                        }
-                    }
-                }
+    return AuthUiState(
+      verifying = verifying,
+      invalidHostUrl = invalidHostUrl,
+      invalidApiKey = invalidApiKey,
+      errorMessage = errorMessage,
+    ) { event ->
+      when (event) {
+        is AuthUiEvent.SaveCredentials -> {
+          invalidHostUrl = false
+          invalidApiKey = false
+          errorMessage = ""
+          scope.launch {
+            authenticate(Authenticate.Param(event.hostUrl, event.apiKey)).onFailure { error ->
+              when (error) {
+                is InvalidApiKey -> invalidApiKey = true
+                is InvalidHostname -> invalidHostUrl = true
+                is Other -> errorMessage = error.message
+              }
             }
+          }
         }
+      }
     }
+  }
 }

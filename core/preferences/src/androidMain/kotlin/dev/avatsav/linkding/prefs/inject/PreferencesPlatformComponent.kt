@@ -10,14 +10,13 @@ import software.amazon.lastmile.kotlin.inject.anvil.AppScope
 import software.amazon.lastmile.kotlin.inject.anvil.SingleIn
 
 actual interface PreferencesPlatformComponent {
-    @Provides
-    @SingleIn(AppScope::class)
-    fun provideSettings(sharedPrefs: SharedPreferences): ObservableSettings =
-        SharedPreferencesSettings(sharedPrefs)
+  @Provides
+  @SingleIn(AppScope::class)
+  fun provideSettings(sharedPrefs: SharedPreferences): ObservableSettings =
+    SharedPreferencesSettings(sharedPrefs)
 
-    @Provides
-    @SingleIn(AppScope::class)
-    fun provideSharedPreferences(
-        context: Application,
-    ): SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+  @Provides
+  @SingleIn(AppScope::class)
+  fun provideSharedPreferences(context: Application): SharedPreferences =
+    PreferenceManager.getDefaultSharedPreferences(context)
 }

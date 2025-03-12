@@ -5,5 +5,4 @@ import software.amazon.lastmile.kotlin.inject.anvil.ContributesTo
 
 expect interface PlatformNetworkComponent
 
-@ContributesTo(AppScope::class)
-interface NetworkComponent : PlatformNetworkComponent
+@ContributesTo(AppScope::class) interface NetworkComponent : PlatformNetworkComponent

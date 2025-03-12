@@ -5,5 +5,4 @@ import software.amazon.lastmile.kotlin.inject.anvil.ContributesTo
 
 expect interface PreferencesPlatformComponent
 
-@ContributesTo(AppScope::class)
-interface PreferencesComponent : PreferencesPlatformComponent
+@ContributesTo(AppScope::class) interface PreferencesComponent : PreferencesPlatformComponent

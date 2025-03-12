@@ -12,15 +12,12 @@ import kotlinx.coroutines.CoroutineScope
 
 @Composable
 @NonRestartableComposable
-internal fun RetainedLaunchedEffect(
-    vararg keys: Any?,
-    block: suspend CoroutineScope.() -> Unit,
-) {
-    val latestBlock by rememberUpdatedState(block)
-    var launched by rememberRetained(*keys) { mutableStateOf(false) }
-    LaunchedEffect(*keys) {
-        if (launched) return@LaunchedEffect
-        launched = true
-        latestBlock()
-    }
+internal fun RetainedLaunchedEffect(vararg keys: Any?, block: suspend CoroutineScope.() -> Unit) {
+  val latestBlock by rememberUpdatedState(block)
+  var launched by rememberRetained(*keys) { mutableStateOf(false) }
+  LaunchedEffect(*keys) {
+    if (launched) return@LaunchedEffect
+    launched = true
+    latestBlock()
+  }
 }

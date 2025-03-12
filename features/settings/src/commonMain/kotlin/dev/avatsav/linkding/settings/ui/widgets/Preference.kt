@@ -45,191 +45,163 @@ import dev.avatsav.linkding.ui.compose.onCondition
 
 @Composable
 fun PreferenceColumnScope.SwitchPreference(
-    title: String,
-    description: String?,
-    shape: Shape,
-    checked: Boolean,
-    onCheckedChange: () -> Unit,
-    modifier: Modifier = Modifier,
+  title: String,
+  description: String?,
+  shape: Shape,
+  checked: Boolean,
+  onCheckedChange: () -> Unit,
+  modifier: Modifier = Modifier,
 ) {
-    Preference(
-        title = title,
-        description = description,
-        shape = shape,
-        control = {
-            Switch(
-                checked = checked,
-                onCheckedChange = { onCheckedChange() },
-            )
-        },
-        modifier = modifier,
-    )
+  Preference(
+    title = title,
+    description = description,
+    shape = shape,
+    control = { Switch(checked = checked, onCheckedChange = { onCheckedChange() }) },
+    modifier = modifier,
+  )
 }
 
 @Composable
 fun PreferenceColumnScope.ThemePreference(
-    shape: Shape,
-    selected: AppTheme,
-    onSelect: (AppTheme) -> Unit,
-    modifier: Modifier = Modifier,
+  shape: Shape,
+  selected: AppTheme,
+  onSelect: (AppTheme) -> Unit,
+  modifier: Modifier = Modifier,
 ) {
-    val options = AppTheme.entries
-    Preference(
-        title = "Theme",
-        description = selected.name,
-        shape = shape,
-        modifier = modifier,
-    ) {
-        SingleChoiceSegmentedButtonRow {
-            options.forEachIndexed { index, theme ->
-                SegmentedButton(
-                    shape = SegmentedButtonDefaults.itemShape(
-                        index = index,
-                        count = options.size,
-                    ),
-                    onClick = { onSelect(theme) },
-                    icon = {},
-                    selected = theme == selected,
-                    colors = SegmentedButtonDefaults.colors().copy(
-                        activeContainerColor = MaterialTheme.colorScheme.primary,
-                        activeContentColor = MaterialTheme.colorScheme.onPrimary,
-                        activeBorderColor = MaterialTheme.colorScheme.primary,
-                        inactiveBorderColor = MaterialTheme.colorScheme.outline,
-                    ),
-                ) {
-                    Icon(
-                        imageVector = when (theme) {
-                            AppTheme.System -> Icons.Default.AutoMode
-                            AppTheme.Light -> Icons.Default.LightMode
-                            AppTheme.Dark -> Icons.Default.DarkMode
-                        },
-                        contentDescription = theme.name,
-                    )
-                }
-            }
+  val options = AppTheme.entries
+  Preference(title = "Theme", description = selected.name, shape = shape, modifier = modifier) {
+    SingleChoiceSegmentedButtonRow {
+      options.forEachIndexed { index, theme ->
+        SegmentedButton(
+          shape = SegmentedButtonDefaults.itemShape(index = index, count = options.size),
+          onClick = { onSelect(theme) },
+          icon = {},
+          selected = theme == selected,
+          colors =
+            SegmentedButtonDefaults.colors()
+              .copy(
+                activeContainerColor = MaterialTheme.colorScheme.primary,
+                activeContentColor = MaterialTheme.colorScheme.onPrimary,
+                activeBorderColor = MaterialTheme.colorScheme.primary,
+                inactiveBorderColor = MaterialTheme.colorScheme.outline,
+              ),
+        ) {
+          Icon(
+            imageVector =
+              when (theme) {
+                AppTheme.System -> Icons.Default.AutoMode
+                AppTheme.Light -> Icons.Default.LightMode
+                AppTheme.Dark -> Icons.Default.DarkMode
+              },
+            contentDescription = theme.name,
+          )
         }
+      }
     }
+  }
 }
 
 @Composable
 fun PreferenceColumnScope.Preference(
-    title: String,
-    shape: Shape,
-    modifier: Modifier = Modifier,
-    description: String? = null,
-    clickable: Boolean = false,
-    onClick: () -> Unit = {},
-    control: (@Composable () -> Unit)? = null,
+  title: String,
+  shape: Shape,
+  modifier: Modifier = Modifier,
+  description: String? = null,
+  clickable: Boolean = false,
+  onClick: () -> Unit = {},
+  control: (@Composable () -> Unit)? = null,
 ) {
-    Surface(
-        modifier = modifier
-            .defaultMinSize(minHeight = PreferenceDefaults.MinHeight)
-            .clip(shape)
-            .onCondition(clickable) {
-                clickable { onClick() }
-            },
-        shape = shape,
-        color = MaterialTheme.colorScheme.surfaceColorAtElevation(8.dp),
-    ) {
-        Row(
-            modifier = Modifier.padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Column(
-                modifier = Modifier.weight(1f),
-                verticalArrangement = Arrangement.spacedBy(2.dp),
-            ) {
-                Text(
-                    text = title,
-                    style = MaterialTheme.typography.bodyLarge,
-                )
+  Surface(
+    modifier =
+      modifier.defaultMinSize(minHeight = PreferenceDefaults.MinHeight).clip(shape).onCondition(
+        clickable
+      ) {
+        clickable { onClick() }
+      },
+    shape = shape,
+    color = MaterialTheme.colorScheme.surfaceColorAtElevation(8.dp),
+  ) {
+    Row(modifier = Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
+      Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
+        Text(text = title, style = MaterialTheme.typography.bodyLarge)
 
-                if (description != null) {
-                    AnimatedContent(
-                        targetState = description,
-                        transitionSpec = {
-                            (fadeIn() + slideInHorizontally(tween(220)))
-                                .togetherWith(
-                                    slideOutHorizontally(
-                                        tween(220),
-                                        targetOffsetX = { it / 2 },
-                                    ) + fadeOut(),
-                                )
-                        },
-                    ) { target ->
-                        Text(
-                            text = target,
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        )
-                    }
-                }
-            }
-            control?.invoke()
+        if (description != null) {
+          AnimatedContent(
+            targetState = description,
+            transitionSpec = {
+              (fadeIn() + slideInHorizontally(tween(220))).togetherWith(
+                slideOutHorizontally(tween(220), targetOffsetX = { it / 2 }) + fadeOut()
+              )
+            },
+          ) { target ->
+            Text(
+              text = target,
+              style = MaterialTheme.typography.bodySmall,
+              color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+          }
         }
+      }
+      control?.invoke()
     }
+  }
 }
 
 @Composable
 fun PreferenceSection(
-    title: String?,
-    modifier: Modifier = Modifier,
-    space: Dp = PreferenceDefaults.SectionWidth,
-    content: @Composable PreferenceColumnScope.() -> Unit,
+  title: String?,
+  modifier: Modifier = Modifier,
+  space: Dp = PreferenceDefaults.SectionWidth,
+  content: @Composable PreferenceColumnScope.() -> Unit,
 ) {
-    Column(
-        modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(space),
-    ) {
-        val scope = remember { PreferenceColumnScopeWrapper(this) }
-        if (title != null) {
-            PreferenceHeader(title)
-            Spacer(Modifier.height(4.dp))
-        }
-        scope.content()
+  Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(space)) {
+    val scope = remember { PreferenceColumnScopeWrapper(this) }
+    if (title != null) {
+      PreferenceHeader(title)
+      Spacer(Modifier.height(4.dp))
     }
+    scope.content()
+  }
 }
 
 @Composable
-private fun PreferenceHeader(
-    title: String,
-    modifier: Modifier = Modifier,
-) {
-    Surface(
-        modifier = modifier.padding(horizontal = 16.dp),
-    ) {
-        Text(
-            text = title,
-            style = MaterialTheme.typography.labelLarge,
-            color = MaterialTheme.colorScheme.primary,
-        )
-    }
+private fun PreferenceHeader(title: String, modifier: Modifier = Modifier) {
+  Surface(modifier = modifier.padding(horizontal = 16.dp)) {
+    Text(
+      text = title,
+      style = MaterialTheme.typography.labelLarge,
+      color = MaterialTheme.colorScheme.primary,
+    )
+  }
 }
 
 interface PreferenceColumnScope : ColumnScope
 
 private class PreferenceColumnScopeWrapper(scope: ColumnScope) :
-    PreferenceColumnScope,
-    ColumnScope by scope
+  PreferenceColumnScope, ColumnScope by scope
 
 object PreferenceDefaults {
-    val SectionWidth = 2.dp
-    val MinHeight = 56.dp
-    private val baseShape: CornerBasedShape
-        get() = RoundedCornerShape(4.dp)
+  val SectionWidth = 2.dp
+  val MinHeight = 56.dp
+  private val baseShape: CornerBasedShape
+    get() = RoundedCornerShape(4.dp)
 
-    fun itemShape(index: Int, count: Int, baseShape: CornerBasedShape = PreferenceDefaults.baseShape): Shape {
-        if (count == 1) return baseShape
-        return when (index) {
-            0 -> baseShape.start()
-            count - 1 -> baseShape.end()
-            else -> baseShape
-        }
+  fun itemShape(
+    index: Int,
+    count: Int,
+    baseShape: CornerBasedShape = PreferenceDefaults.baseShape,
+  ): Shape {
+    if (count == 1) return baseShape
+    return when (index) {
+      0 -> baseShape.start()
+      count - 1 -> baseShape.end()
+      else -> baseShape
     }
+  }
 }
 
 private fun CornerBasedShape.start(): CornerBasedShape =
-    copy(topStart = CornerSize(28.dp), topEnd = CornerSize(28.dp))
+  copy(topStart = CornerSize(28.dp), topEnd = CornerSize(28.dp))
 
 private fun CornerBasedShape.end(): CornerBasedShape =
-    copy(bottomStart = CornerSize(28.dp), bottomEnd = CornerSize(28.dp))
+  copy(bottomStart = CornerSize(28.dp), bottomEnd = CornerSize(28.dp))

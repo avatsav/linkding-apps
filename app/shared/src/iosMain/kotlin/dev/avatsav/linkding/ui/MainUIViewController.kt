@@ -18,22 +18,15 @@ typealias MainUIViewController = () -> UIViewController
 
 @Inject
 @Suppress("ktlint:standard:function-naming")
-fun MainUIViewController(
-    appUi: AppUi,
-): UIViewController = ComposeUIViewController {
-    val backstack = rememberSaveableBackStack(root = AuthScreen)
-    val navigator = rememberCircuitNavigator(backstack, onRootPop = { /* no-op */ })
-    val uiViewController = LocalUIViewController.current
-    appUi.Content(
-        backstack,
-        navigator,
-        { uiViewController.launchUrl(it) },
-        Modifier.fillMaxSize(),
-    )
+fun MainUIViewController(appUi: AppUi): UIViewController = ComposeUIViewController {
+  val backstack = rememberSaveableBackStack(root = AuthScreen)
+  val navigator = rememberCircuitNavigator(backstack, onRootPop = { /* no-op */ })
+  val uiViewController = LocalUIViewController.current
+  appUi.Content(backstack, navigator, { uiViewController.launchUrl(it) }, Modifier.fillMaxSize())
 }
 
 private fun UIViewController.launchUrl(url: String): Boolean {
-    val safari = SFSafariViewController(NSURL(string = url))
-    presentViewController(safari, animated = true, completion = null)
-    return true
+  val safari = SFSafariViewController(NSURL(string = url))
+  presentViewController(safari, animated = true, completion = null)
+  return true
 }

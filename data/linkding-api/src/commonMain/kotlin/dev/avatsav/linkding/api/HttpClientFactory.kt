@@ -17,43 +17,39 @@ import kotlinx.serialization.json.Json
 
 internal object HttpClientFactory {
 
-    fun buildHttpClient(
-        clientConfig: LinkdingClientConfig,
-        apiConfig: LinkdingApiConfig? = null,
-    ): HttpClient {
-        val defaultHttpConfig: HttpClientConfig<*>.() -> Unit = {
-            defaultRequest {
-                if (apiConfig != null) {
-                    header(HttpHeaders.Authorization, "Token ${apiConfig.apiKey}")
-                    url {
-                        takeFrom(Url(apiConfig.hostUrl))
-                    }
-                }
-                contentType(ContentType.Application.Json)
-            }
-
-            expectSuccess = true
-
-            install(ContentNegotiation) {
-                json(
-                    Json {
-                        isLenient = true
-                        ignoreUnknownKeys = true
-                        coerceInputValues = true
-                        encodeDefaults = true
-                        prettyPrint = false
-                        explicitNulls = false
-                    },
-                )
-            }
-
-            install(HttpCache)
-
-            clientConfig.httpClientLoggingBlock?.let {
-                Logging(it)
-            }
+  fun buildHttpClient(
+    clientConfig: LinkdingClientConfig,
+    apiConfig: LinkdingApiConfig? = null,
+  ): HttpClient {
+    val defaultHttpConfig: HttpClientConfig<*>.() -> Unit = {
+      defaultRequest {
+        if (apiConfig != null) {
+          header(HttpHeaders.Authorization, "Token ${apiConfig.apiKey}")
+          url { takeFrom(Url(apiConfig.hostUrl)) }
         }
-        return clientConfig.httpClientBuilder?.invoke()?.config(defaultHttpConfig)
-            ?: HttpClient(defaultHttpConfig)
+        contentType(ContentType.Application.Json)
+      }
+
+      expectSuccess = true
+
+      install(ContentNegotiation) {
+        json(
+          Json {
+            isLenient = true
+            ignoreUnknownKeys = true
+            coerceInputValues = true
+            encodeDefaults = true
+            prettyPrint = false
+            explicitNulls = false
+          }
+        )
+      }
+
+      install(HttpCache)
+
+      clientConfig.httpClientLoggingBlock?.let { Logging(it) }
     }
+    return clientConfig.httpClientBuilder?.invoke()?.config(defaultHttpConfig)
+      ?: HttpClient(defaultHttpConfig)
+  }
 }

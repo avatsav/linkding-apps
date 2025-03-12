@@ -21,57 +21,50 @@ import androidx.compose.ui.unit.dp
 import dev.avatsav.linkding.data.model.Bookmark
 
 @Composable
-fun BookmarkContent(
-    bookmark: Bookmark,
-    modifier: Modifier = Modifier,
-) {
-    Column(
-        modifier = modifier
-            .padding(16.dp)
-            .fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(8.dp),
+fun BookmarkContent(bookmark: Bookmark, modifier: Modifier = Modifier) {
+  Column(
+    modifier = modifier.padding(16.dp).fillMaxWidth(),
+    verticalArrangement = Arrangement.spacedBy(8.dp),
+  ) {
+    Text(
+      text = bookmark.title,
+      color = MaterialTheme.colorScheme.primary,
+      maxLines = 2,
+      overflow = TextOverflow.Ellipsis,
+    )
+    Row(
+      verticalAlignment = Alignment.CenterVertically,
+      horizontalArrangement = Arrangement.spacedBy(4.dp),
     ) {
-        Text(
-            text = bookmark.title,
-            color = MaterialTheme.colorScheme.primary,
-            maxLines = 2,
-            overflow = TextOverflow.Ellipsis,
-        )
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(4.dp),
-        ) {
-            Icon(
-                imageVector = Icons.Default.Link,
-                contentDescription = null,
-                modifier = Modifier.size(12.dp),
-            )
-            Text(
-                text = bookmark.urlHost,
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-            )
-        }
-        if (bookmark.description.isNotEmpty()) {
-            Text(
-                text = bookmark.description,
-                style = MaterialTheme.typography.bodyMedium,
-                maxLines = 3,
-                overflow = TextOverflow.Ellipsis,
-            )
-        }
-        LazyRow(
-            horizontalArrangement = Arrangement.spacedBy(4.dp),
-        ) {
-            items(items = bookmark.tags.toTypedArray()) { tagName ->
-                Text(
-                    text = "#$tagName",
-                    color = MaterialTheme.colorScheme.tertiary,
-                    style = MaterialTheme.typography.labelMedium,
-                )
-            }
-        }
+      Icon(
+        imageVector = Icons.Default.Link,
+        contentDescription = null,
+        modifier = Modifier.size(12.dp),
+      )
+      Text(
+        text = bookmark.urlHost,
+        style = MaterialTheme.typography.bodySmall,
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
+        maxLines = 1,
+        overflow = TextOverflow.Ellipsis,
+      )
     }
+    if (bookmark.description.isNotEmpty()) {
+      Text(
+        text = bookmark.description,
+        style = MaterialTheme.typography.bodyMedium,
+        maxLines = 3,
+        overflow = TextOverflow.Ellipsis,
+      )
+    }
+    LazyRow(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+      items(items = bookmark.tags.toTypedArray()) { tagName ->
+        Text(
+          text = "#$tagName",
+          color = MaterialTheme.colorScheme.tertiary,
+          style = MaterialTheme.typography.labelMedium,
+        )
+      }
+    }
+  }
 }

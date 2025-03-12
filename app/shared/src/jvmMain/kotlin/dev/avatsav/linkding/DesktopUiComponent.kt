@@ -10,10 +10,10 @@ import software.amazon.lastmile.kotlin.inject.anvil.SingleIn
 @ContributesSubcomponent(UiScope::class)
 interface DesktopUiComponent {
 
-    val appUi: AppUi
+  val appUi: AppUi
 
-    @ContributesSubcomponent.Factory(AppScope::class)
-    interface Factory {
-        fun create(): DesktopUiComponent
-    }
+  @ContributesSubcomponent.Factory(AppScope::class)
+  interface Factory {
+    fun create(): DesktopUiComponent
+  }
 }

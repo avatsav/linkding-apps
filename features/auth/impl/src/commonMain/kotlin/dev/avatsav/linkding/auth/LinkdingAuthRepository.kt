@@ -18,15 +18,13 @@ import software.amazon.lastmile.kotlin.inject.anvil.SingleIn
 @ContributesBinding(AppScope::class)
 @SingleIn(AppScope::class)
 class LinkdingAuthRepository(
-    private val authentication: LinkdingAuthentication,
-    private val appPrefs: AppPreferences,
-    private val errorMapper: AuthErrorMapper,
+  private val authentication: LinkdingAuthentication,
+  private val appPrefs: AppPreferences,
+  private val errorMapper: AuthErrorMapper,
 ) : AuthRepository {
-    override suspend fun authenticate(
-        hostUrl: String,
-        apiKey: String,
-    ): Result<Unit, AuthError> =
-        authentication.authenticate(hostUrl, apiKey)
-            .onSuccess { appPrefs.setApiConfig(ApiConfig(hostUrl, apiKey)) }
-            .mapError(errorMapper::map)
+  override suspend fun authenticate(hostUrl: String, apiKey: String): Result<Unit, AuthError> =
+    authentication
+      .authenticate(hostUrl, apiKey)
+      .onSuccess { appPrefs.setApiConfig(ApiConfig(hostUrl, apiKey)) }
+      .mapError(errorMapper::map)
 }

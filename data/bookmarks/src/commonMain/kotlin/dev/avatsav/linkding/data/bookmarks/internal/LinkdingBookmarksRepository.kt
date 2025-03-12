@@ -18,59 +18,56 @@ import dev.avatsav.linkding.data.model.BookmarkError
 import dev.avatsav.linkding.data.model.CheckUrlResult
 import dev.avatsav.linkding.data.model.SaveBookmark
 import dev.avatsav.linkding.inject.UserScope
+import kotlinx.coroutines.flow.Flow
 import me.tatarka.inject.annotations.Inject
 import software.amazon.lastmile.kotlin.inject.anvil.ContributesBinding
-import kotlinx.coroutines.flow.Flow
 
 @Inject
 @ContributesBinding(UserScope::class)
 class LinkdingBookmarksRepository(
-    private val bookmarksApi: LinkdingBookmarksApi,
-    private val bookmarksDao: BookmarksDao,
-    private val bookmarksPagingDataFactory: BookmarksPagingDataFactory,
-    private val bookmarkMapper: BookmarkMapper,
-    private val checkUrlMapper: CheckUrlResultMapper,
-    private val errorMapper: BookmarkErrorMapper,
+  private val bookmarksApi: LinkdingBookmarksApi,
+  private val bookmarksDao: BookmarksDao,
+  private val bookmarksPagingDataFactory: BookmarksPagingDataFactory,
+  private val bookmarkMapper: BookmarkMapper,
+  private val checkUrlMapper: CheckUrlResultMapper,
+  private val errorMapper: BookmarkErrorMapper,
 ) : BookmarksRepository {
 
-    override fun getBookmarksPaged(
-        cached: Boolean,
-        pagingConfig: PagingConfig,
-        query: String,
-        category: BookmarkCategory,
-        tags: List<String>,
-    ): Flow<PagingData<Bookmark>> = bookmarksPagingDataFactory.create(
-        cached = cached,
-        pagingConfig = pagingConfig,
-        param = BookmarksPagingDataFactory.Param(query, category, tags),
+  override fun getBookmarksPaged(
+    cached: Boolean,
+    pagingConfig: PagingConfig,
+    query: String,
+    category: BookmarkCategory,
+    tags: List<String>,
+  ): Flow<PagingData<Bookmark>> =
+    bookmarksPagingDataFactory.create(
+      cached = cached,
+      pagingConfig = pagingConfig,
+      param = BookmarksPagingDataFactory.Param(query, category, tags),
     )
 
-    override suspend fun checkUrl(url: String): Result<CheckUrlResult, BookmarkError> =
-        bookmarksApi.checkUrl(url).mapEither(
-            success = checkUrlMapper::map,
-            failure = errorMapper::map,
-        )
+  override suspend fun checkUrl(url: String): Result<CheckUrlResult, BookmarkError> =
+    bookmarksApi.checkUrl(url).mapEither(success = checkUrlMapper::map, failure = errorMapper::map)
 
-    override suspend fun saveBookmark(saveBookmark: SaveBookmark): Result<Bookmark, BookmarkError> {
-        val request = bookmarkMapper.map(saveBookmark)
-        return bookmarksApi.saveBookmark(request).mapEither(
-            success = bookmarkMapper::map,
-            failure = errorMapper::map,
-        )
-    }
+  override suspend fun saveBookmark(saveBookmark: SaveBookmark): Result<Bookmark, BookmarkError> {
+    val request = bookmarkMapper.map(saveBookmark)
+    return bookmarksApi
+      .saveBookmark(request)
+      .mapEither(success = bookmarkMapper::map, failure = errorMapper::map)
+  }
 
-    override suspend fun archiveBookmark(id: Long): Result<Unit, BookmarkError> =
-        bookmarksApi.archiveBookmark(id)
-            .onSuccess { bookmarksDao.delete(id) }
-            .mapError(errorMapper::map)
+  override suspend fun archiveBookmark(id: Long): Result<Unit, BookmarkError> =
+    bookmarksApi
+      .archiveBookmark(id)
+      .onSuccess { bookmarksDao.delete(id) }
+      .mapError(errorMapper::map)
 
-    override suspend fun unarchiveBookmark(id: Long): Result<Unit, BookmarkError> =
-        bookmarksApi.unarchiveBookmark(id)
-            .onSuccess { bookmarksDao.delete(id) }
-            .mapError(errorMapper::map)
+  override suspend fun unarchiveBookmark(id: Long): Result<Unit, BookmarkError> =
+    bookmarksApi
+      .unarchiveBookmark(id)
+      .onSuccess { bookmarksDao.delete(id) }
+      .mapError(errorMapper::map)
 
-    override suspend fun deleteBookmark(id: Long): Result<Unit, BookmarkError> =
-        bookmarksApi.deleteBookmark(id)
-            .onSuccess { bookmarksDao.delete(id) }
-            .mapError(errorMapper::map)
+  override suspend fun deleteBookmark(id: Long): Result<Unit, BookmarkError> =
+    bookmarksApi.deleteBookmark(id).onSuccess { bookmarksDao.delete(id) }.mapError(errorMapper::map)
 }

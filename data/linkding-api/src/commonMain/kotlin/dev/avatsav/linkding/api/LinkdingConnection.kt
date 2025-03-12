@@ -16,34 +16,34 @@ import io.ktor.http.Url
 import io.ktor.http.takeFrom
 
 @LinkdingDsl
-fun LinkdingAuthentication(
-    block: LinkdingClientConfig.() -> Unit,
-): LinkdingAuthentication {
-    val clientConfig = LinkdingClientConfig().apply(block)
-    return DefaultLinkdingAuthentication(clientConfig)
+fun LinkdingAuthentication(block: LinkdingClientConfig.() -> Unit): LinkdingAuthentication {
+  val clientConfig = LinkdingClientConfig().apply(block)
+  return DefaultLinkdingAuthentication(clientConfig)
 }
 
 interface LinkdingAuthentication {
-    suspend fun authenticate(
-        hostUrl: LinkdingHostUrl,
-        apiKey: LinkdingApiKey,
-    ): Result<Unit, LinkdingError>
+  suspend fun authenticate(
+    hostUrl: LinkdingHostUrl,
+    apiKey: LinkdingApiKey,
+  ): Result<Unit, LinkdingError>
 }
 
-internal class DefaultLinkdingAuthentication(clientConfig: LinkdingClientConfig) : LinkdingAuthentication {
+internal class DefaultLinkdingAuthentication(clientConfig: LinkdingClientConfig) :
+  LinkdingAuthentication {
 
-    private val httpClient: HttpClient = HttpClientFactory.buildHttpClient(clientConfig)
+  private val httpClient: HttpClient = HttpClientFactory.buildHttpClient(clientConfig)
 
-    override suspend fun authenticate(
-        hostUrl: LinkdingHostUrl,
-        apiKey: LinkdingApiKey,
-    ): Result<Unit, LinkdingError> =
-        httpClient.get<LinkdingBookmarksResponse, LinkdingErrorResponse> {
-            header(HttpHeaders.Authorization, "Token $apiKey")
-            url {
-                takeFrom(Url(hostUrl))
-            }
-            endpointBookmarks()
-            parameterPage(0, 1)
-        }.toLinkdingResult().map { }
+  override suspend fun authenticate(
+    hostUrl: LinkdingHostUrl,
+    apiKey: LinkdingApiKey,
+  ): Result<Unit, LinkdingError> =
+    httpClient
+      .get<LinkdingBookmarksResponse, LinkdingErrorResponse> {
+        header(HttpHeaders.Authorization, "Token $apiKey")
+        url { takeFrom(Url(hostUrl)) }
+        endpointBookmarks()
+        parameterPage(0, 1)
+      }
+      .toLinkdingResult()
+      .map {}
 }
