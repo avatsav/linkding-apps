@@ -8,7 +8,7 @@ internal fun Project.configureKtfmt() {
     pluginManager.apply("com.ncorti.ktfmt.gradle")
 
     configure<KtfmtExtension> {
-        kotlinLangStyle()
+        googleStyle()
         removeUnusedImports.set(true)
         manageTrailingCommas.set(true)
     }
