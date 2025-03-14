@@ -8,58 +8,53 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 
 class KotlinMultiplatformPlugin : Plugin<Project> {
-    override fun apply(target: Project) = with(target) {
-        with(pluginManager) {
-            apply("org.jetbrains.kotlin.multiplatform")
+  override fun apply(target: Project) =
+    with(target) {
+      with(pluginManager) { apply("org.jetbrains.kotlin.multiplatform") }
+
+      extensions.configure<KotlinMultiplatformExtension> {
+        jvmToolchain(findVersion("jvmToolchain").toInt())
+        applyDefaultHierarchyTemplate()
+
+        jvm()
+        if (pluginManager.hasPlugin("com.android.library")) {
+          androidTarget()
         }
 
-        extensions.configure<KotlinMultiplatformExtension> {
-            jvmToolchain(findVersion("jvmToolchain").toInt())
-            applyDefaultHierarchyTemplate()
+        iosArm64()
+        iosSimulatorArm64()
 
-            jvm()
-            if (pluginManager.hasPlugin("com.android.library")) {
-                androidTarget()
+        targets.withType<KotlinNativeTarget>().configureEach {
+          binaries.configureEach { linkerOpts("-lsqlite3") }
+
+          compilations.configureEach {
+            compileTaskProvider.configure {
+              compilerOptions {
+                freeCompilerArgs.addAll(
+                  "-opt-in=kotlinx.cinterop.ExperimentalForeignApi",
+                  "-opt-in=kotlinx.cinterop.BetaInteropApi",
+                )
+              }
             }
-
-            iosArm64()
-            iosSimulatorArm64()
-
-            targets.withType<KotlinNativeTarget>().configureEach {
-                binaries.configureEach {
-                    linkerOpts("-lsqlite3")
-                }
-
-                compilations.configureEach {
-                    compileTaskProvider.configure {
-                        compilerOptions {
-                            freeCompilerArgs.addAll(
-                                "-opt-in=kotlinx.cinterop.ExperimentalForeignApi",
-                                "-opt-in=kotlinx.cinterop.BetaInteropApi",
-                            )
-                        }
-                    }
-                }
-            }
-
-            targets.configureEach {
-                compilations.configureEach {
-                    compileTaskProvider.configure {
-                        compilerOptions {
-                            freeCompilerArgs.add("-Xexpect-actual-classes")
-                        }
-                    }
-                }
-            }
-
-            configureKotlin()
-            configureKtfmt()
-            configureDetekt()
+          }
         }
+
+        targets.configureEach {
+          compilations.configureEach {
+            compileTaskProvider.configure {
+              compilerOptions { freeCompilerArgs.add("-Xexpect-actual-classes") }
+            }
+          }
+        }
+
+        configureKotlin()
+        configureKtfmt()
+        configureDetekt()
+      }
     }
 }
 
 internal fun Project.configureKotlin() {
-    // Java toolchain configuration is picked up by Kotlin
-    configureJavaToolchain()
+  // Java toolchain configuration is picked up by Kotlin
+  configureJavaToolchain()
 }

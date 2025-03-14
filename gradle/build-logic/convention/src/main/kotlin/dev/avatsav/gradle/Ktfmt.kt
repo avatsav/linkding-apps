@@ -15,9 +15,4 @@ internal fun Project.configureKtfmt() {
     removeUnusedImports.set(true)
     manageTrailingCommas.set(true)
   }
-
-  tasks.named("ktfmtFormat") {
-    // Skip ktfmt for thirdparty module
-    if (path.startsWith(":thirdparty")) return@named
-  }
 }
