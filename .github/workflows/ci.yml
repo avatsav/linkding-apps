@@ -22,8 +22,10 @@ jobs:
         uses: gradle/actions/setup-gradle@v4
         with:
           cache-disabled: true
-      - name: Ktfmt and Detekt
-        run: ./gradlew ktfmtCheck
+      - name: Ktfmt
+        run: ./gradlew ktfmtCheck :build-logic:convention:ktfmtCheck
+#      - name: Detekt
+#        run: ./gradlew detektAll
       - name: Test
         run: ./gradlew testDebugUnitTest
       - name: Build
