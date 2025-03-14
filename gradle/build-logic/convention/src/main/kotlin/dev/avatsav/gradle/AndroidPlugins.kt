@@ -9,53 +9,51 @@ import org.gradle.jvm.toolchain.JavaLanguageVersion
 import org.gradle.kotlin.dsl.configure
 
 class AndroidApplicationPlugin : Plugin<Project> {
-    override fun apply(target: Project) = with(target) {
-        with(pluginManager) {
-            apply("com.android.application")
-            apply("org.jetbrains.kotlin.android")
-        }
-        configureAndroid()
-        configureJavaToolchain()
-        configureKtfmt()
-        configureDetekt()
+  override fun apply(target: Project) =
+    with(target) {
+      with(pluginManager) {
+        apply("com.android.application")
+        apply("org.jetbrains.kotlin.android")
+      }
+      configureAndroid()
+      configureJavaToolchain()
+      configureKtfmt()
+      configureDetekt()
     }
 }
 
 class AndroidLibraryPlugin : Plugin<Project> {
-    override fun apply(target: Project) = with(target) {
-        with(pluginManager) {
-            apply("com.android.library")
-        }
-        configureAndroid()
-        configureJavaToolchain()
+  override fun apply(target: Project) =
+    with(target) {
+      with(pluginManager) { apply("com.android.library") }
+      configureAndroid()
+      configureJavaToolchain()
     }
 }
 
 private fun Project.configureAndroid() {
-    extensions.configure<BaseExtension> {
-        val targetSdkVersion = findVersion("targetSdk").toInt()
+  extensions.configure<BaseExtension> {
+    val targetSdkVersion = findVersion("targetSdk").toInt()
 
-        compileSdkVersion(findVersion("compileSdk").toInt())
-        defaultConfig {
-            minSdk = findVersion("minSdk").toInt()
-            targetSdk = targetSdkVersion
-        }
-        testOptions {
-            if (this@configure is LibraryExtension) {
-                targetSdk = targetSdkVersion
-            }
-            unitTests {
-                isIncludeAndroidResources = true
-                isReturnDefaultValues = true
-            }
-        }
+    compileSdkVersion(findVersion("compileSdk").toInt())
+    defaultConfig {
+      minSdk = findVersion("minSdk").toInt()
+      targetSdk = targetSdkVersion
     }
+    testOptions {
+      if (this@configure is LibraryExtension) {
+        targetSdk = targetSdkVersion
+      }
+      unitTests {
+        isIncludeAndroidResources = true
+        isReturnDefaultValues = true
+      }
+    }
+  }
 }
 
 fun Project.configureJavaToolchain() {
-    extensions.configure<JavaPluginExtension> {
-        toolchain {
-            languageVersion.set(JavaLanguageVersion.of(findVersion("jvmToolchain")))
-        }
-    }
+  extensions.configure<JavaPluginExtension> {
+    toolchain { languageVersion.set(JavaLanguageVersion.of(findVersion("jvmToolchain"))) }
+  }
 }
