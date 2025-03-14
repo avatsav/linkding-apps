@@ -16,11 +16,14 @@ internal fun Project.configureDetekt() {
     config.setFrom("$rootDir/config/detekt/detekt.yml")
     parallel = true
   }
+  tasks.withType<Detekt>().configureEach {
+    exclude { element -> element.file.path.contains("/build/generated/") }
+  }
 
   tasks.register("detektAll") {
     group = "Verification"
     description = "Run all detekt tasks with type resolution for Kotlin Multiplatform"
-    dependsOn(tasks.withType<Detekt>().filterNot { task -> task.name == "detekt" })
+    dependsOn(tasks.withType<Detekt>())
   }
 
   val detektComposeRules = libs.findLibrary("detektComposeRules").get().get().toString()
