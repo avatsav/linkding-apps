@@ -1,3 +1,5 @@
+@file:Suppress("MagicNumber")
+
 package dev.avatsav.linkding.ui.theme
 
 import androidx.compose.ui.graphics.Color
