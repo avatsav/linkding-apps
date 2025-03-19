@@ -24,6 +24,7 @@ internal suspend inline fun <reified T, reified E> HttpClient.delete(
   block: HttpRequestBuilder.() -> Unit
 ) = request<T, E>(HttpMethod.Delete, block)
 
+@Suppress("TooGenericExceptionCaught")
 internal suspend inline fun <reified T, reified E> HttpClient.request(
   httpMethod: HttpMethod,
   block: HttpRequestBuilder.() -> Unit,
@@ -47,6 +48,7 @@ internal suspend inline fun <reified T, reified E> HttpClient.request(
     ApiResponse.UnknownError(t)
   }
 
+@Suppress("TooGenericExceptionCaught", "SwallowedException")
 internal suspend inline fun <reified E> ResponseException.errorBody(): E? =
   try {
     response.body()
