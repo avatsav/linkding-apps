@@ -12,7 +12,11 @@ class JvmNetworkMonitor : NetworkMonitor {
   override val isOnline: Boolean
     get() = true
 
-  override fun close() {}
+  override fun close() {
+    // No-op
+  }
 
-  override fun setListener(listener: NetworkMonitor.Listener) {}
+  override fun setListener(listener: NetworkMonitor.Listener) {
+    // No-op
+  }
 }

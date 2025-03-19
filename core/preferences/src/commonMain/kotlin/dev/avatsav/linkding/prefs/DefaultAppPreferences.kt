@@ -8,7 +8,6 @@ import com.russhwolf.settings.set
 import dev.avatsav.linkding.AppCoroutineDispatchers
 import dev.avatsav.linkding.data.model.ApiConfig
 import dev.avatsav.linkding.data.model.prefs.AppTheme
-import dev.avatsav.linkding.prefs.HOST_URL_CONFIGURATION_KEY as HOST_URL_CONFIGURATION_KEY1
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
@@ -17,14 +16,14 @@ import software.amazon.lastmile.kotlin.inject.anvil.AppScope
 import software.amazon.lastmile.kotlin.inject.anvil.ContributesBinding
 import software.amazon.lastmile.kotlin.inject.anvil.SingleIn
 
-private const val HOST_URL_CONFIGURATION_KEY = "linkding-hostUrl"
-private const val API_KEY_CONFIGURATION_KEY = "linkding-apiKey"
-private const val USE_DYNAMIC_COLORS_KEY = "use-dynamic-colors"
-private const val APP_THEME_KEY = "app-theme"
+private const val HostUrlConfigurationKey = "linkding-hostUrl"
+private const val ApiKeyConfigurationKey = "linkding-apiKey"
+private const val UseDynamicColorsKey = "use-dynamic-colors"
+private const val AppThemeKey = "app-theme"
 
-private const val APP_THEME_SYSTEM_VALUE = "system"
-private const val APP_THEME_LIGHT_VALUE = "light"
-private const val APP_THEME_DARK_VALUE = "dark"
+private const val SystemThemeValue = "system"
+private const val LightThemeValue = "light"
+private const val DarkThemeValue = "dark"
 
 @OptIn(ExperimentalSettingsApi::class)
 @Inject
@@ -39,8 +38,8 @@ class DefaultAppPreferences(
 
   override fun observeApiConfig(): Flow<ApiConfig?> =
     combine(
-      flowSettings.getStringOrNullFlow(HOST_URL_CONFIGURATION_KEY1),
-      flowSettings.getStringOrNullFlow(API_KEY_CONFIGURATION_KEY),
+      flowSettings.getStringOrNullFlow(HostUrlConfigurationKey),
+      flowSettings.getStringOrNullFlow(ApiKeyConfigurationKey),
     ) { hostUrl: String?, apiKey: String? ->
       if (hostUrl == null || apiKey == null) {
         null
@@ -51,17 +50,17 @@ class DefaultAppPreferences(
 
   override suspend fun setApiConfig(apiConfig: ApiConfig?) {
     if (apiConfig != null) {
-      settings[HOST_URL_CONFIGURATION_KEY1] = apiConfig.hostUrl
-      settings[API_KEY_CONFIGURATION_KEY] = apiConfig.apiKey
+      settings[HostUrlConfigurationKey] = apiConfig.hostUrl
+      settings[ApiKeyConfigurationKey] = apiConfig.apiKey
     } else {
-      settings.remove(HOST_URL_CONFIGURATION_KEY1)
-      settings.remove(API_KEY_CONFIGURATION_KEY)
+      settings.remove(HostUrlConfigurationKey)
+      settings.remove(ApiKeyConfigurationKey)
     }
   }
 
   override fun getApiConfig(): ApiConfig? {
-    val host: String? = settings[HOST_URL_CONFIGURATION_KEY1]
-    val apiKey: String? = settings[API_KEY_CONFIGURATION_KEY]
+    val host: String? = settings[HostUrlConfigurationKey]
+    val apiKey: String? = settings[ApiKeyConfigurationKey]
     return if (host == null || apiKey == null) {
       null
     } else {
@@ -70,32 +69,32 @@ class DefaultAppPreferences(
   }
 
   override fun observeAppTheme(): Flow<AppTheme> =
-    flowSettings.getStringFlow(APP_THEME_KEY, APP_THEME_SYSTEM_VALUE).map { it.appTheme }
+    flowSettings.getStringFlow(AppThemeKey, SystemThemeValue).map { it.appTheme }
 
   override suspend fun setAppTheme(appTheme: AppTheme) {
-    settings[APP_THEME_KEY] = appTheme.storageValue
+    settings[AppThemeKey] = appTheme.storageValue
   }
 
   override fun observeUseDynamicColors(): Flow<Boolean> =
-    flowSettings.getBooleanFlow(USE_DYNAMIC_COLORS_KEY, false)
+    flowSettings.getBooleanFlow(UseDynamicColorsKey, false)
 
   override suspend fun toggleUseDynamicColors() {
-    settings[USE_DYNAMIC_COLORS_KEY] = !settings.getBoolean(USE_DYNAMIC_COLORS_KEY, false)
+    settings[UseDynamicColorsKey] = !settings.getBoolean(UseDynamicColorsKey, false)
   }
 }
 
 private val AppTheme.storageValue: String
   get() =
     when (this) {
-      AppTheme.System -> APP_THEME_SYSTEM_VALUE
-      AppTheme.Light -> APP_THEME_LIGHT_VALUE
-      AppTheme.Dark -> APP_THEME_DARK_VALUE
+      AppTheme.System -> SystemThemeValue
+      AppTheme.Light -> LightThemeValue
+      AppTheme.Dark -> DarkThemeValue
     }
 
 private val String?.appTheme: AppTheme
   get() =
     when (this) {
-      APP_THEME_LIGHT_VALUE -> AppTheme.Light
-      APP_THEME_DARK_VALUE -> AppTheme.Dark
+      LightThemeValue -> AppTheme.Light
+      DarkThemeValue -> AppTheme.Dark
       else -> AppTheme.System
     }
