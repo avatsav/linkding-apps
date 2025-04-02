@@ -87,18 +87,21 @@ fun BookmarkListItem(
   }
 }
 
+private const val IconScalePartial = 0.7f
+private const val IconScaleFull = 1f
+
 @Composable
 private fun BoxScope.BookmarkSwipeActionContent(
   imageVector: ImageVector,
   text: String,
   dismissing: Boolean,
 ) {
-  val iconAnimatable = remember { Animatable(if (dismissing) .7f else 1f) }
+  val iconAnimatable = remember { Animatable(if (dismissing) IconScalePartial else IconScaleFull) }
 
   LaunchedEffect(Unit) {
     if (dismissing) {
-      iconAnimatable.snapTo(.7f)
-      iconAnimatable.animateTo(1f, spring(Spring.DampingRatioHighBouncy))
+      iconAnimatable.snapTo(IconScalePartial)
+      iconAnimatable.animateTo(IconScaleFull, spring(Spring.DampingRatioHighBouncy))
     }
   }
   Column(

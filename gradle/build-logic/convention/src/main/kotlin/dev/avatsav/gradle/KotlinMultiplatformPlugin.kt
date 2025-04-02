@@ -7,17 +7,19 @@ import org.gradle.kotlin.dsl.withType
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 
+internal const val KOTLIN_MULTIPLATFORM_PLUGIN = "org.jetbrains.kotlin.multiplatform"
+
 class KotlinMultiplatformPlugin : Plugin<Project> {
   override fun apply(target: Project) =
     with(target) {
-      with(pluginManager) { apply("org.jetbrains.kotlin.multiplatform") }
+      with(pluginManager) { apply(KOTLIN_MULTIPLATFORM_PLUGIN) }
 
       extensions.configure<KotlinMultiplatformExtension> {
         jvmToolchain(findVersion("jvmToolchain").toInt())
         applyDefaultHierarchyTemplate()
 
         jvm()
-        if (pluginManager.hasPlugin("com.android.library")) {
+        if (pluginManager.hasPlugin(ANDROID_LIBRARY_PLUGIN)) {
           androidTarget()
         }
 

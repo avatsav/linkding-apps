@@ -33,6 +33,7 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -101,6 +102,8 @@ fun PreferenceColumnScope.ThemePreference(
   }
 }
 
+private const val PreferenceAnimationDuration = 220
+
 @Composable
 fun PreferenceColumnScope.Preference(
   title: String,
@@ -129,9 +132,8 @@ fun PreferenceColumnScope.Preference(
           AnimatedContent(
             targetState = description,
             transitionSpec = {
-              (fadeIn() + slideInHorizontally(tween(220))).togetherWith(
-                slideOutHorizontally(tween(220), targetOffsetX = { it / 2 }) + fadeOut()
-              )
+              (fadeIn() + slideInHorizontally(tween(PreferenceAnimationDuration)) togetherWith
+                (slideOutHorizontally(tween(PreferenceAnimationDuration)) { it / 2 } + fadeOut()))
             },
           ) { target ->
             Text(
@@ -186,6 +188,8 @@ object PreferenceDefaults {
   private val baseShape: CornerBasedShape
     get() = RoundedCornerShape(4.dp)
 
+  @Composable
+  @ReadOnlyComposable
   fun itemShape(
     index: Int,
     count: Int,

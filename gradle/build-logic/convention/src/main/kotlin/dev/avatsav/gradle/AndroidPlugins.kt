@@ -8,12 +8,16 @@ import org.gradle.api.plugins.JavaPluginExtension
 import org.gradle.jvm.toolchain.JavaLanguageVersion
 import org.gradle.kotlin.dsl.configure
 
+internal const val ANDROID_APPLICATION_PLUGIN = "com.android.application"
+internal const val ANDROID_LIBRARY_PLUGIN = "com.android.library"
+internal const val ANDROID_KOTLIN_PLUGIN = "org.jetbrains.kotlin.android"
+
 class AndroidApplicationPlugin : Plugin<Project> {
   override fun apply(target: Project) =
     with(target) {
       with(pluginManager) {
-        apply("com.android.application")
-        apply("org.jetbrains.kotlin.android")
+        apply(ANDROID_APPLICATION_PLUGIN)
+        apply(ANDROID_KOTLIN_PLUGIN)
       }
       configureAndroid()
       configureJavaToolchain()
@@ -25,7 +29,7 @@ class AndroidApplicationPlugin : Plugin<Project> {
 class AndroidLibraryPlugin : Plugin<Project> {
   override fun apply(target: Project) =
     with(target) {
-      with(pluginManager) { apply("com.android.library") }
+      with(pluginManager) { apply(ANDROID_LIBRARY_PLUGIN) }
       configureAndroid()
       configureJavaToolchain()
     }
@@ -52,7 +56,7 @@ private fun Project.configureAndroid() {
   }
 }
 
-fun Project.configureJavaToolchain() {
+internal fun Project.configureJavaToolchain() {
   extensions.configure<JavaPluginExtension> {
     toolchain { languageVersion.set(JavaLanguageVersion.of(findVersion("jvmToolchain"))) }
   }

@@ -31,6 +31,7 @@ import com.slack.circuit.codegen.annotations.CircuitInject
 import com.slack.circuit.overlay.LocalOverlayHost
 import com.slack.circuit.overlay.OverlayHost
 import com.slack.circuitx.overlays.DialogResult
+import dev.avatsav.linkding.data.model.prefs.AppTheme
 import dev.avatsav.linkding.inject.UserScope
 import dev.avatsav.linkding.settings.ui.SettingsUiEvent.Close
 import dev.avatsav.linkding.settings.ui.SettingsUiEvent.ResetApiConfig
@@ -53,7 +54,6 @@ import me.tatarka.inject.annotations.Inject
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Settings(state: SettingsUiState, modifier: Modifier = Modifier) {
-  // https://issuetracker.google.com/issues/256100927#comment1
   val eventSink = state.eventSink
   val overlayHost = LocalOverlayHost.current
 
@@ -89,76 +89,122 @@ fun Settings(state: SettingsUiState, modifier: Modifier = Modifier) {
           .nestedScroll(scrollBehavior.nestedScrollConnection),
     ) {
       item {
-        PreferenceSection("Linkding", modifier = Modifier.padding(vertical = 8.dp)) {
-          Preference(
-            shape = PreferenceDefaults.itemShape(0, 3),
-            title = "Host Url",
-            description = state.apiConfig?.hostUrl,
-          )
-          Preference(
-            shape = PreferenceDefaults.itemShape(1, 3),
-            title = "API Key",
-            description = state.apiConfig?.apiKey,
-          )
-          Preference(
-            shape = PreferenceDefaults.itemShape(2, 3),
-            title = "Reset",
-            clickable = true,
-            onClick = {
-              coroutineScope.launch {
-                val result = overlayHost.showResetConfirmationDialog()
-                if (result == DialogResult.Confirm) eventSink(ResetApiConfig)
-              }
-            },
-          )
-        }
+        LinkdingSettings(
+          state = state,
+          onResetClick = {
+            coroutineScope.launch {
+              val result = overlayHost.showResetConfirmationDialog()
+              if (result == DialogResult.Confirm) eventSink(ResetApiConfig)
+            }
+          },
+        )
       }
       item {
-        PreferenceSection("Appearance", modifier = Modifier.padding(vertical = 8.dp)) {
-          ThemePreference(
-            shape = PreferenceDefaults.itemShape(0, 2),
-            selected = state.appTheme,
-            onSelect = { if (state.appTheme != it) eventSink(SetAppTheme(it)) },
-          )
-          SwitchPreference(
-            shape = PreferenceDefaults.itemShape(1, 2),
-            title = "Dynamic colours",
-            description = "Colors adapt to your wallpaper",
-            checked = state.useDynamicColors,
-            onCheckedChange = { eventSink(ToggleUseDynamicColors) },
-          )
-        }
+        AppearanceSettings(
+          state = state,
+          onAppThemeChange = { eventSink(SetAppTheme(it)) },
+          onDynamicThemeToggle = { eventSink(ToggleUseDynamicColors) },
+        )
       }
       item {
-        PreferenceSection("About", modifier = Modifier.padding(vertical = 8.dp)) {
-          Preference(
-            shape = PreferenceDefaults.itemShape(0, 4),
-            title = "Version",
-            description = state.appInfo.version,
-          )
-          Preference(
-            shape = PreferenceDefaults.itemShape(1, 4),
-            title = "Source code",
-            description = "Appding repository on Github",
-            clickable = true,
-            onClick = { eventSink(ShowSourceCode) },
-          )
-          Preference(
-            shape = PreferenceDefaults.itemShape(2, 4),
-            title = "Open Source licenses",
-            clickable = true,
-            onClick = { eventSink(ShowLicenses) },
-          )
-          Preference(
-            shape = PreferenceDefaults.itemShape(3, 4),
-            title = "Privacy policy",
-            clickable = true,
-            onClick = { eventSink(ShowPrivacyPolicy) },
-          )
-        }
+        AboutSettings(
+          state = state,
+          onSourceCodeClick = { eventSink(ShowSourceCode) },
+          onLicensesClick = { eventSink(ShowLicenses) },
+          onPrivacyPolicyClick = { eventSink(ShowPrivacyPolicy) },
+        )
       }
       item { MadeInMunich() }
     }
+  }
+}
+
+private const val LinkdingSettingsCount = 3
+
+@Composable
+@Suppress("MagicNumber")
+private fun LinkdingSettings(state: SettingsUiState, onResetClick: () -> Unit) {
+  PreferenceSection("Linkding", modifier = Modifier.padding(vertical = 8.dp)) {
+    Preference(
+      shape = PreferenceDefaults.itemShape(0, LinkdingSettingsCount),
+      title = "Host Url",
+      description = state.apiConfig?.hostUrl,
+    )
+    Preference(
+      shape = PreferenceDefaults.itemShape(1, LinkdingSettingsCount),
+      title = "API Key",
+      description = state.apiConfig?.apiKey,
+    )
+    Preference(
+      shape = PreferenceDefaults.itemShape(2, LinkdingSettingsCount),
+      title = "Reset",
+      clickable = true,
+      onClick = onResetClick,
+    )
+  }
+}
+
+private const val AppearanceSettingsCount = 2
+
+@Composable
+@Suppress("MagicNumber")
+private fun AppearanceSettings(
+  state: SettingsUiState,
+  onAppThemeChange: (AppTheme) -> Unit,
+  onDynamicThemeToggle: () -> Unit,
+) {
+
+  PreferenceSection("Appearance", modifier = Modifier.padding(vertical = 8.dp)) {
+    ThemePreference(
+      shape = PreferenceDefaults.itemShape(0, AppearanceSettingsCount),
+      selected = state.appTheme,
+      onSelect = onAppThemeChange,
+    )
+    SwitchPreference(
+      shape = PreferenceDefaults.itemShape(1, AppearanceSettingsCount),
+      title = "Dynamic colours",
+      description = "Colors adapt to your wallpaper",
+      checked = state.useDynamicColors,
+      onCheckedChange = onDynamicThemeToggle,
+    )
+  }
+}
+
+private const val AboutSettingsCount = 4
+
+@Composable
+@Suppress("MagicNumber")
+private fun AboutSettings(
+  state: SettingsUiState,
+  onSourceCodeClick: () -> Unit,
+  onLicensesClick: () -> Unit,
+  onPrivacyPolicyClick: () -> Unit,
+) {
+  PreferenceSection("About", modifier = Modifier.padding(vertical = 8.dp)) {
+    Preference(
+      shape = PreferenceDefaults.itemShape(0, AboutSettingsCount),
+      title = "Version",
+      description = state.appInfo.version,
+    )
+    Preference(
+      shape = PreferenceDefaults.itemShape(1, AboutSettingsCount),
+      title = "Source code",
+      description = "Appding repository on Github",
+      clickable = true,
+      onClick = onSourceCodeClick,
+    )
+    Preference(
+      shape = PreferenceDefaults.itemShape(2, AboutSettingsCount),
+      title = "Open Source licenses",
+      clickable = true,
+      onClick = onLicensesClick,
+    )
+    Preference(
+      shape = PreferenceDefaults.itemShape(3, AboutSettingsCount),
+      title = "Privacy policy",
+      clickable = true,
+      onClick = onPrivacyPolicyClick,
+    )
   }
 }
 

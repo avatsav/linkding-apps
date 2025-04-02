@@ -109,7 +109,6 @@ private fun OutlinedTagsTextField(
           detectTapGestures(onTap = { textFieldFocusRequester.requestFocus() })
         },
       horizontalArrangement = Arrangement.spacedBy(6.dp, Alignment.Start),
-      verticalArrangement = Arrangement.spacedBy((-3).dp, Alignment.Top),
     ) {
       repeat(tagsValue.tags.size) {
         val tag = tagsValue.tags[it]
@@ -184,7 +183,7 @@ class TagsTextFieldValue(tags: List<Tag> = emptyList()) {
 private inline fun tagValueChange(
   crossinline onTag: (tagText: String) -> Unit,
   crossinline onValueChange: (TextFieldValue) -> Unit,
-): (TextFieldValue) -> Unit = { it ->
+): (TextFieldValue) -> Unit = {
   val text = it.text
   val textFieldValue =
     if (text.isEscaping()) {

@@ -24,8 +24,8 @@ jobs:
           cache-disabled: true
       - name: Ktfmt
         run: ./gradlew ktfmtCheck :build-logic:convention:ktfmtCheck
-#      - name: Detekt
-#        run: ./gradlew detektAll
+      - name: Detekt
+        run: ./gradlew detektAll
       - name: Test
         run: ./gradlew testDebugUnitTest
       - name: Build

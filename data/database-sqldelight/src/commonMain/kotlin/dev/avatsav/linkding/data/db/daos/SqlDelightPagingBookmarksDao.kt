@@ -49,6 +49,7 @@ class SqlDelightPagingBookmarksDao(
       mapper = this::mapToBookmark,
     )
 
+  @Suppress("LongParameterList", "FunctionParameterNaming")
   private fun mapToBookmark(
     id: Long,
     linkding_id: Long,
