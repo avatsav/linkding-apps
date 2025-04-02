@@ -109,7 +109,7 @@ private fun OutlinedTagsTextField(
           detectTapGestures(onTap = { textFieldFocusRequester.requestFocus() })
         },
       horizontalArrangement = Arrangement.spacedBy(6.dp, Alignment.Start),
-     ) {
+    ) {
       repeat(tagsValue.tags.size) {
         val tag = tagsValue.tags[it]
         TagInputChip(label = { Text(tag.value) }, onClick = { tagsValue.removeTag(tag) })
