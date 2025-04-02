@@ -1,8 +1,8 @@
 [versions]
 agp = "8.9.1"
-kotlin = "2.1.10"
+kotlin = "2.1.20"
 coroutines = "1.10.1"
-ksp = "2.1.10-1.0.31"
+ksp = "2.1.20-1.0.32"
 ktmft = "0.22.0"
 detekt = "1.23.8"
 multiplatform-settings = "1.3.0"
@@ -56,7 +56,7 @@ kotlin-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines
 kotlin-coroutines-swing = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-swing", version.ref = "coroutines" }
 kotlin-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
 kotlin-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutines" }
-kotlin-serialization-json = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.0"
+kotlin-serialization-json = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.1"
 kotlin-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "datetime" }
 kotlin-atomicfu = "org.jetbrains.kotlinx:atomicfu:0.27.0"
 
