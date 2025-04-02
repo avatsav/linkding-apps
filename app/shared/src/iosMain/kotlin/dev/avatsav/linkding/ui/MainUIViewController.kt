@@ -17,7 +17,7 @@ import platform.UIKit.UIViewController
 typealias MainUIViewController = () -> UIViewController
 
 @Inject
-@Suppress("ktlint:standard:function-naming")
+@Suppress("FunctionNaming")
 fun MainUIViewController(appUi: AppUi): UIViewController = ComposeUIViewController {
   val backstack = rememberSaveableBackStack(root = AuthScreen)
   val navigator = rememberCircuitNavigator(backstack, onRootPop = { /* no-op */ })

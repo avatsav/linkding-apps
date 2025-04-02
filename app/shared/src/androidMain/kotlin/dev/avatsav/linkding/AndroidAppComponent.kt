@@ -17,6 +17,7 @@ abstract class AndroidAppComponent(@get:Provides val application: Application) {
 
   abstract val appInitializer: AppInitializer
 
+  @Suppress("UnsafeCallOnNullableType")
   @SingleIn(AppScope::class)
   @Provides
   fun provideAppInfo(application: Application): AppInfo {

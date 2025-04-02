@@ -24,6 +24,8 @@ import dev.avatsav.linkding.ui.AuthScreen
 import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
+
+  @Suppress("UnusedPrivateProperty")
   override fun onCreate(savedInstanceState: Bundle?) {
     installSplashScreen()
     super.onCreate(savedInstanceState)
@@ -40,7 +42,7 @@ class MainActivity : ComponentActivity() {
       }
     }
 
-    // TODO: Pass the sharedLink to the appUi
+    // Pass the sharedLink to the appUi
     setContent {
       val backstack = rememberSaveableBackStack(root = AuthScreen)
       val navigator = rememberCircuitNavigator(backstack)

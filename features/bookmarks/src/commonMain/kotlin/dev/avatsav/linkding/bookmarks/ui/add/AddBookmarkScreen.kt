@@ -47,6 +47,8 @@ import dev.avatsav.linkding.ui.compose.widgets.SmallCircularProgressIndicator
 import dev.avatsav.linkding.ui.compose.widgets.TagsTextFieldValue
 import kotlinx.coroutines.delay
 
+private const val DebounceDelay = 500L
+
 @CircuitInject(AddBookmarkScreen::class, UserScope::class)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -64,7 +66,7 @@ fun AddBookmark(state: AddBookmarkUiState, modifier: Modifier = Modifier) {
   // Debouncing the url text field before unfurling/checking the url
   LaunchedEffect(url) {
     if (url.isBlank()) return@LaunchedEffect
-    delay(500)
+    delay(DebounceDelay)
     eventSink(AddBookmarkUiEvent.CheckUrl(url))
   }
 
