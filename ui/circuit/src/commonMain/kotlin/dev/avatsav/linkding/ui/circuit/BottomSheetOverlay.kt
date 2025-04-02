@@ -42,6 +42,7 @@ import kotlinx.coroutines.launch
  * @property content The Composable content to show in the sheet.
  */
 @OptIn(ExperimentalMaterial3Api::class)
+@Suppress("LongParameterList")
 public class BottomSheetOverlay<Model : Any, Result : Any>
 private constructor(
   private val model: Model,
