@@ -15,6 +15,7 @@ kotlin {
       api(libs.circuit.overlay)
       api(libs.circuitx.overlays)
       api(libs.paging.common)
+      api(libs.compose.ui.backhandler)
     }
   }
 }

@@ -9,12 +9,13 @@ typealias LinkdingHostUrl = String
 
 typealias LinkdingApiKey = String
 
-@LinkdingDsl data class LinkdingApiConfig(val hostUrl: LinkdingHostUrl, val apiKey: LinkdingApiKey)
+@LinkdingDsl
+data class LinkdingApiConfig(val hostUrl: LinkdingHostUrl, val apiKey: LinkdingApiKey)
 
 @LinkdingDsl
 class LinkdingClientConfig {
 
-  internal var httpClientBuilder: (() -> HttpClient)? = null
+  internal var httpClientBuilder: (() -> HttpClient) = { HttpClient(httpClientEngineFactory()) }
   internal var httpClientLoggingBlock: (LoggingConfig.() -> Unit)? = null
 
   fun <T : HttpClientEngineConfig> httpClient(engineFactory: HttpClientEngineFactory<T>) {

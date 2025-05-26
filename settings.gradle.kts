@@ -31,7 +31,6 @@ include(
     ":core:parcelize",
     ":data:models",
     ":data:bookmarks",
-    ":data:network",
     ":data:database",
     ":data:database-sqldelight",
     ":data:linkding-api",

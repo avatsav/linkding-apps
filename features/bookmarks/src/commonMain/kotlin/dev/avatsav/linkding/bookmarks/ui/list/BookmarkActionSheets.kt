@@ -13,6 +13,7 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Unarchive
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
@@ -27,6 +28,7 @@ import dev.avatsav.linkding.bookmarks.ui.list.widgets.BookmarkContent
 import dev.avatsav.linkding.data.model.Bookmark
 import dev.avatsav.linkding.ui.circuit.BottomSheetOverlay
 
+@OptIn(ExperimentalMaterial3Api::class)
 suspend fun OverlayHost.showDeleteBookmarkAction(bookmark: Bookmark): ActionResult =
   show(
     BottomSheetOverlay(model = bookmark, onDismiss = { ActionResult.Dismissed }) {
@@ -40,6 +42,7 @@ suspend fun OverlayHost.showDeleteBookmarkAction(bookmark: Bookmark): ActionResu
     }
   )
 
+@OptIn(ExperimentalMaterial3Api::class)
 suspend fun OverlayHost.showArchiveBookmarkAction(bookmark: Bookmark): ActionResult =
   show(
     BottomSheetOverlay(model = bookmark, onDismiss = { ActionResult.Dismissed }) {

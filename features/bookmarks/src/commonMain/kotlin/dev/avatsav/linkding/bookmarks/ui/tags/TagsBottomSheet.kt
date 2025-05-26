@@ -1,5 +1,6 @@
 package dev.avatsav.linkding.bookmarks.ui.tags
 
+import androidx.compose.material3.ExperimentalMaterial3Api
 import com.slack.circuit.foundation.CircuitContent
 import com.slack.circuit.foundation.NavEvent
 import com.slack.circuit.overlay.OverlayHost
@@ -8,6 +9,7 @@ import dev.avatsav.linkding.ui.TagsScreen
 import dev.avatsav.linkding.ui.TagsScreenResult
 import dev.avatsav.linkding.ui.circuit.BottomSheetOverlay
 
+@OptIn(ExperimentalMaterial3Api::class)
 suspend fun OverlayHost.showTagsBottomSheet(selectedTags: List<Tag>): TagsScreenResult =
   show<TagsScreenResult>(
     BottomSheetOverlay(model = selectedTags, onDismiss = { TagsScreenResult.Dismissed }) {

@@ -2,6 +2,7 @@ package dev.avatsav.linkding.api
 
 import io.ktor.client.HttpClient
 import io.ktor.client.HttpClientConfig
+import io.ktor.client.engine.HttpClientEngineFactory
 import io.ktor.client.plugins.cache.HttpCache
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
@@ -14,6 +15,8 @@ import io.ktor.http.contentType
 import io.ktor.http.takeFrom
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
+
+internal expect fun httpClientEngineFactory(): HttpClientEngineFactory<*>
 
 internal object HttpClientFactory {
 
@@ -41,7 +44,7 @@ internal object HttpClientFactory {
             encodeDefaults = true
             prettyPrint = false
             explicitNulls = false
-          }
+          },
         )
       }
 

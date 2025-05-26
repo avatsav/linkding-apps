@@ -8,7 +8,6 @@ import dev.avatsav.linkding.api.LinkdingBookmarksApi
 import dev.avatsav.linkding.api.LinkdingTagsApi
 import dev.avatsav.linkding.data.model.ApiConfig
 import dev.avatsav.linkding.inject.UserScope
-import io.ktor.client.engine.HttpClientEngineFactory
 import io.ktor.client.plugins.logging.LogLevel
 import me.tatarka.inject.annotations.Provides
 import software.amazon.lastmile.kotlin.inject.anvil.ContributesTo
@@ -19,13 +18,8 @@ interface LinkdingComponent {
 
   @Provides
   @SingleIn(UserScope::class)
-  fun provideLinkding(
-    apiConfig: ApiConfig,
-    httpClientEngineFactory: HttpClientEngineFactory<*>,
-    appInfo: AppInfo,
-  ): Linkding =
+  fun provideLinkding(apiConfig: ApiConfig, appInfo: AppInfo): Linkding =
     Linkding(LinkdingApiConfig(apiConfig.hostUrl, apiConfig.apiKey)) {
-      httpClient(httpClientEngineFactory)
       logging {
         logger =
           object : io.ktor.client.plugins.logging.Logger {

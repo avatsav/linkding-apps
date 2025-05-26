@@ -1,6 +1,5 @@
 // Copyright (C) 2022 Slack Technologies, LLC
 // SPDX-License-Identifier: Apache-2.0
-
 package dev.avatsav.linkding.ui.circuit
 
 import androidx.compose.foundation.layout.WindowInsets
@@ -8,6 +7,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.ModalBottomSheetDefaults
+import androidx.compose.material3.ModalBottomSheetProperties
 import androidx.compose.material3.SheetValue
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -15,16 +16,17 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
+import androidx.compose.ui.ExperimentalComposeUiApi
+import androidx.compose.ui.backhandler.BackHandler
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.slack.circuit.foundation.internal.BackHandler
 import com.slack.circuit.overlay.Overlay
 import com.slack.circuit.overlay.OverlayNavigator
-import dev.avatsav.linkding.ui.compose.widgets.OffsetStatusBar
+import com.slack.circuit.runtime.internal.rememberStableCoroutineScope
 import kotlinx.coroutines.launch
 
 /**
@@ -42,35 +44,40 @@ import kotlinx.coroutines.launch
  * @property content The Composable content to show in the sheet.
  */
 @OptIn(ExperimentalMaterial3Api::class)
-@Suppress("LongParameterList")
 public class BottomSheetOverlay<Model : Any, Result : Any>
 private constructor(
   private val model: Model,
-  private val dismissOnTapOutside: Boolean = true,
-  private val onDismiss: (() -> Result)? = null,
-  private val sheetShape: Shape? = null,
-  private val sheetContainerColor: Color? = null,
-  private val dragHandle: (@Composable () -> Unit)? = null,
-  private val skipPartiallyExpandedState: Boolean = false,
+  private val dismissOnTapOutside: Boolean,
+  private val onDismiss: (() -> Result)?,
+  private val sheetShape: Shape?,
+  private val sheetContainerColor: Color?,
+  private val tonalElevation: Dp?,
+  private val dragHandle: (@Composable () -> Unit)?,
+  private val skipPartiallyExpandedState: Boolean,
+  private val properties: ModalBottomSheetProperties,
   private val content: @Composable (Model, OverlayNavigator<Result>) -> Unit,
 ) : Overlay<Result> {
 
   /**
    * Constructs a new [BottomSheetOverlay] that will not dismiss when tapped outside of the sheet.
    * This means that only the [content] can finish the overlay. Additionally the appearance of the
-   * sheet can be customized
+   * sheet can be customized.
    *
-   * @param sheetContainerColor - set the container color of the ModalBottomSheet
-   * @param dragHandle - customize the drag handle of the sheet
-   * @param skipPartiallyExpandedState - indicates if the Sheet should be expanded per default (if
+   * @param sheetContainerColor set the container color of the ModalBottomSheet
+   * @param dragHandle customize the drag handle of the sheet
+   * @param skipPartiallyExpandedState indicates if the Sheet should be expanded per default (if
    *   it's height exceed the partial height threshold)
+   * @param isFocusable corresponds to [ModalBottomSheetProperties.isFocusable] and will be passed
+   *   on to the final sheet as such.
    */
   public constructor(
     model: Model,
     sheetContainerColor: Color? = null,
+    tonalElevation: Dp? = null,
     sheetShape: Shape? = null,
     dragHandle: @Composable (() -> Unit)? = null,
     skipPartiallyExpandedState: Boolean = false,
+    isFocusable: Boolean = true,
     content: @Composable (Model, OverlayNavigator<Result>) -> Unit,
   ) : this(
     model = model,
@@ -79,27 +86,33 @@ private constructor(
     dragHandle = dragHandle,
     sheetShape = sheetShape,
     sheetContainerColor = sheetContainerColor,
+    tonalElevation = tonalElevation,
     skipPartiallyExpandedState = skipPartiallyExpandedState,
+    properties = createBottomSheetProperties(shouldDismissOnBackPress = false),
     content = content,
   )
 
   /**
    * Constructs a new [BottomSheetOverlay] that will dismiss when tapped outside of the sheet.
    * [onDismiss] is required in this case to offer a default value in this event. Additionally the
-   * appearance of the sheet can be customized
+   * appearance of the sheet can be customized.
    *
-   * @param sheetContainerColor - set the container color of the ModalBottomSheet
-   * @param dragHandle - customize the drag handle of the sheet
-   * @param skipPartiallyExpandedState - indicates if the Sheet should be expanded per default (if
+   * @param sheetContainerColor set the container color of the ModalBottomSheet
+   * @param dragHandle customize the drag handle of the sheet
+   * @param skipPartiallyExpandedState indicates if the Sheet should be expanded per default (if
    *   it's height exceed the partial height threshold)
+   * @param properties any [ModalBottomSheetProperties]. Defaults to
+   *   [ModalBottomSheetDefaults.properties].
    */
   public constructor(
     model: Model,
     onDismiss: (() -> Result),
     sheetContainerColor: Color? = null,
+    tonalElevation: Dp? = null,
     sheetShape: Shape? = null,
     dragHandle: @Composable (() -> Unit)? = null,
     skipPartiallyExpandedState: Boolean = false,
+    properties: ModalBottomSheetProperties = DEFAULT_PROPERTIES,
     content: @Composable (Model, OverlayNavigator<Result>) -> Unit,
   ) : this(
     model = model,
@@ -108,10 +121,13 @@ private constructor(
     dragHandle = dragHandle,
     sheetShape = sheetShape,
     sheetContainerColor = sheetContainerColor,
+    tonalElevation = tonalElevation,
     skipPartiallyExpandedState = skipPartiallyExpandedState,
+    properties = properties,
     content = content,
   )
 
+  @OptIn(ExperimentalComposeUiApi::class)
   @Composable
   override fun Content(navigator: OverlayNavigator<Result>) {
     var hasShown by remember { mutableStateOf(false) }
@@ -128,10 +144,9 @@ private constructor(
       )
 
     var pendingResult by remember { mutableStateOf<Result?>(null) }
-
     ModalBottomSheet(
       content = {
-        val coroutineScope = rememberCoroutineScope()
+        val coroutineScope = rememberStableCoroutineScope()
         BackHandler(enabled = sheetState.isVisible) {
           coroutineScope
             .launch { sheetState.hide() }
@@ -141,29 +156,28 @@ private constructor(
               }
             }
         }
-
-        // Note: Offsetting content with the status bar to achieve the status bar scrim look
-        OffsetStatusBar {
-          // Delay setting the result until we've finished dismissing
-          content(model) { result ->
-            // This is the OverlayNavigator.finish() callback
-            coroutineScope.launch {
-              pendingResult = result
-              sheetState.hide()
-            }
+        // Delay setting the result until we've finished dismissing
+        content(model) { result ->
+          // This is the OverlayNavigator.finish() callback
+          coroutineScope.launch {
+            pendingResult = result
+            sheetState.hide()
           }
         }
       },
       sheetState = sheetState,
-      shape = sheetShape ?: RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp),
+      shape = sheetShape ?: RoundedCornerShape(32.dp),
       containerColor = sheetContainerColor ?: BottomSheetDefaults.ContainerColor,
+      tonalElevation = tonalElevation ?: 0.dp,
       dragHandle = dragHandle ?: { BottomSheetDefaults.DragHandle() },
+      // Go edge-to-edge
       contentWindowInsets = { WindowInsets(0, 0, 0, 0) },
       onDismissRequest = {
         // Only possible if dismissOnTapOutside is false
         check(dismissOnTapOutside)
         navigator.finish(onDismiss!!.invoke())
       },
+      properties = properties,
     )
 
     LaunchedEffect(model, onDismiss) {
@@ -178,9 +192,16 @@ private constructor(
         }
     }
     LaunchedEffect(model, onDismiss) {
-      // TODO why doesn't this ever hit if it's after show()
       hasShown = true
       sheetState.show()
     }
   }
 }
+
+@OptIn(ExperimentalMaterial3Api::class)
+internal val DEFAULT_PROPERTIES: ModalBottomSheetProperties = ModalBottomSheetDefaults.properties
+
+@OptIn(ExperimentalMaterial3Api::class)
+internal expect fun createBottomSheetProperties(
+  shouldDismissOnBackPress: Boolean = DEFAULT_PROPERTIES.shouldDismissOnBackPress
+): ModalBottomSheetProperties
