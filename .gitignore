@@ -11,11 +11,7 @@ local.properties
 *.iml
 .idea/*
 !.idea/copyright
-# Keep the code styles.
-!/.idea/codeStyles
-/.idea/codeStyles/*
-!/.idea/codeStyles/Project.xml
-!/.idea/codeStyles/codeStyleConfig.xml
+
 # Keep icon
 !/.idea/icon.png
 
