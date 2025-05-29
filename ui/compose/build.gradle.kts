@@ -4,6 +4,13 @@ plugins {
   id("convention.compose")
 }
 
-kotlin { sourceSets { commonMain.dependencies { implementation(projects.ui.theme) } } }
+kotlin {
+  sourceSets {
+    commonMain.dependencies {
+      implementation(compose.materialIconsExtended)
+      implementation(projects.ui.theme)
+    }
+  }
+}
 
 android { namespace = "dev.avatsav.linkding.ui.compose" }
