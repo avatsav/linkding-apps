@@ -44,7 +44,7 @@ internal object HttpClientFactory {
             encodeDefaults = true
             prettyPrint = false
             explicitNulls = false
-          },
+          }
         )
       }
 

@@ -9,8 +9,7 @@ typealias LinkdingHostUrl = String
 
 typealias LinkdingApiKey = String
 
-@LinkdingDsl
-data class LinkdingApiConfig(val hostUrl: LinkdingHostUrl, val apiKey: LinkdingApiKey)
+@LinkdingDsl data class LinkdingApiConfig(val hostUrl: LinkdingHostUrl, val apiKey: LinkdingApiKey)
 
 @LinkdingDsl
 class LinkdingClientConfig {

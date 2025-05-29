@@ -7,7 +7,7 @@ import androidx.compose.material3.ModalBottomSheetProperties
 
 @OptIn(ExperimentalMaterial3Api::class)
 internal actual fun createBottomSheetProperties(
-    shouldDismissOnBackPress: Boolean
+  shouldDismissOnBackPress: Boolean
 ): ModalBottomSheetProperties {
   return ModalBottomSheetProperties(DEFAULT_PROPERTIES.securePolicy, shouldDismissOnBackPress)
 }

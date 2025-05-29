@@ -22,27 +22,27 @@ public typealias OnClick = () -> Unit
  */
 @ExperimentalMaterial3Api
 public fun alertDialogOverlay(
-    confirmButton: @Composable (onClick: OnClick) -> Unit,
-    icon: @Composable (() -> Unit)? = null,
-    title: @Composable (() -> Unit)? = null,
-    text: @Composable (() -> Unit)? = null,
-    dismissButton: (@Composable (onClick: OnClick) -> Unit)?,
-    properties: DialogProperties = DialogProperties(),
+  confirmButton: @Composable (onClick: OnClick) -> Unit,
+  icon: @Composable (() -> Unit)? = null,
+  title: @Composable (() -> Unit)? = null,
+  text: @Composable (() -> Unit)? = null,
+  dismissButton: (@Composable (onClick: OnClick) -> Unit)?,
+  properties: DialogProperties = DialogProperties(),
 ): BasicAlertDialogOverlay<*, DialogResult> {
   return BasicAlertDialogOverlay(
-      model = Unit,
-      onDismissRequest = { Dismiss },
-      properties = properties,
+    model = Unit,
+    onDismissRequest = { Dismiss },
+    properties = properties,
   ) { _, navigator ->
     AlertDialog(
-        onDismissRequest = { navigator.finish(Dismiss) },
-        icon = icon,
-        title = title,
-        text = text,
-        confirmButton = { confirmButton { navigator.finish(Confirm) } },
-        dismissButton =
-            dismissButton?.let { dismissButton -> { dismissButton { navigator.finish(Cancel) } } },
-        properties = properties,
+      onDismissRequest = { navigator.finish(Dismiss) },
+      icon = icon,
+      title = title,
+      text = text,
+      confirmButton = { confirmButton { navigator.finish(Confirm) } },
+      dismissButton =
+        dismissButton?.let { dismissButton -> { dismissButton { navigator.finish(Cancel) } } },
+      properties = properties,
     )
   }
 }
