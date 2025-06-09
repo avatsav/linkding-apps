@@ -11,6 +11,9 @@ import androidx.compose.ui.window.rememberWindowState
 import com.slack.circuit.backstack.rememberSaveableBackStack
 import com.slack.circuit.foundation.rememberCircuitNavigator
 import dev.avatsav.linkding.inject.ComponentHolder
+import dev.avatsav.linkding.inject.DesktopAppComponent
+import dev.avatsav.linkding.inject.DesktopUiComponent
+import dev.avatsav.linkding.inject.create
 import dev.avatsav.linkding.ui.AuthScreen
 import java.awt.Desktop
 import java.net.URI

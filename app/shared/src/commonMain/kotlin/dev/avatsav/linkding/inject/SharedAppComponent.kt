@@ -1,5 +1,7 @@
-package dev.avatsav.linkding
+package dev.avatsav.linkding.inject
 
+import dev.avatsav.linkding.AppCoroutineDispatchers
+import dev.avatsav.linkding.AppCoroutineScope
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO

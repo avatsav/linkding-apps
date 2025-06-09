@@ -1,7 +1,8 @@
-package dev.avatsav.linkding
+package dev.avatsav.linkding.inject
 
 import android.app.Application
 import android.content.pm.ApplicationInfo
+import dev.avatsav.linkding.AppInfo
 import dev.avatsav.linkding.initializers.AppInitializer
 import dev.avatsav.linkding.prefs.AppPreferences
 import me.tatarka.inject.annotations.Provides

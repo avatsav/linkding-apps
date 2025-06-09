@@ -1,10 +1,8 @@
-package dev.avatsav.linkding
+package dev.avatsav.linkding.inject
 
 import com.slack.circuit.foundation.Circuit
 import com.slack.circuit.runtime.presenter.Presenter
 import com.slack.circuit.runtime.ui.Ui
-import dev.avatsav.linkding.inject.UiScope
-import dev.avatsav.linkding.inject.UserScope
 import dev.avatsav.linkding.inject.qualifier.Authenticated
 import dev.avatsav.linkding.inject.qualifier.Unauthenticated
 import me.tatarka.inject.annotations.Provides

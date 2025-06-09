@@ -1,5 +1,6 @@
-package dev.avatsav.linkding
+package dev.avatsav.linkding.inject
 
+import dev.avatsav.linkding.AppInfo
 import dev.avatsav.linkding.initializers.AppInitializer
 import java.util.prefs.Preferences
 import me.tatarka.inject.annotations.Provides

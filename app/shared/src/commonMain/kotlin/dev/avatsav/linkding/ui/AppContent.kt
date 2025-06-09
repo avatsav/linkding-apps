@@ -20,10 +20,10 @@ import com.slack.circuit.foundation.CircuitContent
 import com.slack.circuit.foundation.NavigableCircuitContent
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuitx.gesturenavigation.GestureNavigationDecorationFactory
-import dev.avatsav.linkding.UserComponent
 import dev.avatsav.linkding.auth.api.AuthState
 import dev.avatsav.linkding.data.model.ApiConfig
 import dev.avatsav.linkding.inject.ComponentHolder
+import dev.avatsav.linkding.inject.UserComponent
 
 @Composable
 fun AppContent(

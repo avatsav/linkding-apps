@@ -1,6 +1,5 @@
-package dev.avatsav.linkding
+package dev.avatsav.linkding.inject
 
-import dev.avatsav.linkding.inject.UiScope
 import dev.avatsav.linkding.ui.MainUIViewController
 import me.tatarka.inject.annotations.Provides
 import platform.UIKit.UIViewController

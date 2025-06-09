@@ -16,9 +16,9 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.slack.circuit.backstack.rememberSaveableBackStack
 import com.slack.circuit.foundation.rememberCircuitNavigator
-import dev.avatsav.linkding.AndroidAppComponent
-import dev.avatsav.linkding.AndroidUiComponent
 import dev.avatsav.linkding.data.model.prefs.AppTheme
+import dev.avatsav.linkding.inject.AndroidAppComponent
+import dev.avatsav.linkding.inject.AndroidUiComponent
 import dev.avatsav.linkding.inject.ComponentHolder
 import dev.avatsav.linkding.ui.AuthScreen
 import kotlinx.coroutines.launch
