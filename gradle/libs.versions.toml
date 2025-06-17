@@ -1,14 +1,14 @@
 [versions]
 agp ="8.9.3"
-kotlin = "2.2.0-RC2"
+kotlin = "2.2.0-RC3"
 coroutines = "1.10.2"
-ksp = "2.2.0-RC2-2.0.1"
+ksp = "2.2.0-RC3-2.0.2"
 ktmft = "0.22.0"
 detekt = "1.23.8"
 multiplatform-settings = "1.3.0"
 ktor = "3.1.3"
 datetime = "0.6.2"
-compose-multiplatform = "1.8.1"
+compose-multiplatform = "1.8.2"
 kotlin-inject = "0.8.0"
 anvil = "0.1.6"
 paging = "3.3.6"
@@ -59,7 +59,7 @@ kotlin-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-co
 kotlin-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutines" }
 kotlin-serialization-json = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.1"
 kotlin-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "datetime" }
-kotlin-atomicfu = "org.jetbrains.kotlinx:atomicfu:0.27.0"
+kotlin-atomicfu = "org.jetbrains.kotlinx:atomicfu:0.28.0"
 
 ksp = { module = "com.google.devtools.ksp:symbol-processing-api", version.ref = "ksp" }
 kotlinPoet = { module = "com.squareup:kotlinpoet", version.ref = "kotlinPoet" }
