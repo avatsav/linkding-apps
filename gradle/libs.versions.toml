@@ -115,7 +115,7 @@ sqldelight-primitive = { module = "app.cash.sqldelight:primitive-adapters", vers
 stately = { module = "co.touchlab:stately-common", version.ref = "stately" }
 uuid = { module = "com.benasher44:uuid", version.ref = "uuid" }
 
-detektComposeRules = "io.nlopez.compose.rules:detekt:0.4.22"
+detektComposeRules = "io.nlopez.compose.rules:detekt:0.4.27"
 
 # Build logic dependencies
 android-gradlePlugin = { module = "com.android.tools.build:gradle", version.ref = "agp" }
