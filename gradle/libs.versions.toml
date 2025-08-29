@@ -18,7 +18,7 @@ androidxActivity = "1.10.1"
 sqldelight = "2.1.0"
 stately = "2.1.0"
 kotlinPoet = "2.2.0"
-kotest = "6.0.0"
+kotest = "6.0.1"
 uuid = "0.8.4"
 
 compileSdk = "36"
