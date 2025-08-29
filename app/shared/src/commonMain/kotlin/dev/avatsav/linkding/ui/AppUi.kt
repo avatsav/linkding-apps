@@ -12,7 +12,7 @@ import com.slack.circuit.backstack.SaveableBackStack
 import com.slack.circuit.foundation.Circuit
 import com.slack.circuit.overlay.ContentWithOverlays
 import com.slack.circuit.retained.LocalRetainedStateRegistry
-import com.slack.circuit.retained.continuityRetainedStateRegistry
+import com.slack.circuit.retained.lifecycleRetainedStateRegistry
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.screen.Screen
 import dev.avatsav.linkding.auth.api.AuthManager
@@ -55,9 +55,7 @@ class DefaultAppUi(
 
     val authState by authManager.state.collectAsState(null)
 
-    CompositionLocalProvider(
-      LocalRetainedStateRegistry provides continuityRetainedStateRegistry()
-    ) {
+    CompositionLocalProvider(LocalRetainedStateRegistry provides lifecycleRetainedStateRegistry()) {
       LinkdingTheme(
         darkTheme = preferences.shouldUseDarkTheme(),
         dynamicColors = preferences.shouldUseDynamicColors(),

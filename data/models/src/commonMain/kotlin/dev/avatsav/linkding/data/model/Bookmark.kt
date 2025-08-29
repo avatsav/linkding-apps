@@ -1,6 +1,6 @@
 package dev.avatsav.linkding.data.model
 
-import kotlinx.datetime.Instant
+import kotlin.time.Instant
 
 data class Bookmark(
   val localId: Long = 0,

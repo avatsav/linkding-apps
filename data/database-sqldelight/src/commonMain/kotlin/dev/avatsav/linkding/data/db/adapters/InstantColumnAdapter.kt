@@ -1,7 +1,7 @@
 package dev.avatsav.linkding.data.db.adapters
 
 import app.cash.sqldelight.ColumnAdapter
-import kotlinx.datetime.Instant
+import kotlin.time.Instant
 
 internal object InstantColumnAdapter : ColumnAdapter<Instant, String> {
   override fun encode(value: Instant): String = value.toString()

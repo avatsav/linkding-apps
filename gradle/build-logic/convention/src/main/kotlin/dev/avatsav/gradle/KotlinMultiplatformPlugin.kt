@@ -35,7 +35,8 @@ class KotlinMultiplatformPlugin : Plugin<Project> {
                 freeCompilerArgs.addAll(
                   "-opt-in=kotlinx.cinterop.ExperimentalForeignApi",
                   "-opt-in=kotlinx.cinterop.BetaInteropApi",
-                )
+
+                  )
               }
             }
           }
@@ -44,7 +45,10 @@ class KotlinMultiplatformPlugin : Plugin<Project> {
         targets.configureEach {
           compilations.configureEach {
             compileTaskProvider.configure {
-              compilerOptions { freeCompilerArgs.add("-Xexpect-actual-classes") }
+              compilerOptions {
+                freeCompilerArgs.add("-Xexpect-actual-classes")
+                optIn.add("kotlin.time.ExperimentalTime")
+              }
             }
           }
         }

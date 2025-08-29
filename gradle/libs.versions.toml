@@ -1,30 +1,30 @@
 [versions]
-agp ="8.9.3"
-kotlin = "2.2.0-RC2"
+agp ="8.12.2"
+kotlin = "2.2.10"
 coroutines = "1.10.2"
-ksp = "2.2.0-RC2-2.0.1"
-ktmft = "0.22.0"
+ksp = "2.2.10-2.0.2"
+ktmft = "0.23.0"
 detekt = "1.23.8"
 multiplatform-settings = "1.3.0"
-ktor = "3.1.3"
-datetime = "0.6.2"
-compose-multiplatform = "1.8.1"
+ktor = "3.2.3"
+datetime = "0.7.1"
+compose-multiplatform = "1.8.2"
 kotlin-inject = "0.8.0"
 anvil = "0.1.6"
 paging = "3.3.6"
-circuit = "0.28.0"
-kotlinResult = "2.0.1"
+circuit = "0.30.0"
+kotlinResult = "2.1.0"
 androidxActivity = "1.10.1"
 sqldelight = "2.1.0"
 stately = "2.1.0"
 kotlinPoet = "2.2.0"
-kotest = "5.9.1"
+kotest = "6.0.0"
 uuid = "0.8.4"
 
-compileSdk = "35"
+compileSdk = "36"
 minSdk = "30"
-targetSdk = "35"
-jvmToolchain = "23"
+targetSdk = "36"
+jvmToolchain = "24"
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
@@ -45,9 +45,9 @@ detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
 [libraries]
 androidx-activity = { module = "androidx.activity:activity", version.ref = "androidxActivity" }
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidxActivity" }
-androidx-core = "androidx.core:core-ktx:1.16.0"
+androidx-core = "androidx.core:core-ktx:1.17.0"
 androidx-splashscreen = "androidx.core:core-splashscreen:1.0.1"
-androidx-browser = "androidx.browser:browser:1.8.0"
+androidx-browser = "androidx.browser:browser:1.9.0"
 androidx-preference = "androidx.preference:preference-ktx:1.2.1"
 compose-ui-backhandler = { module = "org.jetbrains.compose.ui:ui-backhandler", version.ref = "compose-multiplatform" }
 
@@ -57,9 +57,9 @@ kotlin-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines
 kotlin-coroutines-swing = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-swing", version.ref = "coroutines" }
 kotlin-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
 kotlin-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutines" }
-kotlin-serialization-json = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.1"
+kotlin-serialization-json = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.9.0"
 kotlin-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "datetime" }
-kotlin-atomicfu = "org.jetbrains.kotlinx:atomicfu:0.27.0"
+kotlin-atomicfu = "org.jetbrains.kotlinx:atomicfu:0.29.0"
 
 ksp = { module = "com.google.devtools.ksp:symbol-processing-api", version.ref = "ksp" }
 kotlinPoet = { module = "com.squareup:kotlinpoet", version.ref = "kotlinPoet" }
@@ -73,7 +73,7 @@ ktor-client-contentNegotiation = { module = "io.ktor:ktor-client-content-negotia
 ktor-serialization-json = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor" }
 
 leakCanary = "com.squareup.leakcanary:leakcanary-android:2.14"
-kermit = "co.touchlab:kermit:2.0.5"
+kermit = "co.touchlab:kermit:2.0.8"
 
 multiplatform-settings = { module = "com.russhwolf:multiplatform-settings", version.ref = "multiplatform-settings" }
 multiplatform-settings-coroutines = { module = "com.russhwolf:multiplatform-settings-coroutines", version.ref = "multiplatform-settings" }
@@ -90,12 +90,12 @@ kotlinResultCoroutines = { module = "com.michael-bull.kotlin-result:kotlin-resul
 
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 junit = "junit:junit:4.13.2"
-androidx-test-core = "androidx.test:core-ktx:1.6.1"
-androidx-test-rules = "androidx.test:rules:1.6.1"
-androidx-test-runner = "androidx.test:runner:1.6.2"
-androidx-test-junit = "androidx.test.ext:junit-ktx:1.2.1"
-androidx-test-espresso = "androidx.test.espresso:espresso-core:3.6.1"
-turbine = "app.cash.turbine:turbine:1.2.0"
+androidx-test-core = "androidx.test:core-ktx:1.7.0"
+androidx-test-rules = "androidx.test:rules:1.7.0"
+androidx-test-runner = "androidx.test:runner:1.7.0"
+androidx-test-junit = "androidx.test.ext:junit-ktx:1.3.0"
+androidx-test-espresso = "androidx.test.espresso:espresso-core:3.7.0"
+turbine = "app.cash.turbine:turbine:1.2.1"
 kotest-assertions = { module = "io.kotest:kotest-assertions-core", version.ref = "kotest" }
 
 circuit-foundation = { module = "com.slack.circuit:circuit-foundation", version.ref = "circuit" }
@@ -115,7 +115,7 @@ sqldelight-primitive = { module = "app.cash.sqldelight:primitive-adapters", vers
 stately = { module = "co.touchlab:stately-common", version.ref = "stately" }
 uuid = { module = "com.benasher44:uuid", version.ref = "uuid" }
 
-detektComposeRules = "io.nlopez.compose.rules:detekt:0.4.22"
+detektComposeRules = "io.nlopez.compose.rules:detekt:0.4.27"
 
 # Build logic dependencies
 android-gradlePlugin = { module = "com.android.tools.build:gradle", version.ref = "agp" }
