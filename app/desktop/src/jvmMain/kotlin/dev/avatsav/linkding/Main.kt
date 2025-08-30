@@ -10,6 +10,7 @@ import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
 import com.slack.circuit.backstack.rememberSaveableBackStack
 import com.slack.circuit.foundation.rememberCircuitNavigator
+import dev.avatsav.linkding.domain.models.LaunchMode
 import dev.avatsav.linkding.inject.ComponentHolder
 import dev.avatsav.linkding.inject.DesktopAppComponent
 import dev.avatsav.linkding.inject.DesktopUiComponent
@@ -35,7 +36,7 @@ fun main() = application {
     val backstack = rememberSaveableBackStack(root = AuthScreen)
     val navigator = rememberCircuitNavigator(backstack) { /* no-op */ }
 
-    uiComponent.appUi.Content(backstack, navigator, { launchUrl(it) }, Modifier)
+    uiComponent.appUi.Content(LaunchMode.Normal, backstack, navigator, { launchUrl(it) }, Modifier)
   }
 }
 
