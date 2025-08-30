@@ -27,6 +27,7 @@ import dev.avatsav.linkding.inject.UserComponent
 
 @Composable
 fun AppContent(
+  sharedLink: String?,
   authState: AuthState?,
   circuit: Circuit,
   backStack: SaveableBackStack,
@@ -35,7 +36,7 @@ fun AppContent(
 ) {
   when (authState) {
     is AuthState.Authenticated -> {
-      AuthenticatedContent(authState.apiConfig, backStack, navigator, modifier)
+      AuthenticatedContent(sharedLink, authState.apiConfig, backStack, navigator, modifier)
     }
 
     is AuthState.Unauthenticated -> {
@@ -50,6 +51,7 @@ fun AppContent(
 
 @Composable
 private fun AuthenticatedContent(
+  sharedLink: String?,
   apiConfig: ApiConfig,
   backStack: SaveableBackStack,
   navigator: Navigator,
@@ -62,7 +64,9 @@ private fun AuthenticatedContent(
       }
     }
 
-  LaunchedEffect(Unit) { navigator.goToAndResetRoot(BookmarksScreen) }
+  val startRoute = if (sharedLink != null) AddBookmarkScreen(sharedLink) else BookmarksScreen
+
+  LaunchedEffect(Unit) { navigator.goToAndResetRoot(startRoute) }
 
   CircuitCompositionLocals(userComponent.circuit) {
     NavigableCircuitContent(

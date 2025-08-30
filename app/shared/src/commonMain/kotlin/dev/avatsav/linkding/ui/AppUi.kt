@@ -28,6 +28,7 @@ import software.amazon.lastmile.kotlin.inject.anvil.SingleIn
 interface AppUi {
   @Composable
   fun Content(
+    sharedLink: String?,
     backStack: SaveableBackStack,
     navigator: Navigator,
     onOpenUrl: (String) -> Boolean,
@@ -46,13 +47,13 @@ class DefaultAppUi(
 
   @Composable
   override fun Content(
+    sharedLink: String?,
     backStack: SaveableBackStack,
     navigator: Navigator,
     onOpenUrl: (String) -> Boolean,
     modifier: Modifier,
   ) {
     val appNavigator: Navigator = remember(navigator) { AppNavigator(navigator, onOpenUrl) }
-
     val authState by authManager.state.collectAsState(null)
 
     CompositionLocalProvider(LocalRetainedStateRegistry provides lifecycleRetainedStateRegistry()) {
@@ -62,6 +63,7 @@ class DefaultAppUi(
       ) {
         ContentWithOverlays {
           AppContent(
+            sharedLink = sharedLink,
             authState = authState,
             circuit = circuit,
             backStack = backStack,
