@@ -1,6 +1,6 @@
 package dev.avatsav.linkding.inject.qualifier
 
-import me.tatarka.inject.annotations.Qualifier
+import dev.zacsweers.metro.Qualifier
 
 @Qualifier
 @Target(

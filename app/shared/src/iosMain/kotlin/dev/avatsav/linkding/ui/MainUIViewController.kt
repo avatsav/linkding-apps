@@ -10,7 +10,7 @@ import androidx.compose.ui.window.ComposeUIViewController
 import com.slack.circuit.backstack.rememberSaveableBackStack
 import com.slack.circuit.foundation.rememberCircuitNavigator
 import dev.avatsav.linkding.domain.models.LaunchMode
-import me.tatarka.inject.annotations.Inject
+import dev.zacsweers.metro.Inject
 import platform.Foundation.NSURL
 import platform.SafariServices.SFSafariViewController
 import platform.UIKit.UIViewController

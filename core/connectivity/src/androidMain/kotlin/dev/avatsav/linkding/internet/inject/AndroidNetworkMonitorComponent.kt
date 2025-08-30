@@ -10,10 +10,10 @@ import androidx.core.content.getSystemService
 import dev.avatsav.linkding.internet.AndroidNetworkMonitor
 import dev.avatsav.linkding.internet.EmptyNetworkMonitor
 import dev.avatsav.linkding.internet.NetworkMonitor
-import me.tatarka.inject.annotations.Provides
-import software.amazon.lastmile.kotlin.inject.anvil.AppScope
-import software.amazon.lastmile.kotlin.inject.anvil.ContributesTo
-import software.amazon.lastmile.kotlin.inject.anvil.SingleIn
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesTo
+import dev.zacsweers.metro.Provides
+import dev.zacsweers.metro.SingleIn
 
 @ContributesTo(AppScope::class)
 interface AndroidNetworkMonitorComponent {

@@ -20,7 +20,6 @@ kotlin {
       implementation(projects.domain)
       api(projects.ui.theme)
       api(projects.ui.screens)
-      implementation(libs.kotlin.inject.runtime)
     }
   }
 }

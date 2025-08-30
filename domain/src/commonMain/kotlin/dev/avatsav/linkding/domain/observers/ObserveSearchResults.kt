@@ -9,7 +9,7 @@ import dev.avatsav.linkding.data.model.Tag
 import dev.avatsav.linkding.domain.PagedObserver
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
-import me.tatarka.inject.annotations.Inject
+import dev.zacsweers.metro.Inject
 
 @Inject
 class ObserveSearchResults(private val repository: BookmarksRepository) :

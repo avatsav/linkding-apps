@@ -11,10 +11,10 @@ import dev.avatsav.linkding.data.model.prefs.AppTheme
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
-import me.tatarka.inject.annotations.Inject
-import software.amazon.lastmile.kotlin.inject.anvil.AppScope
-import software.amazon.lastmile.kotlin.inject.anvil.ContributesBinding
-import software.amazon.lastmile.kotlin.inject.anvil.SingleIn
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesBinding
+import dev.zacsweers.metro.SingleIn
 
 private const val HostUrlConfigurationKey = "linkding-hostUrl"
 private const val ApiKeyConfigurationKey = "linkding-apiKey"

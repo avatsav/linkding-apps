@@ -4,7 +4,7 @@ import dev.avatsav.linkding.api.models.LinkdingTag
 import dev.avatsav.linkding.api.models.LinkdingTagsResponse
 import dev.avatsav.linkding.data.model.Tag
 import dev.avatsav.linkding.data.model.TagsResult
-import me.tatarka.inject.annotations.Inject
+import dev.zacsweers.metro.Inject
 
 @Inject
 class TagMapper {

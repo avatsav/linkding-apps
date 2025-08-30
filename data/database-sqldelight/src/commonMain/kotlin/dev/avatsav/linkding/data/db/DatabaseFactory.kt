@@ -3,7 +3,7 @@ package dev.avatsav.linkding.data.db
 import app.cash.sqldelight.db.SqlDriver
 import dev.avatsav.linkding.data.db.adapters.InstantColumnAdapter
 import dev.avatsav.linkding.data.db.adapters.StringSetColumnAdapter
-import me.tatarka.inject.annotations.Inject
+import dev.zacsweers.metro.Inject
 
 @Inject
 class DatabaseFactory(private val sqlDriver: SqlDriver) {

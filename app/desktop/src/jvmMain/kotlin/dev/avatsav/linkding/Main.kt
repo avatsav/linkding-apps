@@ -14,13 +14,13 @@ import dev.avatsav.linkding.domain.models.LaunchMode
 import dev.avatsav.linkding.inject.ComponentHolder
 import dev.avatsav.linkding.inject.DesktopAppComponent
 import dev.avatsav.linkding.inject.DesktopUiComponent
-import dev.avatsav.linkding.inject.create
 import dev.avatsav.linkding.ui.AuthScreen
+import dev.zacsweers.metro.createGraph
 import java.awt.Desktop
 import java.net.URI
 
 fun main() = application {
-  DesktopAppComponent::class.create()
+  createGraph<DesktopAppComponent>()
     .also { ComponentHolder.components += it }
     .also { it.appInitializer.initialize() }
 

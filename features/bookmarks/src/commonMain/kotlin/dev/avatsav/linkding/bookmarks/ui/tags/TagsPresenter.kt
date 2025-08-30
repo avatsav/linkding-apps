@@ -16,18 +16,26 @@ import dev.avatsav.linkding.ui.TagsScreen
 import dev.avatsav.linkding.ui.TagsScreenResult
 import dev.avatsav.linkding.ui.circuit.produceRetainedState
 import dev.avatsav.linkding.ui.circuit.rememberRetainedCoroutineScope
+import dev.zacsweers.metro.Assisted
+import dev.zacsweers.metro.AssistedFactory
+import dev.zacsweers.metro.Inject
 import kotlinx.coroutines.flow.emptyFlow
-import me.tatarka.inject.annotations.Assisted
-import me.tatarka.inject.annotations.Inject
 
-@CircuitInject(TagsScreen::class, UserScope::class)
-class TagsPresenter
 @Inject
-constructor(
+class TagsPresenter(
   @Assisted private val navigator: Navigator,
   @Assisted private val screen: TagsScreen,
   private val observeTags: ObserveTags,
 ) : Presenter<TagsUiState> {
+
+  @CircuitInject(TagsScreen::class, UserScope::class)
+  @AssistedFactory
+  interface Factory {
+    fun create(
+      navigator: Navigator,
+      screen: TagsScreen,
+    ): TagsPresenter
+  }
 
   @Composable
   override fun present(): TagsUiState {
@@ -35,12 +43,12 @@ constructor(
     val selectedTags = screen.selectedTags.map { it.mapToTag() }
 
     val tagsFlow by
-      produceRetainedState(emptyFlow()) {
-        observeTags(
-          ObserveTags.Param(selectedTags, PagingConfig(initialLoadSize = 100, pageSize = 100))
-        )
-        value = observeTags.flow.cachedIn(presenterScope)
-      }
+    produceRetainedState(emptyFlow()) {
+      observeTags(
+        ObserveTags.Param(selectedTags, PagingConfig(initialLoadSize = 100, pageSize = 100)),
+      )
+      value = observeTags.flow.cachedIn(presenterScope)
+    }
     val tags = tagsFlow.collectAsLazyPagingItems()
 
     return TagsUiState(selectedTags = selectedTags, tags = tags) { event ->

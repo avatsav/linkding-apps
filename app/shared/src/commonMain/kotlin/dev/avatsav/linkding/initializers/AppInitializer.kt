@@ -1,9 +1,9 @@
 package dev.avatsav.linkding.initializers
 
 import dev.avatsav.linkding.Initializer
-import me.tatarka.inject.annotations.Inject
-import software.amazon.lastmile.kotlin.inject.anvil.AppScope
-import software.amazon.lastmile.kotlin.inject.anvil.SingleIn
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.SingleIn
 
 @Inject
 @SingleIn(AppScope::class)

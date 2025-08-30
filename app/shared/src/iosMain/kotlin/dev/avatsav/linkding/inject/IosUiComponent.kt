@@ -1,14 +1,14 @@
 package dev.avatsav.linkding.inject
 
 import dev.avatsav.linkding.ui.MainUIViewController
-import me.tatarka.inject.annotations.Provides
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesTo
+import dev.zacsweers.metro.GraphExtension
+import dev.zacsweers.metro.Provides
+import dev.zacsweers.metro.SingleIn
 import platform.UIKit.UIViewController
-import software.amazon.lastmile.kotlin.inject.anvil.AppScope
-import software.amazon.lastmile.kotlin.inject.anvil.ContributesSubcomponent
-import software.amazon.lastmile.kotlin.inject.anvil.SingleIn
 
-@SingleIn(UiScope::class)
-@ContributesSubcomponent(UiScope::class)
+@GraphExtension(UiScope::class)
 interface IosUiComponent {
 
   val uiViewControllerFactory: () -> UIViewController
@@ -17,7 +17,8 @@ interface IosUiComponent {
   @SingleIn(UiScope::class)
   fun uiViewController(impl: MainUIViewController): UIViewController = impl()
 
-  @ContributesSubcomponent.Factory(AppScope::class)
+  @ContributesTo(AppScope::class)
+  @GraphExtension.Factory
   interface Factory {
     fun createUiComponent(): IosUiComponent
   }

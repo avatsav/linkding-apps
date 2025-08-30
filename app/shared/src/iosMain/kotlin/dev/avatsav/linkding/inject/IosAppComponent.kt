@@ -3,12 +3,12 @@ package dev.avatsav.linkding.inject
 import dev.avatsav.linkding.AppInfo
 import dev.avatsav.linkding.initializers.AppInitializer
 import kotlin.experimental.ExperimentalNativeApi
-import me.tatarka.inject.annotations.Provides
+import dev.zacsweers.metro.Provides
 import platform.Foundation.NSBundle
 import platform.Foundation.NSUserDefaults
-import software.amazon.lastmile.kotlin.inject.anvil.AppScope
+import dev.zacsweers.metro.AppScope
 import software.amazon.lastmile.kotlin.inject.anvil.MergeComponent
-import software.amazon.lastmile.kotlin.inject.anvil.SingleIn
+import dev.zacsweers.metro.SingleIn
 
 @SingleIn(AppScope::class)
 @MergeComponent(AppScope::class)

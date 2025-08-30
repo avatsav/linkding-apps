@@ -19,8 +19,8 @@ import dev.avatsav.linkding.data.model.CheckUrlResult
 import dev.avatsav.linkding.data.model.SaveBookmark
 import dev.avatsav.linkding.inject.UserScope
 import kotlinx.coroutines.flow.Flow
-import me.tatarka.inject.annotations.Inject
-import software.amazon.lastmile.kotlin.inject.anvil.ContributesBinding
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.ContributesBinding
 
 @Inject
 @ContributesBinding(UserScope::class)

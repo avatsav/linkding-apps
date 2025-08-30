@@ -15,11 +15,11 @@ import dev.avatsav.linkding.prefs.AppPreferences
 import dev.avatsav.linkding.ui.AuthScreen
 import dev.avatsav.linkding.ui.SettingsScreen
 import dev.avatsav.linkding.ui.UrlScreen
+import dev.zacsweers.metro.Assisted
+import dev.zacsweers.metro.AssistedFactory
+import dev.zacsweers.metro.Inject
 import kotlinx.coroutines.launch
-import me.tatarka.inject.annotations.Assisted
-import me.tatarka.inject.annotations.Inject
 
-@CircuitInject(SettingsScreen::class, UserScope::class)
 @Inject
 class SettingsPresenter(
   @Assisted private val navigator: Navigator,
@@ -27,18 +27,24 @@ class SettingsPresenter(
   private val appInfo: AppInfo,
 ) : Presenter<SettingsUiState> {
 
+  @CircuitInject(SettingsScreen::class, UserScope::class)
+  @AssistedFactory
+  interface Factory {
+    fun create(navigator: Navigator): SettingsPresenter
+  }
+
   @Composable
   override fun present(): SettingsUiState {
     val coroutineScope = rememberCoroutineScope()
 
     val apiConfig by
-      remember { preferences.observeApiConfig() }.collectAsRetainedState(preferences.getApiConfig())
+    remember { preferences.observeApiConfig() }.collectAsRetainedState(preferences.getApiConfig())
 
     val useDynamicColors by
-      remember { preferences.observeUseDynamicColors() }.collectAsRetainedState(false)
+    remember { preferences.observeUseDynamicColors() }.collectAsRetainedState(false)
 
     val appTheme by
-      remember { preferences.observeAppTheme() }.collectAsRetainedState(AppTheme.System)
+    remember { preferences.observeAppTheme() }.collectAsRetainedState(AppTheme.System)
 
     return SettingsUiState(appInfo, apiConfig, appTheme, useDynamicColors) { event ->
       when (event) {
@@ -58,6 +64,7 @@ class SettingsPresenter(
 
         SettingsUiEvent.ShowSourceCode ->
           navigator.goTo(UrlScreen("https://github.com/avatsav/linkding-apps"))
+
         SettingsUiEvent.ShowLicenses -> {}
         SettingsUiEvent.ShowPrivacyPolicy -> {}
       }

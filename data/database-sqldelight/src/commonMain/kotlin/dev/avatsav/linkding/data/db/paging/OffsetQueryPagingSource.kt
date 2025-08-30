@@ -22,8 +22,8 @@ import app.cash.sqldelight.SuspendingTransacter
 import app.cash.sqldelight.Transacter
 import app.cash.sqldelight.TransacterBase
 import app.cash.sqldelight.TransactionCallbacks
-import kotlin.coroutines.CoroutineContext
 import kotlinx.coroutines.withContext
+import kotlin.coroutines.CoroutineContext
 
 internal class OffsetQueryPagingSource<RowType : Any>(
   private val queryProvider: (limit: Int, offset: Int) -> Query<RowType>,
@@ -56,8 +56,6 @@ internal class OffsetQueryPagingSource<RowType : Any>(
               } else {
                 key
               }
-
-            else -> error("Unknown PagingSourceLoadParams ${params::class}")
           }
         val data = queryProvider(limit, offset).also { currentQuery = it }.executeAsList()
         val nextPosToLoad = offset + data.size
@@ -73,6 +71,7 @@ internal class OffsetQueryPagingSource<RowType : Any>(
         when (transacter) {
           is Transacter ->
             transacter.transactionWithResult(bodyWithReturn = getPagingSourceLoadResult)
+
           is SuspendingTransacter ->
             transacter.transactionWithResult(bodyWithReturn = getPagingSourceLoadResult)
         }

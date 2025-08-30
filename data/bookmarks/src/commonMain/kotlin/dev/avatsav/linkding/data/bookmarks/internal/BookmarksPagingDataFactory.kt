@@ -8,15 +8,16 @@ import dev.avatsav.linkding.data.db.daos.PagingBookmarksDao
 import dev.avatsav.linkding.data.model.Bookmark
 import dev.avatsav.linkding.data.model.BookmarkCategory
 import kotlinx.coroutines.flow.Flow
-import me.tatarka.inject.annotations.Inject
+import dev.zacsweers.metro.Inject
 
 @OptIn(ExperimentalPagingApi::class)
 @Inject
 class BookmarksPagingDataFactory(
-  private val bookmarksRemoteMediatorFactory: BookmarksRemoteMediatorFactory,
-  private val remoteBookmarksPagingSourceFactory: RemoteBookmarksPagingSourceFactory,
+  private val bookmarksRemoteMediatorFactory: BookmarksRemoteMediator.Factory,
+  private val remoteBookmarksPagingSourceFactory: RemoteBookmarksPagingSource.Factory,
   private val pagingBookmarksDao: PagingBookmarksDao,
 ) {
+
   fun create(
     cached: Boolean,
     pagingConfig: PagingConfig,
@@ -32,7 +33,7 @@ class BookmarksPagingDataFactory(
     Pager(
         config = pagingConfig,
         pagingSourceFactory = {
-          remoteBookmarksPagingSourceFactory(param.query, param.category, param.tags)
+          remoteBookmarksPagingSourceFactory.create(param.query, param.category, param.tags)
         },
       )
       .flow
@@ -40,7 +41,7 @@ class BookmarksPagingDataFactory(
   private fun cachedBookmarksFlow(pagingConfig: PagingConfig, param: Param) =
     Pager(
         config = pagingConfig,
-        remoteMediator = bookmarksRemoteMediatorFactory(param.query, param.category, param.tags),
+        remoteMediator = bookmarksRemoteMediatorFactory.create(param.query, param.category, param.tags),
         pagingSourceFactory = { pagingBookmarksDao.bookmarksPagingSource() },
       )
       .flow

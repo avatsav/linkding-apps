@@ -36,12 +36,6 @@ kotlin {
       api(libs.circuit.overlay)
       api(libs.circuit.runtime)
       api(libs.circuitx.gestureNavigation)
-
-      implementation(libs.kotlin.inject.runtime)
-      implementation(libs.anvil.runtime)
-      implementation(libs.anvil.runtime.optional)
-      implementation(libs.circuit.codegen.annotations)
-      implementation(projects.codegen.annotations)
     }
 
     targets.withType<KotlinNativeTarget>().configureEach {

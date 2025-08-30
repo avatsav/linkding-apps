@@ -8,7 +8,7 @@ import dev.avatsav.linkding.data.model.BookmarkCategory
 import dev.avatsav.linkding.data.model.Tag
 import dev.avatsav.linkding.domain.PagedObserver
 import kotlinx.coroutines.flow.Flow
-import me.tatarka.inject.annotations.Inject
+import dev.zacsweers.metro.Inject
 
 @Inject
 class ObserveBookmarks(private val repository: BookmarksRepository) :

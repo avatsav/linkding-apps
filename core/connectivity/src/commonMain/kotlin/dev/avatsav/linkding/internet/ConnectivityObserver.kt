@@ -2,16 +2,16 @@ package dev.avatsav.linkding.internet
 
 import co.touchlab.kermit.Logger
 import dev.avatsav.linkding.AppCoroutineScope
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesBinding
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.SingleIn
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.stateIn
-import me.tatarka.inject.annotations.Inject
-import software.amazon.lastmile.kotlin.inject.anvil.AppScope
-import software.amazon.lastmile.kotlin.inject.anvil.ContributesBinding
-import software.amazon.lastmile.kotlin.inject.anvil.SingleIn
 
 interface ConnectivityObserver {
   val observeIsOnline: StateFlow<Boolean>

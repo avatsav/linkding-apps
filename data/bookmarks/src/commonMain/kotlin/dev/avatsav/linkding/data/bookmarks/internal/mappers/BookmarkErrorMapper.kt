@@ -2,7 +2,7 @@ package dev.avatsav.linkding.data.bookmarks.internal.mappers
 
 import dev.avatsav.linkding.api.models.LinkdingError
 import dev.avatsav.linkding.data.model.BookmarkError
-import me.tatarka.inject.annotations.Inject
+import dev.zacsweers.metro.Inject
 
 @Inject
 class BookmarkErrorMapper {

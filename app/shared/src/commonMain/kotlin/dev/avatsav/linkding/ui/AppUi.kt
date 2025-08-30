@@ -22,9 +22,9 @@ import dev.avatsav.linkding.inject.UiScope
 import dev.avatsav.linkding.inject.qualifier.Unauthenticated
 import dev.avatsav.linkding.prefs.AppPreferences
 import dev.avatsav.linkding.ui.theme.LinkdingTheme
-import me.tatarka.inject.annotations.Inject
-import software.amazon.lastmile.kotlin.inject.anvil.ContributesBinding
-import software.amazon.lastmile.kotlin.inject.anvil.SingleIn
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.ContributesBinding
+import dev.zacsweers.metro.SingleIn
 
 interface AppUi {
   @Composable

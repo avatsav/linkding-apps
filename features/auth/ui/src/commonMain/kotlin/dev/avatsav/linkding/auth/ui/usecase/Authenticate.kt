@@ -6,7 +6,7 @@ import dev.avatsav.linkding.auth.api.AuthRepository
 import dev.avatsav.linkding.data.model.AuthError
 import dev.avatsav.linkding.domain.Interactor
 import kotlinx.coroutines.withContext
-import me.tatarka.inject.annotations.Inject
+import dev.zacsweers.metro.Inject
 
 @Inject
 class Authenticate(
