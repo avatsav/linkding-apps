@@ -9,9 +9,9 @@ import dev.avatsav.linkding.auth.mappers.AuthErrorMapper
 import dev.avatsav.linkding.data.model.ApiConfig
 import dev.avatsav.linkding.data.model.AuthError
 import dev.avatsav.linkding.prefs.AppPreferences
-import dev.zacsweers.metro.Inject
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
+import dev.zacsweers.metro.Inject
 import dev.zacsweers.metro.SingleIn
 
 @Inject

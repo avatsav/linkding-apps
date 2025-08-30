@@ -72,31 +72,33 @@ class BookmarksPresenter(
     var category by rememberRetained { mutableStateOf(BookmarkCategory.All) }
     val selectedTags = rememberRetained { mutableStateListOf<Tag>() }
 
-    val bookmarksFlow by produceRetainedState(emptyFlow(), category, selectedTags.size) {
-      observeBookmarks(
-        ObserveBookmarks.Param(
-          cached = true,
-          query = "",
-          category = category,
-          tags = selectedTags,
-          pagingConfig = PagingConfig(initialLoadSize = 20, pageSize = 20),
-        ),
-      )
-      value = observeBookmarks.flow.cachedIn(presenterScope)
-    }
+    val bookmarksFlow by
+      produceRetainedState(emptyFlow(), category, selectedTags.size) {
+        observeBookmarks(
+          ObserveBookmarks.Param(
+            cached = true,
+            query = "",
+            category = category,
+            tags = selectedTags,
+            pagingConfig = PagingConfig(initialLoadSize = 20, pageSize = 20),
+          )
+        )
+        value = observeBookmarks.flow.cachedIn(presenterScope)
+      }
     val bookmarks = bookmarksFlow.collectAsLazyPagingItems()
 
-    val searchResultsFlow by produceRetainedState(emptyFlow(), searchQuery) {
-      observeSearchResults(
-        ObserveSearchResults.Param(
-          query = searchQuery,
-          category = BookmarkCategory.All,
-          tags = emptyList(),
-          pagingConfig = PagingConfig(initialLoadSize = 20, pageSize = 20),
-        ),
-      )
-      value = observeSearchResults.flow.cachedIn(presenterScope)
-    }
+    val searchResultsFlow by
+      produceRetainedState(emptyFlow(), searchQuery) {
+        observeSearchResults(
+          ObserveSearchResults.Param(
+            query = searchQuery,
+            category = BookmarkCategory.All,
+            tags = emptyList(),
+            pagingConfig = PagingConfig(initialLoadSize = 20, pageSize = 20),
+          )
+        )
+        value = observeSearchResults.flow.cachedIn(presenterScope)
+      }
     val searchResults = searchResultsFlow.collectAsLazyPagingItems()
 
     return BookmarksUiState(
@@ -109,13 +111,14 @@ class BookmarksPresenter(
       when (event) {
         is BookmarksUiEvent.Refresh -> presenterScope.launch { bookmarks.refresh() }
 
-        is ToggleArchive -> presenterScope.launch {
-          if (event.bookmark.archived) {
-            unarchiveBookmark(event.bookmark.id)
-          } else {
-            archiveBookmark(event.bookmark.id)
+        is ToggleArchive ->
+          presenterScope.launch {
+            if (event.bookmark.archived) {
+              unarchiveBookmark(event.bookmark.id)
+            } else {
+              archiveBookmark(event.bookmark.id)
+            }
           }
-        }
 
         is Delete -> presenterScope.launch { deleteBookmark(event.bookmark.id) }
 

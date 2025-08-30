@@ -38,13 +38,13 @@ class SettingsPresenter(
     val coroutineScope = rememberCoroutineScope()
 
     val apiConfig by
-    remember { preferences.observeApiConfig() }.collectAsRetainedState(preferences.getApiConfig())
+      remember { preferences.observeApiConfig() }.collectAsRetainedState(preferences.getApiConfig())
 
     val useDynamicColors by
-    remember { preferences.observeUseDynamicColors() }.collectAsRetainedState(false)
+      remember { preferences.observeUseDynamicColors() }.collectAsRetainedState(false)
 
     val appTheme by
-    remember { preferences.observeAppTheme() }.collectAsRetainedState(AppTheme.System)
+      remember { preferences.observeAppTheme() }.collectAsRetainedState(AppTheme.System)
 
     return SettingsUiState(appInfo, apiConfig, appTheme, useDynamicColors) { event ->
       when (event) {

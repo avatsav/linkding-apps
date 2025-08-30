@@ -5,8 +5,8 @@ import com.slack.circuit.runtime.presenter.Presenter
 import com.slack.circuit.runtime.ui.Ui
 import dev.avatsav.linkding.inject.qualifier.Authenticated
 import dev.avatsav.linkding.inject.qualifier.Unauthenticated
-import dev.zacsweers.metro.Provides
 import dev.zacsweers.metro.ContributesTo
+import dev.zacsweers.metro.Provides
 import dev.zacsweers.metro.SingleIn
 
 @ContributesTo(UserScope::class)

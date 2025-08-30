@@ -1,6 +1,4 @@
-plugins {
-  id("convention.kotlin.multiplatform")
-}
+plugins { id("convention.kotlin.multiplatform") }
 
 kotlin {
   sourceSets {

@@ -7,8 +7,8 @@ import androidx.paging.PagingData
 import dev.avatsav.linkding.data.db.daos.PagingBookmarksDao
 import dev.avatsav.linkding.data.model.Bookmark
 import dev.avatsav.linkding.data.model.BookmarkCategory
-import kotlinx.coroutines.flow.Flow
 import dev.zacsweers.metro.Inject
+import kotlinx.coroutines.flow.Flow
 
 @OptIn(ExperimentalPagingApi::class)
 @Inject
@@ -41,7 +41,8 @@ class BookmarksPagingDataFactory(
   private fun cachedBookmarksFlow(pagingConfig: PagingConfig, param: Param) =
     Pager(
         config = pagingConfig,
-        remoteMediator = bookmarksRemoteMediatorFactory.create(param.query, param.category, param.tags),
+        remoteMediator =
+          bookmarksRemoteMediatorFactory.create(param.query, param.category, param.tags),
         pagingSourceFactory = { pagingBookmarksDao.bookmarksPagingSource() },
       )
       .flow

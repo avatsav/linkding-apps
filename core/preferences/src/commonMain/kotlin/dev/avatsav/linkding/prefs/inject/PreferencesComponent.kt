@@ -5,5 +5,4 @@ import dev.zacsweers.metro.ContributesTo
 
 expect interface PreferencesPlatformComponent
 
-@ContributesTo(AppScope::class)
-interface PreferencesComponent : PreferencesPlatformComponent
+@ContributesTo(AppScope::class) interface PreferencesComponent : PreferencesPlatformComponent

@@ -8,13 +8,13 @@ import com.russhwolf.settings.set
 import dev.avatsav.linkding.AppCoroutineDispatchers
 import dev.avatsav.linkding.data.model.ApiConfig
 import dev.avatsav.linkding.data.model.prefs.AppTheme
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesBinding
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.SingleIn
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
-import dev.zacsweers.metro.Inject
-import dev.zacsweers.metro.AppScope
-import dev.zacsweers.metro.ContributesBinding
-import dev.zacsweers.metro.SingleIn
 
 private const val HostUrlConfigurationKey = "linkding-hostUrl"
 private const val ApiKeyConfigurationKey = "linkding-apiKey"

@@ -18,9 +18,9 @@ import dev.avatsav.linkding.data.model.BookmarkError
 import dev.avatsav.linkding.data.model.CheckUrlResult
 import dev.avatsav.linkding.data.model.SaveBookmark
 import dev.avatsav.linkding.inject.UserScope
-import kotlinx.coroutines.flow.Flow
-import dev.zacsweers.metro.Inject
 import dev.zacsweers.metro.ContributesBinding
+import dev.zacsweers.metro.Inject
+import kotlinx.coroutines.flow.Flow
 
 @Inject
 @ContributesBinding(UserScope::class)

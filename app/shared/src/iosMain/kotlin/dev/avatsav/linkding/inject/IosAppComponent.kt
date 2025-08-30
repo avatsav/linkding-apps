@@ -2,17 +2,16 @@ package dev.avatsav.linkding.inject
 
 import dev.avatsav.linkding.AppInfo
 import dev.avatsav.linkding.initializers.AppInitializer
-import kotlin.experimental.ExperimentalNativeApi
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.DependencyGraph
 import dev.zacsweers.metro.Provides
+import dev.zacsweers.metro.SingleIn
 import platform.Foundation.NSBundle
 import platform.Foundation.NSUserDefaults
-import dev.zacsweers.metro.AppScope
-import software.amazon.lastmile.kotlin.inject.anvil.MergeComponent
-import dev.zacsweers.metro.SingleIn
+import kotlin.experimental.ExperimentalNativeApi
 
-@SingleIn(AppScope::class)
-@MergeComponent(AppScope::class)
 @OptIn(ExperimentalNativeApi::class)
+@DependencyGraph(AppScope::class)
 abstract class IosAppComponent {
 
   abstract val appInitializer: AppInitializer
@@ -31,5 +30,3 @@ abstract class IosAppComponent {
   @Provides
   fun provideNsUserDefaults(): NSUserDefaults = NSUserDefaults.standardUserDefaults
 }
-
-@MergeComponent.CreateComponent expect fun createIosAppComponent(): IosAppComponent

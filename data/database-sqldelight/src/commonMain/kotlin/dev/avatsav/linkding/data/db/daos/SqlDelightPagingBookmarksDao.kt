@@ -6,11 +6,11 @@ import dev.avatsav.linkding.AppCoroutineDispatchers
 import dev.avatsav.linkding.data.db.Database
 import dev.avatsav.linkding.data.db.paging.QueryPagingSource
 import dev.avatsav.linkding.data.model.Bookmark
-import kotlin.time.Instant
-import dev.zacsweers.metro.Inject
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
+import dev.zacsweers.metro.Inject
 import dev.zacsweers.metro.SingleIn
+import kotlin.time.Instant
 
 @Inject
 @ContributesBinding(AppScope::class)

@@ -16,7 +16,6 @@ import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.Inject
 import kotlinx.coroutines.withContext
 
-
 @Inject
 class RemoteBookmarksPagingSource(
   @Assisted private val query: String,
@@ -67,8 +66,7 @@ class RemoteBookmarksPagingSource(
     fun create(
       query: String,
       category: BookmarkCategory,
-      tags: List<String>
+      tags: List<String>,
     ): RemoteBookmarksPagingSource
   }
-
 }

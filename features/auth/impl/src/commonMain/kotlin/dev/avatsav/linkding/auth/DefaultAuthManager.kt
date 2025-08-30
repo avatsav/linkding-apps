@@ -6,13 +6,13 @@ import dev.avatsav.linkding.auth.api.AuthState.Authenticated
 import dev.avatsav.linkding.auth.api.AuthState.Unauthenticated
 import dev.avatsav.linkding.data.model.ApiConfig
 import dev.avatsav.linkding.prefs.AppPreferences
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesBinding
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.SingleIn
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
-import dev.zacsweers.metro.Inject
-import dev.zacsweers.metro.AppScope
-import dev.zacsweers.metro.ContributesBinding
-import dev.zacsweers.metro.SingleIn
 
 @Inject
 @SingleIn(AppScope::class)

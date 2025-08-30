@@ -10,8 +10,7 @@ import dev.zacsweers.metro.Provides
 @GraphExtension(UserScope::class)
 interface UserComponent {
 
-  @Authenticated
-  val circuit: Circuit
+  @Authenticated val circuit: Circuit
 
   @ContributesTo(UiScope::class)
   @GraphExtension.Factory

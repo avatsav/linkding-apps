@@ -12,8 +12,7 @@ import kotlinx.coroutines.flow.Flow
 
 @Inject
 @ContributesBinding(UserScope::class)
-class LinkdingTagsRepository(private val pagingSource: TagsPagingSource) :
-  TagsRepository {
+class LinkdingTagsRepository(private val pagingSource: TagsPagingSource) : TagsRepository {
 
   override fun getTagsPaged(
     pagingConfig: PagingConfig,

@@ -21,8 +21,7 @@ import kotlinx.coroutines.launch
 
 @CircuitInject(AuthScreen::class, UiScope::class)
 @Inject
-class AuthPresenter(private val authenticate: Authenticate) :
-  Presenter<AuthUiState> {
+class AuthPresenter(private val authenticate: Authenticate) : Presenter<AuthUiState> {
 
   @Composable
   override fun present(): AuthUiState {

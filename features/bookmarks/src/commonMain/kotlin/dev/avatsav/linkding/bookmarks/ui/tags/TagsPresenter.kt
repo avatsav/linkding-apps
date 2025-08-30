@@ -31,10 +31,7 @@ class TagsPresenter(
   @CircuitInject(TagsScreen::class, UserScope::class)
   @AssistedFactory
   interface Factory {
-    fun create(
-      navigator: Navigator,
-      screen: TagsScreen,
-    ): TagsPresenter
+    fun create(navigator: Navigator, screen: TagsScreen): TagsPresenter
   }
 
   @Composable
@@ -43,12 +40,12 @@ class TagsPresenter(
     val selectedTags = screen.selectedTags.map { it.mapToTag() }
 
     val tagsFlow by
-    produceRetainedState(emptyFlow()) {
-      observeTags(
-        ObserveTags.Param(selectedTags, PagingConfig(initialLoadSize = 100, pageSize = 100)),
-      )
-      value = observeTags.flow.cachedIn(presenterScope)
-    }
+      produceRetainedState(emptyFlow()) {
+        observeTags(
+          ObserveTags.Param(selectedTags, PagingConfig(initialLoadSize = 100, pageSize = 100))
+        )
+        value = observeTags.flow.cachedIn(presenterScope)
+      }
     val tags = tagsFlow.collectAsLazyPagingItems()
 
     return TagsUiState(selectedTags = selectedTags, tags = tags) { event ->

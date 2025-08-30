@@ -5,8 +5,8 @@ import androidx.paging.PagingData
 import dev.avatsav.linkding.data.bookmarks.TagsRepository
 import dev.avatsav.linkding.data.model.Tag
 import dev.avatsav.linkding.domain.PagedObserver
-import kotlinx.coroutines.flow.Flow
 import dev.zacsweers.metro.Inject
+import kotlinx.coroutines.flow.Flow
 
 @Inject
 class ObserveTags(private val repository: TagsRepository) :

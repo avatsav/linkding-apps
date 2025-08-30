@@ -35,10 +35,7 @@ class AddBookmarkPresenter(
   @CircuitInject(AddBookmarkScreen::class, UserScope::class)
   @AssistedFactory
   interface Factory {
-    fun create(
-      screen: AddBookmarkScreen,
-      navigator: Navigator,
-    ): AddBookmarkPresenter
+    fun create(screen: AddBookmarkScreen, navigator: Navigator): AddBookmarkPresenter
   }
 
   @Composable

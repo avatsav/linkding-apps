@@ -49,4 +49,5 @@ kotlin {
 }
 
 ksp { arg("circuit.codegen.mode", "metro") }
+
 addKspDependencyForAllTargets(libs.circuit.codegen)

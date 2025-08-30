@@ -27,4 +27,5 @@ kotlin {
 android { namespace = "dev.avatsav.linkding.auth.ui" }
 
 ksp { arg("circuit.codegen.mode", "metro") }
+
 addKspDependencyForAllTargets(libs.circuit.codegen)

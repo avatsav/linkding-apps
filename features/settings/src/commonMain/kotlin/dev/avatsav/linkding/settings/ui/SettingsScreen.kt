@@ -78,11 +78,14 @@ fun Settings(state: SettingsUiState, modifier: Modifier = Modifier) {
   ) { paddingValues ->
     LazyColumn(
       contentPadding = PaddingValues(start = 16.dp, end = 16.dp, bottom = 16.dp),
-      modifier = Modifier.fillMaxWidth().padding(
-          top = paddingValues.calculateTopPadding(),
-          start = paddingValues.calculateStartPadding(LayoutDirection.Ltr),
-          end = paddingValues.calculateEndPadding(LayoutDirection.Ltr),
-        ).nestedScroll(scrollBehavior.nestedScrollConnection),
+      modifier =
+        Modifier.fillMaxWidth()
+          .padding(
+            top = paddingValues.calculateTopPadding(),
+            start = paddingValues.calculateStartPadding(LayoutDirection.Ltr),
+            end = paddingValues.calculateEndPadding(LayoutDirection.Ltr),
+          )
+          .nestedScroll(scrollBehavior.nestedScrollConnection),
     ) {
       item {
         LinkdingSettings(
@@ -215,12 +218,13 @@ private fun MadeInMunich() {
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
-suspend fun OverlayHost.showResetConfirmationDialog(): DialogResult = show(
-  alertDialogOverlay(
-    icon = { Icon(imageVector = Icons.AutoMirrored.Filled.Logout, "") },
-    title = { Text("Confirm Reset") },
-    text = { Text("Are you sure you want to reset the api configuration?") },
-    confirmButton = { onClick -> Button(onClick = onClick) { Text("Yes") } },
-    dismissButton = { onClick -> OutlinedButton(onClick = onClick) { Text("No") } },
-  ),
-)
+suspend fun OverlayHost.showResetConfirmationDialog(): DialogResult =
+  show(
+    alertDialogOverlay(
+      icon = { Icon(imageVector = Icons.AutoMirrored.Filled.Logout, "") },
+      title = { Text("Confirm Reset") },
+      text = { Text("Are you sure you want to reset the api configuration?") },
+      confirmButton = { onClick -> Button(onClick = onClick) { Text("Yes") } },
+      dismissButton = { onClick -> OutlinedButton(onClick = onClick) { Text("No") } },
+    )
+  )

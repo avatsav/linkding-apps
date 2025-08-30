@@ -7,9 +7,9 @@ import dev.avatsav.linkding.data.model.Bookmark
 import dev.avatsav.linkding.data.model.BookmarkCategory
 import dev.avatsav.linkding.data.model.Tag
 import dev.avatsav.linkding.domain.PagedObserver
+import dev.zacsweers.metro.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
-import dev.zacsweers.metro.Inject
 
 @Inject
 class ObserveSearchResults(private val repository: BookmarksRepository) :

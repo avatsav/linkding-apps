@@ -3,12 +3,12 @@ package dev.avatsav.linkding.inject
 import dev.avatsav.linkding.AppInfo
 import dev.avatsav.linkding.initializers.AppInitializer
 import dev.zacsweers.metro.AppScope
-import dev.zacsweers.metro.GraphExtension
+import dev.zacsweers.metro.DependencyGraph
 import dev.zacsweers.metro.Provides
 import dev.zacsweers.metro.SingleIn
 import java.util.prefs.Preferences
 
-@GraphExtension(AppScope::class)
+@DependencyGraph(AppScope::class)
 interface DesktopAppComponent {
 
   val appInitializer: AppInitializer

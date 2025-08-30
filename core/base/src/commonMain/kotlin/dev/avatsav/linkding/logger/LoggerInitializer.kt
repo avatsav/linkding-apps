@@ -15,7 +15,7 @@ class LoggerInitializer(private val appInfo: AppInfo) : Initializer {
       when {
         appInfo.debug -> Severity.Debug
         else -> Severity.Error
-      },
+      }
     )
   }
 }

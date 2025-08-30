@@ -1,6 +1,9 @@
 package dev.avatsav.linkding.internet
 
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesBinding
 import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.SingleIn
 import platform.Network.nw_path_get_status
 import platform.Network.nw_path_monitor_cancel
 import platform.Network.nw_path_monitor_create
@@ -9,9 +12,6 @@ import platform.Network.nw_path_monitor_set_update_handler
 import platform.Network.nw_path_monitor_start
 import platform.Network.nw_path_status_satisfied
 import platform.darwin.dispatch_get_main_queue
-import dev.zacsweers.metro.AppScope
-import dev.zacsweers.metro.ContributesBinding
-import dev.zacsweers.metro.SingleIn
 
 @Inject
 @SingleIn(AppScope::class)
