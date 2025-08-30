@@ -17,6 +17,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.slack.circuit.backstack.rememberSaveableBackStack
 import com.slack.circuit.foundation.rememberCircuitNavigator
 import dev.avatsav.linkding.data.model.prefs.AppTheme
+import dev.avatsav.linkding.domain.models.LaunchMode
 import dev.avatsav.linkding.inject.AndroidAppComponent
 import dev.avatsav.linkding.inject.AndroidUiComponent
 import dev.avatsav.linkding.inject.ComponentHolder
@@ -29,7 +30,7 @@ class MainActivity : ComponentActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     installSplashScreen()
     super.onCreate(savedInstanceState)
-    val sharedLink = getSharedLinkFromIntent()
+    val launchMode = getLaunchMode()
 
     val appComponent: AndroidAppComponent = ComponentHolder.component()
     val component =
@@ -47,18 +48,24 @@ class MainActivity : ComponentActivity() {
       val backstack = rememberSaveableBackStack(root = AuthScreen)
       val navigator = rememberCircuitNavigator(backstack)
 
-      component.appUi.Content(sharedLink, backstack, navigator, { launchUrl(it) }, Modifier)
+      component.appUi.Content(launchMode, backstack, navigator, { launchUrl(it) }, Modifier)
     }
   }
 
-  private fun getSharedLinkFromIntent(): String? =
-    when (intent?.action) {
-      Intent.ACTION_SEND -> {
-        intent.getStringExtra(Intent.EXTRA_TEXT)
-      }
+  private fun getLaunchMode(): LaunchMode {
+    val sharedLink = getSharedLinkFromIntent()
+    return if (sharedLink != null) LaunchMode.SharedLink(sharedLink)
+    else LaunchMode.Normal
+  }
 
-      else -> null
-    }?.trim()
+  private fun getSharedLinkFromIntent(): String? =
+    intent?.takeIf { it.action == Intent.ACTION_SEND }
+      ?.getStringExtra(Intent.EXTRA_TEXT)
+      ?.trim()
+      ?.takeIf { it.isValidWebUrl() }
+
+  private fun String.isValidWebUrl(): Boolean =
+    startsWith("http://", ignoreCase = true) || startsWith("https://", ignoreCase = true)
 }
 
 private val customTabsIntent =

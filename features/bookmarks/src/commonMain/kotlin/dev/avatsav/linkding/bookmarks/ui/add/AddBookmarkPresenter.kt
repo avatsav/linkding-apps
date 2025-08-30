@@ -4,8 +4,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import co.touchlab.kermit.Logger
 import com.github.michaelbull.result.onFailure
@@ -37,8 +37,8 @@ constructor(
   override fun present(): AddBookmarkUiState {
     val scope = rememberCoroutineScope()
 
-    var checkUrlResult: CheckUrlResult? by rememberSaveable { mutableStateOf(null) }
-    var errorMessage by rememberSaveable { mutableStateOf("") }
+    var checkUrlResult: CheckUrlResult? by remember { mutableStateOf(null) }
+    var errorMessage by remember { mutableStateOf("") }
 
     val checkingUrl by checkBookmarkUrl.inProgress.collectAsState(false)
     val saving by addBookmark.inProgress.collectAsState(false)

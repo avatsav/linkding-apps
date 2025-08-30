@@ -22,12 +22,13 @@ import com.slack.circuit.runtime.Navigator
 import com.slack.circuitx.gesturenavigation.GestureNavigationDecorationFactory
 import dev.avatsav.linkding.auth.api.AuthState
 import dev.avatsav.linkding.data.model.ApiConfig
+import dev.avatsav.linkding.domain.models.LaunchMode
 import dev.avatsav.linkding.inject.ComponentHolder
 import dev.avatsav.linkding.inject.UserComponent
 
 @Composable
 fun AppContent(
-  sharedLink: String?,
+  launchMode: LaunchMode,
   authState: AuthState?,
   circuit: Circuit,
   backStack: SaveableBackStack,
@@ -36,7 +37,7 @@ fun AppContent(
 ) {
   when (authState) {
     is AuthState.Authenticated -> {
-      AuthenticatedContent(sharedLink, authState.apiConfig, backStack, navigator, modifier)
+      AuthenticatedContent(launchMode, authState.apiConfig, backStack, navigator, modifier)
     }
 
     is AuthState.Unauthenticated -> {
@@ -51,7 +52,7 @@ fun AppContent(
 
 @Composable
 private fun AuthenticatedContent(
-  sharedLink: String?,
+  launchMode: LaunchMode,
   apiConfig: ApiConfig,
   backStack: SaveableBackStack,
   navigator: Navigator,
@@ -64,7 +65,10 @@ private fun AuthenticatedContent(
       }
     }
 
-  val startRoute = if (sharedLink != null) AddBookmarkScreen(sharedLink) else BookmarksScreen
+  val startRoute = when (launchMode) {
+    LaunchMode.Normal -> BookmarksScreen
+    is LaunchMode.SharedLink -> AddBookmarkScreen(launchMode.sharedLink)
+  }
 
   LaunchedEffect(Unit) { navigator.goToAndResetRoot(startRoute) }
 

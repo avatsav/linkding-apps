@@ -17,6 +17,7 @@ import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.screen.Screen
 import dev.avatsav.linkding.auth.api.AuthManager
 import dev.avatsav.linkding.data.model.prefs.AppTheme
+import dev.avatsav.linkding.domain.models.LaunchMode
 import dev.avatsav.linkding.inject.UiScope
 import dev.avatsav.linkding.inject.qualifier.Unauthenticated
 import dev.avatsav.linkding.prefs.AppPreferences
@@ -28,7 +29,7 @@ import software.amazon.lastmile.kotlin.inject.anvil.SingleIn
 interface AppUi {
   @Composable
   fun Content(
-    sharedLink: String?,
+    launchMode: LaunchMode,
     backStack: SaveableBackStack,
     navigator: Navigator,
     onOpenUrl: (String) -> Boolean,
@@ -47,7 +48,7 @@ class DefaultAppUi(
 
   @Composable
   override fun Content(
-    sharedLink: String?,
+    launchMode: LaunchMode,
     backStack: SaveableBackStack,
     navigator: Navigator,
     onOpenUrl: (String) -> Boolean,
@@ -63,7 +64,7 @@ class DefaultAppUi(
       ) {
         ContentWithOverlays {
           AppContent(
-            sharedLink = sharedLink,
+            launchMode = launchMode,
             authState = authState,
             circuit = circuit,
             backStack = backStack,
