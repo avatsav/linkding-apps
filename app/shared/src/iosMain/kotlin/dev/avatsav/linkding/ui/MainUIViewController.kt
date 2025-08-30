@@ -9,6 +9,7 @@ import androidx.compose.ui.uikit.LocalUIViewController
 import androidx.compose.ui.window.ComposeUIViewController
 import com.slack.circuit.backstack.rememberSaveableBackStack
 import com.slack.circuit.foundation.rememberCircuitNavigator
+import dev.avatsav.linkding.domain.models.LaunchMode
 import me.tatarka.inject.annotations.Inject
 import platform.Foundation.NSURL
 import platform.SafariServices.SFSafariViewController
@@ -22,7 +23,13 @@ fun MainUIViewController(appUi: AppUi): UIViewController = ComposeUIViewControll
   val backstack = rememberSaveableBackStack(root = AuthScreen)
   val navigator = rememberCircuitNavigator(backstack, onRootPop = { /* no-op */ })
   val uiViewController = LocalUIViewController.current
-  appUi.Content(backstack, navigator, { uiViewController.launchUrl(it) }, Modifier.fillMaxSize())
+  appUi.Content(
+    LaunchMode.Normal,
+    backstack,
+    navigator,
+    { uiViewController.launchUrl(it) },
+    Modifier.fillMaxSize(),
+  )
 }
 
 private fun UIViewController.launchUrl(url: String): Boolean {

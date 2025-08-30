@@ -54,12 +54,12 @@ class MainActivity : ComponentActivity() {
 
   private fun getLaunchMode(): LaunchMode {
     val sharedLink = getSharedLinkFromIntent()
-    return if (sharedLink != null) LaunchMode.SharedLink(sharedLink)
-    else LaunchMode.Normal
+    return if (sharedLink != null) LaunchMode.SharedLink(sharedLink) else LaunchMode.Normal
   }
 
   private fun getSharedLinkFromIntent(): String? =
-    intent?.takeIf { it.action == Intent.ACTION_SEND }
+    intent
+      ?.takeIf { it.action == Intent.ACTION_SEND }
       ?.getStringExtra(Intent.EXTRA_TEXT)
       ?.trim()
       ?.takeIf { it.isValidWebUrl() }

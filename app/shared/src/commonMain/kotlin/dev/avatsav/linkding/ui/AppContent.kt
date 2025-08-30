@@ -65,10 +65,11 @@ private fun AuthenticatedContent(
       }
     }
 
-  val startRoute = when (launchMode) {
-    LaunchMode.Normal -> BookmarksScreen
-    is LaunchMode.SharedLink -> AddBookmarkScreen(launchMode.sharedLink)
-  }
+  val startRoute =
+    when (launchMode) {
+      LaunchMode.Normal -> BookmarksScreen
+      is LaunchMode.SharedLink -> AddBookmarkScreen(launchMode.sharedLink)
+    }
 
   LaunchedEffect(Unit) { navigator.goToAndResetRoot(startRoute) }
 
