@@ -35,8 +35,7 @@ class KotlinMultiplatformPlugin : Plugin<Project> {
                 freeCompilerArgs.addAll(
                   "-opt-in=kotlinx.cinterop.ExperimentalForeignApi",
                   "-opt-in=kotlinx.cinterop.BetaInteropApi",
-
-                  )
+                )
               }
             }
           }
