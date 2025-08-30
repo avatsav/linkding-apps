@@ -25,6 +25,7 @@ compileSdk = "36"
 minSdk = "30"
 targetSdk = "36"
 jvmToolchain = "24"
+detektJvmTarget = "21"
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

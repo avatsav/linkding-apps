@@ -22,6 +22,8 @@ internal fun Project.configureDetekt() {
 
   tasks.withType<Detekt>().configureEach {
     exclude { element -> element.file.path.contains("/build/generated/") }
+    jvmTarget = findVersion("detektJvmTarget")
+    parallel = true
   }
 
   tasks.register("detektAll") {
