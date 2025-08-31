@@ -56,8 +56,8 @@ Kotlin Multiplatform and Compose Multiplatform.
 
 #### Core Modules (Non-Feature)
 
-- **`:core:base`** - Foundation utilities, DI annotations, coroutines, logging
-    - Exports: `kotlin-inject`, `anvil`, `kotlinResult`, `coroutines`, `kermit`
+- **`:core:base`** - Foundation utilities, coroutines, logging
+    - Exports: `kotlinResult`, `coroutines`, `kermit`
     - Base classes for DI scopes and common utilities
 - **`:core:preferences`** - App preferences and settings management
     - Uses `multiplatform-settings` for cross-platform storage
@@ -118,11 +118,11 @@ Feature modules follow a **3-layer API pattern**:
 
 ### Dependency Injection Architecture
 
-Uses **kotlin-inject + kotlin-inject-anvil** for compile-time DI:
+Uses **Metro DI** for compile-time dependency injection:
 
 #### DI Scopes
 
-- **`AppScope`** - Application-wide singletons
+- **`AppScope`** - Application-wide singletons (provided by Metro)
 - **`UiScope`** - UI layer scope (unauthenticated state)
 - **`UserScope`** - User session scope (authenticated state)
 
@@ -130,13 +130,13 @@ Uses **kotlin-inject + kotlin-inject-anvil** for compile-time DI:
 
 - **`UserComponent`** - Manages authenticated user session
 - **`CircuitComponent`** - Provides Circuit instances for authenticated/unauthenticated states
-- Uses `@ContributesBinding`, `@ContributesTo`, and `@CircuitInject` annotations
 
 #### Circuit Integration
 
 - **Authenticated Circuit**: Used when user is logged in (`@Authenticated`)
 - **Unauthenticated Circuit**: Used for login flow (`@Unauthenticated`)
 - Presenters and UIs automatically discovered via `@CircuitInject`
+- Circuit codegen mode set to `metro` for integration with Metro DI
 
 ## Testing Infrastructure
 
@@ -203,7 +203,7 @@ Uses **kotlin-inject + kotlin-inject-anvil** for compile-time DI:
 - **Compose Multiplatform 1.8.2** - UI framework
 - **Circuit 0.30.0** - Presentation architecture
 - **Kotlin 2.2.10** with Compose compiler
-- **kotlin-inject 0.8.0** - Dependency injection
+- **Metro DI 0.6.3** - Dependency injection
 - **Ktor 3.2.3** - HTTP client
 - **SQLDelight 2.1.0** - Database
 - **kotlinx-serialization** - JSON handling

@@ -7,7 +7,6 @@ import org.gradle.kotlin.dsl.withType
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 
-
 class KotlinMultiplatformPlugin : Plugin<Project> {
   override fun apply(target: Project) =
     with(target) {
