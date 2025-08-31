@@ -1,9 +1,4 @@
-import dev.avatsav.gradle.addKspDependencyForAllTargets
-
-plugins {
-  id("convention.kotlin.multiplatform")
-  alias(libs.plugins.ksp)
-}
+plugins { id("convention.kotlin.multiplatform") }
 
 kotlin {
   sourceSets {
@@ -19,5 +14,3 @@ kotlin {
     }
   }
 }
-
-addKspDependencyForAllTargets(libs.anvil.compiler)

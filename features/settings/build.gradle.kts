@@ -28,16 +28,6 @@ kotlin {
 
 android { namespace = "dev.avatsav.linkding.settings.ui" }
 
-ksp {
-  arg("circuit.codegen.mode", "kotlin_inject_anvil")
-  arg(
-    "kotlin-inject-anvil-contributing-annotations",
-    "com.slack.circuit.codegen.annotations.CircuitInject",
-  )
-}
-
-addKspDependencyForAllTargets(libs.kotlin.inject.compiler)
-
-addKspDependencyForAllTargets(libs.anvil.compiler)
+ksp { arg("circuit.codegen.mode", "metro") }
 
 addKspDependencyForAllTargets(libs.circuit.codegen)

@@ -2,7 +2,7 @@ package dev.avatsav.linkding.data.bookmarks.internal.mappers
 
 import dev.avatsav.linkding.api.models.LinkdingCheckUrlResponse
 import dev.avatsav.linkding.data.model.CheckUrlResult
-import me.tatarka.inject.annotations.Inject
+import dev.zacsweers.metro.Inject
 
 @Inject
 class CheckUrlResultMapper {

@@ -7,8 +7,8 @@ import dev.avatsav.linkding.data.model.Bookmark
 import dev.avatsav.linkding.data.model.BookmarkError
 import dev.avatsav.linkding.data.model.SaveBookmark
 import dev.avatsav.linkding.domain.Interactor
+import dev.zacsweers.metro.Inject
 import kotlinx.coroutines.withContext
-import me.tatarka.inject.annotations.Inject
 
 @Inject
 class AddBookmark(

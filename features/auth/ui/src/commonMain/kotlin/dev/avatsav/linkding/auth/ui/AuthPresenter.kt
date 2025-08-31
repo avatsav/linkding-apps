@@ -16,12 +16,12 @@ import dev.avatsav.linkding.data.model.AuthError.InvalidHostname
 import dev.avatsav.linkding.data.model.AuthError.Other
 import dev.avatsav.linkding.inject.UiScope
 import dev.avatsav.linkding.ui.AuthScreen
+import dev.zacsweers.metro.Inject
 import kotlinx.coroutines.launch
-import me.tatarka.inject.annotations.Inject
 
 @CircuitInject(AuthScreen::class, UiScope::class)
-class AuthPresenter @Inject constructor(private val authenticate: Authenticate) :
-  Presenter<AuthUiState> {
+@Inject
+class AuthPresenter(private val authenticate: Authenticate) : Presenter<AuthUiState> {
 
   @Composable
   override fun present(): AuthUiState {

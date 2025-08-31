@@ -7,12 +7,13 @@ import org.gradle.kotlin.dsl.withType
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 
-internal const val KOTLIN_MULTIPLATFORM_PLUGIN = "org.jetbrains.kotlin.multiplatform"
-
 class KotlinMultiplatformPlugin : Plugin<Project> {
   override fun apply(target: Project) =
     with(target) {
-      with(pluginManager) { apply(KOTLIN_MULTIPLATFORM_PLUGIN) }
+      with(pluginManager) {
+        apply("org.jetbrains.kotlin.multiplatform")
+        apply("dev.zacsweers.metro")
+      }
 
       extensions.configure<KotlinMultiplatformExtension> {
         jvmToolchain(findVersion("jvmToolchain").toInt())

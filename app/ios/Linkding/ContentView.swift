@@ -5,13 +5,13 @@ import OSLog
 
 struct ComposeView: UIViewControllerRepresentable {
     private let component: IosUiComponent
-    
+
     init(component: IosUiComponent) {
         self.component = component
     }
-    
+
     func makeUIViewController(context: Context) -> UIViewController {
-        component.uiViewControllerFactory()
+        component.uiViewControllerFactory.create()
     }
 
     func updateUIViewController(_ uiViewController: UIViewController, context: Context) {}
@@ -20,7 +20,7 @@ struct ComposeView: UIViewControllerRepresentable {
 struct ContentView: View {
     private let component: IosUiComponent
     private let logger: Logger
-    
+
     init(component: IosUiComponent) {
         self.component = component
         self.logger = Logger()

@@ -38,15 +38,14 @@ import dev.avatsav.linkding.ui.SettingsScreen
 import dev.avatsav.linkding.ui.UrlScreen
 import dev.avatsav.linkding.ui.circuit.produceRetainedState
 import dev.avatsav.linkding.ui.circuit.rememberRetainedCoroutineScope
+import dev.zacsweers.metro.Assisted
+import dev.zacsweers.metro.AssistedFactory
+import dev.zacsweers.metro.Inject
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.launch
-import me.tatarka.inject.annotations.Assisted
-import me.tatarka.inject.annotations.Inject
 
-@CircuitInject(BookmarksScreen::class, UserScope::class)
-class BookmarksPresenter
 @Inject
-constructor(
+class BookmarksPresenter(
   @Assisted private val navigator: Navigator,
   private val observeBookmarks: ObserveBookmarks,
   private val observeSearchResults: ObserveSearchResults,
@@ -55,6 +54,12 @@ constructor(
   private val unarchiveBookmark: UnarchiveBookmark,
   private val connectivityObserver: ConnectivityObserver,
 ) : Presenter<BookmarksUiState> {
+
+  @CircuitInject(BookmarksScreen::class, UserScope::class)
+  @AssistedFactory
+  interface Factory {
+    fun create(navigator: Navigator): BookmarksPresenter
+  }
 
   @Composable
   override fun present(): BookmarksUiState {

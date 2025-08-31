@@ -48,7 +48,6 @@ import dev.avatsav.linkding.settings.ui.widgets.ThemePreference
 import dev.avatsav.linkding.ui.SettingsScreen
 import dev.avatsav.linkding.ui.circuit.alertDialogOverlay
 import kotlinx.coroutines.launch
-import me.tatarka.inject.annotations.Inject
 
 @CircuitInject(SettingsScreen::class, UserScope::class)
 @OptIn(ExperimentalMaterial3Api::class)
@@ -219,7 +218,6 @@ private fun MadeInMunich() {
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Inject
 suspend fun OverlayHost.showResetConfirmationDialog(): DialogResult =
   show(
     alertDialogOverlay(

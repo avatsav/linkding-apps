@@ -19,19 +19,24 @@ import dev.avatsav.linkding.domain.interactors.AddBookmark
 import dev.avatsav.linkding.domain.interactors.CheckBookmarkUrl
 import dev.avatsav.linkding.inject.UserScope
 import dev.avatsav.linkding.ui.AddBookmarkScreen
+import dev.zacsweers.metro.Assisted
+import dev.zacsweers.metro.AssistedFactory
+import dev.zacsweers.metro.Inject
 import kotlinx.coroutines.launch
-import me.tatarka.inject.annotations.Assisted
-import me.tatarka.inject.annotations.Inject
 
-@CircuitInject(AddBookmarkScreen::class, UserScope::class)
-class AddBookmarkPresenter
 @Inject
-constructor(
+class AddBookmarkPresenter(
   @Assisted private val screen: AddBookmarkScreen,
   @Assisted private val navigator: Navigator,
   private val addBookmark: AddBookmark,
   private val checkBookmarkUrl: CheckBookmarkUrl,
 ) : Presenter<AddBookmarkUiState> {
+
+  @CircuitInject(AddBookmarkScreen::class, UserScope::class)
+  @AssistedFactory
+  interface Factory {
+    fun create(screen: AddBookmarkScreen, navigator: Navigator): AddBookmarkPresenter
+  }
 
   @Composable
   override fun present(): AddBookmarkUiState {

@@ -2,10 +2,10 @@ package dev.avatsav.linkding.prefs.inject
 
 import com.russhwolf.settings.ObservableSettings
 import com.russhwolf.settings.PreferencesSettings
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.Provides
+import dev.zacsweers.metro.SingleIn
 import java.util.prefs.Preferences
-import me.tatarka.inject.annotations.Provides
-import software.amazon.lastmile.kotlin.inject.anvil.AppScope
-import software.amazon.lastmile.kotlin.inject.anvil.SingleIn
 
 actual interface PreferencesPlatformComponent {
   @Provides

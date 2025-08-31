@@ -36,12 +36,6 @@ kotlin {
       api(libs.circuit.overlay)
       api(libs.circuit.runtime)
       api(libs.circuitx.gestureNavigation)
-
-      implementation(libs.kotlin.inject.runtime)
-      implementation(libs.anvil.runtime)
-      implementation(libs.anvil.runtime.optional)
-      implementation(libs.circuit.codegen.annotations)
-      implementation(projects.codegen.annotations)
     }
 
     targets.withType<KotlinNativeTarget>().configureEach {
@@ -54,18 +48,6 @@ kotlin {
   }
 }
 
-ksp {
-  arg("circuit.codegen.mode", "kotlin_inject_anvil")
-  arg(
-    "kotlin-inject-anvil-contributing-annotations",
-    "com.slack.circuit.codegen.annotations.CircuitInject",
-  )
-}
-
-addKspDependencyForAllTargets(libs.kotlin.inject.compiler)
-
-addKspDependencyForAllTargets(libs.anvil.compiler)
+ksp { arg("circuit.codegen.mode", "metro") }
 
 addKspDependencyForAllTargets(libs.circuit.codegen)
-
-addKspDependencyForAllTargets(projects.codegen.compiler)

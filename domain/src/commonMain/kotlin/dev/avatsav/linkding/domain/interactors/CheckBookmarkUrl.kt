@@ -6,8 +6,8 @@ import dev.avatsav.linkding.AppCoroutineDispatchers
 import dev.avatsav.linkding.data.bookmarks.BookmarksRepository
 import dev.avatsav.linkding.data.model.CheckUrlResult
 import dev.avatsav.linkding.domain.Interactor
+import dev.zacsweers.metro.Inject
 import kotlinx.coroutines.withContext
-import me.tatarka.inject.annotations.Inject
 
 @Inject
 class CheckBookmarkUrl(

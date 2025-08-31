@@ -11,12 +11,10 @@ import dev.avatsav.linkding.data.bookmarks.internal.mappers.BookmarkMapper
 import dev.avatsav.linkding.data.bookmarks.internal.mappers.toLinkding
 import dev.avatsav.linkding.data.model.Bookmark
 import dev.avatsav.linkding.data.model.BookmarkCategory
+import dev.zacsweers.metro.Assisted
+import dev.zacsweers.metro.AssistedFactory
+import dev.zacsweers.metro.Inject
 import kotlinx.coroutines.withContext
-import me.tatarka.inject.annotations.Assisted
-import me.tatarka.inject.annotations.Inject
-
-typealias RemoteBookmarksPagingSourceFactory =
-  (String, BookmarkCategory, List<String>) -> RemoteBookmarksPagingSource
 
 @Inject
 class RemoteBookmarksPagingSource(
@@ -62,4 +60,13 @@ class RemoteBookmarksPagingSource(
           failure = { error -> LoadResult.Error(Exception(error.message)) },
         )
     }
+
+  @AssistedFactory
+  interface Factory {
+    fun create(
+      query: String,
+      category: BookmarkCategory,
+      tags: List<String>,
+    ): RemoteBookmarksPagingSource
+  }
 }

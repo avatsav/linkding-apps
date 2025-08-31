@@ -56,8 +56,6 @@ internal class OffsetQueryPagingSource<RowType : Any>(
               } else {
                 key
               }
-
-            else -> error("Unknown PagingSourceLoadParams ${params::class}")
           }
         val data = queryProvider(limit, offset).also { currentQuery = it }.executeAsList()
         val nextPosToLoad = offset + data.size
@@ -73,6 +71,7 @@ internal class OffsetQueryPagingSource<RowType : Any>(
         when (transacter) {
           is Transacter ->
             transacter.transactionWithResult(bodyWithReturn = getPagingSourceLoadResult)
+
           is SuspendingTransacter ->
             transacter.transactionWithResult(bodyWithReturn = getPagingSourceLoadResult)
         }

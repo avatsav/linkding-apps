@@ -20,6 +20,7 @@ stately = "2.1.0"
 kotlinPoet = "2.2.0"
 kotest = "6.0.1"
 uuid = "0.8.4"
+metro = "0.6.3"
 
 compileSdk = "36"
 minSdk = "30"
@@ -42,6 +43,7 @@ ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 sqldelight = { id = "app.cash.sqldelight", version.ref = "sqldelight" }
 ktfmt = { id = "com.ncorti.ktfmt.gradle", version.ref = "ktmft" }
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
+metro = { id = "dev.zacsweers.metro", version.ref = "metro" }
 
 [libraries]
 androidx-activity = { module = "androidx.activity:activity", version.ref = "androidxActivity" }
@@ -78,13 +80,6 @@ kermit = "co.touchlab:kermit:2.0.8"
 
 multiplatform-settings = { module = "com.russhwolf:multiplatform-settings", version.ref = "multiplatform-settings" }
 multiplatform-settings-coroutines = { module = "com.russhwolf:multiplatform-settings-coroutines", version.ref = "multiplatform-settings" }
-
-kotlin-inject-compiler = { module = "me.tatarka.inject:kotlin-inject-compiler-ksp", version.ref = "kotlin-inject" }
-kotlin-inject-runtime = { module = "me.tatarka.inject:kotlin-inject-runtime", version.ref = "kotlin-inject" }
-
-anvil-compiler = { module = "software.amazon.lastmile.kotlin.inject.anvil:compiler", version.ref = "anvil" }
-anvil-runtime = { module = "software.amazon.lastmile.kotlin.inject.anvil:runtime", version.ref = "anvil" }
-anvil-runtime-optional = { module = "software.amazon.lastmile.kotlin.inject.anvil:runtime-optional", version.ref = "anvil" }
 
 kotlinResult = { module = "com.michael-bull.kotlin-result:kotlin-result", version.ref = "kotlinResult" }
 kotlinResultCoroutines = { module = "com.michael-bull.kotlin-result:kotlin-result-coroutines", version.ref = "kotlinResult" }
@@ -126,3 +121,4 @@ composeCompiler-gradlePlugin = { module = "org.jetbrains.kotlin:compose-compiler
 ksp-gradlePlugin = { module = "com.google.devtools.ksp:com.google.devtools.ksp.gradle.plugin", version.ref = "ksp" }
 ktfmt-gradlePlugin = { module = "com.ncorti.ktfmt.gradle:plugin", version.ref = "ktmft" }
 detekt-gradlePlugin = { module = "io.gitlab.arturbosch.detekt:detekt-gradle-plugin", version.ref = "detekt" }
+metro-gradlePlugin = { module = "dev.zacsweers.metro:gradle-plugin", version.ref = "metro" }

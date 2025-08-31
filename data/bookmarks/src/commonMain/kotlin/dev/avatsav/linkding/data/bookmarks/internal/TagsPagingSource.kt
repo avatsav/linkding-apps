@@ -9,10 +9,8 @@ import dev.avatsav.linkding.api.LinkdingTagsApi
 import dev.avatsav.linkding.data.bookmarks.internal.mappers.BookmarkErrorMapper
 import dev.avatsav.linkding.data.bookmarks.internal.mappers.TagMapper
 import dev.avatsav.linkding.data.model.Tag
+import dev.zacsweers.metro.Inject
 import kotlinx.coroutines.withContext
-import me.tatarka.inject.annotations.Inject
-
-typealias TagsPagingSourceFactory = (List<Tag>) -> TagsPagingSource
 
 @Inject
 class TagsPagingSource(

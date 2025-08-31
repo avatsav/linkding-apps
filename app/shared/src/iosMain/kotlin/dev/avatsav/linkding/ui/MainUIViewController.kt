@@ -10,26 +10,25 @@ import androidx.compose.ui.window.ComposeUIViewController
 import com.slack.circuit.backstack.rememberSaveableBackStack
 import com.slack.circuit.foundation.rememberCircuitNavigator
 import dev.avatsav.linkding.domain.models.LaunchMode
-import me.tatarka.inject.annotations.Inject
+import dev.zacsweers.metro.Inject
 import platform.Foundation.NSURL
 import platform.SafariServices.SFSafariViewController
 import platform.UIKit.UIViewController
 
-typealias MainUIViewController = () -> UIViewController
-
 @Inject
-@Suppress("FunctionNaming")
-fun MainUIViewController(appUi: AppUi): UIViewController = ComposeUIViewController {
-  val backstack = rememberSaveableBackStack(root = AuthScreen)
-  val navigator = rememberCircuitNavigator(backstack, onRootPop = { /* no-op */ })
-  val uiViewController = LocalUIViewController.current
-  appUi.Content(
-    LaunchMode.Normal,
-    backstack,
-    navigator,
-    { uiViewController.launchUrl(it) },
-    Modifier.fillMaxSize(),
-  )
+class MainUIViewControllerFactory(private val appUi: AppUi) {
+  fun create(): UIViewController = ComposeUIViewController {
+    val backstack = rememberSaveableBackStack(root = AuthScreen)
+    val navigator = rememberCircuitNavigator(backstack, onRootPop = { /* no-op */ })
+    val uiViewController = LocalUIViewController.current
+    appUi.Content(
+      LaunchMode.Normal,
+      backstack,
+      navigator,
+      { uiViewController.launchUrl(it) },
+      Modifier.fillMaxSize(),
+    )
+  }
 }
 
 private fun UIViewController.launchUrl(url: String): Boolean {

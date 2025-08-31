@@ -8,8 +8,8 @@ import dev.avatsav.linkding.data.model.Bookmark
 import dev.avatsav.linkding.data.model.BookmarkCategory
 import dev.avatsav.linkding.data.model.BookmarksResult
 import dev.avatsav.linkding.data.model.SaveBookmark
+import dev.zacsweers.metro.Inject
 import io.ktor.http.Url
-import me.tatarka.inject.annotations.Inject
 
 @Inject
 class BookmarkMapper {

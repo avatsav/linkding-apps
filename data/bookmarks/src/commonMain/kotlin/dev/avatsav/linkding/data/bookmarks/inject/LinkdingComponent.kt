@@ -8,10 +8,10 @@ import dev.avatsav.linkding.api.LinkdingBookmarksApi
 import dev.avatsav.linkding.api.LinkdingTagsApi
 import dev.avatsav.linkding.data.model.ApiConfig
 import dev.avatsav.linkding.inject.UserScope
+import dev.zacsweers.metro.ContributesTo
+import dev.zacsweers.metro.Provides
+import dev.zacsweers.metro.SingleIn
 import io.ktor.client.plugins.logging.LogLevel
-import me.tatarka.inject.annotations.Provides
-import software.amazon.lastmile.kotlin.inject.anvil.ContributesTo
-import software.amazon.lastmile.kotlin.inject.anvil.SingleIn
 
 @ContributesTo(UserScope::class)
 interface LinkdingComponent {

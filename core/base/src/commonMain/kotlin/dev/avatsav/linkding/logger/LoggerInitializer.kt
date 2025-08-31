@@ -3,12 +3,12 @@ package dev.avatsav.linkding.logger
 import co.touchlab.kermit.Severity
 import dev.avatsav.linkding.AppInfo
 import dev.avatsav.linkding.Initializer
-import me.tatarka.inject.annotations.Inject
-import software.amazon.lastmile.kotlin.inject.anvil.AppScope
-import software.amazon.lastmile.kotlin.inject.anvil.ContributesBinding
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesIntoSet
+import dev.zacsweers.metro.Inject
 
 @Inject
-@ContributesBinding(AppScope::class, multibinding = true)
+@ContributesIntoSet(AppScope::class)
 class LoggerInitializer(private val appInfo: AppInfo) : Initializer {
   override fun initialize() {
     co.touchlab.kermit.Logger.setMinSeverity(

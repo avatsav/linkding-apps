@@ -34,7 +34,7 @@ class MainActivity : ComponentActivity() {
 
     val appComponent: AndroidAppComponent = ComponentHolder.component()
     val component =
-      ComponentHolder.component<AndroidUiComponent.Factory>().create(this).also {
+      ComponentHolder.component<AndroidUiComponent.Factory>().create().also {
         ComponentHolder.components += it
       }
     lifecycleScope.launch {

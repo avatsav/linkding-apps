@@ -1,17 +1,17 @@
 package dev.avatsav.linkding.inject
 
 import dev.avatsav.linkding.ui.AppUi
-import software.amazon.lastmile.kotlin.inject.anvil.AppScope
-import software.amazon.lastmile.kotlin.inject.anvil.ContributesSubcomponent
-import software.amazon.lastmile.kotlin.inject.anvil.SingleIn
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesTo
+import dev.zacsweers.metro.GraphExtension
 
-@SingleIn(UiScope::class)
-@ContributesSubcomponent(UiScope::class)
+@GraphExtension(UiScope::class)
 interface DesktopUiComponent {
 
   val appUi: AppUi
 
-  @ContributesSubcomponent.Factory(AppScope::class)
+  @ContributesTo(AppScope::class)
+  @GraphExtension.Factory
   interface Factory {
     fun create(): DesktopUiComponent
   }

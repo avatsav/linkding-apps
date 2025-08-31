@@ -5,14 +5,13 @@ import android.content.pm.ApplicationInfo
 import dev.avatsav.linkding.AppInfo
 import dev.avatsav.linkding.initializers.AppInitializer
 import dev.avatsav.linkding.prefs.AppPreferences
-import me.tatarka.inject.annotations.Provides
-import software.amazon.lastmile.kotlin.inject.anvil.AppScope
-import software.amazon.lastmile.kotlin.inject.anvil.MergeComponent
-import software.amazon.lastmile.kotlin.inject.anvil.SingleIn
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.DependencyGraph
+import dev.zacsweers.metro.Provides
+import dev.zacsweers.metro.SingleIn
 
-@SingleIn(AppScope::class)
-@MergeComponent(AppScope::class)
-abstract class AndroidAppComponent(@get:Provides val application: Application) {
+@DependencyGraph(AppScope::class)
+abstract class AndroidAppComponent {
 
   abstract val appPreferences: AppPreferences
 
@@ -31,5 +30,10 @@ abstract class AndroidAppComponent(@get:Provides val application: Application) {
       debug = (applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE) != 0,
       version = packageInfo.versionName!!,
     )
+  }
+
+  @DependencyGraph.Factory
+  interface Factory {
+    fun create(@Provides application: Application): AndroidAppComponent
   }
 }

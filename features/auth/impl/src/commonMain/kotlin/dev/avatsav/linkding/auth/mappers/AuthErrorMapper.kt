@@ -2,7 +2,7 @@ package dev.avatsav.linkding.auth.mappers
 
 import dev.avatsav.linkding.api.models.LinkdingError
 import dev.avatsav.linkding.data.model.AuthError
-import me.tatarka.inject.annotations.Inject
+import dev.zacsweers.metro.Inject
 
 @Inject
 class AuthErrorMapper {
