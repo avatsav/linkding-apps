@@ -29,6 +29,11 @@ internal fun Project.configureDetekt() {
   tasks.register("detektAll") {
     group = "Verification"
     description = "Run all detekt tasks with type resolution for Kotlin Multiplatform"
-    dependsOn(tasks.withType<Detekt>())
+    // Excluding iOS targets for now
+    // Metro iOS issue: https://github.com/ZacSweers/metro/issues/460
+    val detektTasks =
+      tasks.withType<Detekt>().filterNot { it.name.contains("ios", ignoreCase = true) }
+    detektTasks.forEach { task -> println(task.name) }
+    dependsOn(detektTasks)
   }
 }
