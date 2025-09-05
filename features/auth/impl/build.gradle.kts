@@ -10,7 +10,7 @@ kotlin {
       implementation(projects.core.base)
       implementation(projects.core.preferences)
       implementation(projects.data.models)
-      implementation(projects.data.linkdingApi)
+      implementation(projects.data.linkdingApi) // Brings in ktor deps
     }
   }
 }

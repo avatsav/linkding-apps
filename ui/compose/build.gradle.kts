@@ -7,8 +7,8 @@ plugins {
 kotlin {
   sourceSets {
     commonMain.dependencies {
-      implementation(compose.materialIconsExtended)
-      implementation(projects.ui.theme)
+      api(compose.materialIconsExtended) // Expose icons for UI components
+      api(projects.ui.theme) // Expose theme for UI components
     }
   }
 }

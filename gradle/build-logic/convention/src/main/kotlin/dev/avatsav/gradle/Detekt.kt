@@ -33,7 +33,6 @@ internal fun Project.configureDetekt() {
     // Metro iOS issue: https://github.com/ZacSweers/metro/issues/460
     val detektTasks =
       tasks.withType<Detekt>().filterNot { it.name.contains("ios", ignoreCase = true) }
-    detektTasks.forEach { task -> println(task.name) }
     dependsOn(detektTasks)
   }
 }

@@ -29,16 +29,17 @@ include(
   ":app:shared",
   ":app:android",
   ":app:desktop",
+
   ":core:base",
   ":core:preferences",
   ":core:connectivity",
   ":core:parcelize",
+
   ":data:models",
-  ":data:bookmarks",
   ":data:database",
   ":data:database-sqldelight",
   ":data:linkding-api",
-  ":domain",
+
   ":ui:theme",
   ":ui:screens",
   ":ui:compose",
@@ -48,9 +49,14 @@ include(
   ":features:auth:api",
   ":features:auth:impl",
 
-  ":features:bookmarks",
-  ":features:settings",
-  ":thirdparty:paging:compose",
+  ":features:bookmarks:ui",
+  ":features:bookmarks:api",
+  ":features:bookmarks:impl",
+
+  ":features:settings:ui",
+  ":features:settings:api",
+  ":features:settings:impl",
+
   ":codegen:annotations",
   ":codegen:compiler",
 )

@@ -8,14 +8,14 @@ kotlin {
   sourceSets {
     commonMain.dependencies {
       implementation(projects.core.base)
-      api(projects.data.database)
+      api(projects.data.database) // Implements database contracts
       implementation(libs.kotlin.atomicfu)
       implementation(libs.sqldelight.coroutines)
       implementation(libs.sqldelight.primitive)
-      api(projects.data.models)
-      api(libs.kotlin.datetime)
-      api(libs.kotlin.coroutines.core)
-      api(libs.paging.common)
+      implementation(projects.data.models) // Internal use, models exposed via database contract
+      implementation(libs.kotlin.datetime)
+      implementation(libs.kotlin.coroutines.core)
+      implementation(libs.paging.common)
     }
     androidMain.dependencies { implementation(libs.sqldelight.android) }
     iosMain.dependencies {

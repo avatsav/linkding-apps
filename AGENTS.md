@@ -42,8 +42,8 @@ Kotlin Multiplatform and Compose Multiplatform.
 # Format code
 ./gradlew ktfmtFormat
 
-# Run detekt linting per module
-./gradlew :feature:bookmarks:detekt
+# Run detekt linting per module  
+./gradlew :features:bookmarks:ui:detekt
 
 # Run detekt linting for the entire project
 ./gradlew detektAll
@@ -52,91 +52,174 @@ Kotlin Multiplatform and Compose Multiplatform.
 
 ## Project Architecture
 
+The project follows a **clean modular architecture** with strict separation of concerns, leveraging the **3-layer feature pattern** for scalable and maintainable code organization.
+
 ### Module Organization
 
-#### Core Modules (Non-Feature)
+#### Core Infrastructure Modules
 
-- **`:core:base`** - Foundation utilities, coroutines, logging
-    - Exports: `kotlinResult`, `coroutines`, `kermit`
-    - Base classes for DI scopes and common utilities
-- **`:core:preferences`** - App preferences and settings management
-    - Uses `multiplatform-settings` for cross-platform storage
-    - Exports `AppPreferences` interface with implementations
-- **`:core:connectivity`** - Network connectivity monitoring
-    - Cross-platform network state observation
-    - Platform-specific implementations (iOS/JVM/Android)
-- **`:core:parcelize`** - Parcelize support for multiplatform
+- **`:core:base`** - Foundation layer
+    - **Base Classes**: `Interactor<P,R,E>`, `Observer<P,T>`, `PagedObserver<P,T>` 
+    - **DI Infrastructure**: Scopes (`AppScope`, `UiScope`, `UserScope`), qualifiers (`@Authenticated`, `@Unauthenticated`)
+    - **Utilities**: `AppCoroutineDispatchers`, `ComponentHolder`, initializers
+    - **Package**: `dev.avatsav.linkding.*` (base classes in `domain.*`)
+
+- **`:core:preferences`** - Cross-platform preferences
+    - Uses `multiplatform-settings` for storage abstraction
+    - **API**: `AppPreferences` interface for theme, dynamic colors settings
+    - **Implementation**: Platform-specific preference storage
+
+- **`:core:connectivity`** - Network state monitoring  
+    - **API**: `ConnectivityObserver` interface
+    - **Implementations**: Platform-specific network state observers (Android/iOS/JVM)
+    - **Usage**: Real-time connectivity status for offline/online behavior
+
+- **`:core:parcelize`** - Multiplatform parcelize support
 
 #### Data Layer
 
-- **`:data:models`** - Shared data models
-- **`:data:bookmarks`** - Bookmark domain logic
-- **`:data:database`** - Database abstraction
-- **`:data:database-sqldelight`** - SQLDelight implementation
-- **`:data:linkding-api`** - API client for Linkding service
+- **`:data:models`** - Domain models and data classes
+    - **Core Models**: `Bookmark`, `Tag`, `ApiConfig`, `AuthError`, `BookmarkError`
+    - **App Models**: `LaunchMode` (Normal, SharedLink) in `data.model.app.*`
+    - **Preference Models**: `AppTheme` (System, Light, Dark)
+    - **Package**: `dev.avatsav.linkding.data.model.*`
 
-#### UI Layer
+- **`:data:database`** - Database abstraction layer
+- **`:data:database-sqldelight`** - SQLDelight implementation with DAOs
+- **`:data:linkding-api`** - HTTP client for Linkding REST API
+    - **Implementation**: Ktor-based API client with serialization
 
-- **`:ui:theme`** - Design system and theming
-- **`:ui:screens`** - Screen definitions and navigation models
-- **`:ui:compose`** - Reusable Compose components
-- **`:ui:circuit`** - Circuit-specific utilities and extensions
+#### UI Infrastructure  
+
+- **`:ui:theme`** - Design system and Material 3 theming
+- **`:ui:screens`** - Screen definitions for navigation
+- **`:ui:compose`** - Reusable Compose components and utilities  
+- **`:ui:circuit`** - Circuit framework extensions and utilities
 
 #### App Layer
 
-- **`:app:shared`** - Shared application logic across platforms
-- **`:app:android`** - Android application module
-- **`:app:desktop`** - Desktop application module
+- **`:app:shared`** - Shared application logic across all platforms
+    - **Main UI**: `AppUi` with theme management and navigation
+    - **DI Integration**: Component wiring for authenticated/unauthenticated states
+    - **Dependencies**: All feature modules (api + impl + ui)
 
-#### Domain Layer
+- **`:app:android`** - Android-specific application
+    - **MainActivity**: Launch mode handling, deep links, custom tabs
+    - **Platform Integration**: Edge-to-edge, splash screen, intent handling
 
-- **`:domain`** - Domain logic and use cases
+- **`:app:desktop`** - JVM/Desktop application  
+    - **Main**: Compose Desktop integration with window management
 
-### Feature Modules Pattern
+### 🏗️ Feature Modules: 3-Layer Architecture
 
-Feature modules follow a **3-layer API pattern**:
+**All features follow a strict 3-layer pattern** for clean separation of concerns:
 
-1. **`:features:{feature}:api`** - Public contracts and interfaces
-    - Example: `AuthRepository`, `AuthManager` interfaces
-    - No implementation details, only contracts
+#### Layer 1: API Module (`:features:{feature}:api`)
+**Purpose**: Define contracts and business interfaces
+- **Repository Interfaces**: Data access contracts (e.g., `BookmarksRepository`, `TagsRepository`)
+- **Interactors**: Business use cases extending `Interactor<P,R,E>` (e.g., `AddBookmark`, `DeleteBookmark`)
+- **Observers**: Data observation use cases extending `Observer<P,T>` (e.g., `ObserveBookmarks`)
+- **Package**: `dev.avatsav.linkding.{feature}.api.*`
+- **Dependencies**: Only `:core:base`, `:data:models`, and framework libraries
+- **Rule**: **No implementations, only interfaces and contracts**
 
-2. **`:features:{feature}:impl`** - Implementation of the API contracts
-    - Business logic implementation
-    - Repository implementations
-    - Use cases and domain logic
+#### Layer 2: Implementation Module (`:features:{feature}:impl`)
+**Purpose**: Provide concrete business logic and data access
+- **Repository Implementations**: Concrete data access (API + local storage)
+- **Business Logic**: Internal services, mappers, validators
+- **Data Sources**: Paging sources, remote mediators, caching strategies
+- **DI Components**: Metro DI binding and providing logic
+- **Package**: `dev.avatsav.linkding.{feature}.impl.*`
+- **Dependencies**: API module, data layer, framework libraries
+- **Rule**: **Implements API contracts, no UI dependencies**
 
-3. **`:features:{feature}:ui`** - UI components and presentation logic
-    - Circuit Presenters and UI factories
-    - Compose UI implementations
-    - Screen-specific state management
+#### Layer 3: UI Module (`:features:{feature}:ui`)
+**Purpose**: Handle presentation logic and user interface
+- **Presenters**: Circuit presenters with business logic coordination
+- **Screens**: Compose UI implementations and state management
+- **UI States**: Screen state definitions and UI models
+- **Navigation**: Screen routing and parameter mapping
+- **Package**: `dev.avatsav.linkding.{feature}.ui.*`
+- **Dependencies**: **Only API module** (never implementation directly)
+- **Rule**: **UI → API interface contracts only**
 
-**Current Feature Modules:**
+### 📦 Current Feature Modules
 
-- **`features:auth`** - Authentication flow (login, API key management)
-- **`features:bookmarks`** - Bookmark management and display
-- **`features:settings`** - App settings and preferences
+#### `:features:auth` - Authentication & Authorization
+- **API** (3 files): `AuthRepository`, `AuthManager` interfaces  
+- **Impl** (4 files): JWT handling, API key validation, secure storage
+- **UI** (5 files): Login screen, setup flow, authentication presenters
 
-### Dependency Injection Architecture
+#### `:features:bookmarks` - Bookmark Management ⭐ **FULLY MODULARIZED**
+- **API** (7 files): 
+    - **Repositories**: `BookmarksRepository`, `TagsRepository`
+    - **Interactors**: `AddBookmark`, `DeleteBookmark`, `ArchiveBookmark`, `UnarchiveBookmark`, `CheckBookmarkUrl`
+    - **Observers**: `ObserveBookmarks`, `ObserveTags`, `ObserveSearchResults`
+- **Impl** (11 files):
+    - **Repositories**: `LinkdingBookmarksRepository`, `LinkdingTagsRepository` 
+    - **Paging**: `RemoteBookmarksPagingSource`, `BookmarksRemoteMediator`, `TagsPagingSource`, `BookmarksPagingDataFactory`
+    - **Mappers**: `BookmarkMapper`, `TagMapper`, `BookmarkErrorMapper`, `CheckUrlResultMapper`
+    - **DI**: `LinkdingComponent` with Metro bindings
+- **UI** (15 files):
+    - **Add Bookmark**: `AddBookmarkPresenter`, `AddBookmarkScreen`, `AddBookmarkUiState`
+    - **Bookmark List**: `BookmarksPresenter`, `BookmarksScreen`, `BookmarksUiState`, `BookmarkActionSheets`
+    - **Bookmark Widgets**: `BookmarkContent`, `BookmarkListItem`, `FiltersBar`
+    - **Tags Management**: `TagsPresenter`, `TagsScreen`, `TagsUiState`, `TagsBottomSheet`, `TagScreenParamMapper`
 
-Uses **Metro DI** for compile-time dependency injection:
+#### `:features:settings` - App Settings & Preferences  
+- **API** (1 file): `SettingsManager` interface for theme and preferences
+- **Impl** (2 files): `SettingsManagerImpl` with `AppPreferences` integration, DI bindings
+- **UI** (4 files): Settings screen, preferences UI, theme selection widgets
 
-#### DI Scopes
+### 🔄 Dependency Flow & Architecture Rules
 
-- **`AppScope`** - Application-wide singletons (provided by Metro)
-- **`UiScope`** - UI layer scope (unauthenticated state)
-- **`UserScope`** - User session scope (authenticated state)
+```
+┌─────────────────────────────────────────┐
+│                 UI Layer                │  
+│  ┌─────────────┐ ┌─────────────────────┐ │
+│  │   :app:*    │ │ :features:*:ui      │ │
+│  └─────────────┘ └─────────────────────┘ │
+└─────────────────────┬───────────────────────┘
+                      │ (only API contracts)
+┌─────────────────────▼───────────────────────┐
+│                API Layer                    │
+│  ┌─────────────────────────────────────────┐ │  
+│  │        :features:*:api                  │ │
+│  │     (interfaces & contracts)            │ │
+│  └─────────────────────────────────────────┘ │
+└─────────────────┬───────────────────────────┘
+                  ▲ (implements)
+┌─────────────────▼───────────────────────────┐
+│           Implementation Layer              │
+│  ┌─────────────────────────────────────────┐ │
+│  │       :features:*:impl                  │ │  
+│  │    (business logic & data)              │ │
+│  └─────────────────────────────────────────┘ │
+└─────────────────────────────────────────────┘
+```
 
-#### Key DI Components
+**Architecture Rules:**
+1. **UI** depends only on **API interfaces** (never implementations)
+2. **Implementation** modules implement **API contracts**  
+3. **API** modules define business contracts (no implementations)
+4. **Base classes** (`Interactor`, `Observer`) live in `:core:base`
+5. **Data models** centralized in `:data:models`
+6. **Clean dependency flow**: UI → API ← Implementation
 
-- **`UserComponent`** - Manages authenticated user session
-- **`CircuitComponent`** - Provides Circuit instances for authenticated/unauthenticated states
+### 🔧 Metro DI Integration
 
-#### Circuit Integration
+**Scopes & Lifecycle:**
+- **`AppScope`**: App-wide singletons (preferences, API clients)
+- **`UiScope`**: Unauthenticated state (login flow) 
+- **`UserScope`**: Authenticated state (user session)
 
-- **Authenticated Circuit**: Used when user is logged in (`@Authenticated`)
-- **Unauthenticated Circuit**: Used for login flow (`@Unauthenticated`)
-- Presenters and UIs automatically discovered via `@CircuitInject`
-- Circuit codegen mode set to `metro` for integration with Metro DI
+**Circuit Integration:**
+- **Authenticated Circuit**: `@Authenticated` for user features
+- **Unauthenticated Circuit**: `@Unauthenticated` for auth flow
+- **Auto-discovery**: `@CircuitInject` presenters and UIs
+- **Code Generation**: KSP with `circuit.codegen.mode=metro`
+
+
 
 ## Testing Infrastructure
 
@@ -227,10 +310,140 @@ Uses **Metro DI** for compile-time dependency injection:
 - Used for code generation (DI, Circuit, etc.)
 - Applied to all multiplatform targets via `addKspDependencyForAllTargets()`
 
+## Feature Modularization Guidelines
+
+### Creating New Features
+
+When adding new features, follow the established **3-layer pattern**:
+
+#### 1. Create API Module (`:features:{feature}:api`)
+```kotlin
+// build.gradle.kts
+plugins {
+  id("convention.kotlin.multiplatform")
+}
+
+kotlin {
+  sourceSets {
+    commonMain.dependencies {
+      implementation(projects.core.base)
+      api(projects.data.models)
+      // Only interface dependencies
+    }
+  }
+}
+```
+
+**Structure:**
+- Repository interfaces extending base contracts
+- Interactors extending `Interactor<P,R,E>` from `:core:base`
+- Observers extending `Observer<P,T>` from `:core:base`
+- Package: `dev.avatsav.linkding.{feature}.api.*`
+
+#### 2. Create Implementation Module (`:features:{feature}:impl`)
+```kotlin
+// build.gradle.kts  
+plugins {
+  id("convention.kotlin.multiplatform")
+  alias(libs.plugins.ksp)
+}
+
+kotlin {
+  sourceSets {
+    commonMain.dependencies {
+      implementation(projects.features.{feature}.api)
+      implementation(projects.data.database)
+      implementation(projects.data.linkdingApi)
+      // Implementation dependencies
+    }
+  }
+}
+
+ksp { arg("circuit.codegen.mode", "metro") }
+addKspDependencyForAllTargets(libs.circuit.codegen)
+```
+
+**Structure:**
+- Repository implementations with `@Inject` and `@ContributesBinding`
+- Business logic, mappers, validators
+- DI components extending from API interfaces
+- Package: `dev.avatsav.linkding.{feature}.impl.*`
+
+#### 3. Create UI Module (`:features:{feature}:ui`)
+```kotlin
+// build.gradle.kts
+plugins {
+  id("convention.android.library")
+  id("convention.kotlin.multiplatform") 
+  id("convention.compose")
+  alias(libs.plugins.ksp)
+}
+
+kotlin {
+  sourceSets {
+    commonMain.dependencies {
+      implementation(projects.features.{feature}.api) // Only API!
+      implementation(projects.ui.circuit)
+      implementation(projects.ui.compose)
+      // UI dependencies
+    }
+  }
+}
+
+android { namespace = "dev.avatsav.linkding.{feature}.ui" }
+ksp { arg("circuit.codegen.mode", "metro") }
+addKspDependencyForAllTargets(libs.circuit.codegen)
+```
+
+**Structure:**
+- Circuit presenters with `@CircuitInject`
+- Compose screens and UI components
+- UI state definitions
+- Package: `dev.avatsav.linkding.{feature}.ui.*`
+- **Rule**: Only import from API module, never implementation
+
+#### 4. Wire in App Module
+Add dependencies to `:app:shared/build.gradle.kts`:
+```kotlin
+api(projects.features.{feature}.api)
+api(projects.features.{feature}.impl)
+api(projects.features.{feature}.ui)
+```
+
+### Migration from Monolithic Modules
+
+If converting existing monolithic feature modules:
+
+1. **Analyze Content**: Identify repositories, business logic, and UI components
+2. **Create API Interfaces**: Extract repository contracts and define interactors/observers  
+3. **Move Business Logic**: Transfer implementations and data access to impl module
+4. **Isolate UI**: Move presenters, screens, and UI state to ui module
+5. **Update Dependencies**: Ensure UI only depends on API interfaces
+6. **Test Integration**: Verify DI wiring and compilation
+
+### Architecture Validation Checklist
+
+- [ ] **API Module**: Only interfaces, no implementations
+- [ ] **Implementation Module**: Concrete business logic, implements API contracts
+- [ ] **UI Module**: Only depends on API interfaces, uses `@CircuitInject`
+- [ ] **Package Names**: Follow `dev.avatsav.linkding.{feature}.{layer}.*` convention
+- [ ] **DI Integration**: KSP configured with `circuit.codegen.mode=metro`
+- [ ] **Build Independence**: Each module compiles independently
+- [ ] **Clean Dependencies**: UI → API ← Implementation (no UI → Impl)
+
+### Common Patterns
+
+- **Repository Pattern**: API defines contracts, Impl provides concrete data access
+- **Interactor Pattern**: Business use cases with loading states and error handling
+- **Observer Pattern**: Reactive data observation with Flow-based APIs
+- **DI Scopes**: Use appropriate Metro DI scopes (App/UI/User)
+- **Error Handling**: Consistent `Result<T,E>` patterns across all layers
+
 ### Inspiration & Credits
 
 - Architecture heavily inspired by [Tivi](https://github.com/chrisbanes/tivi)
 - Uses modern Android development patterns adapted for multiplatform
+- Modularization approach based on clean architecture principles
 
 This project serves as both a functional app and an exploration of modern Kotlin Multiplatform
-architecture, dependency injection patterns, and multiplatform UI development.
+architecture, dependency injection patterns, and multiplatform UI development with **clean modular design**.

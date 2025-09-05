@@ -16,8 +16,8 @@ import com.slack.circuit.retained.lifecycleRetainedStateRegistry
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.screen.Screen
 import dev.avatsav.linkding.auth.api.AuthManager
+import dev.avatsav.linkding.data.model.app.LaunchMode
 import dev.avatsav.linkding.data.model.prefs.AppTheme
-import dev.avatsav.linkding.domain.models.LaunchMode
 import dev.avatsav.linkding.inject.UiScope
 import dev.avatsav.linkding.inject.qualifier.Unauthenticated
 import dev.avatsav.linkding.prefs.AppPreferences
