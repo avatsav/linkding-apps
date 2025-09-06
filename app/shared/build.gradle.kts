@@ -44,6 +44,7 @@ kotlin {
       api(libs.circuit.runtime)
       api(libs.circuit.overlay)
       api(libs.circuitx.gestureNavigation)
+      api(libs.circuit.codegen.annotations)
     }
 
     targets.withType<KotlinNativeTarget>().configureEach {

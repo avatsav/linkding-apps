@@ -1,17 +1,8 @@
 package dev.avatsav.linkding.ui
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.slack.circuit.backstack.SaveableBackStack
 import com.slack.circuit.foundation.Circuit
@@ -22,13 +13,11 @@ import com.slack.circuit.runtime.Navigator
 import com.slack.circuitx.gesturenavigation.GestureNavigationDecorationFactory
 import dev.avatsav.linkding.auth.api.AuthState
 import dev.avatsav.linkding.data.model.ApiConfig
-import dev.avatsav.linkding.data.model.app.LaunchMode
 import dev.avatsav.linkding.inject.ComponentHolder
 import dev.avatsav.linkding.inject.UserComponent
 
 @Composable
 fun AppContent(
-  launchMode: LaunchMode,
   authState: AuthState,
   circuit: Circuit,
   backStack: SaveableBackStack,
@@ -37,29 +26,17 @@ fun AppContent(
 ) {
   when (authState) {
     is AuthState.Authenticated -> {
-      AuthenticatedContent(
-        launchMode,
-        authState.apiConfig,
-        circuit,
-        backStack,
-        navigator,
-        modifier,
-      )
+      AuthenticatedContent(authState.apiConfig, circuit, backStack, navigator, modifier)
     }
 
-    is AuthState.Unauthenticated -> {
-      SetupScreen(circuit, modifier)
-    }
-
-    is AuthState.Loading -> {
-      SplashScreen(modifier)
+    else -> {
+      UnauthenticatedContent(circuit, modifier)
     }
   }
 }
 
 @Composable
-private fun AuthenticatedContent(
-  launchMode: LaunchMode,
+internal fun AuthenticatedContent(
   apiConfig: ApiConfig,
   circuit: Circuit,
   backStack: SaveableBackStack,
@@ -73,19 +50,14 @@ private fun AuthenticatedContent(
       }
     }
 
-  val userScopedCircuit = remember(userComponent) {
-    circuit.newBuilder()
-      .addPresenterFactories(userComponent.presenterFactories)
-      .addUiFactories(userComponent.uiFactories).build()
-  }
-
-  val startRoute =
-    when (launchMode) {
-      LaunchMode.Normal -> BookmarksScreen
-      is LaunchMode.SharedLink -> AddBookmarkScreen(launchMode.sharedLink)
+  val userScopedCircuit =
+    remember(userComponent) {
+      circuit
+        .newBuilder()
+        .addPresenterFactories(userComponent.presenterFactories)
+        .addUiFactories(userComponent.uiFactories)
+        .build()
     }
-
-  LaunchedEffect(Unit) { navigator.goToAndResetRoot(startRoute) }
 
   CircuitCompositionLocals(userScopedCircuit) {
     NavigableCircuitContent(
@@ -98,23 +70,6 @@ private fun AuthenticatedContent(
 }
 
 @Composable
-private fun SetupScreen(circuit: Circuit, modifier: Modifier = Modifier) {
+internal fun UnauthenticatedContent(circuit: Circuit, modifier: Modifier = Modifier) {
   CircuitCompositionLocals(circuit) { CircuitContent(screen = AuthScreen, modifier = modifier) }
-}
-
-@Composable
-private fun SplashScreen(modifier: Modifier = Modifier) {
-  Scaffold(
-    modifier = modifier,
-    content = { padding ->
-      Column(
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier =
-          Modifier.padding(padding).background(MaterialTheme.colorScheme.surface).fillMaxSize(),
-      ) {
-        CircularProgressIndicator()
-      }
-    },
-  )
 }

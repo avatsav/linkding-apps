@@ -2,10 +2,15 @@ package dev.avatsav.linkding.ui
 
 import com.slack.circuit.runtime.screen.PopResult
 import com.slack.circuit.runtime.screen.Screen
+import com.slack.circuit.runtime.screen.StaticScreen
 import dev.avatsav.linkding.parcelize.Parcelable
 import dev.avatsav.linkding.parcelize.Parcelize
 
 abstract class LinkdingScreen(val name: String) : Screen
+
+interface StaticLinkdingScreen : StaticScreen
+
+@Parcelize data object SplashScreen : StaticLinkdingScreen
 
 @Parcelize data object AuthScreen : LinkdingScreen("Auth")
 
