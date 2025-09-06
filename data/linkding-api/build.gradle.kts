@@ -14,9 +14,9 @@ kotlin {
       implementation(libs.kotlin.datetime)
       implementation(libs.ktor.client.contentNegotiation)
       implementation(libs.ktor.serialization.json)
-      api(libs.ktor.client.core)
-      api(libs.ktor.client.logging)
-      api(libs.kotlinResult)
+      api(libs.ktor.client.core) // HTTP client types in public API
+      api(libs.ktor.client.logging) // Logging types in public API
+      api(libs.kotlinResult) // Result types exposed in public API
     }
     androidMain.dependencies { implementation(libs.ktor.client.okhttp) }
     jvmMain.dependencies { implementation(libs.ktor.client.okhttp) }

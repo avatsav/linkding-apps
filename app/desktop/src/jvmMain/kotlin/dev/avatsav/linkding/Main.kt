@@ -10,7 +10,7 @@ import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
 import com.slack.circuit.backstack.rememberSaveableBackStack
 import com.slack.circuit.foundation.rememberCircuitNavigator
-import dev.avatsav.linkding.domain.models.LaunchMode
+import dev.avatsav.linkding.data.model.app.LaunchMode
 import dev.avatsav.linkding.inject.ComponentHolder
 import dev.avatsav.linkding.inject.DesktopAppComponent
 import dev.avatsav.linkding.inject.DesktopUiComponent

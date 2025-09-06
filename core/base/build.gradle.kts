@@ -8,6 +8,7 @@ kotlin {
       api(libs.kermit)
       api(libs.kotlinResult)
       api(libs.kotlinResultCoroutines)
+      api(libs.paging.common)
       implementation(libs.uuid)
     }
   }

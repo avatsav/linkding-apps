@@ -17,7 +17,6 @@ kotlin {
       implementation(compose.material3)
       implementation(compose.components.resources)
       implementation(projects.features.auth.api)
-      implementation(projects.domain)
       api(projects.ui.theme)
       api(projects.ui.screens)
     }
