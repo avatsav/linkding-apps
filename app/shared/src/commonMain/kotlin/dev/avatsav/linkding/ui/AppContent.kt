@@ -37,7 +37,14 @@ fun AppContent(
 ) {
   when (authState) {
     is AuthState.Authenticated -> {
-      AuthenticatedContent(launchMode, authState.apiConfig, backStack, navigator, modifier)
+      AuthenticatedContent(
+        launchMode,
+        authState.apiConfig,
+        circuit,
+        backStack,
+        navigator,
+        modifier,
+      )
     }
 
     is AuthState.Unauthenticated -> {
@@ -54,6 +61,7 @@ fun AppContent(
 private fun AuthenticatedContent(
   launchMode: LaunchMode,
   apiConfig: ApiConfig,
+  circuit: Circuit,
   backStack: SaveableBackStack,
   navigator: Navigator,
   modifier: Modifier = Modifier,
@@ -65,6 +73,12 @@ private fun AuthenticatedContent(
       }
     }
 
+  val userScopedCircuit = remember(userComponent) {
+    circuit.newBuilder()
+      .addPresenterFactories(userComponent.presenterFactories)
+      .addUiFactories(userComponent.uiFactories).build()
+  }
+
   val startRoute =
     when (launchMode) {
       LaunchMode.Normal -> BookmarksScreen
@@ -73,7 +87,7 @@ private fun AuthenticatedContent(
 
   LaunchedEffect(Unit) { navigator.goToAndResetRoot(startRoute) }
 
-  CircuitCompositionLocals(userComponent.circuit) {
+  CircuitCompositionLocals(userScopedCircuit) {
     NavigableCircuitContent(
       backStack = backStack,
       navigator = navigator,

@@ -1,6 +1,7 @@
 package dev.avatsav.linkding.inject
 
 import dev.avatsav.linkding.data.model.ApiConfig
+import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesTo
 import dev.zacsweers.metro.GraphExtension
 import dev.zacsweers.metro.Provides
@@ -8,7 +9,7 @@ import dev.zacsweers.metro.Provides
 @GraphExtension(UserScope::class)
 interface IosUserComponent : UserComponent {
 
-  @ContributesTo(UiScope::class)
+  @ContributesTo(AppScope::class)
   @GraphExtension.Factory
   interface Factory : UserComponent.Factory {
     override fun create(@Provides apiConfig: ApiConfig): IosUserComponent

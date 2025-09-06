@@ -14,12 +14,12 @@ import dev.avatsav.linkding.auth.ui.usecase.Authenticate
 import dev.avatsav.linkding.data.model.AuthError.InvalidApiKey
 import dev.avatsav.linkding.data.model.AuthError.InvalidHostname
 import dev.avatsav.linkding.data.model.AuthError.Other
-import dev.avatsav.linkding.inject.UiScope
 import dev.avatsav.linkding.ui.AuthScreen
+import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Inject
 import kotlinx.coroutines.launch
 
-@CircuitInject(AuthScreen::class, UiScope::class)
+@CircuitInject(AuthScreen::class, AppScope::class)
 @Inject
 class AuthPresenter(private val authenticate: Authenticate) : Presenter<AuthUiState> {
 

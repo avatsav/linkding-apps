@@ -33,10 +33,10 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.slack.circuit.codegen.annotations.CircuitInject
 import dev.avatsav.linkding.auth.ui.AuthUiEvent.SaveCredentials
-import dev.avatsav.linkding.inject.UiScope
 import dev.avatsav.linkding.ui.AuthScreen
+import dev.zacsweers.metro.AppScope
 
-@CircuitInject(AuthScreen::class, UiScope::class)
+@CircuitInject(AuthScreen::class, AppScope::class)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AuthScreen(state: AuthUiState, modifier: Modifier = Modifier) {

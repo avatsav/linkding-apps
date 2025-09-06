@@ -19,7 +19,6 @@ import dev.avatsav.linkding.auth.api.AuthManager
 import dev.avatsav.linkding.data.model.app.LaunchMode
 import dev.avatsav.linkding.data.model.prefs.AppTheme
 import dev.avatsav.linkding.inject.UiScope
-import dev.avatsav.linkding.inject.qualifier.Unauthenticated
 import dev.avatsav.linkding.prefs.AppPreferences
 import dev.avatsav.linkding.ui.theme.LinkdingTheme
 import dev.zacsweers.metro.ContributesBinding
@@ -41,7 +40,7 @@ interface AppUi {
 @SingleIn(UiScope::class)
 @Inject
 class DefaultAppUi(
-  @Unauthenticated private val circuit: Circuit,
+  private val circuit: Circuit,
   private val preferences: AppPreferences,
   private val authManager: AuthManager,
 ) : AppUi {
