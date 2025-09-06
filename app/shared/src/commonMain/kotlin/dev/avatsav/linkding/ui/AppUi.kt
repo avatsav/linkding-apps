@@ -8,6 +8,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.slack.circuit.backstack.SaveableBackStack
 import com.slack.circuit.foundation.Circuit
 import com.slack.circuit.overlay.ContentWithOverlays
@@ -54,7 +55,7 @@ class DefaultAppUi(
     modifier: Modifier,
   ) {
     val appNavigator: Navigator = remember(navigator) { AppNavigator(navigator, onOpenUrl) }
-    val authState by authManager.state.collectAsState(null)
+    val authState by authManager.state.collectAsStateWithLifecycle(initialValue = authManager.getCurrentState())
 
     CompositionLocalProvider(LocalRetainedStateRegistry provides lifecycleRetainedStateRegistry()) {
       LinkdingTheme(

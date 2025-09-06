@@ -19,10 +19,15 @@ import kotlinx.coroutines.flow.map
 @ContributesBinding(AppScope::class)
 class DefaultAuthManager(private val appPrefs: AppPreferences) : AuthManager {
   override val state: Flow<AuthState> =
-    appPrefs.observeApiConfig().distinctUntilChanged().map { it.toAuthState() }
+    appPrefs.observeApiConfig()
+      .map { it.toAuthState() }
+      .distinctUntilChanged()
 
   override fun getCurrentState(): AuthState = appPrefs.getApiConfig().toAuthState()
 
-  private fun ApiConfig?.toAuthState(): AuthState =
-    this?.let { Authenticated(this) } ?: Unauthenticated
+  private fun ApiConfig?.toAuthState(): AuthState = when {
+    this == null -> AuthState.Loading
+    apiKey.isBlank() || hostUrl.isBlank() -> Unauthenticated
+    else -> Authenticated(this)
+  }
 }

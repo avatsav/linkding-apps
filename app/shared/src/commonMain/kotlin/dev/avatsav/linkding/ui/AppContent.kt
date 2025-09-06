@@ -29,7 +29,7 @@ import dev.avatsav.linkding.inject.UserComponent
 @Composable
 fun AppContent(
   launchMode: LaunchMode,
-  authState: AuthState?,
+  authState: AuthState,
   circuit: Circuit,
   backStack: SaveableBackStack,
   navigator: Navigator,
@@ -51,7 +51,7 @@ fun AppContent(
       SetupScreen(circuit, modifier)
     }
 
-    else -> {
+    is AuthState.Loading -> {
       SplashScreen(modifier)
     }
   }
