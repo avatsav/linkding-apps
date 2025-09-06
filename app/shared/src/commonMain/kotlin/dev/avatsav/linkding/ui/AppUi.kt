@@ -8,18 +8,18 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import com.slack.circuit.backstack.SaveableBackStack
+import com.slack.circuit.backstack.rememberSaveableBackStack
 import com.slack.circuit.foundation.Circuit
+import com.slack.circuit.foundation.rememberCircuitNavigator
 import com.slack.circuit.overlay.ContentWithOverlays
 import com.slack.circuit.retained.LocalRetainedStateRegistry
 import com.slack.circuit.retained.lifecycleRetainedStateRegistry
-import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.screen.Screen
 import dev.avatsav.linkding.auth.api.AuthManager
+import dev.avatsav.linkding.auth.api.AuthState
 import dev.avatsav.linkding.data.model.app.LaunchMode
 import dev.avatsav.linkding.data.model.prefs.AppTheme
 import dev.avatsav.linkding.inject.UiScope
-import dev.avatsav.linkding.inject.qualifier.Unauthenticated
 import dev.avatsav.linkding.prefs.AppPreferences
 import dev.avatsav.linkding.ui.theme.LinkdingTheme
 import dev.zacsweers.metro.ContributesBinding
@@ -30,9 +30,8 @@ interface AppUi {
   @Composable
   fun Content(
     launchMode: LaunchMode,
-    backStack: SaveableBackStack,
-    navigator: Navigator,
     onOpenUrl: (String) -> Boolean,
+    onRootPop: () -> Unit,
     modifier: Modifier,
   )
 }
@@ -41,7 +40,7 @@ interface AppUi {
 @SingleIn(UiScope::class)
 @Inject
 class DefaultAppUi(
-  @Unauthenticated private val circuit: Circuit,
+  private val circuit: Circuit,
   private val preferences: AppPreferences,
   private val authManager: AuthManager,
 ) : AppUi {
@@ -49,13 +48,14 @@ class DefaultAppUi(
   @Composable
   override fun Content(
     launchMode: LaunchMode,
-    backStack: SaveableBackStack,
-    navigator: Navigator,
     onOpenUrl: (String) -> Boolean,
+    onRootPop: () -> Unit,
     modifier: Modifier,
   ) {
-    val appNavigator: Navigator = remember(navigator) { AppNavigator(navigator, onOpenUrl) }
-    val authState by authManager.state.collectAsState(null)
+    val authState by authManager.state.collectAsState(authManager.getCurrentState())
+    val backStack = rememberSaveableBackStack(root = authState.rootScreen(launchMode))
+    val navigator = rememberCircuitNavigator(backStack) { onRootPop() }
+    val appNavigator = remember(navigator) { AppNavigator(navigator, onOpenUrl) }
 
     CompositionLocalProvider(LocalRetainedStateRegistry provides lifecycleRetainedStateRegistry()) {
       LinkdingTheme(
@@ -64,7 +64,6 @@ class DefaultAppUi(
       ) {
         ContentWithOverlays {
           AppContent(
-            launchMode = launchMode,
             authState = authState,
             circuit = circuit,
             backStack = backStack,
@@ -91,11 +90,15 @@ private fun AppPreferences.shouldUseDarkTheme(): Boolean {
 private fun AppPreferences.shouldUseDynamicColors(): Boolean =
   remember { observeUseDynamicColors() }.collectAsState(initial = true).value
 
-fun Navigator.goToAndResetRoot(
-  screen: Screen,
-  saveState: Boolean = false,
-  restoreState: Boolean = false,
-) {
-  goTo(screen)
-  resetRoot(screen, saveState, restoreState)
-}
+private fun AuthState.rootScreen(launchMode: LaunchMode): Screen =
+  when (this) {
+    is AuthState.Authenticated -> launchMode.authenticatedStartScreen()
+    is AuthState.Unauthenticated -> AuthScreen
+    is AuthState.Loading -> SplashScreen
+  }
+
+private fun LaunchMode.authenticatedStartScreen(): Screen =
+  when (this) {
+    LaunchMode.Normal -> BookmarksScreen
+    is LaunchMode.SharedLink -> AddBookmarkScreen(this.sharedLink)
+  }

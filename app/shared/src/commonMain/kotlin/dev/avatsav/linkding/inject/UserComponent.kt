@@ -1,14 +1,16 @@
 package dev.avatsav.linkding.inject
 
-import com.slack.circuit.foundation.Circuit
+import com.slack.circuit.runtime.presenter.Presenter
+import com.slack.circuit.runtime.ui.Ui
 import dev.avatsav.linkding.data.model.ApiConfig
-import dev.avatsav.linkding.inject.qualifier.Authenticated
 import dev.zacsweers.metro.SingleIn
 
 @SingleIn(UserScope::class)
 interface UserComponent {
 
-  @Authenticated val circuit: Circuit
+  val uiFactories: Set<Ui.Factory>
+
+  val presenterFactories: Set<Presenter.Factory>
 
   interface Factory {
     fun create(apiConfig: ApiConfig): UserComponent

@@ -5,23 +5,22 @@ import android.graphics.Color
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
+import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.browser.customtabs.CustomTabsIntent
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.core.net.toUri
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import com.slack.circuit.backstack.rememberSaveableBackStack
-import com.slack.circuit.foundation.rememberCircuitNavigator
 import dev.avatsav.linkding.data.model.app.LaunchMode
 import dev.avatsav.linkding.data.model.prefs.AppTheme
 import dev.avatsav.linkding.inject.AndroidAppComponent
 import dev.avatsav.linkding.inject.AndroidUiComponent
 import dev.avatsav.linkding.inject.ComponentHolder
-import dev.avatsav.linkding.ui.AuthScreen
 import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
@@ -45,10 +44,12 @@ class MainActivity : ComponentActivity() {
 
     // Pass the sharedLink to the appUi
     setContent {
-      val backstack = rememberSaveableBackStack(root = AuthScreen)
-      val navigator = rememberCircuitNavigator(backstack)
-
-      component.appUi.Content(launchMode, backstack, navigator, { launchUrl(it) }, Modifier)
+      component.appUi.Content(
+        launchMode = launchMode,
+        onOpenUrl = { launchUrl(it) },
+        onRootPop = backDispatcherRootPop(),
+        modifier = Modifier,
+      )
     }
   }
 
@@ -74,6 +75,17 @@ private val customTabsIntent =
     .setColorScheme(CustomTabsIntent.COLOR_SCHEME_SYSTEM)
     .setShareState(CustomTabsIntent.SHARE_STATE_OFF)
     .build()
+
+/**
+ * https://github.com/slackhq/circuit/blob/158d07b703778816a69f3cb13b63ef456a8c42e9/circuit-foundation/src/androidMain/kotlin/com/slack/circuit/foundation/Navigator.android.kt#L34
+ */
+@Composable
+private fun backDispatcherRootPop(): () -> Unit {
+  val onBackPressedDispatcher =
+    LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
+      ?: error("No OnBackPressedDispatcherOwner found, unable to handle root navigation pops.")
+  return { onBackPressedDispatcher.onBackPressed() }
+}
 
 private fun MainActivity.launchUrl(url: String): Boolean {
   customTabsIntent.launchUrl(this, url.toUri())

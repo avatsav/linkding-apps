@@ -7,8 +7,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.uikit.LocalUIViewController
 import androidx.compose.ui.window.ComposeUIViewController
-import com.slack.circuit.backstack.rememberSaveableBackStack
-import com.slack.circuit.foundation.rememberCircuitNavigator
 import dev.avatsav.linkding.data.model.app.LaunchMode
 import dev.zacsweers.metro.Inject
 import platform.Foundation.NSURL
@@ -18,15 +16,12 @@ import platform.UIKit.UIViewController
 @Inject
 class MainUIViewControllerFactory(private val appUi: AppUi) {
   fun create(): UIViewController = ComposeUIViewController {
-    val backstack = rememberSaveableBackStack(root = AuthScreen)
-    val navigator = rememberCircuitNavigator(backstack, onRootPop = { /* no-op */ })
     val uiViewController = LocalUIViewController.current
     appUi.Content(
       LaunchMode.Normal,
-      backstack,
-      navigator,
-      { uiViewController.launchUrl(it) },
-      Modifier.fillMaxSize(),
+      onOpenUrl = { uiViewController.launchUrl(it) },
+      onRootPop = { /* NO OP */ },
+      modifier = Modifier.fillMaxSize(),
     )
   }
 }

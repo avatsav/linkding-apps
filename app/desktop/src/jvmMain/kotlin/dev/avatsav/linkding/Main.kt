@@ -8,13 +8,10 @@ import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
-import com.slack.circuit.backstack.rememberSaveableBackStack
-import com.slack.circuit.foundation.rememberCircuitNavigator
 import dev.avatsav.linkding.data.model.app.LaunchMode
 import dev.avatsav.linkding.inject.ComponentHolder
 import dev.avatsav.linkding.inject.DesktopAppComponent
 import dev.avatsav.linkding.inject.DesktopUiComponent
-import dev.avatsav.linkding.ui.AuthScreen
 import dev.zacsweers.metro.createGraph
 import java.awt.Desktop
 import java.net.URI
@@ -33,10 +30,12 @@ fun main() = application {
     rememberWindowState(size = DpSize(450.dp, 900.dp), position = WindowPosition(Alignment.Center))
 
   Window(title = "Linkding", state = windowState, onCloseRequest = ::exitApplication) {
-    val backstack = rememberSaveableBackStack(root = AuthScreen)
-    val navigator = rememberCircuitNavigator(backstack) { /* no-op */ }
-
-    uiComponent.appUi.Content(LaunchMode.Normal, backstack, navigator, { launchUrl(it) }, Modifier)
+    uiComponent.appUi.Content(
+      launchMode = LaunchMode.Normal,
+      onOpenUrl = { launchUrl(it) },
+      onRootPop = { /* */ },
+      modifier = Modifier,
+    )
   }
 }
 
