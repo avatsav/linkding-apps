@@ -14,7 +14,8 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.LargeTopAppBar
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.LargeFlexibleTopAppBar
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
@@ -40,7 +41,7 @@ import dev.avatsav.linkding.ui.compose.widgets.SmallCircularProgressIndicator
 import dev.zacsweers.metro.AppScope
 
 @CircuitInject(AuthScreen::class, AppScope::class)
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun AuthScreen(state: AuthUiState, modifier: Modifier = Modifier) {
   // https://issuetracker.google.com/issues/256100927#comment1
@@ -66,7 +67,7 @@ fun AuthScreen(state: AuthUiState, modifier: Modifier = Modifier) {
   Scaffold(
     modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
     topBar = {
-      LargeTopAppBar(title = { Text(text = "Setup Linkding") }, scrollBehavior = scrollBehavior)
+      LargeFlexibleTopAppBar(title = { Text(text = "Setup Linkding") }, scrollBehavior = scrollBehavior)
     },
     contentWindowInsets = WindowInsets(),
   ) { padding ->

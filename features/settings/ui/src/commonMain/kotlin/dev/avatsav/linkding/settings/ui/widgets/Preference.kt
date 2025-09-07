@@ -186,7 +186,7 @@ fun PreferenceSection(
 
 @Composable
 private fun PreferenceHeader(title: String, modifier: Modifier = Modifier) {
-  Surface(modifier = modifier.padding(horizontal = 4.dp, vertical = 8.dp)) {
+  Surface(modifier = modifier.padding(8.dp)) {
     Text(
       text = title,
       style = MaterialTheme.typography.labelLarge,
