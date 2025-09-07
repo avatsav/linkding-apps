@@ -11,6 +11,7 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LargeTopAppBar
@@ -50,7 +51,7 @@ import dev.avatsav.linkding.ui.circuit.alertDialogOverlay
 import kotlinx.coroutines.launch
 
 @CircuitInject(SettingsScreen::class, UserScope::class)
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3ExpressiveApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun Settings(state: SettingsUiState, modifier: Modifier = Modifier) {
   val eventSink = state.eventSink
@@ -77,7 +78,7 @@ fun Settings(state: SettingsUiState, modifier: Modifier = Modifier) {
     },
   ) { paddingValues ->
     LazyColumn(
-      contentPadding = PaddingValues(horizontal = 12.dp, vertical = 16.dp),
+      contentPadding = PaddingValues(horizontal = 12.dp, vertical = 12.dp),
       modifier =
         Modifier.fillMaxWidth()
           .padding(
@@ -226,5 +227,5 @@ suspend fun OverlayHost.showResetConfirmationDialog(): DialogResult =
       text = { Text("Are you sure you want to reset the api configuration?") },
       confirmButton = { onClick -> Button(onClick = onClick) { Text("Yes") } },
       dismissButton = { onClick -> OutlinedButton(onClick = onClick) { Text("No") } },
-    )
+    ),
   )
