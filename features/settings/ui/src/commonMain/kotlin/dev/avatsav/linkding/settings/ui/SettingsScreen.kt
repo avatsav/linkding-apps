@@ -77,7 +77,7 @@ fun Settings(state: SettingsUiState, modifier: Modifier = Modifier) {
     },
   ) { paddingValues ->
     LazyColumn(
-      contentPadding = PaddingValues(start = 16.dp, end = 16.dp, bottom = 16.dp),
+      contentPadding = PaddingValues(horizontal = 12.dp, vertical = 16.dp),
       modifier =
         Modifier.fillMaxWidth()
           .padding(

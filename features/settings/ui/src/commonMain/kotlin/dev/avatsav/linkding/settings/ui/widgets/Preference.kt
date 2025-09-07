@@ -12,15 +12,15 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CornerBasedShape
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AutoMode
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material.icons.filled.LightMode
 import androidx.compose.material3.Icon
@@ -30,6 +30,7 @@ import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
@@ -57,7 +58,24 @@ fun PreferenceColumnScope.SwitchPreference(
     title = title,
     description = description,
     shape = shape,
-    control = { Switch(checked = checked, onCheckedChange = { onCheckedChange() }) },
+    control = {
+      Switch(
+        checked = checked,
+        onCheckedChange = { onCheckedChange() },
+        thumbContent =
+          if (checked) {
+            {
+              Icon(
+                imageVector = Icons.Filled.Check,
+                contentDescription = null,
+                modifier = Modifier.size(SwitchDefaults.IconSize),
+              )
+            }
+          } else {
+            null
+          },
+      )
+    },
     modifier = modifier,
   )
 }
@@ -87,15 +105,7 @@ fun PreferenceColumnScope.ThemePreference(
                 inactiveBorderColor = MaterialTheme.colorScheme.outline,
               ),
         ) {
-          Icon(
-            imageVector =
-              when (theme) {
-                AppTheme.System -> Icons.Default.AutoMode
-                AppTheme.Light -> Icons.Default.LightMode
-                AppTheme.Dark -> Icons.Default.DarkMode
-              },
-            contentDescription = theme.name,
-          )
+          Icon(imageVector = theme.icon(), contentDescription = theme.name)
         }
       }
     }
@@ -160,7 +170,6 @@ fun PreferenceSection(
     val scope = remember { PreferenceColumnScopeWrapper(this) }
     if (title != null) {
       PreferenceHeader(title)
-      Spacer(Modifier.height(4.dp))
     }
     scope.content()
   }
@@ -168,7 +177,7 @@ fun PreferenceSection(
 
 @Composable
 private fun PreferenceHeader(title: String, modifier: Modifier = Modifier) {
-  Surface(modifier = modifier.padding(horizontal = 16.dp)) {
+  Surface(modifier = modifier.padding(horizontal = 4.dp, vertical = 8.dp)) {
     Text(
       text = title,
       style = MaterialTheme.typography.labelLarge,
@@ -205,7 +214,14 @@ object PreferenceDefaults {
 }
 
 private fun CornerBasedShape.start(): CornerBasedShape =
-  copy(topStart = CornerSize(28.dp), topEnd = CornerSize(28.dp))
+  copy(topStart = CornerSize(16.dp), topEnd = CornerSize(16.dp))
 
 private fun CornerBasedShape.end(): CornerBasedShape =
-  copy(bottomStart = CornerSize(28.dp), bottomEnd = CornerSize(28.dp))
+  copy(bottomStart = CornerSize(16.dp), bottomEnd = CornerSize(16.dp))
+
+private fun AppTheme.icon() =
+  when (this) {
+    AppTheme.System -> Icons.Default.AutoMode
+    AppTheme.Light -> Icons.Default.LightMode
+    AppTheme.Dark -> Icons.Default.DarkMode
+  }

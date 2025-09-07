@@ -53,7 +53,7 @@ androidx-preference = "androidx.preference:preference-ktx:1.2.1"
 compose-ui-backhandler = { module = "org.jetbrains.compose.ui:ui-backhandler", version.ref = "compose-multiplatform" }
 
 paging-common = { module = "androidx.paging:paging-common", version.ref = "paging" }
-paging-compose = {module = "androidx.paging:paging-compose", version.ref = "paging" }
+paging-compose = { module = "androidx.paging:paging-compose", version.ref = "paging" }
 
 kotlin-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "coroutines" }
 kotlin-coroutines-swing = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-swing", version.ref = "coroutines" }
