@@ -25,6 +25,7 @@ kotlin {
       implementation(libs.circuit.retained)
       implementation(libs.circuit.overlay)
       implementation(libs.paging.compose)
+      implementation(libs.kotlin.datetime)
     }
   }
 }

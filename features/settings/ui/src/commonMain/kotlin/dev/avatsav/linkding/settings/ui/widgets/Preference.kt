@@ -16,9 +16,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CornerBasedShape
-import androidx.compose.foundation.shape.CornerSize
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AutoMode
 import androidx.compose.material.icons.filled.Check
@@ -34,9 +31,7 @@ import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.ToggleButton
 import androidx.compose.material3.ToggleButtonDefaults
-import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -95,9 +90,7 @@ fun PreferenceColumnScope.ThemePreference(
 ) {
   val options = AppTheme.entries
   Preference(title = "Theme", shape = shape, modifier = modifier) {
-    Row(
-      horizontalArrangement = Arrangement.spacedBy(ButtonGroupDefaults.ConnectedSpaceBetween),
-    ) {
+    Row(horizontalArrangement = Arrangement.spacedBy(ButtonGroupDefaults.ConnectedSpaceBetween)) {
       options.forEachIndexed { index, theme ->
         ToggleButton(
           checked = theme == selected,
@@ -135,13 +128,9 @@ fun PreferenceColumnScope.Preference(
 ) {
   Surface(
     modifier =
-      modifier.defaultMinSize(minHeight = PreferenceDefaults.MinHeight).clip(shape).onCondition(
-        clickable,
-      ) {
-        clickable { onClick() }
-      },
+      modifier.defaultMinSize(56.dp).clip(shape).onCondition(clickable) { clickable { onClick() } },
     shape = shape,
-    color = MaterialTheme.colorScheme.surfaceColorAtElevation(8.dp),
+    tonalElevation = 8.dp,
   ) {
     Row(modifier = Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
       Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
@@ -172,7 +161,7 @@ fun PreferenceColumnScope.Preference(
 fun PreferenceSection(
   title: String?,
   modifier: Modifier = Modifier,
-  space: Dp = PreferenceDefaults.SectionWidth,
+  space: Dp = 2.dp,
   content: @Composable PreferenceColumnScope.() -> Unit,
 ) {
   Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(space)) {
@@ -199,34 +188,6 @@ interface PreferenceColumnScope : ColumnScope
 
 private class PreferenceColumnScopeWrapper(scope: ColumnScope) :
   PreferenceColumnScope, ColumnScope by scope
-
-object PreferenceDefaults {
-  val SectionWidth = 2.dp
-  val MinHeight = 56.dp
-  private val baseShape: CornerBasedShape
-    get() = RoundedCornerShape(4.dp)
-
-  @Composable
-  @ReadOnlyComposable
-  fun itemShape(
-    index: Int,
-    count: Int,
-    baseShape: CornerBasedShape = PreferenceDefaults.baseShape,
-  ): Shape {
-    if (count == 1) return baseShape
-    return when (index) {
-      0 -> baseShape.start()
-      count - 1 -> baseShape.end()
-      else -> baseShape
-    }
-  }
-}
-
-private fun CornerBasedShape.start(): CornerBasedShape =
-  copy(topStart = CornerSize(16.dp), topEnd = CornerSize(16.dp))
-
-private fun CornerBasedShape.end(): CornerBasedShape =
-  copy(bottomStart = CornerSize(16.dp), bottomEnd = CornerSize(16.dp))
 
 private fun AppTheme.icon() =
   when (this) {

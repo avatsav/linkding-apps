@@ -67,7 +67,10 @@ fun AuthScreen(state: AuthUiState, modifier: Modifier = Modifier) {
   Scaffold(
     modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
     topBar = {
-      LargeFlexibleTopAppBar(title = { Text(text = "Setup Linkding") }, scrollBehavior = scrollBehavior)
+      LargeFlexibleTopAppBar(
+        title = { Text(text = "Setup Linkding") },
+        scrollBehavior = scrollBehavior,
+      )
     },
     contentWindowInsets = WindowInsets(),
   ) { padding ->

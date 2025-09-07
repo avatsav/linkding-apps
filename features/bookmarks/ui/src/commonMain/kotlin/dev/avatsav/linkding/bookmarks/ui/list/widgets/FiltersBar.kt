@@ -6,9 +6,12 @@ import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.filled.FilterList
+import androidx.compose.material.icons.filled.Tag
+import androidx.compose.material3.AssistChip
+import androidx.compose.material3.AssistChipDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -27,6 +30,7 @@ import dev.avatsav.linkding.data.model.BookmarkCategory
 import dev.avatsav.linkding.data.model.Tag
 import dev.avatsav.linkding.ui.TagsScreenResult
 import dev.avatsav.linkding.ui.compose.widgets.TagInputChip
+import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.launch
 
@@ -34,30 +38,29 @@ import kotlinx.coroutines.launch
 fun FiltersBar(
   selectedCategory: BookmarkCategory,
   onSelectCategory: (BookmarkCategory) -> Unit,
-  selectedTags: List<Tag>,
+  selectedTags: ImmutableList<Tag>,
   onSelectTag: (Tag) -> Unit,
   onRemoveTag: (Tag) -> Unit,
   modifier: Modifier = Modifier,
 ) {
   val scope = rememberCoroutineScope()
   val overlayHost = LocalOverlayHost.current
-
   LazyRow(
     modifier = modifier,
     contentPadding = PaddingValues(horizontal = 16.dp),
     horizontalArrangement = Arrangement.spacedBy(8.dp),
   ) {
     item(selectedCategory) {
-      CategoryFilter(
+      BookmarkCategoryFilterChip(
         modifier = Modifier.animateItem(),
         selected = selectedCategory,
         onSelect = onSelectCategory,
       )
     }
-    item {
-      FilterChip(
+    item("tag_chip") {
+      val hasTags = selectedTags.isNotEmpty()
+      AssistChip(
         modifier = Modifier.animateItem(),
-        selected = true,
         onClick = {
           scope.launch {
             when (val result = overlayHost.showTagsBottomSheet(selectedTags)) {
@@ -67,6 +70,14 @@ fun FiltersBar(
           }
         },
         label = { Text("Tags") },
+        colors =
+          if (!hasTags) AssistChipDefaults.assistChipColors()
+          else AssistChipDefaults.elevatedAssistChipColors(),
+        elevation =
+          if (!hasTags) AssistChipDefaults.assistChipElevation()
+          else AssistChipDefaults.elevatedAssistChipElevation(),
+        border = if (!hasTags) AssistChipDefaults.assistChipBorder(true) else null,
+        leadingIcon = { Icon(Icons.Default.Tag, null) },
         trailingIcon = { Icon(Icons.Default.ArrowDropDown, null) },
       )
     }
@@ -84,18 +95,25 @@ fun FiltersBar(
 private val bookmarkCategories = BookmarkCategory.entries.toImmutableList()
 
 @Composable
-private fun LazyItemScope.CategoryFilter(
+private fun LazyItemScope.BookmarkCategoryFilterChip(
   selected: BookmarkCategory,
   onSelect: (BookmarkCategory) -> Unit,
   modifier: Modifier = Modifier,
 ) {
   var showMenu by remember { mutableStateOf(false) }
-
-  FilterChip(
+  val isSelected = selected == BookmarkCategory.All
+  AssistChip(
     modifier = modifier,
-    selected = true,
     onClick = { showMenu = showMenu.not() },
     label = { Text(selected.name) },
+    colors =
+      if (isSelected) AssistChipDefaults.assistChipColors()
+      else AssistChipDefaults.elevatedAssistChipColors(),
+    elevation =
+      if (isSelected) AssistChipDefaults.assistChipElevation()
+      else AssistChipDefaults.elevatedAssistChipElevation(),
+    border = if (isSelected) AssistChipDefaults.assistChipBorder(true) else null,
+    leadingIcon = { Icon(Icons.Default.FilterList, null) },
     trailingIcon = { Icon(Icons.Default.ArrowDropDown, null) },
   )
   DropdownMenu(
@@ -103,13 +121,13 @@ private fun LazyItemScope.CategoryFilter(
     expanded = showMenu,
     onDismissRequest = { showMenu = false },
   ) {
-    bookmarkCategories.forEach { category ->
+    bookmarkCategories.forEach { filter ->
       DropdownMenuItem(
         onClick = {
-          onSelect(category)
+          onSelect(filter)
           showMenu = false
         },
-        text = { Text(category.name) },
+        text = { Text(filter.name) },
       )
     }
   }

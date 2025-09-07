@@ -2,6 +2,7 @@ import dev.avatsav.gradle.addKspDependencyForAllTargets
 
 plugins {
   id("convention.kotlin.multiplatform")
+  alias(libs.plugins.kotlin.serialization)
   alias(libs.plugins.ksp)
 }
 
@@ -20,6 +21,10 @@ kotlin {
       // External dependencies (internal use only, not exposed)
       implementation(libs.paging.common)
       implementation(libs.kotlinResult)
+      implementation(libs.multiplatform.settings)
+      implementation(libs.multiplatform.settings.coroutines)
+      implementation(libs.kotlin.serialization.json)
+      implementation(libs.kotlin.datetime)
     }
   }
 }

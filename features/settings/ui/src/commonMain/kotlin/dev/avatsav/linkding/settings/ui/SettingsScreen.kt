@@ -42,12 +42,12 @@ import dev.avatsav.linkding.settings.ui.SettingsUiEvent.ShowPrivacyPolicy
 import dev.avatsav.linkding.settings.ui.SettingsUiEvent.ShowSourceCode
 import dev.avatsav.linkding.settings.ui.SettingsUiEvent.ToggleUseDynamicColors
 import dev.avatsav.linkding.settings.ui.widgets.Preference
-import dev.avatsav.linkding.settings.ui.widgets.PreferenceDefaults
 import dev.avatsav.linkding.settings.ui.widgets.PreferenceSection
 import dev.avatsav.linkding.settings.ui.widgets.SwitchPreference
 import dev.avatsav.linkding.settings.ui.widgets.ThemePreference
 import dev.avatsav.linkding.ui.SettingsScreen
 import dev.avatsav.linkding.ui.circuit.alertDialogOverlay
+import dev.avatsav.linkding.ui.theme.Material3ShapeDefaults
 import kotlinx.coroutines.launch
 
 @CircuitInject(SettingsScreen::class, UserScope::class)
@@ -126,17 +126,17 @@ private const val LinkdingSettingsCount = 3
 private fun LinkdingSettings(state: SettingsUiState, onResetClick: () -> Unit) {
   PreferenceSection("Linkding", modifier = Modifier.padding(vertical = 8.dp)) {
     Preference(
-      shape = PreferenceDefaults.itemShape(0, LinkdingSettingsCount),
+      shape = Material3ShapeDefaults.itemShape(0, LinkdingSettingsCount),
       title = "Host Url",
       description = state.apiConfig?.hostUrl,
     )
     Preference(
-      shape = PreferenceDefaults.itemShape(1, LinkdingSettingsCount),
+      shape = Material3ShapeDefaults.itemShape(1, LinkdingSettingsCount),
       title = "API Key",
       description = state.apiConfig?.apiKey,
     )
     Preference(
-      shape = PreferenceDefaults.itemShape(2, LinkdingSettingsCount),
+      shape = Material3ShapeDefaults.itemShape(2, LinkdingSettingsCount),
       title = "Reset",
       clickable = true,
       onClick = onResetClick,
@@ -156,12 +156,12 @@ private fun AppearanceSettings(
 
   PreferenceSection("Appearance", modifier = Modifier.padding(vertical = 8.dp)) {
     ThemePreference(
-      shape = PreferenceDefaults.itemShape(0, AppearanceSettingsCount),
+      shape = Material3ShapeDefaults.itemShape(0, AppearanceSettingsCount),
       selected = state.appTheme,
       onSelect = onAppThemeChange,
     )
     SwitchPreference(
-      shape = PreferenceDefaults.itemShape(1, AppearanceSettingsCount),
+      shape = Material3ShapeDefaults.itemShape(1, AppearanceSettingsCount),
       title = "Dynamic colours",
       description = "Colors adapt to your wallpaper",
       checked = state.useDynamicColors,
@@ -182,25 +182,25 @@ private fun AboutSettings(
 ) {
   PreferenceSection("About", modifier = Modifier.padding(vertical = 8.dp)) {
     Preference(
-      shape = PreferenceDefaults.itemShape(0, AboutSettingsCount),
+      shape = Material3ShapeDefaults.itemShape(0, AboutSettingsCount),
       title = "Version",
       description = state.appInfo.version,
     )
     Preference(
-      shape = PreferenceDefaults.itemShape(1, AboutSettingsCount),
+      shape = Material3ShapeDefaults.itemShape(1, AboutSettingsCount),
       title = "Source code",
       description = "Appding repository on Github",
       clickable = true,
       onClick = onSourceCodeClick,
     )
     Preference(
-      shape = PreferenceDefaults.itemShape(2, AboutSettingsCount),
+      shape = Material3ShapeDefaults.itemShape(2, AboutSettingsCount),
       title = "Open Source licenses",
       clickable = true,
       onClick = onLicensesClick,
     )
     Preference(
-      shape = PreferenceDefaults.itemShape(3, AboutSettingsCount),
+      shape = Material3ShapeDefaults.itemShape(3, AboutSettingsCount),
       title = "Privacy policy",
       clickable = true,
       onClick = onPrivacyPolicyClick,
@@ -227,5 +227,5 @@ suspend fun OverlayHost.showResetConfirmationDialog(): DialogResult =
       text = { Text("Are you sure you want to reset the api configuration?") },
       confirmButton = { onClick -> Button(onClick = onClick) { Text("Yes") } },
       dismissButton = { onClick -> OutlinedButton(onClick = onClick) { Text("No") } },
-    ),
+    )
   )
