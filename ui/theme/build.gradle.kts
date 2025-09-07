@@ -9,7 +9,7 @@ kotlin {
   sourceSets {
     commonMain.dependencies {
       api(compose.foundation)
-      api(compose.material3)
+      api(libs.compose.m3expressive)
     }
   }
 }
