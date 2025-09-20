@@ -9,12 +9,12 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.SwipeToDismissBox
-import androidx.compose.material3.SwipeToDismissBoxDefaults
 import androidx.compose.material3.SwipeToDismissBoxState
 import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.material3.SwipeToDismissBoxValue.EndToStart
 import androidx.compose.material3.SwipeToDismissBoxValue.Settled
 import androidx.compose.material3.SwipeToDismissBoxValue.StartToEnd
+import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.Stable
@@ -22,7 +22,6 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
@@ -31,7 +30,6 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
-import androidx.compose.ui.unit.Density
 import dev.avatsav.linkding.ui.compose.circularReveal
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
@@ -45,20 +43,10 @@ fun SwipeToDismissListItem(
   backgroundColor: Color = Color.Transparent,
   content: @Composable (dismissState: SwipeToDismissBoxState) -> Unit,
 ) {
-  val dismissState =
-    rememberNoFlingSwipeToDismissBoxState(
-      confirmValueChange = { dismissValue ->
-        when (dismissValue) {
-          StartToEnd -> startToEndAction.canDismiss
-          EndToStart -> endToStartAction.canDismiss
-          Settled -> true
-        }
-      },
-      positionalThreshold = { totalDistance -> 0.35f * totalDistance },
-    )
+  val dismissState = rememberSwipeToDismissBoxState { totalDistance -> 0.35f * totalDistance }
 
-  LaunchedEffect(dismissState.currentValue) {
-    when (dismissState.currentValue) {
+  LaunchedEffect(dismissState.settledValue) {
+    when (dismissState.settledValue) {
       StartToEnd -> startToEndAction.onSwipeToDismissTriggered()
       EndToStart -> endToStartAction.onSwipeToDismissTriggered()
       Settled -> {}
@@ -91,7 +79,6 @@ private fun SwipeDismissBackgroundContent(
   endAction: SwipeToDismissAction,
   backgroundColor: Color = Color.Transparent,
 ) {
-  if (dismissState.dismissDirection == Settled) return
 
   val haptics = LocalHapticFeedback.current
   var dismissing: Boolean by remember { mutableStateOf(false) }
@@ -140,7 +127,7 @@ private fun SwipeDismissBackgroundContent(
   Box(
     Modifier.fillMaxSize()
       .circularReveal(revealSize.asState(), revealCenterOffset)
-      .background(activeColor)
+      .background(activeColor),
   ) {
     Box(Modifier.fillMaxHeight().align(swipeActionAlignment)) {
       if (dismissDirection == StartToEnd) startAction.content(this, dismissing)
@@ -150,28 +137,6 @@ private fun SwipeDismissBackgroundContent(
 }
 
 private fun SwipeToDismissBoxValue.willDismiss(): Boolean = this == StartToEnd || this == EndToStart
-
-// https://issuetracker.google.com/issues/252334353#comment16
-@Composable
-@ExperimentalMaterial3Api
-fun rememberNoFlingSwipeToDismissBoxState(
-  initialValue: SwipeToDismissBoxValue = Settled,
-  confirmValueChange: (SwipeToDismissBoxValue) -> Boolean = { true },
-  positionalThreshold: (totalDistance: Float) -> Float =
-    SwipeToDismissBoxDefaults.positionalThreshold,
-): SwipeToDismissBoxState {
-  val density = Density(Float.POSITIVE_INFINITY)
-  return rememberSaveable(
-    saver =
-      SwipeToDismissBoxState.Saver(
-        confirmValueChange = confirmValueChange,
-        density = density,
-        positionalThreshold = positionalThreshold,
-      )
-  ) {
-    SwipeToDismissBoxState(initialValue, density, confirmValueChange, positionalThreshold)
-  }
-}
 
 @Stable
 data class SwipeToDismissAction(
