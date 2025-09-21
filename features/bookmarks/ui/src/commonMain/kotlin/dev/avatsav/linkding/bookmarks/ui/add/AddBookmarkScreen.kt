@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
@@ -107,7 +108,7 @@ fun AddBookmark(state: AddBookmarkUiState, modifier: Modifier = Modifier) {
           supportingText = {
             if (state.checkUrlResult?.alreadyBookmarked == true) {
               Text(
-                text = "This URL is already bookmarked. Saving will update the existing bookmark."
+                text = "This URL is already bookmarked. Saving will update the existing bookmark.",
               )
             }
           },
@@ -148,12 +149,14 @@ fun AddBookmark(state: AddBookmarkUiState, modifier: Modifier = Modifier) {
         )
       }
 
+      val saveEnabled = url.isNotBlank() && !state.saving
       // Docked save button, positioned above keyboard
       BottomAppBar(
         modifier = Modifier.align(Alignment.BottomEnd).fillMaxWidth().imePadding(),
         floatingActionButton = {
           Button(
-            enabled = url.isNotBlank() && !state.saving,
+            modifier = Modifier.defaultMinSize(minWidth = 56.dp, minHeight = 48.dp),
+            enabled = saveEnabled,
             onClick = {
               eventSink(Save(url, title, description, tagsValue.tags.map { it.value }.toList()))
             },
@@ -166,6 +169,7 @@ fun AddBookmark(state: AddBookmarkUiState, modifier: Modifier = Modifier) {
             Text(
               modifier = Modifier.padding(horizontal = 16.dp),
               text = state.errorMessage,
+              style = MaterialTheme.typography.bodyMedium,
               color = MaterialTheme.colorScheme.error,
             )
           }

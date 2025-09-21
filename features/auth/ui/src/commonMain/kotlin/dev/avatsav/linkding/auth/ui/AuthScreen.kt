@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
@@ -82,8 +83,8 @@ fun AuthScreen(state: AuthUiState, modifier: Modifier = Modifier) {
         verticalArrangement = Arrangement.spacedBy(12.dp),
       ) {
         Text(
-          text =
-            "Configure settings, so that the app can communicate with your linkding installation."
+                text =
+                        "Configure settings, so that the app can communicate with your linkding installation.",
         )
         OutlinedTextField(
           modifier = Modifier.fillMaxWidth(),
@@ -134,6 +135,7 @@ fun AuthScreen(state: AuthUiState, modifier: Modifier = Modifier) {
         modifier = Modifier.align(Alignment.BottomEnd).fillMaxWidth().imePadding(),
         floatingActionButton = {
           Button(
+            modifier = Modifier.defaultMinSize(minWidth = 56.dp, minHeight = 48.dp),
             enabled = allFieldsFilledOut && !state.loading,
             onClick = { eventSink(SaveCredentials(hostUrl, apiKey)) },
           ) {

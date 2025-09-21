@@ -26,13 +26,13 @@ import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Unarchive
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.FloatingToolbarDefaults
 import androidx.compose.material3.FloatingToolbarDefaults.ScreenOffset
 import androidx.compose.material3.FloatingToolbarDefaults.floatingToolbarVerticalNestedScroll
 import androidx.compose.material3.HorizontalFloatingToolbar
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MediumFloatingActionButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults
@@ -98,7 +98,7 @@ fun Bookmarks(state: BookmarksUiState, modifier: Modifier = Modifier) {
         enter = appearFromBottom(),
         exit = disappearToBottom(),
       ) {
-        MediumFloatingActionButton(onClick = { eventSink(AddBookmark) }) {
+        FloatingActionButton(onClick = { eventSink(AddBookmark) }) {
           Icon(imageVector = Icons.Filled.Add, contentDescription = "Add bookmark")
         }
       }

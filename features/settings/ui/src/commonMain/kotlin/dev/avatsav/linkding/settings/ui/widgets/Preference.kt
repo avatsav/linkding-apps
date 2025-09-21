@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AutoMode
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material.icons.filled.LightMode
 import androidx.compose.material3.ButtonGroupDefaults
@@ -62,18 +63,20 @@ fun PreferenceColumnScope.SwitchPreference(
       Switch(
         checked = checked,
         onCheckedChange = { onCheckedChange() },
-        thumbContent =
-          if (checked) {
-            {
-              Icon(
-                imageVector = Icons.Filled.Check,
-                contentDescription = null,
-                modifier = Modifier.size(SwitchDefaults.IconSize),
-              )
-            }
-          } else {
-            null
-          },
+        thumbContent = {
+          if (checked)
+            Icon(
+              imageVector = Icons.Filled.Check,
+              contentDescription = null,
+              modifier = Modifier.size(SwitchDefaults.IconSize),
+            )
+          else
+            Icon(
+              imageVector = Icons.Filled.Close,
+              contentDescription = null,
+              modifier = Modifier.size(SwitchDefaults.IconSize),
+            )
+        },
       )
     },
     modifier = modifier,
