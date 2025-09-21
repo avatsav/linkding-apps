@@ -116,6 +116,7 @@ fun PreferenceColumnScope.ThemePreference(
 
 private const val PreferenceAnimationDuration = 220
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun PreferenceColumnScope.Preference(
   title: String,
@@ -128,13 +129,14 @@ fun PreferenceColumnScope.Preference(
 ) {
   Surface(
     modifier =
-      modifier.defaultMinSize(56.dp).clip(shape).onCondition(clickable) { clickable { onClick() } },
+      modifier.defaultMinSize(56.dp).clip(shape)
+        .onCondition(clickable) { clickable { onClick() } },
     shape = shape,
     tonalElevation = 8.dp,
   ) {
     Row(modifier = Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
       Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
-        Text(text = title, style = MaterialTheme.typography.bodyLarge)
+        Text(text = title, style = MaterialTheme.typography.labelLarge)
 
         if (description != null) {
           AnimatedContent(

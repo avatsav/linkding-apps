@@ -55,9 +55,9 @@ sealed interface BookmarksUiEvent : CircuitUiEvent {
   data object Refresh : BookmarksUiEvent
 
   data class ToggleArchive(val bookmark: Bookmark) : BookmarksUiEvent
-
   data class Delete(val bookmark: Bookmark) : BookmarksUiEvent
 
+  data class Edit(val bookmark: Bookmark) : BookmarksUiEvent
   data class Open(val bookmark: Bookmark) : BookmarksUiEvent
 
   data class SelectBookmarkCategory(val bookmarkCategory: BookmarkCategory) : BookmarksUiEvent

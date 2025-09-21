@@ -41,10 +41,12 @@ import dev.avatsav.linkding.bookmarks.ui.list.BookmarksUiEvent.RemoveTag
 import dev.avatsav.linkding.bookmarks.ui.list.BookmarksUiEvent.SelectBookmarkCategory
 import dev.avatsav.linkding.bookmarks.ui.list.BookmarksUiEvent.SelectTag
 import dev.avatsav.linkding.bookmarks.ui.list.BookmarksUiEvent.ToggleArchive
+import dev.avatsav.linkding.bookmarks.ui.list.widgets.BookmarkListItem
 import dev.avatsav.linkding.bookmarks.ui.list.widgets.EmptySearchResults
 import dev.avatsav.linkding.bookmarks.ui.list.widgets.FiltersBar
 import dev.avatsav.linkding.bookmarks.ui.list.widgets.SearchHistoryHeader
 import dev.avatsav.linkding.bookmarks.ui.list.widgets.SearchHistoryItem
+import dev.avatsav.linkding.data.model.Bookmark
 import dev.avatsav.linkding.ui.theme.Material3ShapeDefaults
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -164,7 +166,10 @@ private fun SearchResultsContent(
         searchState.isIdle() -> SearchHistoryItems(searchState = searchState, eventSink = eventSink)
         searchState.isLoading() -> SearchResultsLoading()
         searchState.hasNoSearchResults() -> SearchResultsEmpty()
-        else -> SearchResultItems(searchState, eventSink)
+        else -> SearchResultItems(
+          searchState = searchState,
+          openBookmark = { bookmark -> eventSink(Open(bookmark)) },
+        )
       }
     }
   }
@@ -172,17 +177,18 @@ private fun SearchResultsContent(
 
 private fun LazyListScope.SearchResultItems(
   searchState: SearchUiState,
-  eventSink: (BookmarksUiEvent) -> Unit,
+  openBookmark: (Bookmark) -> Unit,
 ) {
   items(count = searchState.results.itemCount, key = searchState.results.itemKey { it.id }) { index
     ->
     val result = searchState.results[index]
     if (result != null) {
-      BookmarkItem(
+      BookmarkListItem(
         bookmark = result,
-        onBookmarkOpen = { toOpen -> eventSink(Open(toOpen)) },
-        onArchiveToggle = { toToggle -> eventSink(ToggleArchive(toToggle)) },
-        onBookmarkDelete = { toDelete -> eventSink(Delete(toDelete)) },
+        selected = false,
+        openBookmark = openBookmark,
+        toggleActions = { /* Not supported in search results */ },
+        modifier = Modifier.animateItem(),
       )
     }
   }
@@ -224,9 +230,6 @@ private fun LazyListScope.SearchResultsLoading() {
 private fun LazyListScope.SearchResultsEmpty() {
   item(key = "empty-results") { EmptySearchResults(modifier = Modifier.animateItem()) }
 }
-
-@OptIn(ExperimentalMaterial3Api::class)
-private fun SearchBarState.isCollapsed() = this.currentValue == SearchBarValue.Collapsed
 
 @OptIn(ExperimentalMaterial3Api::class)
 private fun SearchBarState.isExpanded() = this.currentValue == SearchBarValue.Expanded

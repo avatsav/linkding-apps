@@ -78,7 +78,7 @@ internal fun AuthenticatedContent(
     NavigableCircuitContent(
       backStack = backStack,
       navigator = appNavigator,
-      decoratorFactory = GestureNavigationDecorationFactory(onBackInvoked = navigator::pop),
+      decoratorFactory = GestureNavigationDecorationFactory { navigator::pop },
       modifier = modifier.fillMaxSize(),
     )
   }
