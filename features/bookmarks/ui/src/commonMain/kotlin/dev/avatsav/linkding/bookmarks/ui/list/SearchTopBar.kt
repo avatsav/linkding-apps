@@ -232,4 +232,7 @@ private fun LazyListScope.SearchResultsEmpty() {
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
-private fun SearchBarState.isExpanded() = this.currentValue == SearchBarValue.Expanded
+fun SearchBarState.isCollapsed() = this.currentValue == SearchBarValue.Collapsed
+
+@OptIn(ExperimentalMaterial3Api::class)
+fun SearchBarState.isExpanded() = this.currentValue == SearchBarValue.Expanded

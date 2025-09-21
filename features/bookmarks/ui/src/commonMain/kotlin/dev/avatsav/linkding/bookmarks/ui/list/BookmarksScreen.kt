@@ -1,5 +1,14 @@
 package dev.avatsav.linkding.bookmarks.ui.list
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
@@ -12,7 +21,6 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Archive
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Unarchive
@@ -21,7 +29,6 @@ import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FloatingToolbarDefaults
 import androidx.compose.material3.FloatingToolbarDefaults.ScreenOffset
 import androidx.compose.material3.FloatingToolbarDefaults.floatingToolbarVerticalNestedScroll
-import androidx.compose.material3.FloatingToolbarDefaults.vibrantFloatingToolbarColors
 import androidx.compose.material3.HorizontalFloatingToolbar
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -32,6 +39,7 @@ import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.material3.rememberSearchBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -71,6 +79,10 @@ fun Bookmarks(state: BookmarksUiState, modifier: Modifier = Modifier) {
     actionableBookmark = null
   }
 
+  LaunchedEffect(searchBarState) {
+    if (searchBarState.isExpanded()) actionableBookmark = null
+  }
+
   Scaffold(
     modifier = modifier,
     topBar = {
@@ -79,6 +91,17 @@ fun Bookmarks(state: BookmarksUiState, modifier: Modifier = Modifier) {
         searchState = state.search,
         eventSink = eventSink,
       )
+    },
+    floatingActionButton = {
+      AnimatedVisibility(
+        visible = actionableBookmark == null && searchBarState.isCollapsed(),
+        enter = appearFromBottom(),
+        exit = disappearToBottom(),
+      ) {
+        MediumFloatingActionButton(onClick = { eventSink(AddBookmark) }) {
+          Icon(imageVector = Icons.Filled.Add, contentDescription = "Add bookmark")
+        }
+      }
     },
   ) { paddingValues ->
     val refreshing by rememberUpdatedState(state.bookmarkList.bookmarks.loadState.refresh == LoadState.Loading)
@@ -100,66 +123,55 @@ fun Bookmarks(state: BookmarksUiState, modifier: Modifier = Modifier) {
         )
       },
     ) {
-      HorizontalFloatingToolbar(
-        modifier = Modifier.align(Alignment.BottomEnd).navigationBarsPadding()
-          .offset(x = -ScreenOffset, y = -ScreenOffset).zIndex(1f),
-        expanded = actionableBookmark != null,
-        floatingActionButton = {
-          MediumFloatingActionButton(
-            modifier = Modifier,
-            containerColor = vibrantFloatingToolbarColors().fabContainerColor,
-            contentColor = vibrantFloatingToolbarColors().fabContentColor,
-            onClick = {
-              if (actionableBookmark != null) {
+      AnimatedVisibility(
+        modifier = Modifier.align(Alignment.BottomCenter)
+          .navigationBarsPadding()
+          .offset(y = -ScreenOffset)
+          .zIndex(1f),
+        visible = actionableBookmark != null,
+        enter = appearFromBottom(),
+        exit = disappearToBottom(),
+      ) {
+        HorizontalFloatingToolbar(
+          expanded = true,
+          colors = FloatingToolbarDefaults.vibrantFloatingToolbarColors(),
+          content = {
+            IconButton(
+              onClick = {
+                val bookmark = actionableBookmark ?: return@IconButton
                 actionableBookmark = null
+                eventSink(BookmarksUiEvent.ToggleArchive(bookmark = bookmark))
+              },
+            ) {
+              val bookmark = actionableBookmark ?: return@IconButton
+              if (bookmark.archived) {
+                Icon(Icons.Filled.Unarchive, contentDescription = "Unarchive bookmark")
               } else {
-                eventSink(AddBookmark)
+                Icon(Icons.Filled.Archive, contentDescription = "Archive bookmark")
               }
-            },
-            content = {
-              if (actionableBookmark != null) {
-                Icon(Icons.Filled.Close, "Close bookmark actions")
-              } else Icon(Icons.Filled.Add, "Add bookmark")
-            },
-          )
-        },
-        colors = FloatingToolbarDefaults.vibrantFloatingToolbarColors(),
-        content = {
-          IconButton(
-            onClick = {
-              val bookmark = actionableBookmark ?: return@IconButton
-              actionableBookmark = null
-              eventSink(BookmarksUiEvent.ToggleArchive(bookmark = bookmark))
-            },
-          ) {
-            val bookmark = actionableBookmark ?: return@IconButton
-            if (bookmark.archived) {
-              Icon(Icons.Filled.Unarchive, contentDescription = "Unarchive bookmark")
-            } else {
-              Icon(Icons.Filled.Archive, contentDescription = "Archive bookmark")
             }
-          }
-          IconButton(
-            onClick = {
-              val bookmark = actionableBookmark ?: return@IconButton
-              actionableBookmark = null
-              eventSink(BookmarksUiEvent.Delete(bookmark = bookmark))
-            },
-          ) {
-            Icon(Icons.Filled.Delete, contentDescription = "Delete bookmark")
-          }
-          IconButton(
-            onClick = {
-              val bookmark = actionableBookmark ?: return@IconButton
-              actionableBookmark = null
-              eventSink(BookmarksUiEvent.Edit(bookmark = bookmark))
+            IconButton(
+              onClick = {
+                val bookmark = actionableBookmark ?: return@IconButton
+                actionableBookmark = null
+                eventSink(BookmarksUiEvent.Delete(bookmark = bookmark))
+              },
+            ) {
+              Icon(Icons.Filled.Delete, contentDescription = "Delete bookmark")
+            }
+            IconButton(
+              onClick = {
+                val bookmark = actionableBookmark ?: return@IconButton
+                actionableBookmark = null
+                eventSink(BookmarksUiEvent.Edit(bookmark = bookmark))
 
-            },
-          ) {
-            Icon(Icons.Filled.Edit, contentDescription = "Edit bookmark")
-          }
-        },
-      )
+              },
+            ) {
+              Icon(Icons.Filled.Edit, contentDescription = "Edit bookmark")
+            }
+          },
+        )
+      }
       LazyColumn(
         modifier = Modifier.floatingToolbarVerticalNestedScroll(
           expanded = actionableBookmark != null,
@@ -195,3 +207,9 @@ fun Bookmarks(state: BookmarksUiState, modifier: Modifier = Modifier) {
     }
   }
 }
+
+fun appearFromBottom(): EnterTransition =
+  slideInVertically(spring(Spring.DampingRatioMediumBouncy)) { it / 3 } + fadeIn()
+
+fun disappearToBottom(): ExitTransition =
+  slideOutVertically(spring(Spring.DampingRatioMediumBouncy)) { it / 3 } + fadeOut()
