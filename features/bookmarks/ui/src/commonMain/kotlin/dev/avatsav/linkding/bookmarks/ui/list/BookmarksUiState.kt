@@ -23,6 +23,7 @@ data class SearchUiState(
   val query: String = "",
   val filters: BookmarkFiltersUiState = BookmarkFiltersUiState(),
   val results: LazyPagingItems<Bookmark>,
+  val vacatedSearchItems: ImmutableList<Long> = persistentListOf(),
 ) {
 
   fun isIdle(): Boolean = !isActive() && history.isNotEmpty()
@@ -54,8 +55,15 @@ data class BookmarkFiltersUiState(
 sealed interface BookmarksUiEvent : CircuitUiEvent {
   data object Refresh : BookmarksUiEvent
 
-  data class ToggleArchive(val bookmark: Bookmark) : BookmarksUiEvent
-  data class Delete(val bookmark: Bookmark) : BookmarksUiEvent
+  data class ToggleArchive(
+    val bookmark: Bookmark,
+    val source: BookmarkActionSource = BookmarkActionSource.List
+  ) : BookmarksUiEvent
+
+  data class Delete(
+    val bookmark: Bookmark,
+    val source: BookmarkActionSource = BookmarkActionSource.List
+  ) : BookmarksUiEvent
 
   data class Edit(val bookmark: Bookmark) : BookmarksUiEvent
   data class Open(val bookmark: Bookmark) : BookmarksUiEvent
@@ -77,4 +85,8 @@ sealed interface BookmarksUiEvent : CircuitUiEvent {
   data class SelectSearchHistoryItem(val searchHistory: SearchHistory) : BookmarksUiEvent
 
   data object ClearSearchHistory : BookmarksUiEvent
+}
+
+enum class BookmarkActionSource {
+  List, Search
 }

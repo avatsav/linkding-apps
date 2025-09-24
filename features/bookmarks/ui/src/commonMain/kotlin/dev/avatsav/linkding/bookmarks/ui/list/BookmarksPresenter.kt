@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
@@ -113,6 +114,7 @@ class BookmarksPresenter(
     }
 
     val searchResults = searchResultsFlow.collectAsLazyPagingItems()
+    var vacatedSearchItems = rememberRetained { mutableStateListOf<Long>() }
 
     val searchHistoryFlow by produceRetainedState(emptyFlow()) {
       observeSearchHistory(ObserveSearchHistory.Params)
@@ -125,6 +127,7 @@ class BookmarksPresenter(
       search = SearchUiState(
         query = searchQuery,
         results = searchResults,
+        vacatedSearchItems = vacatedSearchItems.toImmutableList(),
         history = searchHistory.toImmutableList(),
         filters = BookmarkFiltersUiState(
           bookmarkCategory = bookmarkCategory,
@@ -141,9 +144,17 @@ class BookmarksPresenter(
             } else {
               archiveBookmark(event.bookmark.id)
             }
+            if (event.source == BookmarkActionSource.Search) {
+              vacatedSearchItems.add(event.bookmark.id)
+            }
           }
 
-          is Delete -> presenterScope.launch { deleteBookmark(event.bookmark.id) }
+          is Delete -> presenterScope.launch {
+            deleteBookmark(event.bookmark.id)
+            if (event.source == BookmarkActionSource.Search) {
+              vacatedSearchItems.add(event.bookmark.id)
+            }
+          }
 
           is Open -> navigator.goTo(UrlScreen(event.bookmark.url))
 
@@ -181,6 +192,7 @@ class BookmarksPresenter(
                 )
               }
             }
+            vacatedSearchItems.clear()
           }
 
           is SelectSearchHistoryItem -> {
@@ -188,12 +200,14 @@ class BookmarksPresenter(
             bookmarkCategory = event.searchHistory.bookmarkCategory
             selectedTags.clear()
             selectedTags.addAll(event.searchHistory.selectedTags)
+            vacatedSearchItems.clear()
           }
 
           ClearSearch -> {
             searchQuery = ""
             bookmarkCategory = BookmarkCategory.All
             selectedTags.clear()
+            vacatedSearchItems.clear()
           }
 
           ClearSearchHistory -> {

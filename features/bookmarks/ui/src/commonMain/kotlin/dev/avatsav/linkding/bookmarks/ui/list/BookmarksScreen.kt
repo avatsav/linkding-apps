@@ -40,11 +40,11 @@ import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.material3.rememberSearchBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -73,14 +73,14 @@ import dev.avatsav.linkding.ui.BookmarksScreen
 fun Bookmarks(state: BookmarksUiState, modifier: Modifier = Modifier) {
   val eventSink = state.eventSink
   val searchBarState = rememberSearchBarState()
-  var actionableBookmark by remember { mutableStateOf<Bookmark?>(null) }
+  val actionableBookmark = remember { mutableStateOf<Bookmark?>(null) }
 
-  BackHandler(actionableBookmark != null) {
-    actionableBookmark = null
+  BackHandler(actionableBookmark.value != null) {
+    actionableBookmark.value = null
   }
 
   LaunchedEffect(searchBarState) {
-    if (searchBarState.isExpanded()) actionableBookmark = null
+    if (searchBarState.isExpanded()) actionableBookmark.value = null
   }
 
   Scaffold(
@@ -94,7 +94,7 @@ fun Bookmarks(state: BookmarksUiState, modifier: Modifier = Modifier) {
     },
     floatingActionButton = {
       AnimatedVisibility(
-        visible = actionableBookmark == null && searchBarState.isCollapsed(),
+        visible = actionableBookmark.value == null && searchBarState.isCollapsed(),
         enter = appearFromBottom(),
         exit = disappearToBottom(),
       ) {
@@ -123,60 +123,21 @@ fun Bookmarks(state: BookmarksUiState, modifier: Modifier = Modifier) {
         )
       },
     ) {
-      AnimatedVisibility(
-        modifier = Modifier.align(Alignment.BottomCenter)
-          .navigationBarsPadding()
-          .offset(y = -ScreenOffset)
-          .zIndex(1f),
-        visible = actionableBookmark != null,
-        enter = appearFromBottom(),
-        exit = disappearToBottom(),
-      ) {
-        HorizontalFloatingToolbar(
-          expanded = true,
-          colors = FloatingToolbarDefaults.vibrantFloatingToolbarColors(),
-          content = {
-            IconButton(
-              onClick = {
-                val bookmark = actionableBookmark ?: return@IconButton
-                actionableBookmark = null
-                eventSink(BookmarksUiEvent.ToggleArchive(bookmark = bookmark))
-              },
-            ) {
-              val bookmark = actionableBookmark ?: return@IconButton
-              if (bookmark.archived) {
-                Icon(Icons.Filled.Unarchive, contentDescription = "Unarchive bookmark")
-              } else {
-                Icon(Icons.Filled.Archive, contentDescription = "Archive bookmark")
-              }
-            }
-            IconButton(
-              onClick = {
-                val bookmark = actionableBookmark ?: return@IconButton
-                actionableBookmark = null
-                eventSink(BookmarksUiEvent.Delete(bookmark = bookmark))
-              },
-            ) {
-              Icon(Icons.Filled.Delete, contentDescription = "Delete bookmark")
-            }
-            IconButton(
-              onClick = {
-                val bookmark = actionableBookmark ?: return@IconButton
-                actionableBookmark = null
-                eventSink(BookmarksUiEvent.Edit(bookmark = bookmark))
 
-              },
-            ) {
-              Icon(Icons.Filled.Edit, contentDescription = "Edit bookmark")
-            }
-          },
-        )
-      }
+      ActionableBookmarkToolbar(
+        actionableBookmark = actionableBookmark,
+        editBookmark = { eventSink(BookmarksUiEvent.Edit(it)) },
+        toggleArchive = { eventSink(BookmarksUiEvent.ToggleArchive(it)) },
+        deleteBookmark = { eventSink(BookmarksUiEvent.Delete(it)) },
+        modifier = Modifier.align(Alignment.BottomCenter).navigationBarsPadding()
+          .offset(y = -ScreenOffset).zIndex(1f),
+      )
+
       LazyColumn(
         modifier = Modifier.floatingToolbarVerticalNestedScroll(
-          expanded = actionableBookmark != null,
-          onExpand = { actionableBookmark = null },
-          onCollapse = { actionableBookmark = null },
+          expanded = actionableBookmark.value != null,
+          onExpand = { actionableBookmark.value = null },
+          onCollapse = { actionableBookmark.value = null },
         ),
         state = rememberLazyListState(),
         contentPadding = PaddingValues(bottom = 108.dp),
@@ -193,13 +154,13 @@ fun Bookmarks(state: BookmarksUiState, modifier: Modifier = Modifier) {
               selected = actionableBookmark == bookmark,
               openBookmark = { toOpen ->
                 if (actionableBookmark == toOpen) {
-                  actionableBookmark = null
+                  actionableBookmark.value = null
                 } else {
-                  actionableBookmark = null
+                  actionableBookmark.value = null
                   eventSink(Open(toOpen))
                 }
               },
-              toggleActions = { bookmark -> actionableBookmark = bookmark },
+              toggleActions = { bookmark -> actionableBookmark.value = bookmark },
             )
           }
         }
@@ -208,8 +169,64 @@ fun Bookmarks(state: BookmarksUiState, modifier: Modifier = Modifier) {
   }
 }
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
+@Composable
+fun ActionableBookmarkToolbar(
+  actionableBookmark: MutableState<Bookmark?>,
+  editBookmark: (Bookmark) -> Unit,
+  toggleArchive: (Bookmark) -> Unit,
+  deleteBookmark: (Bookmark) -> Unit,
+  modifier: Modifier,
+) {
+  AnimatedVisibility(
+    modifier = modifier,
+    visible = actionableBookmark.value != null,
+    enter = appearFromBottom(),
+    exit = disappearToBottom(),
+  ) {
+    HorizontalFloatingToolbar(
+      expanded = true,
+      colors = FloatingToolbarDefaults.vibrantFloatingToolbarColors(),
+      content = {
+        IconButton(
+          onClick = {
+            val bookmark = actionableBookmark.value ?: return@IconButton
+            actionableBookmark.value = null
+            toggleArchive(bookmark)
+          },
+        ) {
+          val bookmark = actionableBookmark.value ?: return@IconButton
+          if (bookmark.archived) {
+            Icon(Icons.Filled.Unarchive, contentDescription = "Unarchive bookmark")
+          } else {
+            Icon(Icons.Filled.Archive, contentDescription = "Archive bookmark")
+          }
+        }
+        IconButton(
+          onClick = {
+            val bookmark = actionableBookmark.value ?: return@IconButton
+            actionableBookmark.value = null
+            deleteBookmark(bookmark)
+          },
+        ) {
+          Icon(Icons.Filled.Delete, contentDescription = "Delete bookmark")
+        }
+        IconButton(
+          onClick = {
+            val bookmark = actionableBookmark.value ?: return@IconButton
+            actionableBookmark.value = null
+            editBookmark(bookmark)
+          },
+        ) {
+          Icon(Icons.Filled.Edit, contentDescription = "Edit bookmark")
+        }
+      },
+    )
+  }
+}
+
 fun appearFromBottom(): EnterTransition =
-  slideInVertically(spring(Spring.DampingRatioMediumBouncy)) { it / 3 } + fadeIn()
+  slideInVertically(spring(Spring.DampingRatioMediumBouncy)) { it / 2 } + fadeIn()
 
 fun disappearToBottom(): ExitTransition =
-  slideOutVertically(spring(Spring.DampingRatioMediumBouncy)) { it / 3 } + fadeOut()
+  slideOutVertically(spring(Spring.DampingRatioMediumBouncy)) { it / 2 } + fadeOut()

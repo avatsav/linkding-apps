@@ -1,8 +1,11 @@
 package dev.avatsav.linkding.bookmarks.ui.list
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
@@ -19,6 +22,8 @@ import androidx.compose.material3.ContainedLoadingIndicator
 import androidx.compose.material3.ExpandedFullScreenSearchBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.FloatingToolbarDefaults.ScreenOffset
+import androidx.compose.material3.FloatingToolbarDefaults.floatingToolbarVerticalNestedScroll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.SearchBarDefaults
@@ -28,19 +33,20 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import androidx.paging.compose.itemKey
 import com.slack.circuit.overlay.ContentWithOverlays
-import dev.avatsav.linkding.bookmarks.ui.list.BookmarksUiEvent.Delete
 import dev.avatsav.linkding.bookmarks.ui.list.BookmarksUiEvent.Open
 import dev.avatsav.linkding.bookmarks.ui.list.BookmarksUiEvent.RemoveTag
 import dev.avatsav.linkding.bookmarks.ui.list.BookmarksUiEvent.SelectBookmarkCategory
 import dev.avatsav.linkding.bookmarks.ui.list.BookmarksUiEvent.SelectTag
-import dev.avatsav.linkding.bookmarks.ui.list.BookmarksUiEvent.ToggleArchive
 import dev.avatsav.linkding.bookmarks.ui.list.widgets.BookmarkListItem
 import dev.avatsav.linkding.bookmarks.ui.list.widgets.EmptySearchResults
 import dev.avatsav.linkding.bookmarks.ui.list.widgets.FiltersBar
@@ -53,7 +59,7 @@ import kotlinx.coroutines.launch
 
 private const val SearchTextDebounce = 800L
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun SearchTopBar(
   searchBarState: SearchBarState,
@@ -71,51 +77,49 @@ fun SearchTopBar(
   }
 
   LaunchedEffect(searchBarState, eventSink) {
-    snapshotFlow { searchBarState.currentValue }
-      .collect { newValue ->
-        if (newValue == SearchBarValue.Collapsed) {
-          // Clear search when collapsing the search bar
-          eventSink(BookmarksUiEvent.ClearSearch)
-          textFieldState.clearText()
-        }
+    snapshotFlow { searchBarState.currentValue }.collect { newValue ->
+      if (newValue == SearchBarValue.Collapsed) {
+        // Clear search when collapsing the search bar
+        eventSink(BookmarksUiEvent.ClearSearch)
+        textFieldState.clearText()
       }
+    }
   }
 
-  val inputField =
-    @Composable {
-      SearchBarDefaults.InputField(
-        modifier = Modifier,
-        searchBarState = searchBarState,
-        textFieldState = textFieldState,
-        onSearch = {
-          scope.launch { eventSink(BookmarksUiEvent.Search(textFieldState.text.toString())) }
-        },
-        placeholder = { Text(text = "Search") },
-        leadingIcon = {
-          if (searchBarState.isExpanded()) {
-            IconButton(onClick = { scope.launch { searchBarState.animateToCollapsed() } }) {
-              Icon(Icons.AutoMirrored.Default.ArrowBack, contentDescription = "Back")
-            }
-          } else {
-            Icon(Icons.Default.Search, contentDescription = null)
+  val inputField = @Composable {
+    SearchBarDefaults.InputField(
+      modifier = Modifier,
+      searchBarState = searchBarState,
+      textFieldState = textFieldState,
+      onSearch = {
+        scope.launch { eventSink(BookmarksUiEvent.Search(textFieldState.text.toString())) }
+      },
+      placeholder = { Text(text = "Search") },
+      leadingIcon = {
+        if (searchBarState.isExpanded()) {
+          IconButton(onClick = { scope.launch { searchBarState.animateToCollapsed() } }) {
+            Icon(Icons.AutoMirrored.Default.ArrowBack, contentDescription = "Back")
           }
-        },
-        trailingIcon = {
-          if (searchBarState.isExpanded()) {
-            // Only show close button when there's text to clear
-            if (textFieldState.text.isNotEmpty()) {
-              IconButton(onClick = { textFieldState.clearText() }) {
-                Icon(imageVector = Icons.Default.Close, contentDescription = "Clear")
-              }
-            }
-          } else {
-            IconButton(onClick = { scope.launch { searchBarState.animateToExpanded() } }) {
-              Icon(imageVector = Icons.Default.FilterList, contentDescription = "Filters")
+        } else {
+          Icon(Icons.Default.Search, contentDescription = null)
+        }
+      },
+      trailingIcon = {
+        if (searchBarState.isExpanded()) {
+          // Only show close button when there's text to clear
+          if (textFieldState.text.isNotEmpty()) {
+            IconButton(onClick = { textFieldState.clearText() }) {
+              Icon(imageVector = Icons.Default.Close, contentDescription = "Clear")
             }
           }
-        },
-      )
-    }
+        } else {
+          IconButton(onClick = { scope.launch { searchBarState.animateToExpanded() } }) {
+            Icon(imageVector = Icons.Default.FilterList, contentDescription = "Filters")
+          }
+        }
+      },
+    )
+  }
 
   AppBarWithSearch(
     modifier = modifier,
@@ -144,32 +148,69 @@ fun SearchTopBar(
   }
 }
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 private fun SearchResultsContent(
   searchState: SearchUiState,
   eventSink: (BookmarksUiEvent) -> Unit,
   modifier: Modifier = Modifier,
 ) {
+  val actionableBookmark = remember { mutableStateOf<Bookmark?>(null) }
+
   ContentWithOverlays {
-    LazyColumn(modifier) {
-      item(key = searchState.filters.bookmarkCategory) {
-        FiltersBar(
-          selectedCategory = searchState.filters.bookmarkCategory,
-          onSelectCategory = { eventSink(SelectBookmarkCategory(it)) },
-          selectedTags = searchState.filters.selectedTags,
-          onSelectTag = { eventSink(SelectTag(it)) },
-          onRemoveTag = { eventSink(RemoveTag(it)) },
-          modifier = Modifier.fillMaxWidth().animateItem(),
-        )
-      }
-      when {
-        searchState.isIdle() -> SearchHistoryItems(searchState = searchState, eventSink = eventSink)
-        searchState.isLoading() -> SearchResultsLoading()
-        searchState.hasNoSearchResults() -> SearchResultsEmpty()
-        else -> SearchResultItems(
-          searchState = searchState,
-          openBookmark = { bookmark -> eventSink(Open(bookmark)) },
-        )
+    Box(modifier) {
+      ActionableBookmarkToolbar(
+        actionableBookmark = actionableBookmark,
+        editBookmark = { eventSink(BookmarksUiEvent.Edit(it)) },
+        toggleArchive = {
+          eventSink(
+            BookmarksUiEvent.ToggleArchive(
+              it,
+              BookmarkActionSource.Search,
+            ),
+          )
+        },
+        deleteBookmark = {
+          eventSink(
+            BookmarksUiEvent.Delete(
+              it, BookmarkActionSource.Search,
+            ),
+          )
+        },
+        modifier = Modifier.align(Alignment.BottomCenter).navigationBarsPadding()
+          .offset(y = -ScreenOffset).zIndex(1f),
+      )
+      LazyColumn(
+        Modifier.floatingToolbarVerticalNestedScroll(
+          expanded = actionableBookmark.value != null,
+          onExpand = { actionableBookmark.value = null },
+          onCollapse = { actionableBookmark.value = null },
+        ),
+      ) {
+        item(key = searchState.filters.bookmarkCategory) {
+          FiltersBar(
+            selectedCategory = searchState.filters.bookmarkCategory,
+            onSelectCategory = { eventSink(SelectBookmarkCategory(it)) },
+            selectedTags = searchState.filters.selectedTags,
+            onSelectTag = { eventSink(SelectTag(it)) },
+            onRemoveTag = { eventSink(RemoveTag(it)) },
+            modifier = Modifier.fillMaxWidth().animateItem(),
+          )
+        }
+        when {
+          searchState.isIdle() -> SearchHistoryItems(
+            searchState = searchState,
+            eventSink = eventSink,
+          )
+
+          searchState.isLoading() -> SearchResultsLoading()
+          searchState.hasNoSearchResults() -> SearchResultsEmpty()
+          else -> SearchResultItems(
+            searchState = searchState,
+            openBookmark = { bookmark -> eventSink(Open(bookmark)) },
+            toggleActions = { bookmark -> actionableBookmark.value = bookmark },
+          )
+        }
       }
     }
   }
@@ -178,16 +219,19 @@ private fun SearchResultsContent(
 private fun LazyListScope.SearchResultItems(
   searchState: SearchUiState,
   openBookmark: (Bookmark) -> Unit,
+  toggleActions: (Bookmark) -> Unit,
 ) {
-  items(count = searchState.results.itemCount, key = searchState.results.itemKey { it.id }) { index
-    ->
+  items(
+    count = searchState.results.itemCount,
+    key = searchState.results.itemKey { it.id },
+  ) { index ->
     val result = searchState.results[index]
-    if (result != null) {
+    if (result != null && !searchState.vacatedSearchItems.contains(result.id)) {
       BookmarkListItem(
         bookmark = result,
         selected = false,
         openBookmark = openBookmark,
-        toggleActions = { /* Not supported in search results */ },
+        toggleActions = toggleActions,
         modifier = Modifier.animateItem(),
       )
     }
