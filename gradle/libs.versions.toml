@@ -19,13 +19,12 @@ stately = "2.1.0"
 kotlinPoet = "2.2.0"
 kotest = "6.0.3"
 uuid = "0.8.4"
-metro = "0.6.6"
-
+ metro = "0.6.8"
 
 compileSdk = "36"
 minSdk = "30"
 targetSdk = "36"
-jvmToolchain = "24"
+jvmToolchain = "21"
 detektJvmTarget = "21"
 
 [plugins]

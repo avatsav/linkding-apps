@@ -19,7 +19,7 @@ Kotlin Multiplatform and Compose Multiplatform.
     - Configuration cache enabled with warnings
     - Parallel builds enabled
     - JVM args: `-Xmx4g -Dfile.encoding=UTF-8`
-    - Uses JVM Toolchain 24 (falls back to 22 for Kotlin compatibility)
+    - Uses JVM Toolchain 21
 
 ### Multiplatform Targets
 
