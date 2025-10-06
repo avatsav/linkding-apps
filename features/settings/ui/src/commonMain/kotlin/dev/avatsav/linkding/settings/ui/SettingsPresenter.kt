@@ -17,10 +17,10 @@ import dev.avatsav.linkding.ui.SettingsScreen
 import dev.avatsav.linkding.ui.UrlScreen
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
-import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.AssistedInject
 import kotlinx.coroutines.launch
 
-@Inject
+@AssistedInject
 class SettingsPresenter(
   @Assisted private val navigator: Navigator,
   private val settingsManager: SettingsManager,

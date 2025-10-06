@@ -132,8 +132,7 @@ fun PreferenceColumnScope.Preference(
 ) {
   Surface(
     modifier =
-      modifier.defaultMinSize(56.dp).clip(shape)
-        .onCondition(clickable) { clickable { onClick() } },
+      modifier.defaultMinSize(56.dp).clip(shape).onCondition(clickable) { clickable { onClick() } },
     shape = shape,
     tonalElevation = 8.dp,
   ) {

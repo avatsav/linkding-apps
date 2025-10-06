@@ -57,15 +57,16 @@ sealed interface BookmarksUiEvent : CircuitUiEvent {
 
   data class ToggleArchive(
     val bookmark: Bookmark,
-    val source: BookmarkActionSource = BookmarkActionSource.List
+    val source: BookmarkActionSource = BookmarkActionSource.List,
   ) : BookmarksUiEvent
 
   data class Delete(
     val bookmark: Bookmark,
-    val source: BookmarkActionSource = BookmarkActionSource.List
+    val source: BookmarkActionSource = BookmarkActionSource.List,
   ) : BookmarksUiEvent
 
   data class Edit(val bookmark: Bookmark) : BookmarksUiEvent
+
   data class Open(val bookmark: Bookmark) : BookmarksUiEvent
 
   data class SelectBookmarkCategory(val bookmarkCategory: BookmarkCategory) : BookmarksUiEvent
@@ -88,5 +89,6 @@ sealed interface BookmarksUiEvent : CircuitUiEvent {
 }
 
 enum class BookmarkActionSource {
-  List, Search
+  List,
+  Search,
 }

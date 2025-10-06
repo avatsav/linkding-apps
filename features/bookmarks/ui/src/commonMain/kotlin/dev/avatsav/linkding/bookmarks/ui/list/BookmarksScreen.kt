@@ -75,9 +75,7 @@ fun Bookmarks(state: BookmarksUiState, modifier: Modifier = Modifier) {
   val searchBarState = rememberSearchBarState()
   val actionableBookmark = remember { mutableStateOf<Bookmark?>(null) }
 
-  BackHandler(actionableBookmark.value != null) {
-    actionableBookmark.value = null
-  }
+  BackHandler(actionableBookmark.value != null) { actionableBookmark.value = null }
 
   LaunchedEffect(searchBarState) {
     if (searchBarState.isExpanded()) actionableBookmark.value = null
@@ -104,14 +102,17 @@ fun Bookmarks(state: BookmarksUiState, modifier: Modifier = Modifier) {
       }
     },
   ) { paddingValues ->
-    val refreshing by rememberUpdatedState(state.bookmarkList.bookmarks.loadState.refresh == LoadState.Loading)
+    val refreshing by
+      rememberUpdatedState(state.bookmarkList.bookmarks.loadState.refresh == LoadState.Loading)
     val pullToRefreshState = rememberPullToRefreshState()
     PullToRefreshBox(
-      modifier = Modifier.fillMaxSize().padding(
-        top = paddingValues.calculateTopPadding(),
-        start = paddingValues.calculateStartPadding(LayoutDirection.Ltr),
-        end = paddingValues.calculateEndPadding(LayoutDirection.Ltr),
-      ),
+      modifier =
+        Modifier.fillMaxSize()
+          .padding(
+            top = paddingValues.calculateTopPadding(),
+            start = paddingValues.calculateStartPadding(LayoutDirection.Ltr),
+            end = paddingValues.calculateEndPadding(LayoutDirection.Ltr),
+          ),
       isRefreshing = refreshing,
       onRefresh = { eventSink(Refresh) },
       state = pullToRefreshState,
@@ -123,22 +124,25 @@ fun Bookmarks(state: BookmarksUiState, modifier: Modifier = Modifier) {
         )
       },
     ) {
-
       ActionableBookmarkToolbar(
         actionableBookmark = actionableBookmark,
         editBookmark = { eventSink(BookmarksUiEvent.Edit(it)) },
         toggleArchive = { eventSink(BookmarksUiEvent.ToggleArchive(it)) },
         deleteBookmark = { eventSink(BookmarksUiEvent.Delete(it)) },
-        modifier = Modifier.align(Alignment.BottomCenter).navigationBarsPadding()
-          .offset(y = -ScreenOffset).zIndex(1f),
+        modifier =
+          Modifier.align(Alignment.BottomCenter)
+            .navigationBarsPadding()
+            .offset(y = -ScreenOffset)
+            .zIndex(1f),
       )
 
       LazyColumn(
-        modifier = Modifier.floatingToolbarVerticalNestedScroll(
-          expanded = actionableBookmark.value != null,
-          onExpand = { actionableBookmark.value = null },
-          onCollapse = { actionableBookmark.value = null },
-        ),
+        modifier =
+          Modifier.floatingToolbarVerticalNestedScroll(
+            expanded = actionableBookmark.value != null,
+            onExpand = { actionableBookmark.value = null },
+            onCollapse = { actionableBookmark.value = null },
+          ),
         state = rememberLazyListState(),
         contentPadding = PaddingValues(bottom = 108.dp),
       ) {
@@ -193,7 +197,7 @@ fun ActionableBookmarkToolbar(
             val bookmark = actionableBookmark.value ?: return@IconButton
             actionableBookmark.value = null
             toggleArchive(bookmark)
-          },
+          }
         ) {
           val bookmark = actionableBookmark.value ?: return@IconButton
           if (bookmark.archived) {
@@ -207,7 +211,7 @@ fun ActionableBookmarkToolbar(
             val bookmark = actionableBookmark.value ?: return@IconButton
             actionableBookmark.value = null
             deleteBookmark(bookmark)
-          },
+          }
         ) {
           Icon(Icons.Filled.Delete, contentDescription = "Delete bookmark")
         }
@@ -216,7 +220,7 @@ fun ActionableBookmarkToolbar(
             val bookmark = actionableBookmark.value ?: return@IconButton
             actionableBookmark.value = null
             editBookmark(bookmark)
-          },
+          }
         ) {
           Icon(Icons.Filled.Edit, contentDescription = "Edit bookmark")
         }

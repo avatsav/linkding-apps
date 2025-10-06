@@ -4,7 +4,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
@@ -47,13 +46,13 @@ import dev.avatsav.linkding.ui.circuit.produceRetainedState
 import dev.avatsav.linkding.ui.circuit.rememberRetainedCoroutineScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
-import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.AssistedInject
 import kotlin.time.Clock
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.launch
 
-@Inject
+@AssistedInject
 @Suppress("LongParameterList")
 class BookmarksPresenter(
   @Assisted private val navigator: Navigator,
@@ -82,79 +81,81 @@ class BookmarksPresenter(
     var bookmarkCategory by rememberRetained { mutableStateOf(BookmarkCategory.All) }
     val selectedTags = rememberRetained { mutableStateListOf<Tag>() }
 
-    val bookmarksFlow by produceRetainedState(emptyFlow()) {
-      observeBookmarks(
-        ObserveBookmarks.Param(
-          cached = true,
-          query = "",
-          category = BookmarkCategory.All,
-          tags = selectedTags,
-          pagingConfig = PagingConfig(initialLoadSize = 20, pageSize = 20),
-        ),
-      )
-      value = observeBookmarks.flow.cachedIn(presenterScope)
-    }
+    val bookmarksFlow by
+      produceRetainedState(emptyFlow()) {
+        observeBookmarks(
+          ObserveBookmarks.Param(
+            cached = true,
+            query = "",
+            category = BookmarkCategory.All,
+            tags = selectedTags,
+            pagingConfig = PagingConfig(initialLoadSize = 20, pageSize = 20),
+          )
+        )
+        value = observeBookmarks.flow.cachedIn(presenterScope)
+      }
     val bookmarks = bookmarksFlow.collectAsLazyPagingItems()
 
-    val searchResultsFlow by produceRetainedState(
-      emptyFlow(),
-      searchQuery,
-      bookmarkCategory,
-      selectedTags.size,
-    ) {
-      observeSearchResults(
-        ObserveSearchResults.Param(
-          query = searchQuery,
-          category = bookmarkCategory,
-          tags = selectedTags,
-          pagingConfig = PagingConfig(initialLoadSize = 20, pageSize = 20),
-        ),
-      )
-      value = observeSearchResults.flow.cachedIn(presenterScope)
-    }
+    val searchResultsFlow by
+      produceRetainedState(emptyFlow(), searchQuery, bookmarkCategory, selectedTags.size) {
+        observeSearchResults(
+          ObserveSearchResults.Param(
+            query = searchQuery,
+            category = bookmarkCategory,
+            tags = selectedTags,
+            pagingConfig = PagingConfig(initialLoadSize = 20, pageSize = 20),
+          )
+        )
+        value = observeSearchResults.flow.cachedIn(presenterScope)
+      }
 
     val searchResults = searchResultsFlow.collectAsLazyPagingItems()
     var vacatedSearchItems = rememberRetained { mutableStateListOf<Long>() }
 
-    val searchHistoryFlow by produceRetainedState(emptyFlow()) {
-      observeSearchHistory(ObserveSearchHistory.Params)
-      value = observeSearchHistory.flow
-    }
+    val searchHistoryFlow by
+      produceRetainedState(emptyFlow()) {
+        observeSearchHistory(ObserveSearchHistory.Params)
+        value = observeSearchHistory.flow
+      }
     val searchHistory by searchHistoryFlow.collectAsRetainedState(initial = emptyList())
 
     return BookmarksUiState(
       bookmarkList = BookmarkListUiState(bookmarks = bookmarks),
-      search = SearchUiState(
-        query = searchQuery,
-        results = searchResults,
-        vacatedSearchItems = vacatedSearchItems.toImmutableList(),
-        history = searchHistory.toImmutableList(),
-        filters = BookmarkFiltersUiState(
-          bookmarkCategory = bookmarkCategory,
-          selectedTags = selectedTags.toImmutableList(),
+      search =
+        SearchUiState(
+          query = searchQuery,
+          results = searchResults,
+          vacatedSearchItems = vacatedSearchItems.toImmutableList(),
+          history = searchHistory.toImmutableList(),
+          filters =
+            BookmarkFiltersUiState(
+              bookmarkCategory = bookmarkCategory,
+              selectedTags = selectedTags.toImmutableList(),
+            ),
         ),
-      ),
       eventSink = { event ->
         when (event) {
           is Refresh -> presenterScope.launch { bookmarks.refresh() }
 
-          is ToggleArchive -> presenterScope.launch {
-            if (event.bookmark.archived) {
-              unarchiveBookmark(event.bookmark.id)
-            } else {
-              archiveBookmark(event.bookmark.id)
+          is ToggleArchive ->
+            presenterScope.launch {
+              if (event.bookmark.archived) {
+                unarchiveBookmark(event.bookmark.id)
+              } else {
+                archiveBookmark(event.bookmark.id)
+              }
+              if (event.source == BookmarkActionSource.Search) {
+                vacatedSearchItems.add(event.bookmark.id)
+              }
             }
-            if (event.source == BookmarkActionSource.Search) {
-              vacatedSearchItems.add(event.bookmark.id)
-            }
-          }
 
-          is Delete -> presenterScope.launch {
-            deleteBookmark(event.bookmark.id)
-            if (event.source == BookmarkActionSource.Search) {
-              vacatedSearchItems.add(event.bookmark.id)
+          is Delete ->
+            presenterScope.launch {
+              deleteBookmark(event.bookmark.id)
+              if (event.source == BookmarkActionSource.Search) {
+                vacatedSearchItems.add(event.bookmark.id)
+              }
             }
-          }
 
           is Open -> navigator.goTo(UrlScreen(event.bookmark.url))
 
@@ -181,14 +182,15 @@ class BookmarksPresenter(
             if (event.query.isNotBlank()) {
               presenterScope.launch {
                 saveSearchState(
-                  param = SaveSearchState.Params(
-                    SearchHistory(
-                      query = event.query,
-                      bookmarkCategory = bookmarkCategory,
-                      selectedTags = selectedTags,
-                      timestamp = Clock.System.now(),
-                    ),
-                  ),
+                  param =
+                    SaveSearchState.Params(
+                      SearchHistory(
+                        query = event.query,
+                        bookmarkCategory = bookmarkCategory,
+                        selectedTags = selectedTags,
+                        timestamp = Clock.System.now(),
+                      )
+                    )
                 )
               }
             }

@@ -18,10 +18,10 @@ import dev.avatsav.linkding.ui.circuit.produceRetainedState
 import dev.avatsav.linkding.ui.circuit.rememberRetainedCoroutineScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
-import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.AssistedInject
 import kotlinx.coroutines.flow.emptyFlow
 
-@Inject
+@AssistedInject
 class TagsPresenter(
   @Assisted private val navigator: Navigator,
   @Assisted private val screen: TagsScreen,

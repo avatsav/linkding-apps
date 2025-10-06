@@ -1,7 +1,6 @@
 package dev.avatsav.linkding.bookmarks.ui.list
 
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
@@ -77,49 +76,51 @@ fun SearchTopBar(
   }
 
   LaunchedEffect(searchBarState, eventSink) {
-    snapshotFlow { searchBarState.currentValue }.collect { newValue ->
-      if (newValue == SearchBarValue.Collapsed) {
-        // Clear search when collapsing the search bar
-        eventSink(BookmarksUiEvent.ClearSearch)
-        textFieldState.clearText()
+    snapshotFlow { searchBarState.currentValue }
+      .collect { newValue ->
+        if (newValue == SearchBarValue.Collapsed) {
+          // Clear search when collapsing the search bar
+          eventSink(BookmarksUiEvent.ClearSearch)
+          textFieldState.clearText()
+        }
       }
-    }
   }
 
-  val inputField = @Composable {
-    SearchBarDefaults.InputField(
-      modifier = Modifier,
-      searchBarState = searchBarState,
-      textFieldState = textFieldState,
-      onSearch = {
-        scope.launch { eventSink(BookmarksUiEvent.Search(textFieldState.text.toString())) }
-      },
-      placeholder = { Text(text = "Search") },
-      leadingIcon = {
-        if (searchBarState.isExpanded()) {
-          IconButton(onClick = { scope.launch { searchBarState.animateToCollapsed() } }) {
-            Icon(Icons.AutoMirrored.Default.ArrowBack, contentDescription = "Back")
+  val inputField =
+    @Composable {
+      SearchBarDefaults.InputField(
+        modifier = Modifier,
+        searchBarState = searchBarState,
+        textFieldState = textFieldState,
+        onSearch = {
+          scope.launch { eventSink(BookmarksUiEvent.Search(textFieldState.text.toString())) }
+        },
+        placeholder = { Text(text = "Search") },
+        leadingIcon = {
+          if (searchBarState.isExpanded()) {
+            IconButton(onClick = { scope.launch { searchBarState.animateToCollapsed() } }) {
+              Icon(Icons.AutoMirrored.Default.ArrowBack, contentDescription = "Back")
+            }
+          } else {
+            Icon(Icons.Default.Search, contentDescription = null)
           }
-        } else {
-          Icon(Icons.Default.Search, contentDescription = null)
-        }
-      },
-      trailingIcon = {
-        if (searchBarState.isExpanded()) {
-          // Only show close button when there's text to clear
-          if (textFieldState.text.isNotEmpty()) {
-            IconButton(onClick = { textFieldState.clearText() }) {
-              Icon(imageVector = Icons.Default.Close, contentDescription = "Clear")
+        },
+        trailingIcon = {
+          if (searchBarState.isExpanded()) {
+            // Only show close button when there's text to clear
+            if (textFieldState.text.isNotEmpty()) {
+              IconButton(onClick = { textFieldState.clearText() }) {
+                Icon(imageVector = Icons.Default.Close, contentDescription = "Clear")
+              }
+            }
+          } else {
+            IconButton(onClick = { scope.launch { searchBarState.animateToExpanded() } }) {
+              Icon(imageVector = Icons.Default.FilterList, contentDescription = "Filters")
             }
           }
-        } else {
-          IconButton(onClick = { scope.launch { searchBarState.animateToExpanded() } }) {
-            Icon(imageVector = Icons.Default.FilterList, contentDescription = "Filters")
-          }
-        }
-      },
-    )
-  }
+        },
+      )
+    }
 
   AppBarWithSearch(
     modifier = modifier,
@@ -163,29 +164,21 @@ private fun SearchResultsContent(
         actionableBookmark = actionableBookmark,
         editBookmark = { eventSink(BookmarksUiEvent.Edit(it)) },
         toggleArchive = {
-          eventSink(
-            BookmarksUiEvent.ToggleArchive(
-              it,
-              BookmarkActionSource.Search,
-            ),
-          )
+          eventSink(BookmarksUiEvent.ToggleArchive(it, BookmarkActionSource.Search))
         },
-        deleteBookmark = {
-          eventSink(
-            BookmarksUiEvent.Delete(
-              it, BookmarkActionSource.Search,
-            ),
-          )
-        },
-        modifier = Modifier.align(Alignment.BottomCenter).navigationBarsPadding()
-          .offset(y = -ScreenOffset).zIndex(1f),
+        deleteBookmark = { eventSink(BookmarksUiEvent.Delete(it, BookmarkActionSource.Search)) },
+        modifier =
+          Modifier.align(Alignment.BottomCenter)
+            .navigationBarsPadding()
+            .offset(y = -ScreenOffset)
+            .zIndex(1f),
       )
       LazyColumn(
         Modifier.floatingToolbarVerticalNestedScroll(
           expanded = actionableBookmark.value != null,
           onExpand = { actionableBookmark.value = null },
           onCollapse = { actionableBookmark.value = null },
-        ),
+        )
       ) {
         item(key = searchState.filters.bookmarkCategory) {
           FiltersBar(
@@ -198,18 +191,17 @@ private fun SearchResultsContent(
           )
         }
         when {
-          searchState.isIdle() -> SearchHistoryItems(
-            searchState = searchState,
-            eventSink = eventSink,
-          )
+          searchState.isIdle() ->
+            SearchHistoryItems(searchState = searchState, eventSink = eventSink)
 
           searchState.isLoading() -> SearchResultsLoading()
           searchState.hasNoSearchResults() -> SearchResultsEmpty()
-          else -> SearchResultItems(
-            searchState = searchState,
-            openBookmark = { bookmark -> eventSink(Open(bookmark)) },
-            toggleActions = { bookmark -> actionableBookmark.value = bookmark },
-          )
+          else ->
+            SearchResultItems(
+              searchState = searchState,
+              openBookmark = { bookmark -> eventSink(Open(bookmark)) },
+              toggleActions = { bookmark -> actionableBookmark.value = bookmark },
+            )
         }
       }
     }
@@ -221,10 +213,8 @@ private fun LazyListScope.SearchResultItems(
   openBookmark: (Bookmark) -> Unit,
   toggleActions: (Bookmark) -> Unit,
 ) {
-  items(
-    count = searchState.results.itemCount,
-    key = searchState.results.itemKey { it.id },
-  ) { index ->
+  items(count = searchState.results.itemCount, key = searchState.results.itemKey { it.id }) { index
+    ->
     val result = searchState.results[index]
     if (result != null && !searchState.vacatedSearchItems.contains(result.id)) {
       BookmarkListItem(

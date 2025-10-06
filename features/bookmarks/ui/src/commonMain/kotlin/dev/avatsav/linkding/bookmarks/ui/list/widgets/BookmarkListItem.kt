@@ -22,13 +22,15 @@ fun BookmarkListItem(
 ) {
   Column(modifier) {
     BookmarkContent(
-      modifier = Modifier.background(
-        if (selected) MaterialTheme.colorScheme.primaryContainer
-        else MaterialTheme.colorScheme.surface,
-      ).combinedClickable(
-        onClick = { openBookmark(bookmark) },
-        onLongClick = { toggleActions(bookmark) },
-      ),
+      modifier =
+        Modifier.background(
+            if (selected) MaterialTheme.colorScheme.primaryContainer
+            else MaterialTheme.colorScheme.surface
+          )
+          .combinedClickable(
+            onClick = { openBookmark(bookmark) },
+            onLongClick = { toggleActions(bookmark) },
+          ),
       bookmark = bookmark,
     )
     HorizontalDivider(thickness = 0.5.dp)

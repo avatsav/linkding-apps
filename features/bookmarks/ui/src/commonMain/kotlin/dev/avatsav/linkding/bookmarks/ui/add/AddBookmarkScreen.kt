@@ -108,7 +108,7 @@ fun AddBookmark(state: AddBookmarkUiState, modifier: Modifier = Modifier) {
           supportingText = {
             if (state.checkUrlResult?.alreadyBookmarked == true) {
               Text(
-                text = "This URL is already bookmarked. Saving will update the existing bookmark.",
+                text = "This URL is already bookmarked. Saving will update the existing bookmark."
               )
             }
           },

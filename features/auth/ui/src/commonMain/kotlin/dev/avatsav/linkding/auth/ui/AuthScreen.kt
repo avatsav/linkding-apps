@@ -83,8 +83,8 @@ fun AuthScreen(state: AuthUiState, modifier: Modifier = Modifier) {
         verticalArrangement = Arrangement.spacedBy(12.dp),
       ) {
         Text(
-                text =
-                        "Configure settings, so that the app can communicate with your linkding installation.",
+          text =
+            "Configure settings, so that the app can communicate with your linkding installation."
         )
         OutlinedTextField(
           modifier = Modifier.fillMaxWidth(),
