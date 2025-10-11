@@ -14,4 +14,5 @@ plugins {
   alias(libs.plugins.ktfmt) apply false
   alias(libs.plugins.detekt) apply false
   alias(libs.plugins.metro) apply false
+  alias(libs.plugins.gradleVersions) apply false
 }

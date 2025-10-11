@@ -12,6 +12,7 @@ dependencies {
   compileOnly(libs.ktfmt.gradlePlugin)
   compileOnly(libs.detekt.gradlePlugin)
   compileOnly(libs.metro.gradlePlugin)
+  compileOnly(libs.gradleVersions.gradlePlugin)
 }
 
 java { toolchain { languageVersion.set(JavaLanguageVersion.of(libs.versions.jvmToolchain.get())) } }

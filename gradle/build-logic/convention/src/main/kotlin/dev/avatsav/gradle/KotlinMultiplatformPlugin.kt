@@ -13,6 +13,7 @@ class KotlinMultiplatformPlugin : Plugin<Project> {
       with(pluginManager) {
         apply("org.jetbrains.kotlin.multiplatform")
         apply("dev.zacsweers.metro")
+        apply("com.github.ben-manes.versions")
       }
 
       extensions.configure<KotlinMultiplatformExtension> {
