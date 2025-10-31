@@ -1,14 +1,5 @@
 package dev.avatsav.linkding.bookmarks.ui.list
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.EnterTransition
-import androidx.compose.animation.ExitTransition
-import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.spring
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
@@ -27,6 +18,7 @@ import androidx.compose.material.icons.filled.Unarchive
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.FloatingToolbarDefaults
 import androidx.compose.material3.FloatingToolbarDefaults.ScreenOffset
 import androidx.compose.material3.FloatingToolbarDefaults.floatingToolbarVerticalNestedScroll
@@ -34,13 +26,16 @@ import androidx.compose.material3.HorizontalFloatingToolbar
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.material3.rememberSearchBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -55,13 +50,14 @@ import androidx.compose.ui.zIndex
 import androidx.paging.LoadState
 import androidx.paging.compose.itemKey
 import com.slack.circuit.codegen.annotations.CircuitInject
-import dev.avatsav.linkding.bookmarks.ui.list.BookmarksUiEvent.AddBookmark
-import dev.avatsav.linkding.bookmarks.ui.list.BookmarksUiEvent.Open
-import dev.avatsav.linkding.bookmarks.ui.list.BookmarksUiEvent.Refresh
+import dev.avatsav.linkding.bookmarks.ui.list.feed.BookmarkListUiEvent
 import dev.avatsav.linkding.bookmarks.ui.list.widgets.BookmarkListItem
 import dev.avatsav.linkding.data.model.Bookmark
 import dev.avatsav.linkding.inject.UserScope
 import dev.avatsav.linkding.ui.BookmarksScreen
+import dev.avatsav.linkding.ui.compose.appearFromBottom
+import dev.avatsav.linkding.ui.compose.disappearToBottom
+import dev.avatsav.linkding.ui.compose.widgets.AnimatedVisibilityWithElevation
 
 @CircuitInject(BookmarksScreen::class, UserScope::class)
 @OptIn(
@@ -71,9 +67,9 @@ import dev.avatsav.linkding.ui.BookmarksScreen
 )
 @Composable
 fun Bookmarks(state: BookmarksUiState, modifier: Modifier = Modifier) {
-  val eventSink = state.eventSink
   val searchBarState = rememberSearchBarState()
   val actionableBookmark = remember { mutableStateOf<Bookmark?>(null) }
+  val snackbarHostState = remember { SnackbarHostState() }
 
   BackHandler(actionableBookmark.value != null) { actionableBookmark.value = null }
 
@@ -81,29 +77,54 @@ fun Bookmarks(state: BookmarksUiState, modifier: Modifier = Modifier) {
     if (searchBarState.isExpanded()) actionableBookmark.value = null
   }
 
+  // Handle snackbar messages
+  LaunchedEffect(state.feedState.snackbarMessage) {
+    state.feedState.snackbarMessage?.let { message ->
+      val result =
+        snackbarHostState.showSnackbar(
+          message = message.message,
+          actionLabel = message.actionLabel,
+          duration = SnackbarDuration.Short,
+        )
+
+      when (result) {
+        SnackbarResult.ActionPerformed -> {
+          message.onAction?.invoke()
+        }
+        SnackbarResult.Dismissed -> {
+          state.feedState.eventSink(BookmarkListUiEvent.DismissSnackbar)
+        }
+      }
+    }
+  }
+
   Scaffold(
     modifier = modifier,
+    snackbarHost = { SnackbarHost(snackbarHostState) },
     topBar = {
       SearchTopBar(
         searchBarState = searchBarState,
-        searchState = state.search,
-        eventSink = eventSink,
+        searchState = state.searchState,
+        onShowSettings = { state.eventSink(BookmarksUiEvent.ShowSettings) },
       )
     },
     floatingActionButton = {
-      AnimatedVisibility(
+      AnimatedVisibilityWithElevation(
         visible = actionableBookmark.value == null && searchBarState.isCollapsed(),
         enter = appearFromBottom(),
         exit = disappearToBottom(),
-      ) {
-        FloatingActionButton(onClick = { eventSink(AddBookmark) }) {
+      ) { elevation ->
+        FloatingActionButton(
+          onClick = { state.eventSink(BookmarksUiEvent.AddBookmark) },
+          elevation = FloatingActionButtonDefaults.elevation(defaultElevation = elevation),
+        ) {
           Icon(imageVector = Icons.Filled.Add, contentDescription = "Add bookmark")
         }
       }
     },
   ) { paddingValues ->
     val refreshing by
-      rememberUpdatedState(state.bookmarkList.bookmarks.loadState.refresh == LoadState.Loading)
+      rememberUpdatedState(state.feedState.bookmarks.loadState.refresh == LoadState.Loading)
     val pullToRefreshState = rememberPullToRefreshState()
     PullToRefreshBox(
       modifier =
@@ -114,7 +135,7 @@ fun Bookmarks(state: BookmarksUiState, modifier: Modifier = Modifier) {
             end = paddingValues.calculateEndPadding(LayoutDirection.Ltr),
           ),
       isRefreshing = refreshing,
-      onRefresh = { eventSink(Refresh) },
+      onRefresh = { state.feedState.eventSink(BookmarkListUiEvent.Refresh) },
       state = pullToRefreshState,
       indicator = {
         PullToRefreshDefaults.LoadingIndicator(
@@ -125,10 +146,11 @@ fun Bookmarks(state: BookmarksUiState, modifier: Modifier = Modifier) {
       },
     ) {
       ActionableBookmarkToolbar(
-        actionableBookmark = actionableBookmark,
-        editBookmark = { eventSink(BookmarksUiEvent.Edit(it)) },
-        toggleArchive = { eventSink(BookmarksUiEvent.ToggleArchive(it)) },
-        deleteBookmark = { eventSink(BookmarksUiEvent.Delete(it)) },
+        actionableBookmark = actionableBookmark.value,
+        onDismiss = { actionableBookmark.value = null },
+        editBookmark = { state.feedState.eventSink(BookmarkListUiEvent.Edit(it)) },
+        toggleArchive = { state.feedState.eventSink(BookmarkListUiEvent.ToggleArchive(it)) },
+        deleteBookmark = { state.feedState.eventSink(BookmarkListUiEvent.Delete(it)) },
         modifier =
           Modifier.align(Alignment.BottomCenter)
             .navigationBarsPadding()
@@ -147,21 +169,21 @@ fun Bookmarks(state: BookmarksUiState, modifier: Modifier = Modifier) {
         contentPadding = PaddingValues(bottom = 108.dp),
       ) {
         items(
-          count = state.bookmarkList.bookmarks.itemCount,
-          key = state.bookmarkList.bookmarks.itemKey { it.id },
+          count = state.feedState.bookmarks.itemCount,
+          key = state.feedState.bookmarks.itemKey { it.id },
         ) { index ->
-          val bookmark = state.bookmarkList.bookmarks[index]
+          val bookmark = state.feedState.bookmarks[index]
           if (bookmark != null) {
             BookmarkListItem(
               modifier = Modifier.animateItem(),
               bookmark = bookmark,
-              selected = actionableBookmark == bookmark,
+              selected = actionableBookmark.value == bookmark,
               openBookmark = { toOpen ->
                 if (actionableBookmark == toOpen) {
                   actionableBookmark.value = null
                 } else {
                   actionableBookmark.value = null
-                  eventSink(Open(toOpen))
+                  state.feedState.eventSink(BookmarkListUiEvent.Open(toOpen))
                 }
               },
               toggleActions = { bookmark -> actionableBookmark.value = bookmark },
@@ -176,30 +198,32 @@ fun Bookmarks(state: BookmarksUiState, modifier: Modifier = Modifier) {
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun ActionableBookmarkToolbar(
-  actionableBookmark: MutableState<Bookmark?>,
+  actionableBookmark: Bookmark?,
+  onDismiss: () -> Unit,
   editBookmark: (Bookmark) -> Unit,
   toggleArchive: (Bookmark) -> Unit,
   deleteBookmark: (Bookmark) -> Unit,
-  modifier: Modifier,
+  modifier: Modifier = Modifier,
 ) {
-  AnimatedVisibility(
+  AnimatedVisibilityWithElevation(
+    visible = actionableBookmark != null,
     modifier = modifier,
-    visible = actionableBookmark.value != null,
     enter = appearFromBottom(),
     exit = disappearToBottom(),
-  ) {
+  ) { elevation ->
     HorizontalFloatingToolbar(
       expanded = true,
       colors = FloatingToolbarDefaults.vibrantFloatingToolbarColors(),
+      expandedShadowElevation = elevation,
       content = {
         IconButton(
           onClick = {
-            val bookmark = actionableBookmark.value ?: return@IconButton
-            actionableBookmark.value = null
+            val bookmark = actionableBookmark ?: return@IconButton
+            onDismiss()
             toggleArchive(bookmark)
           }
         ) {
-          val bookmark = actionableBookmark.value ?: return@IconButton
+          val bookmark = actionableBookmark ?: return@IconButton
           if (bookmark.archived) {
             Icon(Icons.Filled.Unarchive, contentDescription = "Unarchive bookmark")
           } else {
@@ -208,8 +232,8 @@ fun ActionableBookmarkToolbar(
         }
         IconButton(
           onClick = {
-            val bookmark = actionableBookmark.value ?: return@IconButton
-            actionableBookmark.value = null
+            val bookmark = actionableBookmark ?: return@IconButton
+            onDismiss()
             deleteBookmark(bookmark)
           }
         ) {
@@ -217,8 +241,8 @@ fun ActionableBookmarkToolbar(
         }
         IconButton(
           onClick = {
-            val bookmark = actionableBookmark.value ?: return@IconButton
-            actionableBookmark.value = null
+            val bookmark = actionableBookmark ?: return@IconButton
+            onDismiss()
             editBookmark(bookmark)
           }
         ) {
@@ -228,9 +252,3 @@ fun ActionableBookmarkToolbar(
     )
   }
 }
-
-fun appearFromBottom(): EnterTransition =
-  slideInVertically(spring(Spring.DampingRatioMediumBouncy)) { it / 2 } + fadeIn()
-
-fun disappearToBottom(): ExitTransition =
-  slideOutVertically(spring(Spring.DampingRatioMediumBouncy)) { it / 2 } + fadeOut()

@@ -35,9 +35,9 @@ import dev.avatsav.linkding.data.model.SearchHistory
 @Composable
 fun SearchHistoryItem(
   searchHistory: SearchHistory,
-  shape: Shape = MaterialTheme.shapes.medium,
   onClick: () -> Unit,
   modifier: Modifier = Modifier,
+  shape: Shape = MaterialTheme.shapes.medium,
 ) {
   Surface(
     modifier = modifier.padding(horizontal = 12.dp, vertical = 1.dp),

@@ -21,10 +21,10 @@ import dev.avatsav.linkding.inject.UserScope
 import dev.avatsav.linkding.ui.AddBookmarkScreen
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
-import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.AssistedInject
 import kotlinx.coroutines.launch
 
-@Inject
+@AssistedInject
 class AddBookmarkPresenter(
   @Assisted private val screen: AddBookmarkScreen,
   @Assisted private val navigator: Navigator,
