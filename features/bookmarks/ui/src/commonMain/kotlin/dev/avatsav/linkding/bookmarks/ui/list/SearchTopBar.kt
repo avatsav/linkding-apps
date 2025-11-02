@@ -46,6 +46,7 @@ import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.paging.compose.itemKey
+import com.slack.circuit.overlay.ContentWithOverlays
 import dev.avatsav.linkding.bookmarks.ui.list.search.BookmarkSearchUiEvent
 import dev.avatsav.linkding.bookmarks.ui.list.search.BookmarkSearchUiState
 import dev.avatsav.linkding.bookmarks.ui.list.widgets.BookmarkListItem
@@ -188,54 +189,56 @@ private fun SearchResultsContent(
     }
   }
 
-  Scaffold(snackbarHost = { SnackbarHost(snackbarHostState) }, modifier = modifier) { paddingValues
-    ->
-    Box(Modifier.fillMaxSize()) {
-      ActionableBookmarkToolbar(
-        actionableBookmark = actionableBookmark.value,
-        onDismiss = { actionableBookmark.value = null },
-        editBookmark = { searchState.eventSink(BookmarkSearchUiEvent.Edit(it)) },
-        toggleArchive = { searchState.eventSink(BookmarkSearchUiEvent.ToggleArchive(it)) },
-        deleteBookmark = { searchState.eventSink(BookmarkSearchUiEvent.Delete(it)) },
-        modifier =
-          Modifier.align(Alignment.BottomCenter)
-            .navigationBarsPadding()
-            .offset(y = -ScreenOffset)
-            .zIndex(1f),
-      )
-      LazyColumn(
-        Modifier.floatingToolbarVerticalNestedScroll(
-          expanded = actionableBookmark.value != null,
-          onExpand = { actionableBookmark.value = null },
-          onCollapse = { actionableBookmark.value = null },
+  ContentWithOverlays {
+    Scaffold(snackbarHost = { SnackbarHost(snackbarHostState) }, modifier = modifier) {
+      paddingValues ->
+      Box(Modifier.fillMaxSize()) {
+        ActionableBookmarkToolbar(
+          actionableBookmark = actionableBookmark.value,
+          onDismiss = { actionableBookmark.value = null },
+          editBookmark = { searchState.eventSink(BookmarkSearchUiEvent.Edit(it)) },
+          toggleArchive = { searchState.eventSink(BookmarkSearchUiEvent.ToggleArchive(it)) },
+          deleteBookmark = { searchState.eventSink(BookmarkSearchUiEvent.Delete(it)) },
+          modifier =
+            Modifier.align(Alignment.BottomCenter)
+              .navigationBarsPadding()
+              .offset(y = -ScreenOffset)
+              .zIndex(1f),
         )
-      ) {
-        item(key = searchState.filters.bookmarkCategory) {
-          FiltersBar(
-            selectedCategory = searchState.filters.bookmarkCategory,
-            onSelectCategory = {
-              searchState.eventSink(BookmarkSearchUiEvent.SelectBookmarkCategory(it))
-            },
-            selectedTags = searchState.filters.selectedTags,
-            onSelectTag = { searchState.eventSink(BookmarkSearchUiEvent.SelectTag(it)) },
-            onRemoveTag = { searchState.eventSink(BookmarkSearchUiEvent.RemoveTag(it)) },
-            modifier = Modifier.fillMaxWidth().animateItem(),
+        LazyColumn(
+          Modifier.floatingToolbarVerticalNestedScroll(
+            expanded = actionableBookmark.value != null,
+            onExpand = { actionableBookmark.value = null },
+            onCollapse = { actionableBookmark.value = null },
           )
-        }
-        when {
-          searchState.isIdle() -> searchHistoryItems(searchState = searchState)
-
-          searchState.isLoading() -> searchResultsLoading()
-          searchState.hasNoSearchResults() -> searchResultsEmpty()
-          else ->
-            searchResultItems(
-              searchState = searchState,
-              isSelected = { bookmark -> actionableBookmark.value == bookmark },
-              openBookmark = { bookmark ->
-                searchState.eventSink(BookmarkSearchUiEvent.Open(bookmark))
+        ) {
+          item(key = searchState.filters.bookmarkCategory) {
+            FiltersBar(
+              selectedCategory = searchState.filters.bookmarkCategory,
+              onSelectCategory = {
+                searchState.eventSink(BookmarkSearchUiEvent.SelectBookmarkCategory(it))
               },
-              toggleActions = { bookmark -> actionableBookmark.value = bookmark },
+              selectedTags = searchState.filters.selectedTags,
+              onSelectTag = { searchState.eventSink(BookmarkSearchUiEvent.SelectTag(it)) },
+              onRemoveTag = { searchState.eventSink(BookmarkSearchUiEvent.RemoveTag(it)) },
+              modifier = Modifier.fillMaxWidth().animateItem(),
             )
+          }
+          when {
+            searchState.isIdle() -> searchHistoryItems(searchState = searchState)
+
+            searchState.isLoading() -> searchResultsLoading()
+            searchState.hasNoSearchResults() -> searchResultsEmpty()
+            else ->
+              searchResultItems(
+                searchState = searchState,
+                isSelected = { bookmark -> actionableBookmark.value == bookmark },
+                openBookmark = { bookmark ->
+                  searchState.eventSink(BookmarkSearchUiEvent.Open(bookmark))
+                },
+                toggleActions = { bookmark -> actionableBookmark.value = bookmark },
+              )
+          }
         }
       }
     }
