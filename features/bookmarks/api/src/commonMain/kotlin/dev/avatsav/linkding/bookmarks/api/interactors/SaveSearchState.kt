@@ -18,12 +18,12 @@ class SaveSearchState(private val repository: SearchHistoryRepository) :
   Interactor<SaveSearchState.Params, Unit, Nothing>() {
 
   /** Saves a search state if it has a non-empty query. Doesn't save empty searches. */
-  override suspend fun doWork(params: Params): Result<Unit, Nothing> {
+  override suspend fun doWork(param: Params): Result<Unit, Nothing> {
     // Only save non-empty queries
-    if (params.searchHistory.query.isBlank()) return Ok(Unit)
+    if (param.searchHistory.query.isBlank()) return Ok(Unit)
 
     return withContext(Dispatchers.Default) {
-      repository.saveSearchHistory(params.searchHistory)
+      repository.saveSearchHistory(param.searchHistory)
       Ok(Unit)
     }
   }

@@ -14,7 +14,7 @@ class ClearSearchHistory(private val repository: SearchHistoryRepository) :
   Interactor<ClearSearchHistory.Params, Unit, Nothing>() {
 
   /** Clears all saved search history. */
-  override suspend fun doWork(params: Params): Result<Unit, Nothing> =
+  override suspend fun doWork(param: Params): Result<Unit, Nothing> =
     withContext(Dispatchers.Default) {
       repository.clearSearchHistory()
       Ok(Unit)

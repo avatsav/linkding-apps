@@ -1,3 +1,6 @@
+import kotlin.jvm.java
+import org.gradle.kotlin.dsl.libs
+
 plugins {
   alias(libs.plugins.android.application) apply false
   alias(libs.plugins.android.library) apply false
@@ -15,4 +18,9 @@ plugins {
   alias(libs.plugins.detekt) apply false
   alias(libs.plugins.metro) apply false
   alias(libs.plugins.gradleVersions) apply false
+}
+
+/** https://github.com/gradle/gradle/issues/33619 */
+subprojects {
+  tasks.withType(Test::class.java).configureEach { failOnNoDiscoveredTests.set(false) }
 }
