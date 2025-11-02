@@ -14,7 +14,7 @@ kotlin {
       implementation(projects.ui.circuit)
       implementation(projects.ui.compose)
       implementation(compose.foundation)
-      implementation(compose.material3)
+      implementation(libs.compose.m3expressive)
       implementation(compose.components.resources)
       implementation(projects.features.auth.api)
       api(projects.ui.theme)

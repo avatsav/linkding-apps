@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
@@ -11,9 +12,10 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.LargeTopAppBar
+import androidx.compose.material3.LargeFlexibleTopAppBar
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
@@ -41,16 +43,16 @@ import dev.avatsav.linkding.settings.ui.SettingsUiEvent.ShowPrivacyPolicy
 import dev.avatsav.linkding.settings.ui.SettingsUiEvent.ShowSourceCode
 import dev.avatsav.linkding.settings.ui.SettingsUiEvent.ToggleUseDynamicColors
 import dev.avatsav.linkding.settings.ui.widgets.Preference
-import dev.avatsav.linkding.settings.ui.widgets.PreferenceDefaults
 import dev.avatsav.linkding.settings.ui.widgets.PreferenceSection
 import dev.avatsav.linkding.settings.ui.widgets.SwitchPreference
 import dev.avatsav.linkding.settings.ui.widgets.ThemePreference
 import dev.avatsav.linkding.ui.SettingsScreen
 import dev.avatsav.linkding.ui.circuit.alertDialogOverlay
+import dev.avatsav.linkding.ui.theme.Material3ShapeDefaults
 import kotlinx.coroutines.launch
 
 @CircuitInject(SettingsScreen::class, UserScope::class)
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3ExpressiveApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun Settings(state: SettingsUiState, modifier: Modifier = Modifier) {
   val eventSink = state.eventSink
@@ -62,7 +64,7 @@ fun Settings(state: SettingsUiState, modifier: Modifier = Modifier) {
   Scaffold(
     modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
     topBar = {
-      LargeTopAppBar(
+      LargeFlexibleTopAppBar(
         title = { Text(text = "Settings") },
         scrollBehavior = scrollBehavior,
         navigationIcon = {
@@ -77,7 +79,7 @@ fun Settings(state: SettingsUiState, modifier: Modifier = Modifier) {
     },
   ) { paddingValues ->
     LazyColumn(
-      contentPadding = PaddingValues(start = 16.dp, end = 16.dp, bottom = 16.dp),
+      contentPadding = PaddingValues(horizontal = 12.dp, vertical = 12.dp),
       modifier =
         Modifier.fillMaxWidth()
           .padding(
@@ -125,17 +127,17 @@ private const val LinkdingSettingsCount = 3
 private fun LinkdingSettings(state: SettingsUiState, onResetClick: () -> Unit) {
   PreferenceSection("Linkding", modifier = Modifier.padding(vertical = 8.dp)) {
     Preference(
-      shape = PreferenceDefaults.itemShape(0, LinkdingSettingsCount),
+      shape = Material3ShapeDefaults.itemShape(0, LinkdingSettingsCount),
       title = "Host Url",
       description = state.apiConfig?.hostUrl,
     )
     Preference(
-      shape = PreferenceDefaults.itemShape(1, LinkdingSettingsCount),
+      shape = Material3ShapeDefaults.itemShape(1, LinkdingSettingsCount),
       title = "API Key",
       description = state.apiConfig?.apiKey,
     )
     Preference(
-      shape = PreferenceDefaults.itemShape(2, LinkdingSettingsCount),
+      shape = Material3ShapeDefaults.itemShape(2, LinkdingSettingsCount),
       title = "Reset",
       clickable = true,
       onClick = onResetClick,
@@ -155,12 +157,12 @@ private fun AppearanceSettings(
 
   PreferenceSection("Appearance", modifier = Modifier.padding(vertical = 8.dp)) {
     ThemePreference(
-      shape = PreferenceDefaults.itemShape(0, AppearanceSettingsCount),
+      shape = Material3ShapeDefaults.itemShape(0, AppearanceSettingsCount),
       selected = state.appTheme,
       onSelect = onAppThemeChange,
     )
     SwitchPreference(
-      shape = PreferenceDefaults.itemShape(1, AppearanceSettingsCount),
+      shape = Material3ShapeDefaults.itemShape(1, AppearanceSettingsCount),
       title = "Dynamic colours",
       description = "Colors adapt to your wallpaper",
       checked = state.useDynamicColors,
@@ -181,25 +183,24 @@ private fun AboutSettings(
 ) {
   PreferenceSection("About", modifier = Modifier.padding(vertical = 8.dp)) {
     Preference(
-      shape = PreferenceDefaults.itemShape(0, AboutSettingsCount),
+      shape = Material3ShapeDefaults.itemShape(0, AboutSettingsCount),
       title = "Version",
       description = state.appInfo.version,
     )
     Preference(
-      shape = PreferenceDefaults.itemShape(1, AboutSettingsCount),
+      shape = Material3ShapeDefaults.itemShape(1, AboutSettingsCount),
       title = "Source code",
-      description = "Appding repository on Github",
       clickable = true,
       onClick = onSourceCodeClick,
     )
     Preference(
-      shape = PreferenceDefaults.itemShape(2, AboutSettingsCount),
+      shape = Material3ShapeDefaults.itemShape(2, AboutSettingsCount),
       title = "Open Source licenses",
       clickable = true,
       onClick = onLicensesClick,
     )
     Preference(
-      shape = PreferenceDefaults.itemShape(3, AboutSettingsCount),
+      shape = Material3ShapeDefaults.itemShape(3, AboutSettingsCount),
       title = "Privacy policy",
       clickable = true,
       onClick = onPrivacyPolicyClick,
@@ -212,7 +213,7 @@ private fun MadeInMunich() {
   Text(
     text = "Made with \uD83E\uDD68 in München",
     style = MaterialTheme.typography.bodyMedium,
-    modifier = Modifier.fillMaxWidth().padding(vertical = 16.dp),
+    modifier = Modifier.fillMaxWidth().padding(vertical = 16.dp).navigationBarsPadding(),
     textAlign = TextAlign.Center,
   )
 }

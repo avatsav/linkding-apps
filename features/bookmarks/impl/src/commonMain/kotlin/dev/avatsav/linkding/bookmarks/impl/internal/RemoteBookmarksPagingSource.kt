@@ -13,10 +13,10 @@ import dev.avatsav.linkding.data.model.Bookmark
 import dev.avatsav.linkding.data.model.BookmarkCategory
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
-import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.AssistedInject
 import kotlinx.coroutines.withContext
 
-@Inject
+@AssistedInject
 class RemoteBookmarksPagingSource(
   @Assisted private val query: String,
   @Assisted private val category: BookmarkCategory,

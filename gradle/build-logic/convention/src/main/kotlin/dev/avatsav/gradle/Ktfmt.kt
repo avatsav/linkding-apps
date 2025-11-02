@@ -5,7 +5,7 @@ import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure
 
 internal fun Project.configureKtfmt() {
-  // Skip Spotless for thirdparty module
+  // Skip ktfmt for thirdparty module
   if (path.startsWith(":thirdparty")) return
 
   pluginManager.apply("com.ncorti.ktfmt.gradle")
@@ -13,6 +13,5 @@ internal fun Project.configureKtfmt() {
   configure<KtfmtExtension> {
     googleStyle()
     removeUnusedImports.set(true)
-    manageTrailingCommas.set(true)
   }
 }

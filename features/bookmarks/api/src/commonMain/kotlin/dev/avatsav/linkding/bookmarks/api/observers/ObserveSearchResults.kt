@@ -16,7 +16,7 @@ class ObserveSearchResults(private val repository: BookmarksRepository) :
   PagedObserver<ObserveSearchResults.Param, Bookmark>() {
 
   override fun createObservable(params: Param): Flow<PagingData<Bookmark>> {
-    if (params.query.isBlank()) return flowOf(PagingData.empty())
+    if (!params.hasQueryOrFilters()) return flowOf(PagingData.empty())
     return repository.getBookmarksPaged(
       cached = false,
       pagingConfig = params.pagingConfig,
@@ -31,5 +31,8 @@ class ObserveSearchResults(private val repository: BookmarksRepository) :
     val category: BookmarkCategory,
     val tags: List<Tag>,
     override val pagingConfig: PagingConfig,
-  ) : PagedObserver.Param<Bookmark>
+  ) : PagedObserver.Param<Bookmark> {
+    fun hasQueryOrFilters(): Boolean =
+      query.isNotBlank() || category != BookmarkCategory.All || tags.isNotEmpty()
+  }
 }

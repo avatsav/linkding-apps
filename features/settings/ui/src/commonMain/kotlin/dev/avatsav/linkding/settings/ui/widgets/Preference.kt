@@ -14,31 +14,33 @@ import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.CornerBasedShape
-import androidx.compose.foundation.shape.CornerSize
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AutoMode
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material.icons.filled.LightMode
+import androidx.compose.material3.ButtonGroupDefaults
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.SegmentedButton
-import androidx.compose.material3.SegmentedButtonDefaults
-import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.surfaceColorAtElevation
+import androidx.compose.material3.ToggleButton
+import androidx.compose.material3.ToggleButtonDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.role
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import dev.avatsav.linkding.data.model.prefs.AppTheme
@@ -57,11 +59,31 @@ fun PreferenceColumnScope.SwitchPreference(
     title = title,
     description = description,
     shape = shape,
-    control = { Switch(checked = checked, onCheckedChange = { onCheckedChange() }) },
+    control = {
+      Switch(
+        checked = checked,
+        onCheckedChange = { onCheckedChange() },
+        thumbContent = {
+          if (checked)
+            Icon(
+              imageVector = Icons.Filled.Check,
+              contentDescription = null,
+              modifier = Modifier.size(SwitchDefaults.IconSize),
+            )
+          else
+            Icon(
+              imageVector = Icons.Filled.Close,
+              contentDescription = null,
+              modifier = Modifier.size(SwitchDefaults.IconSize),
+            )
+        },
+      )
+    },
     modifier = modifier,
   )
 }
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun PreferenceColumnScope.ThemePreference(
   shape: Shape,
@@ -70,32 +92,25 @@ fun PreferenceColumnScope.ThemePreference(
   modifier: Modifier = Modifier,
 ) {
   val options = AppTheme.entries
-  Preference(title = "Theme", description = selected.name, shape = shape, modifier = modifier) {
-    SingleChoiceSegmentedButtonRow {
+  Preference(title = "Theme", shape = shape, modifier = modifier) {
+    Row(horizontalArrangement = Arrangement.spacedBy(ButtonGroupDefaults.ConnectedSpaceBetween)) {
       options.forEachIndexed { index, theme ->
-        SegmentedButton(
-          shape = SegmentedButtonDefaults.itemShape(index = index, count = options.size),
-          onClick = { onSelect(theme) },
-          icon = {},
-          selected = theme == selected,
-          colors =
-            SegmentedButtonDefaults.colors()
-              .copy(
-                activeContainerColor = MaterialTheme.colorScheme.primary,
-                activeContentColor = MaterialTheme.colorScheme.onPrimary,
-                activeBorderColor = MaterialTheme.colorScheme.primary,
-                inactiveBorderColor = MaterialTheme.colorScheme.outline,
-              ),
+        ToggleButton(
+          checked = theme == selected,
+          onCheckedChange = { onSelect(theme) },
+          modifier = Modifier.semantics { role = Role.RadioButton },
+          shapes =
+            when (index) {
+              0 -> ButtonGroupDefaults.connectedLeadingButtonShapes()
+              options.lastIndex -> ButtonGroupDefaults.connectedTrailingButtonShapes()
+              else -> ButtonGroupDefaults.connectedMiddleButtonShapes()
+            },
         ) {
-          Icon(
-            imageVector =
-              when (theme) {
-                AppTheme.System -> Icons.Default.AutoMode
-                AppTheme.Light -> Icons.Default.LightMode
-                AppTheme.Dark -> Icons.Default.DarkMode
-              },
-            contentDescription = theme.name,
-          )
+          Icon(imageVector = theme.icon(), contentDescription = theme.name)
+          if (theme == selected) {
+            Spacer(Modifier.size(ToggleButtonDefaults.IconSpacing))
+            Text(theme.name)
+          }
         }
       }
     }
@@ -104,6 +119,7 @@ fun PreferenceColumnScope.ThemePreference(
 
 private const val PreferenceAnimationDuration = 220
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun PreferenceColumnScope.Preference(
   title: String,
@@ -116,17 +132,13 @@ fun PreferenceColumnScope.Preference(
 ) {
   Surface(
     modifier =
-      modifier.defaultMinSize(minHeight = PreferenceDefaults.MinHeight).clip(shape).onCondition(
-        clickable
-      ) {
-        clickable { onClick() }
-      },
+      modifier.defaultMinSize(56.dp).clip(shape).onCondition(clickable) { clickable { onClick() } },
     shape = shape,
-    color = MaterialTheme.colorScheme.surfaceColorAtElevation(8.dp),
+    tonalElevation = 8.dp,
   ) {
     Row(modifier = Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
       Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
-        Text(text = title, style = MaterialTheme.typography.bodyLarge)
+        Text(text = title, style = MaterialTheme.typography.labelLarge)
 
         if (description != null) {
           AnimatedContent(
@@ -153,14 +165,13 @@ fun PreferenceColumnScope.Preference(
 fun PreferenceSection(
   title: String?,
   modifier: Modifier = Modifier,
-  space: Dp = PreferenceDefaults.SectionWidth,
+  space: Dp = 2.dp,
   content: @Composable PreferenceColumnScope.() -> Unit,
 ) {
   Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(space)) {
     val scope = remember { PreferenceColumnScopeWrapper(this) }
     if (title != null) {
       PreferenceHeader(title)
-      Spacer(Modifier.height(4.dp))
     }
     scope.content()
   }
@@ -168,7 +179,7 @@ fun PreferenceSection(
 
 @Composable
 private fun PreferenceHeader(title: String, modifier: Modifier = Modifier) {
-  Surface(modifier = modifier.padding(horizontal = 16.dp)) {
+  Surface(modifier = modifier.padding(8.dp)) {
     Text(
       text = title,
       style = MaterialTheme.typography.labelLarge,
@@ -182,30 +193,9 @@ interface PreferenceColumnScope : ColumnScope
 private class PreferenceColumnScopeWrapper(scope: ColumnScope) :
   PreferenceColumnScope, ColumnScope by scope
 
-object PreferenceDefaults {
-  val SectionWidth = 2.dp
-  val MinHeight = 56.dp
-  private val baseShape: CornerBasedShape
-    get() = RoundedCornerShape(4.dp)
-
-  @Composable
-  @ReadOnlyComposable
-  fun itemShape(
-    index: Int,
-    count: Int,
-    baseShape: CornerBasedShape = PreferenceDefaults.baseShape,
-  ): Shape {
-    if (count == 1) return baseShape
-    return when (index) {
-      0 -> baseShape.start()
-      count - 1 -> baseShape.end()
-      else -> baseShape
-    }
+private fun AppTheme.icon() =
+  when (this) {
+    AppTheme.System -> Icons.Default.AutoMode
+    AppTheme.Light -> Icons.Default.LightMode
+    AppTheme.Dark -> Icons.Default.DarkMode
   }
-}
-
-private fun CornerBasedShape.start(): CornerBasedShape =
-  copy(topStart = CornerSize(28.dp), topEnd = CornerSize(28.dp))
-
-private fun CornerBasedShape.end(): CornerBasedShape =
-  copy(bottomStart = CornerSize(28.dp), bottomEnd = CornerSize(28.dp))

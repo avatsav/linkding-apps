@@ -20,11 +20,12 @@ kotlin {
       // Note: data.models comes through api dependency, no need for direct dep
 
       implementation(compose.foundation)
-      implementation(compose.material3)
+      implementation(libs.compose.m3expressive)
       implementation(compose.materialIconsExtended)
       implementation(libs.circuit.retained)
       implementation(libs.circuit.overlay)
       implementation(libs.paging.compose)
+      implementation(libs.kotlin.datetime)
     }
   }
 }

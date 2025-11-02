@@ -15,8 +15,7 @@ internal sealed interface ApiResponse<out T, out E> {
   data class SerializationError(val exception: SerializationException) :
     Error<Nothing>(exception.message, null)
 
-  data class ConnectivityError(val exception: IOException) :
-    Error<Nothing>(exception.message, null)
+  data class ConnectivityError(val exception: IOException) : Error<Nothing>(exception.message, null)
 
   data class UnknownError(val throwable: Throwable) : Error<Nothing>(throwable.message, null)
 }

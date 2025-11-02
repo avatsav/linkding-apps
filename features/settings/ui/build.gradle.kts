@@ -17,7 +17,7 @@ kotlin {
       implementation(projects.ui.compose)
       implementation(projects.ui.circuit)
       implementation(compose.foundation)
-      implementation(compose.material3)
+      implementation(libs.compose.m3expressive)
       implementation(compose.materialIconsExtended)
       implementation(libs.circuit.retained)
       implementation(libs.circuit.overlay)

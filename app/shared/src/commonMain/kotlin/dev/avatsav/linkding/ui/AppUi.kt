@@ -8,15 +8,11 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import com.slack.circuit.backstack.rememberSaveableBackStack
 import com.slack.circuit.foundation.Circuit
-import com.slack.circuit.foundation.rememberCircuitNavigator
 import com.slack.circuit.overlay.ContentWithOverlays
 import com.slack.circuit.retained.LocalRetainedStateRegistry
 import com.slack.circuit.retained.lifecycleRetainedStateRegistry
-import com.slack.circuit.runtime.screen.Screen
 import dev.avatsav.linkding.auth.api.AuthManager
-import dev.avatsav.linkding.auth.api.AuthState
 import dev.avatsav.linkding.data.model.app.LaunchMode
 import dev.avatsav.linkding.data.model.prefs.AppTheme
 import dev.avatsav.linkding.inject.UiScope
@@ -53,10 +49,6 @@ class DefaultAppUi(
     modifier: Modifier,
   ) {
     val authState by authManager.state.collectAsState(authManager.getCurrentState())
-    val backStack = rememberSaveableBackStack(root = authState.rootScreen(launchMode))
-    val navigator = rememberCircuitNavigator(backStack) { onRootPop() }
-    val appNavigator = remember(navigator) { AppNavigator(navigator, onOpenUrl) }
-
     CompositionLocalProvider(LocalRetainedStateRegistry provides lifecycleRetainedStateRegistry()) {
       LinkdingTheme(
         darkTheme = preferences.shouldUseDarkTheme(),
@@ -64,10 +56,11 @@ class DefaultAppUi(
       ) {
         ContentWithOverlays {
           AppContent(
+            launchMode = launchMode,
             authState = authState,
             circuit = circuit,
-            backStack = backStack,
-            navigator = appNavigator,
+            onRootPop = onRootPop,
+            onOpenUrl = onOpenUrl,
             modifier = modifier.fillMaxSize(),
           )
         }
@@ -89,16 +82,3 @@ private fun AppPreferences.shouldUseDarkTheme(): Boolean {
 @Composable
 private fun AppPreferences.shouldUseDynamicColors(): Boolean =
   remember { observeUseDynamicColors() }.collectAsState(initial = true).value
-
-private fun AuthState.rootScreen(launchMode: LaunchMode): Screen =
-  when (this) {
-    is AuthState.Authenticated -> launchMode.authenticatedStartScreen()
-    is AuthState.Unauthenticated -> AuthScreen
-    is AuthState.Loading -> SplashScreen
-  }
-
-private fun LaunchMode.authenticatedStartScreen(): Screen =
-  when (this) {
-    LaunchMode.Normal -> BookmarksScreen
-    is LaunchMode.SharedLink -> AddBookmarkScreen(this.sharedLink)
-  }
