@@ -39,7 +39,7 @@ fun AnimatedVisibilityWithElevation(
   animationSpec: AnimationSpec<Dp> = spring(dampingRatio = Spring.DampingRatioMediumBouncy),
   content: @Composable (elevation: Dp) -> Unit,
 ) {
-  val visibleState = remember { MutableTransitionState(false) }
+  val visibleState = remember { MutableTransitionState(visible) }
   visibleState.targetState = visible
 
   val elevation by
