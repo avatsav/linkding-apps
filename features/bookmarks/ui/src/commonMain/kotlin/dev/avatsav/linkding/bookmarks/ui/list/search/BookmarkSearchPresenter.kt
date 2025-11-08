@@ -43,7 +43,6 @@ import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.AssistedInject
 import kotlin.time.Clock
-import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.launch
@@ -119,13 +118,10 @@ class BookmarkSearchPresenter(
     return BookmarkSearchUiState(
       query = searchQuery,
       results = searchResults,
-      history = searchHistory.toImmutableList(),
+      history = searchHistory,
       snackbarMessage = actionHandler.snackbarMessage,
       filters =
-        BookmarkFiltersUiState(
-          bookmarkCategory = bookmarkCategory,
-          selectedTags = selectedTags.toImmutableList(),
-        ),
+        BookmarkFiltersUiState(bookmarkCategory = bookmarkCategory, selectedTags = selectedTags),
       eventSink = { event ->
         when (event) {
           is ToggleArchive -> {

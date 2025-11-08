@@ -2,16 +2,16 @@
 agp = "8.13.0"
 kotlin = "2.2.21"
 coroutines = "1.10.2"
-ksp = "2.3.0" # https://github.com/google/ksp/releases
+ksp = "2.3.2" # https://github.com/google/ksp/releases
 ktmft = "0.25.0"
 detekt = "1.23.8"
 multiplatform-settings = "1.3.0"
-ktor = "3.3.1"
-datetime = "0.7.1"
-compose-multiplatform = "1.10.0-alpha02" # https://github.com/JetBrains/compose-multiplatform/releases
-compose-material3 = "1.10.0-alpha02" # https://www.jetbrains.com/help/kotlin-multiplatform-dev/whats-new-compose-190.html#material-3-expressive-theme
+ktor = "3.3.2"
+datetime = "0.7.1-0.6.x-compat"
+compose-multiplatform = "1.10.0-beta01" # https://github.com/JetBrains/compose-multiplatform/releases
+compose-material3 = "1.10.0-alpha04" # https://www.jetbrains.com/help/kotlin-multiplatform-dev/whats-new-compose-190.html#material-3-expressive-theme
 paging = "3.4.0-alpha04"
-circuit = "0.30.0"
+circuit = "0.31.0"
 kotlinResult = "2.1.0"
 androidxActivity = "1.11.0"
 sqldelight = "2.1.0"
@@ -19,7 +19,7 @@ stately = "2.1.0"
 kotlinPoet = "2.2.0"
 kotest = "6.0.4"
 uuid = "0.8.4"
-metro = "0.7.3" # https://github.com/ZacSweers/metro/releases
+metro = "0.7.5" # https://github.com/ZacSweers/metro/releases
 gradleVersions = "0.53.0"
 
 compileSdk = "36"
@@ -50,7 +50,7 @@ gradleVersions = { id = "com.github.ben-manes.versions", version.ref = "gradleVe
 androidx-activity = { module = "androidx.activity:activity", version.ref = "androidxActivity" }
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidxActivity" }
 androidx-core = "androidx.core:core-ktx:1.17.0"
-androidx-splashscreen = "androidx.core:core-splashscreen:1.0.1"
+androidx-splashscreen = "androidx.core:core-splashscreen:1.2.0"
 androidx-browser = "androidx.browser:browser:1.9.0"
 androidx-preference = "androidx.preference:preference-ktx:1.2.1"
 compose-ui-backhandler = { module = "org.jetbrains.compose.ui:ui-backhandler", version.ref = "compose-multiplatform" }
