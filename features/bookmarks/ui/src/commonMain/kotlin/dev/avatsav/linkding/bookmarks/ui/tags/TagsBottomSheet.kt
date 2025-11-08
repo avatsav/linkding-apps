@@ -4,10 +4,10 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import com.slack.circuit.foundation.CircuitContent
 import com.slack.circuit.foundation.NavEvent
 import com.slack.circuit.overlay.OverlayHost
+import com.slack.circuitx.overlays.BottomSheetOverlay
 import dev.avatsav.linkding.data.model.Tag
 import dev.avatsav.linkding.ui.TagsScreen
 import dev.avatsav.linkding.ui.TagsScreenResult
-import dev.avatsav.linkding.ui.circuit.BottomSheetOverlay
 
 @OptIn(ExperimentalMaterial3Api::class)
 suspend fun OverlayHost.showTagsBottomSheet(selectedTags: List<Tag>): TagsScreenResult =

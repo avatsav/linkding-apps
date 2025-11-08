@@ -1,5 +1,4 @@
 plugins {
-  id("convention.android.library")
   id("convention.kotlin.multiplatform")
   id("convention.compose")
 }
@@ -15,9 +14,7 @@ kotlin {
       api(libs.circuit.overlay)
       api(libs.circuitx.overlays)
       api(libs.paging.common)
-      api(libs.compose.ui.backhandler)
+      api(libs.compose.navigationEvent)
     }
   }
 }
-
-android { namespace = "dev.avatsav.linkding.ui.circuit" }
