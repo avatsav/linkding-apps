@@ -32,6 +32,8 @@ include(
   ":core:preferences",
   ":core:connectivity",
   ":core:parcelize",
+  ":core:viewmodel:metro",
+  ":core:viewmodel:molecule",
 
   ":data:models",
   ":data:database",

@@ -122,7 +122,7 @@ sqldelight-coroutines = { module = "app.cash.sqldelight:coroutines-extensions", 
 sqldelight-primitive = { module = "app.cash.sqldelight:primitive-adapters", version.ref = "sqldelight" }
 stately = { module = "co.touchlab:stately-common", version.ref = "stately" }
 uuid = { module = "com.benasher44:uuid", version.ref = "uuid" }
-
+molecule = { module = "app.cash.molecule:molecule-runtime", version.ref = "molecule" }
 detektComposeRules = "io.nlopez.compose.rules:detekt:0.4.27"
 
 # Build logic dependencies
