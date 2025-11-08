@@ -30,15 +30,13 @@ import dev.avatsav.linkding.data.model.BookmarkCategory
 import dev.avatsav.linkding.data.model.Tag
 import dev.avatsav.linkding.ui.TagsScreenResult
 import dev.avatsav.linkding.ui.compose.widgets.TagInputChip
-import kotlinx.collections.immutable.ImmutableList
-import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.launch
 
 @Composable
 fun FiltersBar(
   selectedCategory: BookmarkCategory,
   onSelectCategory: (BookmarkCategory) -> Unit,
-  selectedTags: ImmutableList<Tag>,
+  selectedTags: List<Tag>,
   onSelectTag: (Tag) -> Unit,
   onRemoveTag: (Tag) -> Unit,
   modifier: Modifier = Modifier,
@@ -92,7 +90,7 @@ fun FiltersBar(
   }
 }
 
-private val bookmarkCategories = BookmarkCategory.entries.toImmutableList()
+private val bookmarkCategories = BookmarkCategory.entries
 
 @Composable
 private fun LazyItemScope.BookmarkCategoryFilterChip(

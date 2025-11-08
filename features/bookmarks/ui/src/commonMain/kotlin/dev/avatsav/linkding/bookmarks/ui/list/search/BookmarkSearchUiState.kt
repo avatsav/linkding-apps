@@ -9,14 +9,12 @@ import dev.avatsav.linkding.data.model.Bookmark
 import dev.avatsav.linkding.data.model.BookmarkCategory
 import dev.avatsav.linkding.data.model.SearchHistory
 import dev.avatsav.linkding.data.model.Tag
-import kotlinx.collections.immutable.ImmutableList
-import kotlinx.collections.immutable.persistentListOf
 
 data class BookmarkSearchUiState(
   val query: String = "",
   val filters: BookmarkFiltersUiState = BookmarkFiltersUiState(),
   val results: LazyPagingItems<Bookmark>,
-  val history: ImmutableList<SearchHistory> = persistentListOf(),
+  val history: List<SearchHistory> = listOf(),
   val snackbarMessage: SnackbarMessage? = null,
   val eventSink: (BookmarkSearchUiEvent) -> Unit,
 ) : CircuitUiState {
@@ -39,7 +37,7 @@ data class BookmarkSearchUiState(
 
 data class BookmarkFiltersUiState(
   val bookmarkCategory: BookmarkCategory = BookmarkCategory.All,
-  val selectedTags: ImmutableList<Tag> = persistentListOf(),
+  val selectedTags: List<Tag> = listOf(),
 )
 
 sealed interface BookmarkSearchUiEvent : CircuitUiEvent {
