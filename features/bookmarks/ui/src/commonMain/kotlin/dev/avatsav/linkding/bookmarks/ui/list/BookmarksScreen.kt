@@ -43,10 +43,12 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.backhandler.BackHandler
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import androidx.navigationevent.NavigationEventInfo
+import androidx.navigationevent.compose.NavigationBackHandler
+import androidx.navigationevent.compose.rememberNavigationEventState
 import androidx.paging.LoadState
 import androidx.paging.compose.itemKey
 import com.slack.circuit.codegen.annotations.CircuitInject
@@ -71,7 +73,11 @@ fun Bookmarks(state: BookmarksUiState, modifier: Modifier = Modifier) {
   val actionableBookmark = remember { mutableStateOf<Bookmark?>(null) }
   val snackbarHostState = remember { SnackbarHostState() }
 
-  BackHandler(actionableBookmark.value != null) { actionableBookmark.value = null }
+  NavigationBackHandler(
+    state = rememberNavigationEventState(NavigationEventInfo.None),
+    isBackEnabled = actionableBookmark.value != null,
+    onBackCompleted = { actionableBookmark.value = null },
+  )
 
   LaunchedEffect(searchBarState) {
     if (searchBarState.isExpanded()) actionableBookmark.value = null

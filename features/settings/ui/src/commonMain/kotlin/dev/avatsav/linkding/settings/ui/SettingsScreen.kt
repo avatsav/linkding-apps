@@ -33,6 +33,7 @@ import com.slack.circuit.codegen.annotations.CircuitInject
 import com.slack.circuit.overlay.LocalOverlayHost
 import com.slack.circuit.overlay.OverlayHost
 import com.slack.circuitx.overlays.DialogResult
+import com.slack.circuitx.overlays.alertDialogOverlay
 import dev.avatsav.linkding.data.model.prefs.AppTheme
 import dev.avatsav.linkding.inject.UserScope
 import dev.avatsav.linkding.settings.ui.SettingsUiEvent.Close
@@ -47,7 +48,6 @@ import dev.avatsav.linkding.settings.ui.widgets.PreferenceSection
 import dev.avatsav.linkding.settings.ui.widgets.SwitchPreference
 import dev.avatsav.linkding.settings.ui.widgets.ThemePreference
 import dev.avatsav.linkding.ui.SettingsScreen
-import dev.avatsav.linkding.ui.circuit.alertDialogOverlay
 import dev.avatsav.linkding.ui.theme.Material3ShapeDefaults
 import kotlinx.coroutines.launch
 

@@ -10,10 +10,11 @@ ktor = "3.3.2"
 datetime = "0.7.1-0.6.x-compat"
 compose-multiplatform = "1.10.0-beta01" # https://github.com/JetBrains/compose-multiplatform/releases
 compose-material3 = "1.10.0-alpha04" # https://www.jetbrains.com/help/kotlin-multiplatform-dev/whats-new-compose-190.html#material-3-expressive-theme
+compose-navigationEvent = "1.0.0-beta01"
 paging = "3.4.0-alpha04"
 circuit = "0.31.0"
 kotlinResult = "2.1.0"
-androidxActivity = "1.11.0"
+androidxActivity = "1.12.0-rc01"
 sqldelight = "2.1.0"
 stately = "2.1.0"
 kotlinPoet = "2.2.0"
@@ -53,7 +54,7 @@ androidx-core = "androidx.core:core-ktx:1.17.0"
 androidx-splashscreen = "androidx.core:core-splashscreen:1.2.0"
 androidx-browser = "androidx.browser:browser:1.9.0"
 androidx-preference = "androidx.preference:preference-ktx:1.2.1"
-compose-ui-backhandler = { module = "org.jetbrains.compose.ui:ui-backhandler", version.ref = "compose-multiplatform" }
+compose-navigationEvent = { module = "org.jetbrains.androidx.navigationevent:navigationevent-compose", version.ref = "compose-navigationEvent" }
 
 # https://www.jetbrains.com/help/kotlin-multiplatform-dev/whats-new-compose-190.html#material-3-expressive-theme
 compose-m3expressive = { module = "org.jetbrains.compose.material3:material3", version.ref = "compose-material3" }
