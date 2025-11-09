@@ -18,9 +18,9 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import dev.avatsav.linkding.data.model.app.LaunchMode
 import dev.avatsav.linkding.data.model.prefs.AppTheme
+import dev.avatsav.linkding.di.AndroidAppComponent
+import dev.avatsav.linkding.di.AndroidUiComponent
 import dev.avatsav.linkding.di.ComponentHolder
-import dev.avatsav.linkding.inject.AndroidAppComponent
-import dev.avatsav.linkding.inject.AndroidUiComponent
 import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {

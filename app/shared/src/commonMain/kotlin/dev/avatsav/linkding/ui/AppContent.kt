@@ -16,7 +16,7 @@ import dev.avatsav.linkding.auth.api.AuthState
 import dev.avatsav.linkding.data.model.ApiConfig
 import dev.avatsav.linkding.data.model.app.LaunchMode
 import dev.avatsav.linkding.di.ComponentHolder
-import dev.avatsav.linkding.inject.UserComponent
+import dev.avatsav.linkding.di.UserComponent
 
 @Composable
 fun AppContent(

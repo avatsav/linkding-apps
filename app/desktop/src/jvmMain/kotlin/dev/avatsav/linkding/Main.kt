@@ -10,8 +10,8 @@ import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
 import dev.avatsav.linkding.data.model.app.LaunchMode
 import dev.avatsav.linkding.di.ComponentHolder
-import dev.avatsav.linkding.inject.DesktopAppComponent
-import dev.avatsav.linkding.inject.DesktopUiComponent
+import dev.avatsav.linkding.di.DesktopAppComponent
+import dev.avatsav.linkding.di.DesktopUiComponent
 import dev.zacsweers.metro.createGraph
 import java.awt.Desktop
 import java.net.URI

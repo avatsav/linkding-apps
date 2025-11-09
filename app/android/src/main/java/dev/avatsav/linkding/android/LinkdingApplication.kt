@@ -2,8 +2,8 @@ package dev.avatsav.linkding.android
 
 import android.app.Application
 import dev.avatsav.linkding.LinkdingApp
+import dev.avatsav.linkding.di.AndroidAppComponent
 import dev.avatsav.linkding.di.ComponentHolder
-import dev.avatsav.linkding.inject.AndroidAppComponent
 import dev.zacsweers.metro.createGraphFactory
 
 class LinkdingApplication : LinkdingApp, Application() {
