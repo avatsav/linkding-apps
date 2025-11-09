@@ -6,13 +6,12 @@ plugins {
 kotlin {
   sourceSets {
     commonMain.dependencies {
-      api(libs.kotlin.coroutines.core)
-      api(libs.kermit)
+      implementation(projects.core.base)
+      implementation(libs.kermit)
+      implementation(libs.kotlin.coroutines.core)
       implementation(libs.compose.viewmodel)
     }
   }
 }
 
-android {
-  namespace = "dev.avatsav.linkding.viewmodel"
-}
+android { namespace = "dev.avatsav.linkding.viewmodel" }
