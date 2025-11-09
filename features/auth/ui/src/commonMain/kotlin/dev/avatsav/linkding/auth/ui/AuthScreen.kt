@@ -35,18 +35,25 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import com.slack.circuit.codegen.annotations.CircuitInject
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.avatsav.linkding.auth.ui.AuthUiEvent.SaveCredentials
-import dev.avatsav.linkding.ui.AuthScreen
 import dev.avatsav.linkding.ui.compose.widgets.SmallCircularProgressIndicator
-import dev.zacsweers.metro.AppScope
 
-@CircuitInject(AuthScreen::class, AppScope::class)
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-fun AuthScreen(state: AuthUiState, modifier: Modifier = Modifier) {
-  // https://issuetracker.google.com/issues/256100927#comment1
-  val eventSink = state.eventSink
+fun AuthScreen(viewModel: AuthViewModel, modifier: Modifier = Modifier) {
+  val state by viewModel.models.collectAsStateWithLifecycle()
+  val eventSink = viewModel::eventSink
+  AuthScreen(state, modifier, eventSink)
+}
+
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
+@Composable
+fun AuthScreen(
+  state: AuthUiState,
+  modifier: Modifier = Modifier,
+  eventSink: (AuthUiEvent) -> Unit,
+) {
 
   var hostUrl by remember { mutableStateOf("") }
   var apiKey by remember { mutableStateOf("") }

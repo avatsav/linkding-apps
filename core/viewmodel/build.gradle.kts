@@ -8,9 +8,9 @@ kotlin {
   sourceSets {
     commonMain.dependencies {
       api(libs.kotlin.coroutines.core)
-      api(libs.kermit)
-      implementation(libs.molecule)
-      implementation(libs.compose.viewmodel)
+      api(libs.molecule)
+      api(libs.compose.lifecycle)
+      api(libs.compose.viewmodel)
     }
   }
 }

@@ -1,6 +1,9 @@
 package dev.avatsav.linkding.viewmodel
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import app.cash.molecule.RecompositionMode.ContextClock
@@ -10,37 +13,59 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.StateFlow
 
-/*
- * Copyright (C) 2022 Square, Inc.
+/**
+ * An abstract class for managing state and event-driven behavior in a Jetpack Compose-based
+ * ViewModel. `MoleculeViewModel` leverages the `Molecule` library for achieving unidirectional data
+ * flow by combining `StateFlow` for state management and `Flow` for event handling. It provides a
+ * structured approach to handle UI state and events in a composable-driven architecture.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * @param Event A generic type representing events that the UI can send to the `MoleculeViewModel`.
+ * @param Model A generic type representing the UI state model exposed by the `MoleculeViewModel`.
  */
 abstract class MoleculeViewModel<Event, Model> : ViewModel() {
 
-  private val scope = CoroutineScope(viewModelScope.coroutineContext + UiDispatcherContext)
+  internal val moleculeScope = CoroutineScope(viewModelScope.coroutineContext + UiDispatcherContext)
 
-  // Events have a capacity large enough to handle simultaneous UI events, but
-  // small enough to surface issues if they get backed up for some reason.
+  /**
+   * Events have a capacity large enough to handle simultaneous UI events, but small enough to
+   * surface issues if they get backed up for some reason.
+   */
   private val events = MutableSharedFlow<Event>(extraBufferCapacity = 20)
 
   val models: StateFlow<Model> by
-    lazy(LazyThreadSafetyMode.NONE) { scope.launchMolecule(mode = ContextClock) { models(events) } }
+    lazy(LazyThreadSafetyMode.NONE) {
+      moleculeScope.launchMolecule(mode = ContextClock) { models(events) }
+    }
 
-  fun take(event: Event) {
+  /**
+   * Sends an event to the internal event stream. Use this method to propagate events into the
+   * `MoleculeViewModel` for processing.
+   *
+   * If the internal event buffer is full and unable to emit the new event, an error will be thrown.
+   *
+   * @param event The event object to be sent to the internal event stream. This event is expected
+   *   to be handled by the `models` implementation or other consumers of the event flow.
+   */
+  fun eventSink(event: Event) {
     if (!events.tryEmit(event)) {
       error("Event buffer overflow.")
     }
   }
 
   @Composable protected abstract fun models(events: Flow<Event>): Model
+
+  /**
+   * Helper function for collecting events from a [MoleculeViewModel].
+   *
+   * Collects events emitted by the `events` flow and executes the provided `block` for each event.
+   *
+   * @param block A function that defines the action to perform for each collected event. This
+   *   function is executed within the context of a `CoroutineScope` and receives an `Event` as a
+   *   parameter.
+   */
+  @Composable
+  fun CollectEvents(block: CoroutineScope.(Event) -> Unit) {
+    val latestBlock by rememberUpdatedState(block)
+    LaunchedEffect(Unit) { events.collect { event: Event -> latestBlock(event) } }
+  }
 }

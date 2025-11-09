@@ -1,5 +1,3 @@
-import dev.avatsav.gradle.addKspDependencyForAllTargets
-
 plugins {
   id("convention.android.library")
   id("convention.kotlin.multiplatform")
@@ -12,7 +10,7 @@ kotlin {
     commonMain.dependencies {
       implementation(projects.core.base)
       implementation(projects.core.di)
-      implementation(projects.ui.circuit)
+      implementation(projects.core.viewmodel)
       implementation(projects.ui.compose)
       implementation(libs.compose.foundation)
       implementation(libs.compose.m3expressive)
@@ -24,7 +22,3 @@ kotlin {
 }
 
 android { namespace = "dev.avatsav.linkding.auth.ui" }
-
-ksp { arg("circuit.codegen.mode", "metro") }
-
-addKspDependencyForAllTargets(libs.circuit.codegen)
