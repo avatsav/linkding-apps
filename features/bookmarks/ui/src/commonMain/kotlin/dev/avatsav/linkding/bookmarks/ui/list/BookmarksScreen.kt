@@ -46,29 +46,47 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigationevent.NavigationEventInfo
 import androidx.navigationevent.compose.NavigationBackHandler
 import androidx.navigationevent.compose.rememberNavigationEventState
 import androidx.paging.LoadState
 import androidx.paging.compose.itemKey
-import com.slack.circuit.codegen.annotations.CircuitInject
 import dev.avatsav.linkding.bookmarks.ui.list.feed.BookmarkListUiEvent
+import dev.avatsav.linkding.bookmarks.ui.list.search.BookmarkSearchUiEvent
 import dev.avatsav.linkding.bookmarks.ui.list.widgets.BookmarkListItem
 import dev.avatsav.linkding.data.model.Bookmark
-import dev.avatsav.linkding.di.scope.UserScope
-import dev.avatsav.linkding.ui.BookmarksScreen
 import dev.avatsav.linkding.ui.compose.appearFromBottom
 import dev.avatsav.linkding.ui.compose.disappearToBottom
 import dev.avatsav.linkding.ui.compose.widgets.AnimatedVisibilityWithElevation
 
-@CircuitInject(BookmarksScreen::class, UserScope::class)
 @OptIn(
   ExperimentalMaterial3Api::class,
   ExperimentalMaterial3ExpressiveApi::class,
   ExperimentalComposeUiApi::class,
 )
 @Composable
-fun Bookmarks(state: BookmarksUiState, modifier: Modifier = Modifier) {
+fun Bookmarks(viewModel: BookmarksViewModel, modifier: Modifier = Modifier) {
+  val state by viewModel.models.collectAsStateWithLifecycle()
+  val eventSink = viewModel::eventSink
+  val feedEventSink = viewModel.feedEventSink
+  val searchEventSink = viewModel.searchEventSink
+  Bookmarks(state, modifier, eventSink, feedEventSink, searchEventSink)
+}
+
+@OptIn(
+  ExperimentalMaterial3Api::class,
+  ExperimentalMaterial3ExpressiveApi::class,
+  ExperimentalComposeUiApi::class,
+)
+@Composable
+fun Bookmarks(
+  state: BookmarksUiState,
+  modifier: Modifier = Modifier,
+  eventSink: (BookmarksUiEvent) -> Unit,
+  feedEventSink: (BookmarkListUiEvent) -> Unit,
+  searchEventSink: (BookmarkSearchUiEvent) -> Unit,
+) {
   val searchBarState = rememberSearchBarState()
   val actionableBookmark = remember { mutableStateOf<Bookmark?>(null) }
   val snackbarHostState = remember { SnackbarHostState() }
@@ -98,7 +116,7 @@ fun Bookmarks(state: BookmarksUiState, modifier: Modifier = Modifier) {
           message.onAction?.invoke()
         }
         SnackbarResult.Dismissed -> {
-          state.feedState.eventSink(BookmarkListUiEvent.DismissSnackbar)
+          feedEventSink(BookmarkListUiEvent.DismissSnackbar)
         }
       }
     }
@@ -111,7 +129,8 @@ fun Bookmarks(state: BookmarksUiState, modifier: Modifier = Modifier) {
       SearchTopBar(
         searchBarState = searchBarState,
         searchState = state.searchState,
-        onShowSettings = { state.eventSink(BookmarksUiEvent.ShowSettings) },
+        onShowSettings = { eventSink(BookmarksUiEvent.ShowSettings) },
+        eventSink = searchEventSink,
       )
     },
     floatingActionButton = {
@@ -121,7 +140,7 @@ fun Bookmarks(state: BookmarksUiState, modifier: Modifier = Modifier) {
         exit = disappearToBottom(),
       ) { elevation ->
         FloatingActionButton(
-          onClick = { state.eventSink(BookmarksUiEvent.AddBookmark) },
+          onClick = { eventSink(BookmarksUiEvent.AddBookmark) },
           elevation = FloatingActionButtonDefaults.elevation(defaultElevation = elevation),
         ) {
           Icon(imageVector = Icons.Filled.Add, contentDescription = "Add bookmark")
@@ -141,7 +160,7 @@ fun Bookmarks(state: BookmarksUiState, modifier: Modifier = Modifier) {
             end = paddingValues.calculateEndPadding(LayoutDirection.Ltr),
           ),
       isRefreshing = refreshing,
-      onRefresh = { state.feedState.eventSink(BookmarkListUiEvent.Refresh) },
+      onRefresh = { feedEventSink(BookmarkListUiEvent.Refresh) },
       state = pullToRefreshState,
       indicator = {
         PullToRefreshDefaults.LoadingIndicator(
@@ -154,9 +173,9 @@ fun Bookmarks(state: BookmarksUiState, modifier: Modifier = Modifier) {
       ActionableBookmarkToolbar(
         actionableBookmark = actionableBookmark.value,
         onDismiss = { actionableBookmark.value = null },
-        editBookmark = { state.feedState.eventSink(BookmarkListUiEvent.Edit(it)) },
-        toggleArchive = { state.feedState.eventSink(BookmarkListUiEvent.ToggleArchive(it)) },
-        deleteBookmark = { state.feedState.eventSink(BookmarkListUiEvent.Delete(it)) },
+        editBookmark = { feedEventSink(BookmarkListUiEvent.Edit(it)) },
+        toggleArchive = { feedEventSink(BookmarkListUiEvent.ToggleArchive(it)) },
+        deleteBookmark = { feedEventSink(BookmarkListUiEvent.Delete(it)) },
         modifier =
           Modifier.align(Alignment.BottomCenter)
             .navigationBarsPadding()
@@ -189,7 +208,7 @@ fun Bookmarks(state: BookmarksUiState, modifier: Modifier = Modifier) {
                   actionableBookmark.value = null
                 } else {
                   actionableBookmark.value = null
-                  state.feedState.eventSink(BookmarkListUiEvent.Open(toOpen))
+                  feedEventSink(BookmarkListUiEvent.Open(toOpen))
                 }
               },
               toggleActions = { bookmark -> actionableBookmark.value = bookmark },

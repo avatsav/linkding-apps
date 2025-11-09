@@ -2,8 +2,6 @@ package dev.avatsav.linkding.bookmarks.ui.list.search
 
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
-import com.slack.circuit.runtime.CircuitUiEvent
-import com.slack.circuit.runtime.CircuitUiState
 import dev.avatsav.linkding.bookmarks.ui.list.common.SnackbarMessage
 import dev.avatsav.linkding.data.model.Bookmark
 import dev.avatsav.linkding.data.model.BookmarkCategory
@@ -16,8 +14,7 @@ data class BookmarkSearchUiState(
   val results: LazyPagingItems<Bookmark>,
   val history: List<SearchHistory> = listOf(),
   val snackbarMessage: SnackbarMessage? = null,
-  val eventSink: (BookmarkSearchUiEvent) -> Unit,
-) : CircuitUiState {
+) {
 
   fun isIdle(): Boolean = !isActive() && history.isNotEmpty()
 
@@ -40,7 +37,7 @@ data class BookmarkFiltersUiState(
   val selectedTags: List<Tag> = listOf(),
 )
 
-sealed interface BookmarkSearchUiEvent : CircuitUiEvent {
+sealed interface BookmarkSearchUiEvent {
   data class Search(val query: String) : BookmarkSearchUiEvent
 
   data class SelectBookmarkCategory(val category: BookmarkCategory) : BookmarkSearchUiEvent

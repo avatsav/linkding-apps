@@ -1,8 +1,6 @@
 package dev.avatsav.linkding.bookmarks.ui.add
 
 import androidx.compose.runtime.Immutable
-import com.slack.circuit.runtime.CircuitUiEvent
-import com.slack.circuit.runtime.CircuitUiState
 import dev.avatsav.linkding.data.model.CheckUrlResult
 
 @Immutable
@@ -13,10 +11,9 @@ data class AddBookmarkUiState(
   val checkUrlResult: CheckUrlResult? = null,
   val saving: Boolean = false,
   val errorMessage: String? = null,
-  val eventSink: (AddBookmarkUiEvent) -> Unit,
-) : CircuitUiState
+)
 
-sealed interface AddBookmarkUiEvent : CircuitUiEvent {
+sealed interface AddBookmarkUiEvent {
   data class Save(
     val url: String,
     val title: String?,

@@ -4,10 +4,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.mutableStateSetOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import com.github.michaelbull.result.onFailure
 import com.github.michaelbull.result.onSuccess
-import com.slack.circuit.retained.rememberRetained
 import dev.avatsav.linkding.bookmarks.api.interactors.ArchiveBookmark
 import dev.avatsav.linkding.bookmarks.api.interactors.DeleteBookmark
 import dev.avatsav.linkding.bookmarks.api.interactors.UnarchiveBookmark
@@ -62,9 +62,9 @@ internal fun rememberPendingActionHandler(
   onFailure: (PendingAction) -> Unit = {},
 ): PendingActionHandlerState {
 
-  val pendingIds = rememberRetained { mutableStateSetOf<Long>() }
-  var currentPendingAction by rememberRetained { mutableStateOf<PendingActionState?>(null) }
-  var snackbarMessage by rememberRetained { mutableStateOf<SnackbarMessage?>(null) }
+  val pendingIds = remember { mutableStateSetOf<Long>() }
+  var currentPendingAction by remember { mutableStateOf<PendingActionState?>(null) }
+  var snackbarMessage by remember { mutableStateOf<SnackbarMessage?>(null) }
 
   lateinit var scheduleAction: (PendingAction) -> Unit
   lateinit var undoCurrentAction: () -> Unit

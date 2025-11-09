@@ -39,11 +39,9 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import com.slack.circuit.codegen.annotations.CircuitInject
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.avatsav.linkding.bookmarks.ui.add.AddBookmarkUiEvent.Close
 import dev.avatsav.linkding.bookmarks.ui.add.AddBookmarkUiEvent.Save
-import dev.avatsav.linkding.di.scope.UserScope
-import dev.avatsav.linkding.ui.AddBookmarkScreen
 import dev.avatsav.linkding.ui.compose.widgets.OutlinedTagsTextField
 import dev.avatsav.linkding.ui.compose.widgets.PlaceholderVisualTransformation
 import dev.avatsav.linkding.ui.compose.widgets.SmallCircularProgressIndicator
@@ -52,11 +50,21 @@ import kotlinx.coroutines.delay
 
 private const val DebounceDelay = 500L
 
-@CircuitInject(AddBookmarkScreen::class, UserScope::class)
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-fun AddBookmark(state: AddBookmarkUiState, modifier: Modifier = Modifier) {
-  val eventSink = state.eventSink
+fun AddBookmark(viewModel: AddBookmarkViewModel, modifier: Modifier = Modifier) {
+  val state by viewModel.models.collectAsStateWithLifecycle()
+  val eventSink = viewModel::eventSink
+  AddBookmark(state, modifier, eventSink)
+}
+
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
+@Composable
+fun AddBookmark(
+  state: AddBookmarkUiState,
+  modifier: Modifier = Modifier,
+  eventSink: (AddBookmarkUiEvent) -> Unit,
+) {
 
   val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
 

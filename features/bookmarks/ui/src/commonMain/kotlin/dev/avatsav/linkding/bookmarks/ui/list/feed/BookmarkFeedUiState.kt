@@ -1,18 +1,15 @@
 package dev.avatsav.linkding.bookmarks.ui.list.feed
 
 import androidx.paging.compose.LazyPagingItems
-import com.slack.circuit.runtime.CircuitUiEvent
-import com.slack.circuit.runtime.CircuitUiState
 import dev.avatsav.linkding.bookmarks.ui.list.common.SnackbarMessage
 import dev.avatsav.linkding.data.model.Bookmark
 
 data class BookmarkListUiState(
   val bookmarks: LazyPagingItems<Bookmark>,
   val snackbarMessage: SnackbarMessage? = null,
-  val eventSink: (BookmarkListUiEvent) -> Unit,
-) : CircuitUiState
+)
 
-sealed interface BookmarkListUiEvent : CircuitUiEvent {
+sealed interface BookmarkListUiEvent {
   data object Refresh : BookmarkListUiEvent
 
   data class ToggleArchive(val bookmark: Bookmark) : BookmarkListUiEvent

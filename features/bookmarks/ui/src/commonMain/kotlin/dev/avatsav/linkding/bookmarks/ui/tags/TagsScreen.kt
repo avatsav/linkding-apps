@@ -19,20 +19,24 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
-import com.slack.circuit.codegen.annotations.CircuitInject
-import dev.avatsav.linkding.di.scope.UserScope
-import dev.avatsav.linkding.ui.TagsScreen
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.avatsav.linkding.ui.compose.none
 
-@CircuitInject(TagsScreen::class, UserScope::class)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Tags(state: TagsUiState, modifier: Modifier = Modifier) {
-  // https://issuetracker.google.com/issues/256100927#comment1
-  val eventSink = state.eventSink
+fun Tags(viewModel: TagsViewModel, modifier: Modifier = Modifier) {
+  val state by viewModel.models.collectAsStateWithLifecycle()
+  val eventSink = viewModel::eventSink
+  Tags(state, modifier, eventSink)
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun Tags(state: TagsUiState, modifier: Modifier = Modifier, eventSink: (TagsUiEvent) -> Unit) {
 
   val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
   Scaffold(

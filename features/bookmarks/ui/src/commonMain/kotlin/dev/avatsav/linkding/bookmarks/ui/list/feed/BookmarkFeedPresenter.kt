@@ -1,15 +1,17 @@
 package dev.avatsav.linkding.bookmarks.ui.list.feed
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.paging.PagingConfig
+import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.filter
-import com.slack.circuit.retained.produceRetainedState
-import com.slack.circuit.runtime.Navigator
-import com.slack.circuit.runtime.presenter.Presenter
 import dev.avatsav.linkding.bookmarks.api.interactors.ArchiveBookmark
 import dev.avatsav.linkding.bookmarks.api.interactors.DeleteBookmark
 import dev.avatsav.linkding.bookmarks.api.interactors.UnarchiveBookmark
@@ -20,34 +22,28 @@ import dev.avatsav.linkding.bookmarks.ui.list.feed.BookmarkListUiEvent.Delete
 import dev.avatsav.linkding.bookmarks.ui.list.feed.BookmarkListUiEvent.Open
 import dev.avatsav.linkding.bookmarks.ui.list.feed.BookmarkListUiEvent.Refresh
 import dev.avatsav.linkding.bookmarks.ui.list.feed.BookmarkListUiEvent.ToggleArchive
+import dev.avatsav.linkding.data.model.Bookmark
 import dev.avatsav.linkding.data.model.BookmarkCategory
-import dev.avatsav.linkding.ui.UrlScreen
-import dev.avatsav.linkding.ui.circuit.rememberRetainedCoroutineScope
-import dev.zacsweers.metro.Assisted
-import dev.zacsweers.metro.AssistedFactory
-import dev.zacsweers.metro.AssistedInject
+import dev.avatsav.linkding.viewmodel.MoleculePresenter
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.launch
 
-@AssistedInject
 class BookmarkFeedPresenter(
-  @Assisted private val navigator: Navigator,
+  scope: CoroutineScope,
   private val observeBookmarks: ObserveBookmarks,
   private val deleteBookmark: DeleteBookmark,
   private val archiveBookmark: ArchiveBookmark,
   private val unarchiveBookmark: UnarchiveBookmark,
-) : Presenter<BookmarkListUiState> {
+  private val navigator: BookmarkFeedNavigator,
+) : MoleculePresenter<BookmarkListUiEvent, BookmarkListUiState>(scope) {
 
-  @AssistedFactory
-  interface Factory {
-    fun create(navigator: Navigator): BookmarkFeedPresenter
-  }
+  private val presenterScope = scope
 
   @Composable
-  override fun present(): BookmarkListUiState {
-    val presenterScope = rememberRetainedCoroutineScope()
-
+  override fun models(events: Flow<BookmarkListUiEvent>): BookmarkListUiState {
     val actionHandler =
       rememberPendingActionHandler(
         scope = presenterScope,
@@ -57,71 +53,78 @@ class BookmarkFeedPresenter(
         removePendingIdsOnSuccess = true, // Feed is backed by database
       )
 
-    val basePagingFlow by
-      produceRetainedState(emptyFlow()) {
-        observeBookmarks(
-          ObserveBookmarks.Param(
-            cached = true,
-            query = "",
-            category = BookmarkCategory.All,
-            tags = emptyList(),
-            pagingConfig = PagingConfig(initialLoadSize = 20, pageSize = 20),
-          )
+    var basePagingFlow by remember { mutableStateOf<Flow<PagingData<Bookmark>>>(emptyFlow()) }
+
+    LaunchedEffect(Unit) {
+      observeBookmarks(
+        ObserveBookmarks.Param(
+          cached = true,
+          query = "",
+          category = BookmarkCategory.All,
+          tags = emptyList(),
+          pagingConfig = PagingConfig(initialLoadSize = 20, pageSize = 20),
         )
-        value = observeBookmarks.flow.cachedIn(presenterScope)
-      }
+      )
+      basePagingFlow = observeBookmarks.flow.cachedIn(presenterScope)
+    }
 
     // Combine paging data with pendingIds changes to filter locally without reloading
-    val bookmarksFlow by
-      produceRetainedState(emptyFlow(), basePagingFlow) {
-        value =
-          combine(basePagingFlow, snapshotFlow { actionHandler.pendingIds.toSet() }) {
-            pagingData,
-            pending ->
-            pagingData.filter { bookmark -> bookmark.id !in pending }
-          }
-      }
+    var bookmarksFlow by remember { mutableStateOf<Flow<PagingData<Bookmark>>>(emptyFlow()) }
+
+    LaunchedEffect(basePagingFlow) {
+      bookmarksFlow =
+        combine(basePagingFlow, snapshotFlow { actionHandler.pendingIds.toSet() }) {
+          pagingData,
+          pending ->
+          pagingData.filter { bookmark -> bookmark.id !in pending }
+        }
+    }
 
     val bookmarks = bookmarksFlow.collectAsLazyPagingItems()
+
+    CollectEvents { event ->
+      when (event) {
+        Refresh -> presenterScope.launch { bookmarks.refresh() }
+
+        is ToggleArchive -> {
+          val action =
+            if (event.bookmark.archived) {
+              PendingAction.Unarchive(bookmarkId = event.bookmark.id, bookmark = event.bookmark)
+            } else {
+              PendingAction.Archive(bookmarkId = event.bookmark.id, bookmark = event.bookmark)
+            }
+          actionHandler.scheduleAction(action)
+        }
+
+        is Delete -> {
+          actionHandler.scheduleAction(
+            PendingAction.Delete(bookmarkId = event.bookmark.id, bookmark = event.bookmark)
+          )
+        }
+
+        is Open -> navigator.openUrl(event.bookmark.url)
+
+        is BookmarkListUiEvent.Edit -> {
+          // Editing bookmarks not yet implemented
+        }
+
+        BookmarkListUiEvent.UndoAction -> {
+          actionHandler.undoAction()
+        }
+
+        BookmarkListUiEvent.DismissSnackbar -> {
+          actionHandler.dismissSnackbar()
+        }
+      }
+    }
 
     return BookmarkListUiState(
       bookmarks = bookmarks,
       snackbarMessage = actionHandler.snackbarMessage,
-      eventSink = { event ->
-        when (event) {
-          Refresh -> presenterScope.launch { bookmarks.refresh() }
-
-          is ToggleArchive -> {
-            val action =
-              if (event.bookmark.archived) {
-                PendingAction.Unarchive(bookmarkId = event.bookmark.id, bookmark = event.bookmark)
-              } else {
-                PendingAction.Archive(bookmarkId = event.bookmark.id, bookmark = event.bookmark)
-              }
-            actionHandler.scheduleAction(action)
-          }
-
-          is Delete -> {
-            actionHandler.scheduleAction(
-              PendingAction.Delete(bookmarkId = event.bookmark.id, bookmark = event.bookmark)
-            )
-          }
-
-          is Open -> navigator.goTo(UrlScreen(event.bookmark.url))
-
-          is BookmarkListUiEvent.Edit -> {
-            // Editing bookmarks not yet implemented
-          }
-
-          BookmarkListUiEvent.UndoAction -> {
-            actionHandler.undoAction()
-          }
-
-          BookmarkListUiEvent.DismissSnackbar -> {
-            actionHandler.dismissSnackbar()
-          }
-        }
-      },
     )
   }
+}
+
+interface BookmarkFeedNavigator {
+  fun openUrl(url: String)
 }
