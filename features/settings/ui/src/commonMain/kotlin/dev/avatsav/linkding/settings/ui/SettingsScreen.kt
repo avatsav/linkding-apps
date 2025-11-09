@@ -29,13 +29,12 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
-import com.slack.circuit.codegen.annotations.CircuitInject
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.slack.circuit.overlay.LocalOverlayHost
 import com.slack.circuit.overlay.OverlayHost
 import com.slack.circuitx.overlays.DialogResult
 import com.slack.circuitx.overlays.alertDialogOverlay
 import dev.avatsav.linkding.data.model.prefs.AppTheme
-import dev.avatsav.linkding.di.scope.UserScope
 import dev.avatsav.linkding.settings.ui.SettingsUiEvent.Close
 import dev.avatsav.linkding.settings.ui.SettingsUiEvent.ResetApiConfig
 import dev.avatsav.linkding.settings.ui.SettingsUiEvent.SetAppTheme
@@ -47,15 +46,24 @@ import dev.avatsav.linkding.settings.ui.widgets.Preference
 import dev.avatsav.linkding.settings.ui.widgets.PreferenceSection
 import dev.avatsav.linkding.settings.ui.widgets.SwitchPreference
 import dev.avatsav.linkding.settings.ui.widgets.ThemePreference
-import dev.avatsav.linkding.ui.SettingsScreen
 import dev.avatsav.linkding.ui.theme.Material3ShapeDefaults
 import kotlinx.coroutines.launch
 
-@CircuitInject(SettingsScreen::class, UserScope::class)
 @OptIn(ExperimentalMaterial3ExpressiveApi::class, ExperimentalMaterial3Api::class)
 @Composable
-fun Settings(state: SettingsUiState, modifier: Modifier = Modifier) {
-  val eventSink = state.eventSink
+fun Settings(viewModel: SettingsViewModel, modifier: Modifier = Modifier) {
+  val state by viewModel.models.collectAsStateWithLifecycle()
+  val eventSink = viewModel::eventSink
+  Settings(state, modifier, eventSink)
+}
+
+@OptIn(ExperimentalMaterial3ExpressiveApi::class, ExperimentalMaterial3Api::class)
+@Composable
+fun Settings(
+  state: SettingsUiState,
+  modifier: Modifier = Modifier,
+  eventSink: (SettingsUiEvent) -> Unit,
+) {
   val overlayHost = LocalOverlayHost.current
 
   val coroutineScope = rememberCoroutineScope()

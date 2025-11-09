@@ -1,8 +1,6 @@
 package dev.avatsav.linkding.settings.ui
 
 import androidx.compose.runtime.Immutable
-import com.slack.circuit.runtime.CircuitUiEvent
-import com.slack.circuit.runtime.CircuitUiState
 import dev.avatsav.linkding.AppInfo
 import dev.avatsav.linkding.data.model.ApiConfig
 import dev.avatsav.linkding.data.model.prefs.AppTheme
@@ -13,10 +11,9 @@ data class SettingsUiState(
   val apiConfig: ApiConfig?,
   val appTheme: AppTheme,
   val useDynamicColors: Boolean,
-  val eventSink: (SettingsUiEvent) -> Unit,
-) : CircuitUiState
+)
 
-sealed interface SettingsUiEvent : CircuitUiEvent {
+sealed interface SettingsUiEvent {
   data object Close : SettingsUiEvent
 
   data class SetAppTheme(val appTheme: AppTheme) : SettingsUiEvent
