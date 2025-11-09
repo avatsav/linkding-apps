@@ -7,7 +7,7 @@ import dev.avatsav.linkding.api.LinkdingApiConfig
 import dev.avatsav.linkding.api.LinkdingBookmarksApi
 import dev.avatsav.linkding.api.LinkdingTagsApi
 import dev.avatsav.linkding.data.model.ApiConfig
-import dev.avatsav.linkding.inject.UserScope
+import dev.avatsav.linkding.di.scope.UserScope
 import dev.zacsweers.metro.ContributesTo
 import dev.zacsweers.metro.Provides
 import dev.zacsweers.metro.SingleIn

@@ -11,7 +11,7 @@ import com.slack.circuit.runtime.presenter.Presenter
 import dev.avatsav.linkding.bookmarks.api.observers.ObserveTags
 import dev.avatsav.linkding.bookmarks.ui.tags.TagsUiEvent.Close
 import dev.avatsav.linkding.bookmarks.ui.tags.TagsUiEvent.SelectTag
-import dev.avatsav.linkding.inject.UserScope
+import dev.avatsav.linkding.di.scope.UserScope
 import dev.avatsav.linkding.ui.TagsScreen
 import dev.avatsav.linkding.ui.TagsScreenResult
 import dev.avatsav.linkding.ui.circuit.produceRetainedState

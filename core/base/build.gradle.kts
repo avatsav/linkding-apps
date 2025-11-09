@@ -1,4 +1,7 @@
-plugins { id("convention.kotlin.multiplatform") }
+plugins {
+  id("convention.android.library")
+  id("convention.kotlin.multiplatform")
+}
 
 kotlin {
   sourceSets {
@@ -13,3 +16,5 @@ kotlin {
     }
   }
 }
+
+android { namespace = "dev.avatsav.linkding" }

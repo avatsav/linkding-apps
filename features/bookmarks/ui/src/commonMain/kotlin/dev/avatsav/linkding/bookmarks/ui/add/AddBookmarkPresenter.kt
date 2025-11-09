@@ -17,7 +17,7 @@ import dev.avatsav.linkding.bookmarks.api.interactors.AddBookmark
 import dev.avatsav.linkding.bookmarks.api.interactors.CheckBookmarkUrl
 import dev.avatsav.linkding.data.model.CheckUrlResult
 import dev.avatsav.linkding.data.model.SaveBookmark
-import dev.avatsav.linkding.inject.UserScope
+import dev.avatsav.linkding.di.scope.UserScope
 import dev.avatsav.linkding.ui.AddBookmarkScreen
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory

@@ -35,7 +35,7 @@ import com.slack.circuit.overlay.OverlayHost
 import com.slack.circuitx.overlays.DialogResult
 import com.slack.circuitx.overlays.alertDialogOverlay
 import dev.avatsav.linkding.data.model.prefs.AppTheme
-import dev.avatsav.linkding.inject.UserScope
+import dev.avatsav.linkding.di.scope.UserScope
 import dev.avatsav.linkding.settings.ui.SettingsUiEvent.Close
 import dev.avatsav.linkding.settings.ui.SettingsUiEvent.ResetApiConfig
 import dev.avatsav.linkding.settings.ui.SettingsUiEvent.SetAppTheme

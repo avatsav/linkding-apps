@@ -10,9 +10,10 @@ ktor = "3.3.2"
 datetime = "0.7.1-0.6.x-compat"
 compose-multiplatform = "1.10.0-beta01" # https://github.com/JetBrains/compose-multiplatform/releases
 compose-material3 = "1.10.0-alpha04" # https://www.jetbrains.com/help/kotlin-multiplatform-dev/whats-new-compose-190.html#material-3-expressive-theme
-compose-navigationEvent = "1.0.0-beta01"
-compose-viewmodel = "2.10.0-alpha04"
+compose-lifecycle = "2.10.0-alpha04"
 compose-navigation3 = "1.0.0-alpha04"
+compose-navigationEvent = "1.0.0-beta01"
+compose-materialIconsExtended = "1.7.3"
 paging = "3.4.0-alpha04"
 circuit = "0.31.0"
 kotlinResult = "2.1.0"
@@ -57,7 +58,10 @@ androidx-core = "androidx.core:core-ktx:1.17.0"
 androidx-splashscreen = "androidx.core:core-splashscreen:1.2.0"
 androidx-browser = "androidx.browser:browser:1.9.0"
 androidx-preference = "androidx.preference:preference-ktx:1.2.1"
-compose-viewmodel = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "compose-viewmodel" }
+compose-foundation = { module = "org.jetbrains.compose.foundation:foundation", version.ref = "compose-multiplatform" }
+compose-materialIconsExtended = { module = "org.jetbrains.compose.material:material-icons-extended", version.ref = "compose-materialIconsExtended" }
+compose-lifecycle = { module = "org.jetbrains.androidx.lifecycle:lifecycle-runtime-compose", version.ref = "compose-lifecycle" }
+compose-viewmodel = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "compose-lifecycle" }
 compose-navigationEvent = { module = "org.jetbrains.androidx.navigationevent:navigationevent-compose", version.ref = "compose-navigationEvent" }
 compose-navigation3-runtime = { module = "org.jetbrains.androidx.navigation3:navigation3-runtime", version.ref = "compose-navigation3" }
 compose-navigation3-ui = { module = "org.jetbrains.androidx.navigation3:navigation3-ui", version.ref = "compose-navigation3" }

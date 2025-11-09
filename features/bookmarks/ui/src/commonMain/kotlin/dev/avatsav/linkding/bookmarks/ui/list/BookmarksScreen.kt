@@ -55,7 +55,7 @@ import com.slack.circuit.codegen.annotations.CircuitInject
 import dev.avatsav.linkding.bookmarks.ui.list.feed.BookmarkListUiEvent
 import dev.avatsav.linkding.bookmarks.ui.list.widgets.BookmarkListItem
 import dev.avatsav.linkding.data.model.Bookmark
-import dev.avatsav.linkding.inject.UserScope
+import dev.avatsav.linkding.di.scope.UserScope
 import dev.avatsav.linkding.ui.BookmarksScreen
 import dev.avatsav.linkding.ui.compose.appearFromBottom
 import dev.avatsav.linkding.ui.compose.disappearToBottom

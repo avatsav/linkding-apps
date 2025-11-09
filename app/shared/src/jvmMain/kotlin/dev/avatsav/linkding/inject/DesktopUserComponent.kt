@@ -1,6 +1,7 @@
 package dev.avatsav.linkding.inject
 
 import dev.avatsav.linkding.data.model.ApiConfig
+import dev.avatsav.linkding.di.scope.UserScope
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesTo
 import dev.zacsweers.metro.GraphExtension

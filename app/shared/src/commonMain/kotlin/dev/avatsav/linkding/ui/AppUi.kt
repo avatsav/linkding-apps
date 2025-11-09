@@ -15,7 +15,7 @@ import com.slack.circuit.retained.lifecycleRetainedStateRegistry
 import dev.avatsav.linkding.auth.api.AuthManager
 import dev.avatsav.linkding.data.model.app.LaunchMode
 import dev.avatsav.linkding.data.model.prefs.AppTheme
-import dev.avatsav.linkding.inject.UiScope
+import dev.avatsav.linkding.di.scope.UiScope
 import dev.avatsav.linkding.prefs.AppPreferences
 import dev.avatsav.linkding.ui.theme.LinkdingTheme
 import dev.zacsweers.metro.ContributesBinding

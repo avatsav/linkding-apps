@@ -15,7 +15,7 @@ import com.slack.circuitx.gesturenavigation.GestureNavigationDecorationFactory
 import dev.avatsav.linkding.auth.api.AuthState
 import dev.avatsav.linkding.data.model.ApiConfig
 import dev.avatsav.linkding.data.model.app.LaunchMode
-import dev.avatsav.linkding.inject.ComponentHolder
+import dev.avatsav.linkding.di.ComponentHolder
 import dev.avatsav.linkding.inject.UserComponent
 
 @Composable

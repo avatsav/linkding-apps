@@ -8,8 +8,9 @@ plugins {
 kotlin {
   sourceSets {
     commonMain.dependencies {
-      api(compose.foundation)
+      api(libs.compose.foundation)
       api(libs.compose.m3expressive)
+      api(libs.compose.materialIconsExtended)
     }
   }
 }

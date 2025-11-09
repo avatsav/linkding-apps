@@ -16,7 +16,8 @@ kotlin {
       // Core infrastructure - needed by apps
       api(projects.core.base)
       api(projects.core.preferences)
-      api(projects.core.connectivity) // DI components need this
+      api(projects.core.connectivity)
+      api(projects.core.di)
 
       // Data layer - exposed for DI components
       api(projects.data.models) // Export for iOS framework

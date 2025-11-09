@@ -9,7 +9,7 @@ import dev.avatsav.linkding.bookmarks.ui.list.BookmarksUiEvent.AddBookmark
 import dev.avatsav.linkding.bookmarks.ui.list.BookmarksUiEvent.ShowSettings
 import dev.avatsav.linkding.bookmarks.ui.list.feed.BookmarkFeedPresenter
 import dev.avatsav.linkding.bookmarks.ui.list.search.BookmarkSearchPresenter
-import dev.avatsav.linkding.inject.UserScope
+import dev.avatsav.linkding.di.scope.UserScope
 import dev.avatsav.linkding.ui.AddBookmarkScreen
 import dev.avatsav.linkding.ui.BookmarksScreen
 import dev.avatsav.linkding.ui.SettingsScreen

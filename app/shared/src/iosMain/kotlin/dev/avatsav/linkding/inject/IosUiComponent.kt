@@ -1,5 +1,6 @@
 package dev.avatsav.linkding.inject
 
+import dev.avatsav.linkding.di.scope.UiScope
 import dev.avatsav.linkding.ui.MainUIViewControllerFactory
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesTo

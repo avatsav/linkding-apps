@@ -2,7 +2,9 @@ package dev.avatsav.linkding.inject
 
 import android.app.Application
 import android.content.pm.ApplicationInfo
+import androidx.core.app.AppComponentFactory
 import dev.avatsav.linkding.AppInfo
+import dev.avatsav.linkding.di.PlatformAppGraph
 import dev.avatsav.linkding.initializers.AppInitializer
 import dev.avatsav.linkding.prefs.AppPreferences
 import dev.zacsweers.metro.AppScope
@@ -11,11 +13,13 @@ import dev.zacsweers.metro.Provides
 import dev.zacsweers.metro.SingleIn
 
 @DependencyGraph(AppScope::class)
-abstract class AndroidAppComponent {
+abstract class AndroidAppComponent : PlatformAppGraph {
 
   abstract val appPreferences: AppPreferences
 
   abstract val appInitializer: AppInitializer
+
+  abstract val appComponentFactory: AppComponentFactory
 
   @Suppress("UnsafeCallOnNullableType")
   @SingleIn(AppScope::class)

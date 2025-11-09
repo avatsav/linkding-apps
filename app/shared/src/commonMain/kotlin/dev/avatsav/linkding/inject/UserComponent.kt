@@ -3,6 +3,7 @@ package dev.avatsav.linkding.inject
 import com.slack.circuit.runtime.presenter.Presenter
 import com.slack.circuit.runtime.ui.Ui
 import dev.avatsav.linkding.data.model.ApiConfig
+import dev.avatsav.linkding.di.scope.UserScope
 import dev.zacsweers.metro.SingleIn
 
 @SingleIn(UserScope::class)

@@ -10,6 +10,7 @@ kotlin {
   sourceSets {
     commonMain.dependencies {
       implementation(projects.core.base)
+      implementation(projects.core.di)
       api(projects.features.bookmarks.api)
 
       // Data layer dependencies

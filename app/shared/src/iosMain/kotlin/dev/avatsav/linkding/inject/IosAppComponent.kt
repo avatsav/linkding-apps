@@ -12,7 +12,7 @@ import platform.Foundation.NSUserDefaults
 
 @OptIn(ExperimentalNativeApi::class)
 @DependencyGraph(AppScope::class)
-abstract class IosAppComponent {
+abstract class IosAppComponent : PlatformAppGraph {
 
   abstract val appInitializer: AppInitializer
 

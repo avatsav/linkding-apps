@@ -10,7 +10,7 @@ import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
 import dev.avatsav.linkding.AppInfo
 import dev.avatsav.linkding.data.model.prefs.AppTheme
-import dev.avatsav.linkding.inject.UserScope
+import dev.avatsav.linkding.di.scope.UserScope
 import dev.avatsav.linkding.settings.api.SettingsManager
 import dev.avatsav.linkding.ui.AuthScreen
 import dev.avatsav.linkding.ui.SettingsScreen
