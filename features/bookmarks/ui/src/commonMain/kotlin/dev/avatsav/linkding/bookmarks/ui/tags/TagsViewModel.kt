@@ -40,7 +40,7 @@ class TagsViewModel(
 
     val tags = tagsFlow.collectAsLazyPagingItems()
 
-    CollectEvents { event ->
+    ObserveEvents { event ->
       when (event) {
         is SelectTag -> navigator.onTagSelected(event.tag)
         Close -> navigator.onDismiss()

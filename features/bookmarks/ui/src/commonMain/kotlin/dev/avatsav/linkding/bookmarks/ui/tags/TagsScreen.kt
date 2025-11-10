@@ -37,7 +37,6 @@ fun Tags(viewModel: TagsViewModel, modifier: Modifier = Modifier) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Tags(state: TagsUiState, modifier: Modifier = Modifier, eventSink: (TagsUiEvent) -> Unit) {
-
   val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
   Scaffold(
     modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),

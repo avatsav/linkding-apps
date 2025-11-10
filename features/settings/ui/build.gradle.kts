@@ -15,7 +15,6 @@ kotlin {
       implementation(projects.core.viewmodel)
       implementation(projects.ui.compose)
       implementation(projects.ui.theme)
-      implementation(libs.circuit.overlay)
       implementation(libs.compose.foundation)
       implementation(libs.compose.m3expressive)
       implementation(libs.compose.viewmodel)

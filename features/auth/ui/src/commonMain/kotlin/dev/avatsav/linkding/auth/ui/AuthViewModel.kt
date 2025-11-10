@@ -28,7 +28,7 @@ class AuthViewModel(private val authenticate: Authenticate) :
     var invalidApiKey by rememberSaveable { mutableStateOf(false) }
     var errorMessage by rememberSaveable { mutableStateOf("") }
 
-    CollectEvents { event ->
+    ObserveEvents { event ->
       when (event) {
         is AuthUiEvent.SaveCredentials -> {
           invalidHostUrl = false

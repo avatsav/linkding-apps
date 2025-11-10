@@ -36,31 +36,3 @@ data class BookmarkFiltersUiState(
   val bookmarkCategory: BookmarkCategory = BookmarkCategory.All,
   val selectedTags: List<Tag> = listOf(),
 )
-
-sealed interface BookmarkSearchUiEvent {
-  data class Search(val query: String) : BookmarkSearchUiEvent
-
-  data class SelectBookmarkCategory(val category: BookmarkCategory) : BookmarkSearchUiEvent
-
-  data class SelectTag(val tag: Tag) : BookmarkSearchUiEvent
-
-  data class RemoveTag(val tag: Tag) : BookmarkSearchUiEvent
-
-  data class Open(val bookmark: Bookmark) : BookmarkSearchUiEvent
-
-  data class Edit(val bookmark: Bookmark) : BookmarkSearchUiEvent
-
-  data class ToggleArchive(val bookmark: Bookmark) : BookmarkSearchUiEvent
-
-  data class Delete(val bookmark: Bookmark) : BookmarkSearchUiEvent
-
-  data class SelectSearchHistoryItem(val item: SearchHistory) : BookmarkSearchUiEvent
-
-  data object ClearSearch : BookmarkSearchUiEvent
-
-  data object ClearSearchHistory : BookmarkSearchUiEvent
-
-  data object UndoAction : BookmarkSearchUiEvent
-
-  data object DismissSnackbar : BookmarkSearchUiEvent
-}

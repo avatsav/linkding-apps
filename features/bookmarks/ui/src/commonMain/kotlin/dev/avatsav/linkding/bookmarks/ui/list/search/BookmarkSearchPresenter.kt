@@ -16,38 +16,43 @@ import androidx.paging.cachedIn
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.filter
 import dev.avatsav.linkding.bookmarks.api.interactors.ArchiveBookmark
-import dev.avatsav.linkding.bookmarks.api.interactors.ClearSearchHistory as ClearSearchHistoryInteractor
 import dev.avatsav.linkding.bookmarks.api.interactors.DeleteBookmark
 import dev.avatsav.linkding.bookmarks.api.interactors.SaveSearchState
 import dev.avatsav.linkding.bookmarks.api.interactors.UnarchiveBookmark
 import dev.avatsav.linkding.bookmarks.api.observers.ObserveSearchHistory
 import dev.avatsav.linkding.bookmarks.api.observers.ObserveSearchResults
+import dev.avatsav.linkding.bookmarks.ui.list.BookmarkSearchUiEvent
+import dev.avatsav.linkding.bookmarks.ui.list.BookmarkSearchUiEvent.ClearSearch
+import dev.avatsav.linkding.bookmarks.ui.list.BookmarkSearchUiEvent.ClearSearchHistory
+import dev.avatsav.linkding.bookmarks.ui.list.BookmarkSearchUiEvent.Delete
+import dev.avatsav.linkding.bookmarks.ui.list.BookmarkSearchUiEvent.Open
+import dev.avatsav.linkding.bookmarks.ui.list.BookmarkSearchUiEvent.RemoveTag
+import dev.avatsav.linkding.bookmarks.ui.list.BookmarkSearchUiEvent.Search
+import dev.avatsav.linkding.bookmarks.ui.list.BookmarkSearchUiEvent.SelectBookmarkCategory
+import dev.avatsav.linkding.bookmarks.ui.list.BookmarkSearchUiEvent.SelectSearchHistoryItem
+import dev.avatsav.linkding.bookmarks.ui.list.BookmarkSearchUiEvent.SelectTag
+import dev.avatsav.linkding.bookmarks.ui.list.BookmarkSearchUiEvent.ToggleArchive
 import dev.avatsav.linkding.bookmarks.ui.list.common.PendingAction
 import dev.avatsav.linkding.bookmarks.ui.list.common.rememberPendingActionHandler
-import dev.avatsav.linkding.bookmarks.ui.list.search.BookmarkSearchUiEvent.ClearSearch
-import dev.avatsav.linkding.bookmarks.ui.list.search.BookmarkSearchUiEvent.ClearSearchHistory
-import dev.avatsav.linkding.bookmarks.ui.list.search.BookmarkSearchUiEvent.Delete
-import dev.avatsav.linkding.bookmarks.ui.list.search.BookmarkSearchUiEvent.Open
-import dev.avatsav.linkding.bookmarks.ui.list.search.BookmarkSearchUiEvent.RemoveTag
-import dev.avatsav.linkding.bookmarks.ui.list.search.BookmarkSearchUiEvent.Search
-import dev.avatsav.linkding.bookmarks.ui.list.search.BookmarkSearchUiEvent.SelectBookmarkCategory
-import dev.avatsav.linkding.bookmarks.ui.list.search.BookmarkSearchUiEvent.SelectSearchHistoryItem
-import dev.avatsav.linkding.bookmarks.ui.list.search.BookmarkSearchUiEvent.SelectTag
-import dev.avatsav.linkding.bookmarks.ui.list.search.BookmarkSearchUiEvent.ToggleArchive
 import dev.avatsav.linkding.data.model.Bookmark
 import dev.avatsav.linkding.data.model.BookmarkCategory
 import dev.avatsav.linkding.data.model.SearchHistory
 import dev.avatsav.linkding.data.model.Tag
 import dev.avatsav.linkding.viewmodel.MoleculePresenter
-import kotlin.time.Clock
+import dev.zacsweers.metro.Assisted
+import dev.zacsweers.metro.AssistedFactory
+import dev.zacsweers.metro.AssistedInject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.launch
+import kotlin.time.Clock
+import dev.avatsav.linkding.bookmarks.api.interactors.ClearSearchHistory as ClearSearchHistoryInteractor
 
+@AssistedInject
 class BookmarkSearchPresenter(
-  scope: CoroutineScope,
+  @Assisted scope: CoroutineScope,
   private val observeSearchResults: ObserveSearchResults,
   private val observeSearchHistory: ObserveSearchHistory,
   private val saveSearchState: SaveSearchState,
@@ -111,7 +116,7 @@ class BookmarkSearchPresenter(
     }
     val searchHistory by searchHistoryFlow.collectAsState(initial = emptyList())
 
-    CollectEvents { event ->
+    ObserveEvents { event ->
       when (event) {
         is ToggleArchive -> {
           val action =
@@ -209,6 +214,11 @@ class BookmarkSearchPresenter(
       filters =
         BookmarkFiltersUiState(bookmarkCategory = bookmarkCategory, selectedTags = selectedTags),
     )
+  }
+
+  @AssistedFactory
+  interface Factory {
+    fun create(scope: CoroutineScope): BookmarkSearchPresenter
   }
 }
 

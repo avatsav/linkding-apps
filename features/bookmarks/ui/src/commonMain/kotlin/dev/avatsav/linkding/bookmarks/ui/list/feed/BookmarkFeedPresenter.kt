@@ -16,34 +16,37 @@ import dev.avatsav.linkding.bookmarks.api.interactors.ArchiveBookmark
 import dev.avatsav.linkding.bookmarks.api.interactors.DeleteBookmark
 import dev.avatsav.linkding.bookmarks.api.interactors.UnarchiveBookmark
 import dev.avatsav.linkding.bookmarks.api.observers.ObserveBookmarks
+import dev.avatsav.linkding.bookmarks.ui.list.BookmarkFeedUiEvent
+import dev.avatsav.linkding.bookmarks.ui.list.BookmarkFeedUiEvent.Delete
+import dev.avatsav.linkding.bookmarks.ui.list.BookmarkFeedUiEvent.Open
+import dev.avatsav.linkding.bookmarks.ui.list.BookmarkFeedUiEvent.Refresh
+import dev.avatsav.linkding.bookmarks.ui.list.BookmarkFeedUiEvent.ToggleArchive
 import dev.avatsav.linkding.bookmarks.ui.list.common.PendingAction
 import dev.avatsav.linkding.bookmarks.ui.list.common.rememberPendingActionHandler
-import dev.avatsav.linkding.bookmarks.ui.list.feed.BookmarkListUiEvent.Delete
-import dev.avatsav.linkding.bookmarks.ui.list.feed.BookmarkListUiEvent.Open
-import dev.avatsav.linkding.bookmarks.ui.list.feed.BookmarkListUiEvent.Refresh
-import dev.avatsav.linkding.bookmarks.ui.list.feed.BookmarkListUiEvent.ToggleArchive
 import dev.avatsav.linkding.data.model.Bookmark
 import dev.avatsav.linkding.data.model.BookmarkCategory
 import dev.avatsav.linkding.viewmodel.MoleculePresenter
+import dev.zacsweers.metro.Assisted
+import dev.zacsweers.metro.AssistedFactory
+import dev.zacsweers.metro.AssistedInject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.launch
 
+@AssistedInject
 class BookmarkFeedPresenter(
-  scope: CoroutineScope,
+  @Assisted scope: CoroutineScope,
   private val observeBookmarks: ObserveBookmarks,
   private val deleteBookmark: DeleteBookmark,
   private val archiveBookmark: ArchiveBookmark,
   private val unarchiveBookmark: UnarchiveBookmark,
   private val navigator: BookmarkFeedNavigator,
-) : MoleculePresenter<BookmarkListUiEvent, BookmarkListUiState>(scope) {
-
-  private val presenterScope = scope
+) : MoleculePresenter<BookmarkFeedUiEvent, BookmarkFeedUiState>(scope) {
 
   @Composable
-  override fun models(events: Flow<BookmarkListUiEvent>): BookmarkListUiState {
+  override fun models(events: Flow<BookmarkFeedUiEvent>): BookmarkFeedUiState {
     val actionHandler =
       rememberPendingActionHandler(
         scope = presenterScope,
@@ -82,7 +85,7 @@ class BookmarkFeedPresenter(
 
     val bookmarks = bookmarksFlow.collectAsLazyPagingItems()
 
-    CollectEvents { event ->
+    ObserveEvents { event ->
       when (event) {
         Refresh -> presenterScope.launch { bookmarks.refresh() }
 
@@ -104,24 +107,29 @@ class BookmarkFeedPresenter(
 
         is Open -> navigator.openUrl(event.bookmark.url)
 
-        is BookmarkListUiEvent.Edit -> {
+        is BookmarkFeedUiEvent.Edit -> {
           // Editing bookmarks not yet implemented
         }
 
-        BookmarkListUiEvent.UndoAction -> {
+        BookmarkFeedUiEvent.UndoAction -> {
           actionHandler.undoAction()
         }
 
-        BookmarkListUiEvent.DismissSnackbar -> {
+        BookmarkFeedUiEvent.DismissSnackbar -> {
           actionHandler.dismissSnackbar()
         }
       }
     }
 
-    return BookmarkListUiState(
+    return BookmarkFeedUiState(
       bookmarks = bookmarks,
       snackbarMessage = actionHandler.snackbarMessage,
     )
+  }
+
+  @AssistedFactory
+  interface Factory {
+    fun create(scope: CoroutineScope): BookmarkFeedPresenter
   }
 }
 

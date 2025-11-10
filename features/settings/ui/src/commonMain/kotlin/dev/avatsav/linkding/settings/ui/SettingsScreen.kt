@@ -10,6 +10,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.Logout
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
@@ -23,17 +24,16 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.slack.circuit.overlay.LocalOverlayHost
-import com.slack.circuit.overlay.OverlayHost
-import com.slack.circuitx.overlays.DialogResult
-import com.slack.circuitx.overlays.alertDialogOverlay
 import dev.avatsav.linkding.data.model.prefs.AppTheme
 import dev.avatsav.linkding.settings.ui.SettingsUiEvent.Close
 import dev.avatsav.linkding.settings.ui.SettingsUiEvent.ResetApiConfig
@@ -47,7 +47,6 @@ import dev.avatsav.linkding.settings.ui.widgets.PreferenceSection
 import dev.avatsav.linkding.settings.ui.widgets.SwitchPreference
 import dev.avatsav.linkding.settings.ui.widgets.ThemePreference
 import dev.avatsav.linkding.ui.theme.Material3ShapeDefaults
-import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class, ExperimentalMaterial3Api::class)
 @Composable
@@ -64,10 +63,8 @@ fun Settings(
   modifier: Modifier = Modifier,
   eventSink: (SettingsUiEvent) -> Unit,
 ) {
-  val overlayHost = LocalOverlayHost.current
-
-  val coroutineScope = rememberCoroutineScope()
   val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
+  var showResetConfirmationDialog by remember { mutableStateOf(false) }
 
   Scaffold(
     modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
@@ -98,15 +95,7 @@ fun Settings(
           .nestedScroll(scrollBehavior.nestedScrollConnection),
     ) {
       item {
-        LinkdingSettings(
-          state = state,
-          onResetClick = {
-            coroutineScope.launch {
-              val result = overlayHost.showResetConfirmationDialog()
-              if (result == DialogResult.Confirm) eventSink(ResetApiConfig)
-            }
-          },
-        )
+        LinkdingSettings(state = state, onResetClick = { showResetConfirmationDialog = true })
       }
       item {
         AppearanceSettings(
@@ -125,6 +114,12 @@ fun Settings(
       }
       item { MadeInMunich() }
     }
+  }
+  if (showResetConfirmationDialog) {
+    ResetConfirmationDialog(
+      onConfirm = { eventSink(ResetApiConfig) },
+      onDismiss = { eventSink(Close) },
+    )
   }
 }
 
@@ -226,14 +221,14 @@ private fun MadeInMunich() {
   )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
-suspend fun OverlayHost.showResetConfirmationDialog(): DialogResult =
-  show(
-    alertDialogOverlay(
-      icon = { Icon(imageVector = Icons.AutoMirrored.Filled.Logout, "") },
-      title = { Text("Confirm Reset") },
-      text = { Text("Are you sure you want to reset the api configuration?") },
-      confirmButton = { onClick -> Button(onClick = onClick) { Text("Yes") } },
-      dismissButton = { onClick -> OutlinedButton(onClick = onClick) { Text("No") } },
-    )
+@Composable
+fun ResetConfirmationDialog(onConfirm: () -> Unit, onDismiss: () -> Unit) {
+  AlertDialog(
+    icon = { Icon(imageVector = Icons.AutoMirrored.Filled.Logout, "") },
+    title = { Text("Confirm Reset") },
+    text = { Text("Are you sure you want to reset the api configuration?") },
+    onDismissRequest = onDismiss,
+    confirmButton = { Button(onClick = onConfirm) { Text("Yes") } },
+    dismissButton = { OutlinedButton(onClick = onDismiss) { Text("No") } },
   )
+}

@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewModelScope
 import co.touchlab.kermit.Logger
@@ -29,13 +29,13 @@ class AddBookmarkViewModel(
 
   @Composable
   override fun models(events: Flow<AddBookmarkUiEvent>): AddBookmarkUiState {
-    var checkUrlResult: CheckUrlResult? by rememberSaveable { mutableStateOf(null) }
-    var errorMessage by rememberSaveable { mutableStateOf("") }
+    var checkUrlResult: CheckUrlResult? by remember { mutableStateOf(null) }
+    var errorMessage by remember { mutableStateOf("") }
 
     val checkingUrl by checkBookmarkUrl.inProgress.collectAsState(false)
     val saving by addBookmark.inProgress.collectAsState(false)
 
-    CollectEvents { event ->
+    ObserveEvents { event ->
       when (event) {
         AddBookmarkUiEvent.Close -> navigator.navigateUp()
         is AddBookmarkUiEvent.Save ->

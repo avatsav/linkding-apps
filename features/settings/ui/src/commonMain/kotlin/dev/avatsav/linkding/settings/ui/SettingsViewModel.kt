@@ -3,7 +3,6 @@ package dev.avatsav.linkding.settings.ui
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.lifecycle.viewModelScope
 import dev.avatsav.linkding.AppInfo
 import dev.avatsav.linkding.data.model.prefs.AppTheme
@@ -23,15 +22,11 @@ class SettingsViewModel(
   @Composable
   override fun models(events: Flow<SettingsUiEvent>): SettingsUiState {
     val apiConfig by
-      remember { settingsManager.observeApiConfig() }.collectAsState(settingsManager.getApiConfig())
+      settingsManager.observeApiConfig().collectAsState(settingsManager.getApiConfig())
+    val useDynamicColors by settingsManager.observeUseDynamicColors().collectAsState(false)
+    val appTheme by settingsManager.observeAppTheme().collectAsState(AppTheme.System)
 
-    val useDynamicColors by
-      remember { settingsManager.observeUseDynamicColors() }.collectAsState(false)
-
-    val appTheme by
-      remember { settingsManager.observeAppTheme() }.collectAsState(AppTheme.System)
-
-    CollectEvents { event ->
+    ObserveEvents { event ->
       when (event) {
         SettingsUiEvent.Close -> navigator.navigateUp()
         is SettingsUiEvent.SetAppTheme ->
@@ -65,6 +60,8 @@ class SettingsViewModel(
 
 interface SettingsNavigator {
   fun navigateUp()
+
   fun resetToAuth()
+
   fun navigateToUrl(url: String)
 }
