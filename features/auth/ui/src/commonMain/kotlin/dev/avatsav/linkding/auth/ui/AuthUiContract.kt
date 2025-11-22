@@ -17,3 +17,7 @@ data class AuthUiState(
 sealed interface AuthUiEvent {
   data class SaveCredentials(val hostUrl: String, val apiKey: String) : AuthUiEvent
 }
+
+sealed interface AuthEffect {
+  data object AuthenticationSuccess : AuthEffect
+}

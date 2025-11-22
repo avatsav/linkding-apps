@@ -24,11 +24,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 
-sealed interface TagsEffect {
-  data class TagSelected(val tag: Tag) : TagsEffect
-  data object Dismiss : TagsEffect
-}
-
 @AssistedInject
 class TagsViewModel(
   @Assisted private val selectedTags: List<Tag>,

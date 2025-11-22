@@ -62,3 +62,9 @@ sealed interface BookmarkSearchUiEvent : BookmarksUiEvent {
 
   data object DismissSnackbar : BookmarkSearchUiEvent
 }
+
+sealed interface BookmarksEffect {
+  data object NavigateToAddBookmark : BookmarksEffect
+
+  data object NavigateToSettings : BookmarksEffect
+}

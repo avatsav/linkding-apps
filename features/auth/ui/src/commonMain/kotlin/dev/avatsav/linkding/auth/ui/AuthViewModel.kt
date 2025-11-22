@@ -23,10 +23,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
-sealed interface AuthEffect {
-  data object AuthenticationSuccess : AuthEffect
-}
-
 @Inject
 class AuthViewModel(authPresenterFactory: AuthPresenter.Factory) :
   MoleculeViewModel<AuthUiEvent, AuthUiState, AuthEffect>() {

@@ -22,7 +22,7 @@ import kotlinx.coroutines.flow.StateFlow
  * @param Model The UI state model exposed as a [StateFlow]
  * @param Effect One-time side effects (navigation, toasts, etc.)
  */
-interface Presentable<Event, Model, Effect> {
+interface Presenter<Event, Model, Effect> {
   val models: StateFlow<Model>
   val effects: ReceiveChannel<Effect>
 
@@ -30,69 +30,50 @@ interface Presentable<Event, Model, Effect> {
 }
 
 /**
- * Lightweight presenter for managing state, events, and effects using Molecule. Designed to be
- * composed within ViewModels or other presenters.
+ * Lightweight presenter for managing state, events, and effects using Molecule.
  *
- * Use [presenterScope] for launching coroutines, [ObserveEvents] to handle UI events, and
- * [emitEffect] or [trySendEffect] to emit one-time side effects.
+ * Use [presenterScope] to launch coroutines, [ObserveEvents] to handle events, and [trySendEffect]
+ * or [emitEffect] to emit side effects.
  *
  * Example:
  * ```kotlin
- * // Define effects for the feature
- * sealed interface BookmarksEffect {
- *   data object NavigateToAdd : BookmarksEffect
- *   data class ShowToast(val message: String) : BookmarksEffect
- * }
- *
  * @AssistedInject
- * class BookmarksPresenter(
+ * class MyPresenter(
  *   @Assisted coroutineScope: CoroutineScope,
- *   private val observeBookmarks: ObserveBookmarks,
- * ) : MoleculePresenter<BookmarksEvent, BookmarksState, BookmarksEffect>(coroutineScope) {
+ *   private val repository: Repository,
+ * ) : MoleculePresenter<MyEvent, MyState, MyEffect>(coroutineScope) {
  *
  *   @Composable
- *   override fun models(events: Flow<BookmarksEvent>): BookmarksState {
- *     val bookmarks by observeBookmarks.flow.collectAsState(initial = emptyList())
+ *   override fun models(events: Flow<MyEvent>): MyState {
+ *     var count by remember { mutableStateOf(0) }
  *
  *     ObserveEvents { event ->
  *       when (event) {
- *         BookmarksEvent.AddBookmark -> trySendEffect(BookmarksEffect.NavigateToAdd)
- *         is BookmarksEvent.Delete -> presenterScope.launch {
- *           deleteBookmark(event.id)
- *           emitEffect(BookmarksEffect.ShowToast("Deleted"))
+ *         MyEvent.Increment -> count++
+ *         MyEvent.Save -> presenterScope.launch {
+ *           repository.save(count)
+ *           emitEffect(MyEffect.Saved)
  *         }
  *       }
  *     }
  *
- *     return BookmarksState(bookmarks = bookmarks)
+ *     return MyState(count = count)
  *   }
  *
  *   @AssistedFactory
  *   interface Factory {
- *     fun create(coroutineScope: CoroutineScope): BookmarksPresenter
+ *     fun create(scope: CoroutineScope): MyPresenter
  *   }
  * }
  * ```
  *
- * Collect effects in UI:
- * ```kotlin
- * LaunchedEffect(Unit) {
- *   for (effect in presenter.effects) {
- *     when (effect) {
- *       BookmarksEffect.NavigateToAdd -> navigator.navigate(AddScreen)
- *       is BookmarksEffect.ShowToast -> showToast(effect.message)
- *     }
- *   }
- * }
- * ```
- *
- * @param scope The coroutine scope (typically from a parent ViewModel)
+ * @param scope Coroutine scope from parent ViewModel
  * @param Event UI events to handle
- * @param Model The UI state model
- * @param Effect One-time side effects (navigation, toasts, etc.)
+ * @param Model UI state model
+ * @param Effect One-time side effects
  */
 abstract class MoleculePresenter<Event, Model, Effect>(scope: CoroutineScope) :
-  Presentable<Event, Model, Effect> {
+  Presenter<Event, Model, Effect> {
 
   val presenterScope = scope
   private val moleculeScope = CoroutineScope(scope.coroutineContext + UiDispatcherContext)
@@ -114,16 +95,16 @@ abstract class MoleculePresenter<Event, Model, Effect>(scope: CoroutineScope) :
   }
 
   /**
-   * Emits a one-time effect. Suspends if the effect buffer is full. Use this when already in a
-   * coroutine context.
+   * Emits a side effect. Suspends if buffer is full.
+   * Use from suspending contexts (e.g., within `presenterScope.launch`).
    */
   protected suspend fun emitEffect(effect: Effect) {
     _effects.send(effect)
   }
 
   /**
-   * Attempts to emit a one-time effect without suspending. Throws if the effect buffer is full. Use
-   * this from non-suspending contexts.
+   * Emits a side effect without suspending. Throws if buffer is full.
+   * Use from non-suspending contexts (e.g., event handlers).
    */
   protected fun trySendEffect(effect: Effect) {
     _effects.trySend(effect).getOrThrow()
@@ -132,8 +113,8 @@ abstract class MoleculePresenter<Event, Model, Effect>(scope: CoroutineScope) :
   @Composable protected abstract fun models(events: Flow<Event>): Model
 
   /**
-   * Observes events from the UI and executes the provided block for each event. Use
-   * [presenterScope] to launch coroutines within the block.
+   * Observes events from the UI and handles them in the presenter.
+   * Use [presenterScope] to launch coroutines.
    */
   @Composable
   protected fun ObserveEvents(block: CoroutineScope.(Event) -> Unit) {
@@ -143,33 +124,32 @@ abstract class MoleculePresenter<Event, Model, Effect>(scope: CoroutineScope) :
 }
 
 /**
- * ViewModel wrapper that delegates state, event, and effect management to a [MoleculePresenter].
- * Combines Jetpack ViewModel lifecycle with Molecule's reactive state management.
+ * ViewModel that delegates to a [MoleculePresenter].
  *
- * Subclasses inject a presenter factory and lazily create the presenter with [viewModelScope].
+ * Inject a presenter factory and create the presenter with [viewModelScope].
  *
  * Example:
  * ```kotlin
  * @Inject
- * class BookmarksViewModel(
- *   bookmarksPresenterFactory: BookmarksPresenter.Factory
- * ) : MoleculeViewModel<BookmarksEvent, BookmarksState, BookmarksEffect>() {
+ * class MyViewModel(
+ *   presenterFactory: MyPresenter.Factory
+ * ) : MoleculeViewModel<MyEvent, MyState, MyEffect>() {
  *   override val presenter by lazy {
- *     bookmarksPresenterFactory.create(viewModelScope)
+ *     presenterFactory.create(viewModelScope)
  *   }
  * }
  * ```
  *
- * @param Event UI events to handle
- * @param Model The UI state model
- * @param Effect One-time side effects (navigation, toasts, etc.)
+ * @param Event UI events
+ * @param Model UI state
+ * @param Effect Side effects
  */
 abstract class MoleculeViewModel<Event, Model, Effect> :
-  ViewModel(), Presentable<Event, Model, Effect> {
+  ViewModel(), Presenter<Event, Model, Effect> {
 
   /**
-   * The presenter that handles all state, event, and effect logic. Initialize lazily with
-   * [viewModelScope] from an injected factory.
+   * The presenter handling state and effects.
+   * Initialize lazily with [viewModelScope] from an injected factory.
    */
   protected abstract val presenter: MoleculePresenter<Event, Model, Effect>
 
@@ -180,4 +160,34 @@ abstract class MoleculeViewModel<Event, Model, Effect> :
     get() = presenter.effects
 
   override fun eventSink(event: Event) = presenter.eventSink(event)
+}
+
+/**
+ * Observes effects and handles them in your UI composable.
+ *
+ * Example:
+ * ```kotlin
+ * @Composable
+ * fun MyScreen(presenter: MyPresenter) {
+ *   val state by presenter.models.collectAsState()
+ *
+ *   ObserveEffects(presenter.effects) { effect ->
+ *     when (effect) {
+ *       MyEffect.NavigateUp -> navigator.goBack()
+ *       MyEffect.ShowMessage -> showSnackbar("Done")
+ *     }
+ *   }
+ *
+ *   // UI content...
+ * }
+ * ```
+ */
+@Composable
+fun <Effect> ObserveEffects(effects: ReceiveChannel<Effect>, block: suspend (Effect) -> Unit) {
+  val latestBlock by rememberUpdatedState(block)
+  LaunchedEffect(effects) {
+    for (effect in effects) {
+      latestBlock(effect)
+    }
+  }
 }

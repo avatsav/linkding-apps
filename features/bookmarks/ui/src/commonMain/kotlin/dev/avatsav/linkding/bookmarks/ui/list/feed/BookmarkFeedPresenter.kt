@@ -43,7 +43,7 @@ class BookmarkFeedPresenter(
   private val archiveBookmark: ArchiveBookmark,
   private val unarchiveBookmark: UnarchiveBookmark,
   private val navigator: BookmarkFeedNavigator,
-) : MoleculePresenter<BookmarkFeedUiEvent, BookmarkFeedUiState>(scope) {
+) : MoleculePresenter<BookmarkFeedUiEvent, BookmarkFeedUiState, Unit>(scope) {
 
   @Composable
   override fun models(events: Flow<BookmarkFeedUiEvent>): BookmarkFeedUiState {

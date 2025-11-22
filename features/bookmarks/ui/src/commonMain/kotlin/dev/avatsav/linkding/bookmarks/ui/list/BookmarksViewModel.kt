@@ -17,11 +17,6 @@ import dev.zacsweers.metro.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 
-sealed interface BookmarksEffect {
-  data object NavigateToAddBookmark : BookmarksEffect
-  data object NavigateToSettings : BookmarksEffect
-}
-
 @Inject
 class BookmarksViewModel(bookmarksPresenterFactory: BookmarksPresenter.Factory) :
   MoleculeViewModel<BookmarksUiEvent, BookmarksUiState, BookmarksEffect>() {

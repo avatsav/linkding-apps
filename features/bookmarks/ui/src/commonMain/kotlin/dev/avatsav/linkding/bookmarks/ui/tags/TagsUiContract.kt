@@ -11,3 +11,9 @@ sealed interface TagsUiEvent {
 
   data object Close : TagsUiEvent
 }
+
+sealed interface TagsEffect {
+  data class TagSelected(val tag: Tag) : TagsEffect
+
+  data object Dismiss : TagsEffect
+}

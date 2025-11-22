@@ -24,11 +24,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
-sealed interface AddBookmarkEffect {
-  data object BookmarkSaved : AddBookmarkEffect
-  data object NavigateUp : AddBookmarkEffect
-}
-
 @Inject
 class AddBookmarkViewModel(addBookmarkPresenterFactory: AddBookmarkPresenter.Factory) :
   MoleculeViewModel<AddBookmarkUiEvent, AddBookmarkUiState, AddBookmarkEffect>() {

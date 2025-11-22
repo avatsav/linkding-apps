@@ -25,3 +25,9 @@ sealed interface AddBookmarkUiEvent {
 
   data class CheckUrl(val url: String) : AddBookmarkUiEvent
 }
+
+sealed interface AddBookmarkEffect {
+  data object BookmarkSaved : AddBookmarkEffect
+
+  data object NavigateUp : AddBookmarkEffect
+}

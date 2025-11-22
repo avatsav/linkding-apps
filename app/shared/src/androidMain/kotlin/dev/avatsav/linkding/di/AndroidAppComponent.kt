@@ -8,6 +8,7 @@ import dev.avatsav.linkding.initializers.AppInitializer
 import dev.avatsav.linkding.prefs.AppPreferences
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.DependencyGraph
+import dev.zacsweers.metro.Multibinds
 import dev.zacsweers.metro.Provider
 import dev.zacsweers.metro.Provides
 import dev.zacsweers.metro.SingleIn
@@ -24,6 +25,7 @@ abstract class AndroidAppComponent {
    * A multibinding map of activity classes to their providers accessible for
    * MetroAppComponentFactory
    */
+  @Multibinds(allowEmpty = true)
   abstract val activityProviders: Map<KClass<out Activity>, Provider<Activity>>
 
   @Suppress("UnsafeCallOnNullableType")
