@@ -1,6 +1,5 @@
 package dev.avatsav.linkding.di
 
-import android.app.Activity
 import android.app.Application
 import android.content.pm.ApplicationInfo
 import dev.avatsav.linkding.AppInfo
@@ -8,11 +7,8 @@ import dev.avatsav.linkding.initializers.AppInitializer
 import dev.avatsav.linkding.prefs.AppPreferences
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.DependencyGraph
-import dev.zacsweers.metro.Multibinds
-import dev.zacsweers.metro.Provider
 import dev.zacsweers.metro.Provides
 import dev.zacsweers.metro.SingleIn
-import kotlin.reflect.KClass
 
 @DependencyGraph(AppScope::class)
 abstract class AndroidAppComponent {
@@ -20,13 +16,6 @@ abstract class AndroidAppComponent {
   abstract val appPreferences: AppPreferences
 
   abstract val appInitializer: AppInitializer
-
-  /**
-   * A multibinding map of activity classes to their providers accessible for
-   * MetroAppComponentFactory
-   */
-  @Multibinds(allowEmpty = true)
-  abstract val activityProviders: Map<KClass<out Activity>, Provider<Activity>>
 
   @Suppress("UnsafeCallOnNullableType")
   @SingleIn(AppScope::class)
