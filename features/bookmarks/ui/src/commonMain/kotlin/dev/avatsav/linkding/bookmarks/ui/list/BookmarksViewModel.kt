@@ -8,19 +8,30 @@ import dev.avatsav.linkding.bookmarks.ui.list.BookmarksUiEvent.AddBookmark
 import dev.avatsav.linkding.bookmarks.ui.list.BookmarksUiEvent.ShowSettings
 import dev.avatsav.linkding.bookmarks.ui.list.feed.BookmarkFeedPresenter
 import dev.avatsav.linkding.bookmarks.ui.list.search.BookmarkSearchPresenter
+import dev.avatsav.linkding.viewmodel.MoleculePresenter
 import dev.avatsav.linkding.viewmodel.MoleculeViewModel
+import dev.zacsweers.metro.Assisted
+import dev.zacsweers.metro.AssistedFactory
+import dev.zacsweers.metro.AssistedInject
 import dev.zacsweers.metro.Inject
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 
 @Inject
-class BookmarksViewModel(
+class BookmarksViewModel(bookmarksPresenterFactory: BookmarksPresenter.Factory) :
+  MoleculeViewModel<BookmarksUiEvent, BookmarksUiState>() {
+  override val presenter by lazy { bookmarksPresenterFactory.create(viewModelScope) }
+}
+
+@AssistedInject
+class BookmarksPresenter(
+  @Assisted coroutineScope: CoroutineScope,
   bookmarkFeedPresenterFactory: BookmarkFeedPresenter.Factory,
   bookmarkSearchPresenterFactory: BookmarkSearchPresenter.Factory,
-  private val navigator: BookmarksNavigator,
-) : MoleculeViewModel<BookmarksUiEvent, BookmarksUiState>() {
+) : MoleculePresenter<BookmarksUiEvent, BookmarksUiState>(coroutineScope) {
 
-  private val feedPresenter = bookmarkFeedPresenterFactory.create(viewModelScope)
-  private val searchPresenter = bookmarkSearchPresenterFactory.create(viewModelScope)
+  private val feedPresenter by lazy { bookmarkFeedPresenterFactory.create(coroutineScope) }
+  private val searchPresenter by lazy { bookmarkSearchPresenterFactory.create(coroutineScope) }
 
   @Composable
   override fun models(events: Flow<BookmarksUiEvent>): BookmarksUiState {
@@ -30,8 +41,8 @@ class BookmarksViewModel(
 
     ObserveEvents { event ->
       when (event) {
-        AddBookmark -> navigator.navigateToAddBookmark()
-        ShowSettings -> navigator.navigateToSettings()
+        AddBookmark -> TODO("Navigate to add bookmark screen")
+        ShowSettings -> TODO("Navigate to add bookmark screen")
         is BookmarkSearchUiEvent -> searchPresenter.eventSink(event)
         is BookmarkFeedUiEvent -> feedPresenter.eventSink(event)
       }
@@ -39,12 +50,9 @@ class BookmarksViewModel(
 
     return BookmarksUiState(feedState = feedState, searchState = searchState)
   }
-}
 
-interface BookmarksNavigator {
-  fun navigateToAddBookmark()
-
-  fun navigateToSettings()
-
-  fun navigateToUrl(url: String)
+  @AssistedFactory
+  interface Factory {
+    fun create(scope: CoroutineScope): BookmarksPresenter
+  }
 }

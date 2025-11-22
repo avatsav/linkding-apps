@@ -14,18 +14,29 @@ import dev.avatsav.linkding.bookmarks.api.interactors.AddBookmark
 import dev.avatsav.linkding.bookmarks.api.interactors.CheckBookmarkUrl
 import dev.avatsav.linkding.data.model.CheckUrlResult
 import dev.avatsav.linkding.data.model.SaveBookmark
+import dev.avatsav.linkding.viewmodel.MoleculePresenter
 import dev.avatsav.linkding.viewmodel.MoleculeViewModel
+import dev.zacsweers.metro.Assisted
+import dev.zacsweers.metro.AssistedFactory
+import dev.zacsweers.metro.AssistedInject
 import dev.zacsweers.metro.Inject
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
 @Inject
-class AddBookmarkViewModel(
+class AddBookmarkViewModel(addBookmarkPresenterFactory: AddBookmarkPresenter.Factory) :
+  MoleculeViewModel<AddBookmarkUiEvent, AddBookmarkUiState>() {
+  override val presenter by lazy { addBookmarkPresenterFactory.create(viewModelScope) }
+}
+
+@AssistedInject
+class AddBookmarkPresenter(
+  @Assisted coroutineScope: CoroutineScope,
   private val addBookmark: AddBookmark,
   private val checkBookmarkUrl: CheckBookmarkUrl,
-  private val navigator: AddBookmarkNavigator,
   private val sharedUrl: String?,
-) : MoleculeViewModel<AddBookmarkUiEvent, AddBookmarkUiState>() {
+) : MoleculePresenter<AddBookmarkUiEvent, AddBookmarkUiState>(coroutineScope) {
 
   @Composable
   override fun models(events: Flow<AddBookmarkUiEvent>): AddBookmarkUiState {
@@ -37,16 +48,16 @@ class AddBookmarkViewModel(
 
     ObserveEvents { event ->
       when (event) {
-        AddBookmarkUiEvent.Close -> navigator.navigateUp()
+        AddBookmarkUiEvent.Close -> TODO("Navigate up")
         is AddBookmarkUiEvent.Save ->
-          viewModelScope.launch {
+          presenterScope.launch {
             addBookmark(SaveBookmark(event.url, event.title, event.description, event.tags.toSet()))
-              .onSuccess { navigator.navigateUp() }
+              .onSuccess { TODO("Navigate up") }
               .onFailure { errorMessage = it.message }
           }
 
         is AddBookmarkUiEvent.CheckUrl ->
-          viewModelScope.launch {
+          presenterScope.launch {
             checkBookmarkUrl(event.url)
               .onSuccess { checkUrlResult = it }
               .onFailure { Logger.e { "CheckError: $it" } }
@@ -62,8 +73,9 @@ class AddBookmarkViewModel(
       errorMessage = errorMessage,
     )
   }
-}
 
-interface AddBookmarkNavigator {
-  fun navigateUp()
+  @AssistedFactory
+  interface Factory {
+    fun create(coroutineScope: CoroutineScope): AddBookmarkPresenter
+  }
 }

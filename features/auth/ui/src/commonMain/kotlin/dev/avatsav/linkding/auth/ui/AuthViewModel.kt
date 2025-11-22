@@ -12,14 +12,27 @@ import dev.avatsav.linkding.auth.ui.usecase.Authenticate
 import dev.avatsav.linkding.data.model.AuthError.InvalidApiKey
 import dev.avatsav.linkding.data.model.AuthError.InvalidHostname
 import dev.avatsav.linkding.data.model.AuthError.Other
+import dev.avatsav.linkding.viewmodel.MoleculePresenter
 import dev.avatsav.linkding.viewmodel.MoleculeViewModel
+import dev.zacsweers.metro.Assisted
+import dev.zacsweers.metro.AssistedFactory
+import dev.zacsweers.metro.AssistedInject
 import dev.zacsweers.metro.Inject
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
 @Inject
-class AuthViewModel(private val authenticate: Authenticate) :
+class AuthViewModel(authPresenterFactory: AuthPresenter.Factory) :
   MoleculeViewModel<AuthUiEvent, AuthUiState>() {
+  override val presenter by lazy { authPresenterFactory.create(viewModelScope) }
+}
+
+@AssistedInject
+class AuthPresenter(
+  @Assisted coroutineScope: CoroutineScope,
+  private val authenticate: Authenticate,
+) : MoleculePresenter<AuthUiEvent, AuthUiState>(coroutineScope) {
 
   @Composable
   override fun models(events: Flow<AuthUiEvent>): AuthUiState {
@@ -34,7 +47,7 @@ class AuthViewModel(private val authenticate: Authenticate) :
           invalidHostUrl = false
           invalidApiKey = false
           errorMessage = ""
-          viewModelScope.launch {
+          presenterScope.launch {
             authenticate(Authenticate.Param(event.hostUrl, event.apiKey)).onFailure { error ->
               when (error) {
                 is InvalidApiKey -> invalidApiKey = true
@@ -53,5 +66,10 @@ class AuthViewModel(private val authenticate: Authenticate) :
       invalidApiKey = invalidApiKey,
       errorMessage = errorMessage,
     )
+  }
+
+  @AssistedFactory
+  interface Factory {
+    fun create(coroutineScope: CoroutineScope): AuthPresenter
   }
 }

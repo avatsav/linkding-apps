@@ -15,17 +15,35 @@ import dev.avatsav.linkding.bookmarks.api.observers.ObserveTags
 import dev.avatsav.linkding.bookmarks.ui.tags.TagsUiEvent.Close
 import dev.avatsav.linkding.bookmarks.ui.tags.TagsUiEvent.SelectTag
 import dev.avatsav.linkding.data.model.Tag
+import dev.avatsav.linkding.viewmodel.MoleculePresenter
 import dev.avatsav.linkding.viewmodel.MoleculeViewModel
-import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.Assisted
+import dev.zacsweers.metro.AssistedFactory
+import dev.zacsweers.metro.AssistedInject
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 
-@Inject
+@AssistedInject
 class TagsViewModel(
-  private val observeTags: ObserveTags,
-  private val navigator: TagsNavigator,
-  private val selectedTags: List<Tag>,
+  @Assisted private val selectedTags: List<Tag>,
+  tagsPresenterFactory: TagsPresenter.Factory,
 ) : MoleculeViewModel<TagsUiEvent, TagsUiState>() {
+  override val presenter by lazy { tagsPresenterFactory.create(viewModelScope, selectedTags) }
+
+  @AssistedFactory
+  interface Factory {
+    fun create(selectedTags: List<Tag>): TagsViewModel
+  }
+}
+
+// TODO: refactor to result handling
+@AssistedInject
+class TagsPresenter(
+  @Assisted coroutineScope: CoroutineScope,
+  @Assisted private val selectedTags: List<Tag>,
+  private val observeTags: ObserveTags,
+) : MoleculePresenter<TagsUiEvent, TagsUiState>(coroutineScope) {
 
   @Composable
   override fun models(events: Flow<TagsUiEvent>): TagsUiState {
@@ -35,24 +53,23 @@ class TagsViewModel(
       observeTags(
         ObserveTags.Param(selectedTags, PagingConfig(initialLoadSize = 100, pageSize = 100))
       )
-      tagsFlow = observeTags.flow.cachedIn(viewModelScope)
+      tagsFlow = observeTags.flow.cachedIn(presenterScope)
     }
 
     val tags = tagsFlow.collectAsLazyPagingItems()
 
     ObserveEvents { event ->
       when (event) {
-        is SelectTag -> navigator.onTagSelected(event.tag)
-        Close -> navigator.onDismiss()
+        is SelectTag -> TODO()
+        Close -> TODO()
       }
     }
 
     return TagsUiState(selectedTags = selectedTags, tags = tags)
   }
-}
 
-interface TagsNavigator {
-  fun onTagSelected(tag: Tag)
-
-  fun onDismiss()
+  @AssistedFactory
+  interface Factory {
+    fun create(coroutineScope: CoroutineScope, selectedTags: List<Tag>): TagsPresenter
+  }
 }

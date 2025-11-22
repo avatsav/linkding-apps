@@ -14,95 +14,68 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.StateFlow
 
 /**
- * An abstract class for managing state and event-driven behavior in a Jetpack Compose-based
- * ViewModel. `MoleculeViewModel` leverages the `Molecule` library for achieving unidirectional data
- * flow by combining `StateFlow` for state management and `Flow` for event handling. It provides a
- * structured approach to handle UI state and events in a composable-driven architecture.
+ * Common interface for managing state and event-driven behavior using Molecule.
  *
- * @param Event A generic type representing events that the UI can send to the `MoleculeViewModel`.
- * @param Model A generic type representing the UI state model exposed by the `MoleculeViewModel`.
+ * @param Event Events that can be sent to update state
+ * @param Model The UI state model exposed as a [StateFlow]
  */
-abstract class MoleculeViewModel<Event, Model> : ViewModel() {
+interface Presentable<Event, Model> {
+  val models: StateFlow<Model>
 
-  internal val moleculeScope = CoroutineScope(viewModelScope.coroutineContext + UiDispatcherContext)
-
-  /**
-   * Events have a capacity large enough to handle simultaneous UI events, but small enough to
-   * surface issues if they get backed up for some reason.
-   */
-  private val events = MutableSharedFlow<Event>(extraBufferCapacity = 20)
-
-  val models: StateFlow<Model> by
-    lazy(LazyThreadSafetyMode.NONE) {
-      moleculeScope.launchMolecule(mode = ContextClock) { models(events) }
-    }
-
-  /**
-   * Sends an event to the internal event stream. Use this method to propagate events into the
-   * `MoleculeViewModel` for processing.
-   *
-   * If the internal event buffer is full and unable to emit the new event, an error will be thrown.
-   *
-   * @param event The event object to be sent to the internal event stream. This event is expected
-   *   to be handled by the `models` implementation or other consumers of the event flow.
-   */
-  fun eventSink(event: Event) {
-    if (!events.tryEmit(event)) {
-      error("Event buffer overflow.")
-    }
-  }
-
-  @Composable protected abstract fun models(events: Flow<Event>): Model
-
-  /**
-   * Helper function for collecting events from a [MoleculeViewModel].
-   *
-   * Collects events emitted by the `events` flow and executes the provided `block` for each event.
-   *
-   * @param block A function that defines the action to perform for each collected event. This
-   *   function is executed within the context of a `CoroutineScope` and receives an `Event` as a
-   *   parameter.
-   */
-  @Composable
-  fun ObserveEvents(block: CoroutineScope.(Event) -> Unit) {
-    val latestBlock by rememberUpdatedState(block)
-    LaunchedEffect(Unit) { events.collect { event: Event -> latestBlock(event) } }
-  }
+  fun eventSink(event: Event)
 }
 
 /**
- * A lightweight presenter for managing state and event-driven behavior using Molecule. Unlike
- * `MoleculeViewModel`, this does not extend `ViewModel` and can be easily composed within other
- * ViewModels by accepting a parent scope.
+ * Lightweight presenter for managing state and event-driven behavior using Molecule. Designed to be
+ * composed within ViewModels or other presenters.
  *
- * Use this for child presenters that need to be coordinated by a parent ViewModel.
+ * Use [presenterScope] for launching coroutines and [ObserveEvents] to handle UI events.
  *
- * @param scope The coroutine scope to use (typically from a parent ViewModel)
- * @param Event A generic type representing events that the UI can send to the presenter
- * @param Model A generic type representing the UI state model exposed by the presenter
+ * Example:
+ * ```kotlin
+ * @AssistedInject
+ * class BookmarksPresenter(
+ *   @Assisted coroutineScope: CoroutineScope,
+ *   private val observeBookmarks: ObserveBookmarks,
+ * ) : MoleculePresenter<BookmarksEvent, BookmarksState>(coroutineScope) {
+ *
+ *   @Composable
+ *   override fun models(events: Flow<BookmarksEvent>): BookmarksState {
+ *     val bookmarks by observeBookmarks.flow.collectAsState(initial = emptyList())
+ *
+ *     ObserveEvents { event ->
+ *       when (event) {
+ *         is BookmarksEvent.Refresh -> presenterScope.launch { /* ... */ }
+ *       }
+ *     }
+ *
+ *     return BookmarksState(bookmarks = bookmarks)
+ *   }
+ *
+ *   @AssistedFactory
+ *   interface Factory {
+ *     fun create(coroutineScope: CoroutineScope): BookmarksPresenter
+ *   }
+ * }
+ * ```
+ *
+ * @param scope The coroutine scope (typically from a parent ViewModel)
+ * @param Event UI events to handle
+ * @param Model The UI state model
  */
-abstract class MoleculePresenter<Event, Model>(scope: CoroutineScope) {
+abstract class MoleculePresenter<Event, Model>(scope: CoroutineScope) : Presentable<Event, Model> {
 
   val presenterScope = scope
   private val moleculeScope = CoroutineScope(scope.coroutineContext + UiDispatcherContext)
 
-  /**
-   * Events have a capacity large enough to handle simultaneous UI events, but small enough to
-   * surface issues if they get backed up for some reason.
-   */
   private val events = MutableSharedFlow<Event>(extraBufferCapacity = 20)
 
-  val models: StateFlow<Model> by
+  override val models: StateFlow<Model> by
     lazy(LazyThreadSafetyMode.NONE) {
       moleculeScope.launchMolecule(mode = ContextClock) { models(events) }
     }
 
-  /**
-   * Sends an event to the internal event stream.
-   *
-   * If the internal event buffer is full and unable to emit the new event, an error will be thrown.
-   */
-  fun eventSink(event: Event) {
+  override fun eventSink(event: Event) {
     if (!events.tryEmit(event)) {
       error("Event buffer overflow.")
     }
@@ -111,13 +84,47 @@ abstract class MoleculePresenter<Event, Model>(scope: CoroutineScope) {
   @Composable protected abstract fun models(events: Flow<Event>): Model
 
   /**
-   * Helper function for observing events from a [MoleculePresenter].
-   *
-   * Collects events emitted by the `events` flow and executes the provided `block` for each event.
+   * Observes events from the UI and executes the provided block for each event. Use
+   * [presenterScope] to launch coroutines within the block.
    */
   @Composable
   protected fun ObserveEvents(block: CoroutineScope.(Event) -> Unit) {
     val latestBlock by rememberUpdatedState(block)
     LaunchedEffect(Unit) { events.collect { event: Event -> latestBlock(event) } }
   }
+}
+
+/**
+ * ViewModel wrapper that delegates state and event management to a [MoleculePresenter]. Combines
+ * Jetpack ViewModel lifecycle with Molecule's reactive state management.
+ *
+ * Subclasses inject a presenter factory and lazily create the presenter with [viewModelScope].
+ *
+ * Example:
+ * ```kotlin
+ * @Inject
+ * class BookmarksViewModel(
+ *   bookmarksPresenterFactory: BookmarksPresenter.Factory
+ * ) : MoleculeViewModel<BookmarksEvent, BookmarksState>() {
+ *   override val presenter by lazy {
+ *     bookmarksPresenterFactory.create(viewModelScope)
+ *   }
+ * }
+ * ```
+ *
+ * @param Event UI events to handle
+ * @param Model The UI state model
+ */
+abstract class MoleculeViewModel<Event, Model> : ViewModel(), Presentable<Event, Model> {
+
+  /**
+   * The presenter that handles all state and event logic. Initialize lazily with [viewModelScope]
+   * from an injected factory.
+   */
+  protected abstract val presenter: MoleculePresenter<Event, Model>
+
+  override val models: StateFlow<Model>
+    get() = presenter.models
+
+  override fun eventSink(event: Event) = presenter.eventSink(event)
 }
