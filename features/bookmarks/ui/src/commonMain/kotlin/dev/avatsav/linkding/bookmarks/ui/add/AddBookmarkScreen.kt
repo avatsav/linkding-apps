@@ -46,15 +46,29 @@ import dev.avatsav.linkding.ui.compose.widgets.OutlinedTagsTextField
 import dev.avatsav.linkding.ui.compose.widgets.PlaceholderVisualTransformation
 import dev.avatsav.linkding.ui.compose.widgets.SmallCircularProgressIndicator
 import dev.avatsav.linkding.ui.compose.widgets.TagsTextFieldValue
+import dev.avatsav.linkding.viewmodel.ObserveEffects
 import kotlinx.coroutines.delay
 
 private const val DebounceDelay = 500L
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-fun AddBookmark(viewModel: AddBookmarkViewModel, modifier: Modifier = Modifier) {
+fun AddBookmark(
+  viewModel: AddBookmarkViewModel,
+  onBookmarkSaved: () -> Unit,
+  onNavigateUp: () -> Unit,
+  modifier: Modifier = Modifier,
+) {
   val state by viewModel.models.collectAsStateWithLifecycle()
   val eventSink = viewModel::eventSink
+
+  ObserveEffects(viewModel.effects) { effect ->
+    when (effect) {
+      AddBookmarkEffect.BookmarkSaved -> onBookmarkSaved()
+      AddBookmarkEffect.NavigateUp -> onNavigateUp()
+    }
+  }
+
   AddBookmark(state, modifier, eventSink)
 }
 

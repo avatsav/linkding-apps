@@ -47,12 +47,28 @@ import dev.avatsav.linkding.settings.ui.widgets.PreferenceSection
 import dev.avatsav.linkding.settings.ui.widgets.SwitchPreference
 import dev.avatsav.linkding.settings.ui.widgets.ThemePreference
 import dev.avatsav.linkding.ui.theme.Material3ShapeDefaults
+import dev.avatsav.linkding.viewmodel.ObserveEffects
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class, ExperimentalMaterial3Api::class)
 @Composable
-fun Settings(viewModel: SettingsViewModel, modifier: Modifier = Modifier) {
+fun Settings(
+  viewModel: SettingsViewModel,
+  onOpenUrl: (String) -> Unit,
+  onResetToAuth: () -> Unit,
+  onNavigateUp: () -> Unit,
+  modifier: Modifier = Modifier,
+) {
   val state by viewModel.models.collectAsStateWithLifecycle()
   val eventSink = viewModel::eventSink
+
+  ObserveEffects(viewModel.effects) { effect ->
+    when (effect) {
+      SettingsEffect.NavigateUp -> onNavigateUp()
+      is SettingsEffect.OpenUrl -> onOpenUrl(effect.url)
+      SettingsEffect.ResetToAuth -> onResetToAuth()
+    }
+  }
+
   Settings(state, modifier, eventSink)
 }
 

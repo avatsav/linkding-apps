@@ -57,6 +57,7 @@ import dev.avatsav.linkding.data.model.Bookmark
 import dev.avatsav.linkding.ui.compose.appearFromBottom
 import dev.avatsav.linkding.ui.compose.disappearToBottom
 import dev.avatsav.linkding.ui.compose.widgets.AnimatedVisibilityWithElevation
+import dev.avatsav.linkding.viewmodel.ObserveEffects
 
 @OptIn(
   ExperimentalMaterial3Api::class,
@@ -64,9 +65,22 @@ import dev.avatsav.linkding.ui.compose.widgets.AnimatedVisibilityWithElevation
   ExperimentalComposeUiApi::class,
 )
 @Composable
-fun Bookmarks(viewModel: BookmarksViewModel, modifier: Modifier = Modifier) {
+fun Bookmarks(
+  viewModel: BookmarksViewModel,
+  onNavigateToAddBookmark: () -> Unit,
+  onNavigateToSettings: () -> Unit,
+  modifier: Modifier = Modifier,
+) {
   val state by viewModel.models.collectAsStateWithLifecycle()
   val eventSink = viewModel::eventSink
+
+  ObserveEffects(viewModel.effects) { effect ->
+    when (effect) {
+      BookmarksEffect.NavigateToAddBookmark -> onNavigateToAddBookmark()
+      BookmarksEffect.NavigateToSettings -> onNavigateToSettings()
+    }
+  }
+
   Bookmarks(state, modifier, eventSink)
 }
 
