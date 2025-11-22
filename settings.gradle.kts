@@ -31,7 +31,6 @@ include(
   ":core:base",
   ":core:preferences",
   ":core:connectivity",
-  ":core:parcelize",
   ":core:di",
   ":core:viewmodel",
 
@@ -41,9 +40,8 @@ include(
   ":data:linkding-api",
 
   ":ui:theme",
-  ":ui:screens",
   ":ui:compose",
-  ":ui:circuit",
+  ":ui:navigation",
 
   ":features:auth:ui",
   ":features:auth:api",

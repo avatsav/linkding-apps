@@ -51,7 +51,6 @@ dependencies {
   implementation(libs.androidx.browser)
   implementation(libs.androidx.splashscreen)
   implementation(libs.kotlin.coroutines.android)
-  implementation(libs.circuit.runtime)
 
   debugImplementation(libs.leakCanary)
 

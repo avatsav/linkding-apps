@@ -16,7 +16,7 @@ kotlin {
       implementation(libs.compose.m3expressive)
       implementation(projects.features.auth.api)
       api(projects.ui.theme)
-      api(projects.ui.screens)
+      api(projects.ui.navigation)
     }
   }
 }

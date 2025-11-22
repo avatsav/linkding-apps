@@ -63,8 +63,6 @@ class BookmarkSearchPresenter(
   private val navigator: BookmarkSearchNavigator,
 ) : MoleculePresenter<BookmarkSearchUiEvent, BookmarkSearchUiState>(scope) {
 
-  private val presenterScope = scope
-
   @Suppress("CyclomaticComplexMethod")
   @Composable
   override fun models(events: Flow<BookmarkSearchUiEvent>): BookmarkSearchUiState {

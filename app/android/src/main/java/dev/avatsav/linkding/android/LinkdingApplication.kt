@@ -1,14 +1,13 @@
 package dev.avatsav.linkding.android
 
 import android.app.Application
-import dev.avatsav.linkding.LinkdingApp
 import dev.avatsav.linkding.di.AndroidAppComponent
 import dev.avatsav.linkding.di.ComponentHolder
 import dev.zacsweers.metro.createGraphFactory
 
-class LinkdingApplication : LinkdingApp, Application() {
+class LinkdingApplication : Application() {
 
-  override val appGraph: AndroidAppComponent by lazy {
+  val appGraph: AndroidAppComponent by lazy {
     createGraphFactory<AndroidAppComponent.Factory>().create(this).also {
       it.appInitializer.initialize()
     }

@@ -3,15 +3,11 @@ package dev.avatsav.linkding.ui
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import com.slack.circuit.foundation.Circuit
-import com.slack.circuit.overlay.ContentWithOverlays
-import com.slack.circuit.retained.LocalRetainedStateRegistry
-import com.slack.circuit.retained.lifecycleRetainedStateRegistry
+import androidx.savedstate.serialization.SavedStateConfiguration
 import dev.avatsav.linkding.auth.api.AuthManager
 import dev.avatsav.linkding.data.model.app.LaunchMode
 import dev.avatsav.linkding.data.model.prefs.AppTheme
@@ -36,9 +32,9 @@ interface AppUi {
 @SingleIn(UiScope::class)
 @Inject
 class DefaultAppUi(
-  private val circuit: Circuit,
   private val preferences: AppPreferences,
   private val authManager: AuthManager,
+  private val savedStateConfiguration: SavedStateConfiguration,
 ) : AppUi {
 
   @Composable
@@ -49,22 +45,18 @@ class DefaultAppUi(
     modifier: Modifier,
   ) {
     val authState by authManager.state.collectAsState(authManager.getCurrentState())
-    CompositionLocalProvider(LocalRetainedStateRegistry provides lifecycleRetainedStateRegistry()) {
-      LinkdingTheme(
-        darkTheme = preferences.shouldUseDarkTheme(),
-        dynamicColors = preferences.shouldUseDynamicColors(),
-      ) {
-        ContentWithOverlays {
-          AppContent(
-            launchMode = launchMode,
-            authState = authState,
-            circuit = circuit,
-            onRootPop = onRootPop,
-            onOpenUrl = onOpenUrl,
-            modifier = modifier.fillMaxSize(),
-          )
-        }
-      }
+    LinkdingTheme(
+      darkTheme = preferences.shouldUseDarkTheme(),
+      dynamicColors = preferences.shouldUseDynamicColors(),
+    ) {
+      AppContent(
+        launchMode = launchMode,
+        authState = authState,
+        onRootPop = onRootPop,
+        onOpenUrl = onOpenUrl,
+        modifier = modifier.fillMaxSize(),
+        savedStateConfiguration = savedStateConfiguration,
+      )
     }
   }
 }

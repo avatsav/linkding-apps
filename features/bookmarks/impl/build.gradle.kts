@@ -2,7 +2,6 @@ import dev.avatsav.gradle.addKspDependencyForAllTargets
 
 plugins {
   id("convention.kotlin.multiplatform")
-  alias(libs.plugins.kotlin.serialization)
   alias(libs.plugins.ksp)
 }
 
@@ -29,5 +28,3 @@ kotlin {
     }
   }
 }
-
-addKspDependencyForAllTargets(libs.circuit.codegen)

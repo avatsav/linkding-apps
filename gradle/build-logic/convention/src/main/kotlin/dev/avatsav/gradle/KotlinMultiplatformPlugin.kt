@@ -12,6 +12,7 @@ class KotlinMultiplatformPlugin : Plugin<Project> {
     with(target) {
       with(pluginManager) {
         apply("org.jetbrains.kotlin.multiplatform")
+        apply("org.jetbrains.kotlin.plugin.serialization")
         apply("dev.zacsweers.metro")
         apply("com.github.ben-manes.versions")
       }

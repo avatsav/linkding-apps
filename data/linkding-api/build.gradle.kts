@@ -1,7 +1,6 @@
 plugins {
   id("convention.android.library")
   id("convention.kotlin.multiplatform")
-  alias(libs.plugins.kotlin.serialization)
 }
 
 android { namespace = "dev.avatsav.linkding.api" }

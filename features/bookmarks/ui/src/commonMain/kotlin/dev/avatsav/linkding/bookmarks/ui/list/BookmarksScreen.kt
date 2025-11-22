@@ -67,9 +67,7 @@ import dev.avatsav.linkding.ui.compose.widgets.AnimatedVisibilityWithElevation
 fun Bookmarks(viewModel: BookmarksViewModel, modifier: Modifier = Modifier) {
   val state by viewModel.models.collectAsStateWithLifecycle()
   val eventSink = viewModel::eventSink
-  val feedEventSink = viewModel.feedEventSink
-  val searchEventSink = viewModel.searchEventSink
-  Bookmarks(state, modifier, eventSink, feedEventSink, searchEventSink)
+  Bookmarks(state, modifier, eventSink)
 }
 
 @OptIn(
@@ -82,8 +80,6 @@ fun Bookmarks(
   state: BookmarksUiState,
   modifier: Modifier = Modifier,
   eventSink: (BookmarksUiEvent) -> Unit,
-  feedEventSink: (BookmarkFeedUiEvent) -> Unit,
-  searchEventSink: (BookmarkSearchUiEvent) -> Unit,
 ) {
   val searchBarState = rememberSearchBarState()
   val actionableBookmark = remember { mutableStateOf<Bookmark?>(null) }
@@ -114,7 +110,7 @@ fun Bookmarks(
           message.onAction?.invoke()
         }
         SnackbarResult.Dismissed -> {
-          feedEventSink(BookmarkFeedUiEvent.DismissSnackbar)
+          eventSink(BookmarkFeedUiEvent.DismissSnackbar)
         }
       }
     }
@@ -128,7 +124,7 @@ fun Bookmarks(
         searchBarState = searchBarState,
         searchState = state.searchState,
         onShowSettings = { eventSink(BookmarksUiEvent.ShowSettings) },
-        eventSink = searchEventSink,
+        eventSink = eventSink,
       )
     },
     floatingActionButton = {
@@ -158,7 +154,7 @@ fun Bookmarks(
             end = paddingValues.calculateEndPadding(LayoutDirection.Ltr),
           ),
       isRefreshing = refreshing,
-      onRefresh = { feedEventSink(BookmarkFeedUiEvent.Refresh) },
+      onRefresh = { eventSink(BookmarkFeedUiEvent.Refresh) },
       state = pullToRefreshState,
       indicator = {
         PullToRefreshDefaults.LoadingIndicator(
@@ -171,9 +167,9 @@ fun Bookmarks(
       ActionableBookmarkToolbar(
         actionableBookmark = actionableBookmark.value,
         onDismiss = { actionableBookmark.value = null },
-        editBookmark = { feedEventSink(BookmarkFeedUiEvent.Edit(it)) },
-        toggleArchive = { feedEventSink(BookmarkFeedUiEvent.ToggleArchive(it)) },
-        deleteBookmark = { feedEventSink(BookmarkFeedUiEvent.Delete(it)) },
+        editBookmark = { eventSink(BookmarkFeedUiEvent.Edit(it)) },
+        toggleArchive = { eventSink(BookmarkFeedUiEvent.ToggleArchive(it)) },
+        deleteBookmark = { eventSink(BookmarkFeedUiEvent.Delete(it)) },
         modifier =
           Modifier.align(Alignment.BottomCenter)
             .navigationBarsPadding()
@@ -206,7 +202,7 @@ fun Bookmarks(
                   actionableBookmark.value = null
                 } else {
                   actionableBookmark.value = null
-                  feedEventSink(BookmarkFeedUiEvent.Open(toOpen))
+                  eventSink(BookmarkFeedUiEvent.Open(toOpen))
                 }
               },
               toggleActions = { bookmark -> actionableBookmark.value = bookmark },

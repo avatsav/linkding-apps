@@ -46,7 +46,6 @@ import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.paging.compose.itemKey
-import dev.avatsav.linkding.bookmarks.ui.list.search.BookmarkSearchUiEvent
 import dev.avatsav.linkding.bookmarks.ui.list.search.BookmarkSearchUiState
 import dev.avatsav.linkding.bookmarks.ui.list.widgets.BookmarkListItem
 import dev.avatsav.linkding.bookmarks.ui.list.widgets.EmptySearchResults

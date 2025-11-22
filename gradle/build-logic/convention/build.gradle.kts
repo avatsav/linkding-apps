@@ -6,6 +6,7 @@ plugins {
 dependencies {
   compileOnly(libs.android.gradlePlugin)
   compileOnly(libs.kotlin.gradlePlugin)
+  compileOnly(libs.kotlin.serialization.gradlePlugin)
   compileOnly(libs.compose.gradlePlugin)
   compileOnly(libs.composeCompiler.gradlePlugin)
   compileOnly(libs.ksp.gradlePlugin)

@@ -1,5 +1,6 @@
 package dev.avatsav.linkding.android
 
+import android.app.Activity
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
@@ -21,8 +22,16 @@ import dev.avatsav.linkding.data.model.prefs.AppTheme
 import dev.avatsav.linkding.di.AndroidAppComponent
 import dev.avatsav.linkding.di.AndroidUiComponent
 import dev.avatsav.linkding.di.ComponentHolder
+import dev.avatsav.linkding.di.activity.ActivityKey
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesIntoMap
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.binding
 import kotlinx.coroutines.launch
 
+@ActivityKey(MainActivity::class)
+@ContributesIntoMap(AppScope::class, binding<Activity>())
+@Inject
 class MainActivity : ComponentActivity() {
 
   @Suppress("UnusedPrivateProperty")

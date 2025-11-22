@@ -1,4 +1,3 @@
-import dev.avatsav.gradle.addKspDependencyForAllTargets
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 
 plugins {
@@ -24,6 +23,7 @@ kotlin {
       api(projects.data.databaseSqldelight)
 
       api(projects.ui.theme)
+      api(projects.ui.navigation)
 
       api(projects.features.auth.api)
       api(projects.features.auth.impl)
@@ -36,13 +36,6 @@ kotlin {
       api(projects.features.settings.api)
       api(projects.features.settings.impl)
       api(projects.features.settings.ui)
-
-      // Circuit - needed by apps for navigation
-      api(libs.circuit.foundation)
-      api(libs.circuit.runtime)
-      api(libs.circuit.overlay)
-      api(libs.circuitx.gestureNavigation)
-      api(libs.circuit.codegen.annotations)
     }
 
     targets.withType<KotlinNativeTarget>().configureEach {
@@ -54,7 +47,3 @@ kotlin {
     }
   }
 }
-
-ksp { arg("circuit.codegen.mode", "metro") }
-
-addKspDependencyForAllTargets(libs.circuit.codegen)

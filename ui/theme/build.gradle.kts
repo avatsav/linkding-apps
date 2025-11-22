@@ -2,7 +2,6 @@ plugins {
   id("convention.android.library")
   id("convention.kotlin.multiplatform")
   id("convention.compose")
-  alias(libs.plugins.kotlin.parcelize)
 }
 
 kotlin {

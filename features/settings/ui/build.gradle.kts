@@ -19,7 +19,7 @@ kotlin {
       implementation(libs.compose.m3expressive)
       implementation(libs.compose.viewmodel)
       api(projects.ui.theme)
-      api(projects.ui.screens)
+      api(projects.ui.navigation)
     }
   }
 }

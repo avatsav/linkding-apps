@@ -13,15 +13,13 @@ kotlin {
       implementation(projects.core.connectivity)
       implementation(projects.core.viewmodel)
       implementation(projects.ui.compose)
-      implementation(projects.ui.screens)
+      implementation(projects.ui.navigation)
       implementation(projects.ui.theme)
-      implementation(libs.circuit.overlay)
       implementation(libs.compose.foundation)
       implementation(libs.compose.m3expressive)
       implementation(libs.compose.viewmodel)
       implementation(libs.paging.compose)
       implementation(libs.kotlin.datetime)
-      implementation(libs.compose.navigationEvent)
     }
   }
 }

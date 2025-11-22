@@ -330,7 +330,7 @@ kotlin {
   sourceSets {
     commonMain.dependencies {
       implementation(projects.features.{ feature }.api) // Only API!
-      implementation(projects.ui.circuit)
+      implementation(projects.ui.navigation)
       implementation(projects.ui.compose)
       // UI dependencies
     }
