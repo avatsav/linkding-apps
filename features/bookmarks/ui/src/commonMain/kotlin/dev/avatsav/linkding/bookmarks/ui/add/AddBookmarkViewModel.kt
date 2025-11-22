@@ -24,9 +24,14 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
+sealed interface AddBookmarkEffect {
+  data object BookmarkSaved : AddBookmarkEffect
+  data object NavigateUp : AddBookmarkEffect
+}
+
 @Inject
 class AddBookmarkViewModel(addBookmarkPresenterFactory: AddBookmarkPresenter.Factory) :
-  MoleculeViewModel<AddBookmarkUiEvent, AddBookmarkUiState>() {
+  MoleculeViewModel<AddBookmarkUiEvent, AddBookmarkUiState, AddBookmarkEffect>() {
   override val presenter by lazy { addBookmarkPresenterFactory.create(viewModelScope) }
 }
 
@@ -36,7 +41,7 @@ class AddBookmarkPresenter(
   private val addBookmark: AddBookmark,
   private val checkBookmarkUrl: CheckBookmarkUrl,
   private val sharedUrl: String?,
-) : MoleculePresenter<AddBookmarkUiEvent, AddBookmarkUiState>(coroutineScope) {
+) : MoleculePresenter<AddBookmarkUiEvent, AddBookmarkUiState, AddBookmarkEffect>(coroutineScope) {
 
   @Composable
   override fun models(events: Flow<AddBookmarkUiEvent>): AddBookmarkUiState {
@@ -48,11 +53,14 @@ class AddBookmarkPresenter(
 
     ObserveEvents { event ->
       when (event) {
-        AddBookmarkUiEvent.Close -> TODO("Navigate up")
+        AddBookmarkUiEvent.Close -> trySendEffect(AddBookmarkEffect.NavigateUp)
         is AddBookmarkUiEvent.Save ->
           presenterScope.launch {
             addBookmark(SaveBookmark(event.url, event.title, event.description, event.tags.toSet()))
-              .onSuccess { TODO("Navigate up") }
+              .onSuccess {
+                emitEffect(AddBookmarkEffect.BookmarkSaved)
+                emitEffect(AddBookmarkEffect.NavigateUp)
+              }
               .onFailure { errorMessage = it.message }
           }
 

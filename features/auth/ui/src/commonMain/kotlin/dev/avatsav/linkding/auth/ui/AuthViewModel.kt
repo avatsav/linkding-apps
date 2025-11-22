@@ -8,6 +8,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewModelScope
 import com.github.michaelbull.result.onFailure
+import com.github.michaelbull.result.onSuccess
 import dev.avatsav.linkding.auth.ui.usecase.Authenticate
 import dev.avatsav.linkding.data.model.AuthError.InvalidApiKey
 import dev.avatsav.linkding.data.model.AuthError.InvalidHostname
@@ -22,9 +23,13 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
+sealed interface AuthEffect {
+  data object AuthenticationSuccess : AuthEffect
+}
+
 @Inject
 class AuthViewModel(authPresenterFactory: AuthPresenter.Factory) :
-  MoleculeViewModel<AuthUiEvent, AuthUiState>() {
+  MoleculeViewModel<AuthUiEvent, AuthUiState, AuthEffect>() {
   override val presenter by lazy { authPresenterFactory.create(viewModelScope) }
 }
 
@@ -32,7 +37,7 @@ class AuthViewModel(authPresenterFactory: AuthPresenter.Factory) :
 class AuthPresenter(
   @Assisted coroutineScope: CoroutineScope,
   private val authenticate: Authenticate,
-) : MoleculePresenter<AuthUiEvent, AuthUiState>(coroutineScope) {
+) : MoleculePresenter<AuthUiEvent, AuthUiState, AuthEffect>(coroutineScope) {
 
   @Composable
   override fun models(events: Flow<AuthUiEvent>): AuthUiState {
@@ -48,13 +53,15 @@ class AuthPresenter(
           invalidApiKey = false
           errorMessage = ""
           presenterScope.launch {
-            authenticate(Authenticate.Param(event.hostUrl, event.apiKey)).onFailure { error ->
-              when (error) {
-                is InvalidApiKey -> invalidApiKey = true
-                is InvalidHostname -> invalidHostUrl = true
-                is Other -> errorMessage = error.message
+            authenticate(Authenticate.Param(event.hostUrl, event.apiKey))
+              .onSuccess { emitEffect(AuthEffect.AuthenticationSuccess) }
+              .onFailure { error ->
+                when (error) {
+                  is InvalidApiKey -> invalidApiKey = true
+                  is InvalidHostname -> invalidHostUrl = true
+                  is Other -> errorMessage = error.message
+                }
               }
-            }
           }
         }
       }

@@ -17,9 +17,15 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
+sealed interface SettingsEffect {
+  data object NavigateUp : SettingsEffect
+  data object ResetToAuth : SettingsEffect
+  data class OpenUrl(val url: String) : SettingsEffect
+}
+
 @Inject
 class SettingsViewModel(settingsPresenterFactory: SettingsPresenter.Factory) :
-  MoleculeViewModel<SettingsUiEvent, SettingsUiState>() {
+  MoleculeViewModel<SettingsUiEvent, SettingsUiState, SettingsEffect>() {
   override val presenter by lazy { settingsPresenterFactory.create(viewModelScope) }
 }
 
@@ -28,8 +34,7 @@ class SettingsPresenter(
   @Assisted coroutineScope: CoroutineScope,
   private val settingsManager: SettingsManager,
   private val appInfo: AppInfo,
-  private val navigator: SettingsNavigator,
-) : MoleculePresenter<SettingsUiEvent, SettingsUiState>(coroutineScope) {
+) : MoleculePresenter<SettingsUiEvent, SettingsUiState, SettingsEffect>(coroutineScope) {
 
   @Composable
   override fun models(events: Flow<SettingsUiEvent>): SettingsUiState {
@@ -40,7 +45,7 @@ class SettingsPresenter(
 
     ObserveEvents { event ->
       when (event) {
-        SettingsUiEvent.Close -> navigator.navigateUp()
+        SettingsUiEvent.Close -> trySendEffect(SettingsEffect.NavigateUp)
         is SettingsUiEvent.SetAppTheme ->
           presenterScope.launch { settingsManager.setAppTheme(event.appTheme) }
 
@@ -50,11 +55,11 @@ class SettingsPresenter(
         SettingsUiEvent.ResetApiConfig ->
           presenterScope.launch {
             settingsManager.setApiConfig(null)
-            navigator.resetToAuth()
+            emitEffect(SettingsEffect.ResetToAuth)
           }
 
         SettingsUiEvent.ShowSourceCode ->
-          navigator.navigateToUrl("https://github.com/avatsav/linkding-apps")
+          trySendEffect(SettingsEffect.OpenUrl("https://github.com/avatsav/linkding-apps"))
 
         SettingsUiEvent.ShowLicenses -> {}
         SettingsUiEvent.ShowPrivacyPolicy -> {}
@@ -73,12 +78,4 @@ class SettingsPresenter(
   interface Factory {
     fun create(coroutineScope: CoroutineScope): SettingsPresenter
   }
-}
-
-interface SettingsNavigator {
-  fun navigateUp()
-
-  fun resetToAuth()
-
-  fun navigateToUrl(url: String)
 }

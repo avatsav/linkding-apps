@@ -24,11 +24,16 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 
+sealed interface TagsEffect {
+  data class TagSelected(val tag: Tag) : TagsEffect
+  data object Dismiss : TagsEffect
+}
+
 @AssistedInject
 class TagsViewModel(
   @Assisted private val selectedTags: List<Tag>,
   tagsPresenterFactory: TagsPresenter.Factory,
-) : MoleculeViewModel<TagsUiEvent, TagsUiState>() {
+) : MoleculeViewModel<TagsUiEvent, TagsUiState, TagsEffect>() {
   override val presenter by lazy { tagsPresenterFactory.create(viewModelScope, selectedTags) }
 
   @AssistedFactory
@@ -37,13 +42,12 @@ class TagsViewModel(
   }
 }
 
-// TODO: refactor to result handling
 @AssistedInject
 class TagsPresenter(
   @Assisted coroutineScope: CoroutineScope,
   @Assisted private val selectedTags: List<Tag>,
   private val observeTags: ObserveTags,
-) : MoleculePresenter<TagsUiEvent, TagsUiState>(coroutineScope) {
+) : MoleculePresenter<TagsUiEvent, TagsUiState, TagsEffect>(coroutineScope) {
 
   @Composable
   override fun models(events: Flow<TagsUiEvent>): TagsUiState {
@@ -60,8 +64,8 @@ class TagsPresenter(
 
     ObserveEvents { event ->
       when (event) {
-        is SelectTag -> TODO()
-        Close -> TODO()
+        is SelectTag -> trySendEffect(TagsEffect.TagSelected(event.tag))
+        Close -> trySendEffect(TagsEffect.Dismiss)
       }
     }
 

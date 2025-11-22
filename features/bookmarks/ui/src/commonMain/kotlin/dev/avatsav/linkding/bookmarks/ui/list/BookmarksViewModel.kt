@@ -17,9 +17,14 @@ import dev.zacsweers.metro.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 
+sealed interface BookmarksEffect {
+  data object NavigateToAddBookmark : BookmarksEffect
+  data object NavigateToSettings : BookmarksEffect
+}
+
 @Inject
 class BookmarksViewModel(bookmarksPresenterFactory: BookmarksPresenter.Factory) :
-  MoleculeViewModel<BookmarksUiEvent, BookmarksUiState>() {
+  MoleculeViewModel<BookmarksUiEvent, BookmarksUiState, BookmarksEffect>() {
   override val presenter by lazy { bookmarksPresenterFactory.create(viewModelScope) }
 }
 
@@ -28,7 +33,7 @@ class BookmarksPresenter(
   @Assisted coroutineScope: CoroutineScope,
   bookmarkFeedPresenterFactory: BookmarkFeedPresenter.Factory,
   bookmarkSearchPresenterFactory: BookmarkSearchPresenter.Factory,
-) : MoleculePresenter<BookmarksUiEvent, BookmarksUiState>(coroutineScope) {
+) : MoleculePresenter<BookmarksUiEvent, BookmarksUiState, BookmarksEffect>(coroutineScope) {
 
   private val feedPresenter by lazy { bookmarkFeedPresenterFactory.create(coroutineScope) }
   private val searchPresenter by lazy { bookmarkSearchPresenterFactory.create(coroutineScope) }
@@ -41,8 +46,8 @@ class BookmarksPresenter(
 
     ObserveEvents { event ->
       when (event) {
-        AddBookmark -> TODO("Navigate to add bookmark screen")
-        ShowSettings -> TODO("Navigate to add bookmark screen")
+        AddBookmark -> trySendEffect(BookmarksEffect.NavigateToAddBookmark)
+        ShowSettings -> trySendEffect(BookmarksEffect.NavigateToSettings)
         is BookmarkSearchUiEvent -> searchPresenter.eventSink(event)
         is BookmarkFeedUiEvent -> feedPresenter.eventSink(event)
       }
