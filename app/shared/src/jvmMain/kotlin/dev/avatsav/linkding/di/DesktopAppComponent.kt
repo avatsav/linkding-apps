@@ -9,7 +9,7 @@ import dev.zacsweers.metro.SingleIn
 import java.util.prefs.Preferences
 
 @DependencyGraph(AppScope::class)
-interface DesktopAppComponent : PlatformAppGraph {
+interface DesktopAppComponent {
 
   val appInitializer: AppInitializer
 

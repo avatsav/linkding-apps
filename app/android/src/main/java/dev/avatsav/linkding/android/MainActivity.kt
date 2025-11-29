@@ -13,11 +13,12 @@ import androidx.compose.ui.Modifier
 import androidx.core.net.toUri
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import dev.avatsav.linkding.android.di.AndroidAppGraph
 import dev.avatsav.linkding.data.model.app.LaunchMode
 import dev.avatsav.linkding.data.model.prefs.AppTheme
-import dev.avatsav.linkding.di.AndroidAppComponent
 import dev.avatsav.linkding.di.AndroidUiComponent
 import dev.avatsav.linkding.di.ComponentHolder
 import dev.avatsav.linkding.di.activity.ActivityKey
@@ -27,10 +28,14 @@ import dev.zacsweers.metro.Inject
 import dev.zacsweers.metro.binding
 import kotlinx.coroutines.launch
 
-@ActivityKey(MainActivity::class)
 @ContributesIntoMap(AppScope::class, binding<Activity>())
+@ActivityKey(MainActivity::class)
 @Inject
-class MainActivity() : ComponentActivity() {
+class MainActivity(private val viewModelProviderFactory: ViewModelProvider.Factory) :
+  ComponentActivity() {
+
+  override val defaultViewModelProviderFactory: ViewModelProvider.Factory
+    get() = viewModelProviderFactory
 
   @Suppress("UnusedPrivateProperty")
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,7 +43,7 @@ class MainActivity() : ComponentActivity() {
     super.onCreate(savedInstanceState)
     val launchMode = getLaunchMode()
 
-    val appComponent: AndroidAppComponent = ComponentHolder.component()
+    val appComponent: AndroidAppGraph = ComponentHolder.component()
     val uiComponent =
       ComponentHolder.component<AndroidUiComponent.Factory>().create().also {
         ComponentHolder.components += it

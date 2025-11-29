@@ -12,7 +12,7 @@ interface AndroidUiComponent {
   val appUi: AppUi
 
   @ContributesTo(AppScope::class)
-  @GraphExtension.Factory()
+  @GraphExtension.Factory
   interface Factory {
     fun create(): AndroidUiComponent
   }

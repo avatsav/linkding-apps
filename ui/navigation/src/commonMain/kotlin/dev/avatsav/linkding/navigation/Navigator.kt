@@ -1,28 +1,38 @@
 package dev.avatsav.linkding.navigation
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
+import androidx.navigation3.runtime.NavBackStack
 import androidx.navigation3.runtime.NavKey
-import androidx.navigation3.runtime.rememberNavBackStack
-import androidx.savedstate.serialization.SavedStateConfiguration
 import dev.avatsav.linkding.navigation.impl.NavigatorImpl
 
-@Stable
 interface Navigator {
-  fun goTo(screen: NavKey): Boolean
 
-  fun pop(result: NavResult? = null): NavKey?
+  fun goTo(screen: Screen): Boolean
 
-  fun peek(): NavKey?
+  fun pop(result: NavResult? = null): Screen?
 
-  fun peekBackStack(): List<NavKey>
+  fun peek(): Screen?
 
-  fun resetRoot(newRoot: NavKey): Boolean
+  fun peekBackStack(): List<Screen>
+
+  fun resetRoot(newRoot: Screen): Boolean
+}
+
+class NoOpNavigator : Navigator {
+
+  override fun goTo(screen: Screen): Boolean = false
+
+  override fun pop(result: NavResult?): Screen? = null
+
+  override fun peek(): Screen? = null
+
+  override fun peekBackStack(): List<Screen> = emptyList()
+
+  override fun resetRoot(newRoot: Screen): Boolean = false
 }
 
 @Composable
-fun rememberNavigator(savedStateConfiguration: SavedStateConfiguration, start: NavKey): Navigator {
-  val backStack = rememberNavBackStack(savedStateConfiguration, start)
-  return remember(start) { NavigatorImpl(backStack) }
+fun rememberNavigator(backStack: NavBackStack<NavKey>): Navigator {
+  return remember { NavigatorImpl(backStack) }
 }

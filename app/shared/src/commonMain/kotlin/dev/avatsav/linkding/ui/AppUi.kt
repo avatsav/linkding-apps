@@ -1,24 +1,27 @@
 package dev.avatsav.linkding.ui
 
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.navigation3.runtime.NavKey
+import androidx.navigation3.runtime.entryProvider
+import androidx.navigation3.runtime.rememberNavBackStack
+import androidx.navigation3.ui.NavDisplay
 import androidx.savedstate.serialization.SavedStateConfiguration
 import dev.avatsav.linkding.auth.api.AuthManager
-import dev.avatsav.linkding.auth.api.AuthState
 import dev.avatsav.linkding.data.model.ApiConfig
 import dev.avatsav.linkding.data.model.app.LaunchMode
 import dev.avatsav.linkding.data.model.prefs.AppTheme
 import dev.avatsav.linkding.di.ComponentHolder
 import dev.avatsav.linkding.di.UserComponent
 import dev.avatsav.linkding.di.scope.UiScope
-import dev.avatsav.linkding.navigation.AddBookmarkScreen
-import dev.avatsav.linkding.navigation.BookmarksScreen
+import dev.avatsav.linkding.navigation.LocalNavigator
+import dev.avatsav.linkding.navigation.Screen
+import dev.avatsav.linkding.navigation.ScreenEntryProviderScope
+import dev.avatsav.linkding.navigation.rememberNavigator
 import dev.avatsav.linkding.prefs.AppPreferences
 import dev.avatsav.linkding.ui.theme.LinkdingTheme
 import dev.zacsweers.metro.ContributesBinding
@@ -34,6 +37,7 @@ interface AppUi {
 @SingleIn(UiScope::class)
 @Inject
 class DefaultAppUi(
+  private val screenEntryScope: Set<ScreenEntryProviderScope>,
   private val preferences: AppPreferences,
   private val authManager: AuthManager,
   private val savedStateConfiguration: SavedStateConfiguration,
@@ -42,29 +46,24 @@ class DefaultAppUi(
   @Composable
   override fun Content(launchMode: LaunchMode, onOpenUrl: (String) -> Boolean, modifier: Modifier) {
     val authState by authManager.state.collectAsState(authManager.getCurrentState())
-    LinkdingTheme(
-      darkTheme = preferences.shouldUseDarkTheme(),
-      dynamicColors = preferences.shouldUseDynamicColors(),
-    ) {
-      AppContent(
-        launchMode = launchMode,
-        authState = authState,
-        onOpenUrl = onOpenUrl,
-        modifier = modifier.fillMaxSize(),
-        savedStateConfiguration = savedStateConfiguration,
-      )
+    val backStack = rememberNavBackStack(savedStateConfiguration, Screen.Auth)
+    val navigator = rememberNavigator(backStack)
+
+    CompositionLocalProvider(LocalNavigator provides navigator) {
+      LinkdingTheme(
+        darkTheme = preferences.shouldUseDarkTheme(),
+        dynamicColors = preferences.shouldUseDynamicColors(),
+      ) {
+        NavDisplay(
+          backStack = backStack,
+          onBack = { navigator.pop() },
+          entryProvider =
+            entryProvider(builder = { screenEntryScope.forEach { builder -> this.builder() } }),
+        )
+      }
     }
   }
 }
-
-@Composable
-fun AppContent(
-  launchMode: LaunchMode,
-  authState: AuthState,
-  savedStateConfiguration: SavedStateConfiguration,
-  onOpenUrl: (String) -> Boolean,
-  modifier: Modifier = Modifier,
-) {}
 
 @Composable
 internal fun AuthenticatedContent(
@@ -80,14 +79,12 @@ internal fun AuthenticatedContent(
         ComponentHolder.updateComponent(component)
       }
     }
-
-  TODO()
 }
 
-private fun LaunchMode.startScreen(): NavKey =
+private fun LaunchMode.startScreen(): Screen =
   when (this) {
-    LaunchMode.Normal -> BookmarksScreen
-    is LaunchMode.SharedLink -> AddBookmarkScreen(this.sharedLink)
+    LaunchMode.Normal -> Screen.BookmarksFeed
+    is LaunchMode.SharedLink -> Screen.AddBookmark(this.sharedLink)
   }
 
 @Composable

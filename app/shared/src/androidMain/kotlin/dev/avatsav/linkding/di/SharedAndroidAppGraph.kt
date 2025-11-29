@@ -6,18 +6,15 @@ import dev.avatsav.linkding.AppInfo
 import dev.avatsav.linkding.initializers.AppInitializer
 import dev.avatsav.linkding.prefs.AppPreferences
 import dev.zacsweers.metro.AppScope
-import dev.zacsweers.metro.DependencyGraph
 import dev.zacsweers.metro.Provides
 import dev.zacsweers.metro.SingleIn
 
-@DependencyGraph(AppScope::class)
-abstract class AndroidAppComponent {
+interface SharedAndroidAppGraph {
 
-  abstract val appPreferences: AppPreferences
+  val appPreferences: AppPreferences
 
-  abstract val appInitializer: AppInitializer
+  val appInitializer: AppInitializer
 
-  @Suppress("UnsafeCallOnNullableType")
   @SingleIn(AppScope::class)
   @Provides
   fun provideAppInfo(application: Application): AppInfo {
@@ -30,10 +27,5 @@ abstract class AndroidAppComponent {
       debug = (applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE) != 0,
       version = packageInfo.versionName!!,
     )
-  }
-
-  @DependencyGraph.Factory
-  interface Factory {
-    fun create(@Provides application: Application): AndroidAppComponent
   }
 }

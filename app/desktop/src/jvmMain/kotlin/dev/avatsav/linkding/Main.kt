@@ -33,7 +33,6 @@ fun main() = application {
     uiComponent.appUi.Content(
       launchMode = LaunchMode.Normal,
       onOpenUrl = { launchUrl(it) },
-      onRootPop = { /* */ },
       modifier = Modifier,
     )
   }

@@ -6,7 +6,6 @@ import dev.zacsweers.metro.SingleIn
 
 @SingleIn(UserScope::class)
 interface UserComponent {
-
   interface Factory {
     fun create(apiConfig: ApiConfig): UserComponent
   }

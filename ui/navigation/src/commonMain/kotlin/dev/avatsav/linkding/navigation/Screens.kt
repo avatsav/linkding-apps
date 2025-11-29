@@ -10,17 +10,19 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic
 
-@Serializable data object AuthScreen : NavKey
+sealed interface Screen : NavKey {
+  @Serializable data object Auth : Screen
 
-@Serializable data object BookmarksScreen : NavKey
+  @Serializable data object BookmarksFeed : Screen
 
-@Serializable data class AddBookmarkScreen(val sharedUrl: String? = null) : NavKey
+  @Serializable data class AddBookmark(val sharedUrl: String? = null) : Screen
 
-@Serializable data class UrlScreen(val url: String) : NavKey
+  @Serializable data class Url(val url: String) : Screen
 
-@Serializable data object SettingsScreen : NavKey
+  @Serializable data object Settings : Screen
 
-@Serializable data object TagsScreen : NavKey
+  @Serializable data object Tags : Screen
+}
 
 @ContributesTo(AppScope::class)
 interface NavigationComponent {
@@ -30,12 +32,12 @@ interface NavigationComponent {
   fun provideSavedStateConfiguration(): SavedStateConfiguration = SavedStateConfiguration {
     serializersModule = SerializersModule {
       polymorphic(NavKey::class) {
-        subclass(AuthScreen::class, AuthScreen.serializer())
-        subclass(BookmarksScreen::class, BookmarksScreen.serializer())
-        subclass(AddBookmarkScreen::class, AddBookmarkScreen.serializer())
-        subclass(UrlScreen::class, UrlScreen.serializer())
-        subclass(SettingsScreen::class, SettingsScreen.serializer())
-        subclass(TagsScreen::class, TagsScreen.serializer())
+        subclass(Screen.Auth::class, Screen.Auth.serializer())
+        subclass(Screen.BookmarksFeed::class, Screen.BookmarksFeed.serializer())
+        subclass(Screen.AddBookmark::class, Screen.AddBookmark.serializer())
+        subclass(Screen.Url::class, Screen.Url.serializer())
+        subclass(Screen.Settings::class, Screen.Settings.serializer())
+        subclass(Screen.Tags::class, Screen.Tags.serializer())
       }
     }
   }

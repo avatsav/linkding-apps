@@ -4,35 +4,36 @@ import androidx.navigation3.runtime.NavBackStack
 import androidx.navigation3.runtime.NavKey
 import dev.avatsav.linkding.navigation.NavResult
 import dev.avatsav.linkding.navigation.Navigator
+import dev.avatsav.linkding.navigation.Screen
 
-internal class NavigatorImpl(val backStack: NavBackStack<NavKey>) : Navigator {
+internal class NavigatorImpl(private val backStack: NavBackStack<NavKey>) : Navigator {
 
-  override fun goTo(screen: NavKey): Boolean {
+  override fun goTo(screen: Screen): Boolean {
     backStack.add(screen)
     return true
   }
 
-  override fun pop(result: NavResult?): NavKey? {
+  override fun pop(result: NavResult?): Screen? {
     // Only pop if we have more than one screen (don't pop the root)
     return if (backStack.size > 1) {
       backStack.removeLast()
       // Return the screen that's now on top after popping
-      backStack.lastOrNull()
+      backStack.lastOrNull() as Screen
     } else {
       null
     }
   }
 
-  override fun peek(): NavKey? {
-    return backStack.lastOrNull()
+  override fun peek(): Screen? {
+    return backStack.lastOrNull() as Screen?
   }
 
-  override fun peekBackStack(): List<NavKey> {
+  override fun peekBackStack(): List<Screen> {
     // Return a copy of the backstack containing only NavScreen items
-    return backStack
+    return backStack.map { it as Screen }
   }
 
-  override fun resetRoot(newRoot: NavKey): Boolean {
+  override fun resetRoot(newRoot: Screen): Boolean {
     backStack.clear()
     backStack.add(newRoot)
     return true

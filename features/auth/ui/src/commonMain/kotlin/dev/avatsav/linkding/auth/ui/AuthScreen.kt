@@ -42,17 +42,13 @@ import dev.avatsav.linkding.viewmodel.ObserveEffects
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-fun AuthScreen(
-  viewModel: AuthViewModel,
-  onAuthenticationSuccess: () -> Unit,
-  modifier: Modifier = Modifier,
-) {
+fun AuthScreen(viewModel: AuthViewModel, modifier: Modifier = Modifier) {
   val state by viewModel.models.collectAsStateWithLifecycle()
   val eventSink = viewModel::eventSink
 
   ObserveEffects(viewModel.effects) { effect ->
     when (effect) {
-      AuthEffect.AuthenticationSuccess -> onAuthenticationSuccess()
+      AuthEffect.AuthenticationSuccess -> {}
     }
   }
 
@@ -61,7 +57,7 @@ fun AuthScreen(
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-fun AuthScreen(
+private fun AuthScreen(
   state: AuthUiState,
   modifier: Modifier = Modifier,
   eventSink: (AuthUiEvent) -> Unit,
