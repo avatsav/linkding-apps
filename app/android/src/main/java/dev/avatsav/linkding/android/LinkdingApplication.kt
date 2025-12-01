@@ -19,6 +19,6 @@ class LinkdingApplication : Application(), MetroApplication {
   override fun onCreate() {
     super.onCreate()
     appGraph.appInitializer.initialize()
-    GraphHolder.components += appGraph
+    GraphHolder.graphs += appGraph
   }
 }

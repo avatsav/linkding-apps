@@ -9,12 +9,10 @@ import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.browser.customtabs.CustomTabsIntent
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import androidx.core.net.toUri
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import dev.avatsav.linkding.android.di.AndroidAppGraph
@@ -27,17 +25,12 @@ import dev.zacsweers.metro.ContributesIntoMap
 import dev.zacsweers.metro.Inject
 import dev.zacsweers.metro.binding
 import dev.zacsweers.metrox.android.ActivityKey
-import dev.zacsweers.metrox.viewmodel.LocalMetroViewModelFactory
-import dev.zacsweers.metrox.viewmodel.MetroViewModelFactory
 import kotlinx.coroutines.launch
 
 @ContributesIntoMap(AppScope::class, binding<Activity>())
 @ActivityKey(MainActivity::class)
 @Inject
-class MainActivity(private val metroViewModelFactory: MetroViewModelFactory) : ComponentActivity() {
-
-  override val defaultViewModelProviderFactory: ViewModelProvider.Factory
-    get() = metroViewModelFactory
+class MainActivity : ComponentActivity() {
 
   @Suppress("UnusedPrivateProperty")
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,9 +38,9 @@ class MainActivity(private val metroViewModelFactory: MetroViewModelFactory) : C
     super.onCreate(savedInstanceState)
     val launchMode = getLaunchMode()
 
-    val appGraph: AndroidAppGraph = GraphHolder.component()
+    val appGraph: AndroidAppGraph = GraphHolder.graph()
     val uiGraph =
-      GraphHolder.component<AndroidUiGraph.Factory>().create().also { GraphHolder.components += it }
+      GraphHolder.graph<AndroidUiGraph.Factory>().create().also { GraphHolder.graphs += it }
     lifecycleScope.launch {
       repeatOnLifecycle(Lifecycle.State.STARTED) {
         appGraph.appPreferences.observeAppTheme().collect(::enableEdgeToEdge)
@@ -56,13 +49,11 @@ class MainActivity(private val metroViewModelFactory: MetroViewModelFactory) : C
 
     // Pass the sharedLink to the appUi
     setContent {
-      CompositionLocalProvider(LocalMetroViewModelFactory provides metroViewModelFactory) {
-        uiGraph.appUi.Content(
-          launchMode = launchMode,
-          onOpenUrl = { launchUrl(it) },
-          modifier = Modifier,
-        )
-      }
+      uiGraph.appUi.Content(
+        launchMode = launchMode,
+        onOpenUrl = { launchUrl(it) },
+        modifier = Modifier,
+      )
     }
   }
 

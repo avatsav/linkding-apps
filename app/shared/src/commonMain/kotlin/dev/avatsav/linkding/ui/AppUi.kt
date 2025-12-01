@@ -27,6 +27,8 @@ import dev.avatsav.linkding.ui.theme.LinkdingTheme
 import dev.zacsweers.metro.ContributesBinding
 import dev.zacsweers.metro.Inject
 import dev.zacsweers.metro.SingleIn
+import dev.zacsweers.metrox.viewmodel.LocalMetroViewModelFactory
+import dev.zacsweers.metrox.viewmodel.MetroViewModelFactory
 
 interface AppUi {
   @Composable
@@ -41,6 +43,7 @@ class DefaultAppUi(
   private val preferences: AppPreferences,
   private val authManager: AuthManager,
   private val savedStateConfiguration: SavedStateConfiguration,
+  private val metroViewModelFactory: MetroViewModelFactory,
 ) : AppUi {
 
   @Composable
@@ -49,7 +52,10 @@ class DefaultAppUi(
     val backStack = rememberNavBackStack(savedStateConfiguration, Screen.Auth)
     val navigator = rememberNavigator(backStack)
 
-    CompositionLocalProvider(LocalNavigator provides navigator) {
+    CompositionLocalProvider(
+      LocalMetroViewModelFactory provides metroViewModelFactory,
+      LocalNavigator provides navigator,
+    ) {
       LinkdingTheme(
         darkTheme = preferences.shouldUseDarkTheme(),
         dynamicColors = preferences.shouldUseDynamicColors(),
@@ -75,8 +81,8 @@ internal fun AuthenticatedContent(
 ) {
   val userGraph =
     remember(apiConfig) {
-      GraphHolder.component<UserGraph.Factory>().create(apiConfig).also { component ->
-        GraphHolder.updateComponent(component)
+      GraphHolder.graph<UserGraph.Factory>().create(apiConfig).also { component ->
+        GraphHolder.updateGraph(component)
       }
     }
 }

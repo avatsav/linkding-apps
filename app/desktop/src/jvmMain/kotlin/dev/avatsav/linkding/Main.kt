@@ -1,6 +1,5 @@
 package dev.avatsav.linkding
 
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.DpSize
@@ -14,32 +13,26 @@ import dev.avatsav.linkding.di.DesktopAppGraph
 import dev.avatsav.linkding.di.DesktopUiGraph
 import dev.avatsav.linkding.di.GraphHolder
 import dev.zacsweers.metro.createGraph
-import dev.zacsweers.metrox.viewmodel.LocalMetroViewModelFactory
 import java.awt.Desktop
 import java.net.URI
 
 fun main() = application {
-  val appGraph =
-    createGraph<DesktopAppGraph>()
-      .also { GraphHolder.components += it }
-      .also { it.appInitializer.initialize() }
+  createGraph<DesktopAppGraph>()
+    .also { GraphHolder.graphs += it }
+    .also { it.appInitializer.initialize() }
 
   val uiGraph: DesktopUiGraph =
-    GraphHolder.component<DesktopUiGraph.Factory>().create().also { GraphHolder.components += it }
+    GraphHolder.graph<DesktopUiGraph.Factory>().create().also { GraphHolder.graphs += it }
 
   val windowState =
     rememberWindowState(size = DpSize(450.dp, 900.dp), position = WindowPosition(Alignment.Center))
 
-  val metroViewModelFactory = appGraph.metroViewModelFactory
-
   Window(title = "Linkding", state = windowState, onCloseRequest = ::exitApplication) {
-    CompositionLocalProvider(LocalMetroViewModelFactory provides metroViewModelFactory) {
-      uiGraph.appUi.Content(
-        launchMode = LaunchMode.Normal,
-        onOpenUrl = { launchUrl(it) },
-        modifier = Modifier,
-      )
-    }
+    uiGraph.appUi.Content(
+      launchMode = LaunchMode.Normal,
+      onOpenUrl = { launchUrl(it) },
+      modifier = Modifier,
+    )
   }
 }
 
