@@ -63,8 +63,10 @@ sealed interface BookmarkSearchUiEvent : BookmarksUiEvent {
   data object DismissSnackbar : BookmarkSearchUiEvent
 }
 
-sealed interface BookmarksEffect {
-  data object NavigateToAddBookmark : BookmarksEffect
+sealed interface BookmarkUiEffect {
+  data class OpenBookmark(val bookmark: Bookmark) : BookmarkUiEffect
 
-  data object NavigateToSettings : BookmarksEffect
+  data object AddBookmark : BookmarkUiEffect
+
+  data object NavigateToSettings : BookmarkUiEffect
 }

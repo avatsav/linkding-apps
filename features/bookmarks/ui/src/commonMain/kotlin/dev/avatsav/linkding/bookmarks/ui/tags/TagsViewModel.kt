@@ -59,8 +59,8 @@ class TagsPresenter(
 
     ObserveEvents { event ->
       when (event) {
-        is SelectTag -> trySendEffect(TagsEffect.TagSelected(event.tag))
-        Close -> trySendEffect(TagsEffect.Dismiss)
+        is SelectTag -> emitEffect(TagsEffect.TagSelected(event.tag))
+        Close -> emitEffect(TagsEffect.Dismiss)
       }
     }
 

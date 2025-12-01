@@ -16,7 +16,6 @@ import androidx.paging.cachedIn
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.filter
 import dev.avatsav.linkding.bookmarks.api.interactors.ArchiveBookmark
-import dev.avatsav.linkding.bookmarks.api.interactors.ClearSearchHistory as ClearSearchHistoryInteractor
 import dev.avatsav.linkding.bookmarks.api.interactors.DeleteBookmark
 import dev.avatsav.linkding.bookmarks.api.interactors.SaveSearchState
 import dev.avatsav.linkding.bookmarks.api.interactors.UnarchiveBookmark
@@ -33,6 +32,7 @@ import dev.avatsav.linkding.bookmarks.ui.list.BookmarkSearchUiEvent.SelectBookma
 import dev.avatsav.linkding.bookmarks.ui.list.BookmarkSearchUiEvent.SelectSearchHistoryItem
 import dev.avatsav.linkding.bookmarks.ui.list.BookmarkSearchUiEvent.SelectTag
 import dev.avatsav.linkding.bookmarks.ui.list.BookmarkSearchUiEvent.ToggleArchive
+import dev.avatsav.linkding.bookmarks.ui.list.BookmarkUiEffect
 import dev.avatsav.linkding.bookmarks.ui.list.common.PendingAction
 import dev.avatsav.linkding.bookmarks.ui.list.common.rememberPendingActionHandler
 import dev.avatsav.linkding.data.model.Bookmark
@@ -43,12 +43,13 @@ import dev.avatsav.linkding.viewmodel.MoleculePresenter
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.AssistedInject
-import kotlin.time.Clock
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.launch
+import kotlin.time.Clock
+import dev.avatsav.linkding.bookmarks.api.interactors.ClearSearchHistory as ClearSearchHistoryInteractor
 
 @AssistedInject
 class BookmarkSearchPresenter(
@@ -60,8 +61,7 @@ class BookmarkSearchPresenter(
   private val deleteBookmark: DeleteBookmark,
   private val archiveBookmark: ArchiveBookmark,
   private val unarchiveBookmark: UnarchiveBookmark,
-  private val navigator: BookmarkSearchNavigator,
-) : MoleculePresenter<BookmarkSearchUiEvent, BookmarkSearchUiState, Unit>(scope) {
+) : MoleculePresenter<BookmarkSearchUiEvent, BookmarkSearchUiState, BookmarkUiEffect>(scope) {
 
   @Suppress("CyclomaticComplexMethod")
   @Composable
@@ -132,7 +132,9 @@ class BookmarkSearchPresenter(
           )
         }
 
-        is Open -> navigator.openUrl(event.bookmark.url)
+        is Open -> {
+          emitEffect(BookmarkUiEffect.OpenBookmark(event.bookmark))
+        }
 
         is BookmarkSearchUiEvent.Edit -> {
           // Editing bookmarks not yet implemented
@@ -218,8 +220,4 @@ class BookmarkSearchPresenter(
   interface Factory {
     fun create(scope: CoroutineScope): BookmarkSearchPresenter
   }
-}
-
-interface BookmarkSearchNavigator {
-  fun openUrl(url: String)
 }

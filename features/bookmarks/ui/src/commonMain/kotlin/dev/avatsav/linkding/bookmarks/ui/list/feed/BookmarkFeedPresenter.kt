@@ -21,6 +21,7 @@ import dev.avatsav.linkding.bookmarks.ui.list.BookmarkFeedUiEvent.Delete
 import dev.avatsav.linkding.bookmarks.ui.list.BookmarkFeedUiEvent.Open
 import dev.avatsav.linkding.bookmarks.ui.list.BookmarkFeedUiEvent.Refresh
 import dev.avatsav.linkding.bookmarks.ui.list.BookmarkFeedUiEvent.ToggleArchive
+import dev.avatsav.linkding.bookmarks.ui.list.BookmarkUiEffect
 import dev.avatsav.linkding.bookmarks.ui.list.common.PendingAction
 import dev.avatsav.linkding.bookmarks.ui.list.common.rememberPendingActionHandler
 import dev.avatsav.linkding.data.model.Bookmark
@@ -42,8 +43,7 @@ class BookmarkFeedPresenter(
   private val deleteBookmark: DeleteBookmark,
   private val archiveBookmark: ArchiveBookmark,
   private val unarchiveBookmark: UnarchiveBookmark,
-  private val navigator: BookmarkFeedNavigator,
-) : MoleculePresenter<BookmarkFeedUiEvent, BookmarkFeedUiState, Unit>(scope) {
+) : MoleculePresenter<BookmarkFeedUiEvent, BookmarkFeedUiState, BookmarkUiEffect>(scope) {
 
   @Composable
   override fun models(events: Flow<BookmarkFeedUiEvent>): BookmarkFeedUiState {
@@ -105,7 +105,7 @@ class BookmarkFeedPresenter(
           )
         }
 
-        is Open -> navigator.openUrl(event.bookmark.url)
+        is Open -> emitEffect(BookmarkUiEffect.OpenBookmark(event.bookmark))
 
         is BookmarkFeedUiEvent.Edit -> {
           // Editing bookmarks not yet implemented
@@ -131,8 +131,4 @@ class BookmarkFeedPresenter(
   interface Factory {
     fun create(scope: CoroutineScope): BookmarkFeedPresenter
   }
-}
-
-interface BookmarkFeedNavigator {
-  fun openUrl(url: String)
 }

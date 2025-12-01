@@ -64,8 +64,8 @@ fun AddBookmark(
 
   ObserveEffects(viewModel.effects) { effect ->
     when (effect) {
-      AddBookmarkEffect.BookmarkSaved -> onBookmarkSaved()
-      AddBookmarkEffect.NavigateUp -> onNavigateUp()
+      AddBookmarkUiEffect.BookmarkSaved -> onBookmarkSaved()
+      AddBookmarkUiEffect.NavigateUp -> onNavigateUp()
     }
   }
 

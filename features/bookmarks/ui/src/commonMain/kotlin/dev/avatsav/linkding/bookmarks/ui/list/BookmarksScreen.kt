@@ -54,6 +54,9 @@ import androidx.paging.LoadState
 import androidx.paging.compose.itemKey
 import dev.avatsav.linkding.bookmarks.ui.list.widgets.BookmarkListItem
 import dev.avatsav.linkding.data.model.Bookmark
+import dev.avatsav.linkding.navigation.LocalNavigator
+import dev.avatsav.linkding.navigation.Screen
+import dev.avatsav.linkding.navigation.Screen.AddBookmark
 import dev.avatsav.linkding.ui.compose.appearFromBottom
 import dev.avatsav.linkding.ui.compose.disappearToBottom
 import dev.avatsav.linkding.ui.compose.widgets.AnimatedVisibilityWithElevation
@@ -65,23 +68,20 @@ import dev.avatsav.linkding.viewmodel.ObserveEffects
   ExperimentalComposeUiApi::class,
 )
 @Composable
-fun Bookmarks(
-  viewModel: BookmarksViewModel,
-  onNavigateToAddBookmark: () -> Unit,
-  onNavigateToSettings: () -> Unit,
-  modifier: Modifier = Modifier,
-) {
+fun BookmarksScreen(viewModel: BookmarksViewModel, modifier: Modifier = Modifier) {
+  val navigator = LocalNavigator.current
   val state by viewModel.models.collectAsStateWithLifecycle()
   val eventSink = viewModel::eventSink
 
   ObserveEffects(viewModel.effects) { effect ->
     when (effect) {
-      BookmarksEffect.NavigateToAddBookmark -> onNavigateToAddBookmark()
-      BookmarksEffect.NavigateToSettings -> onNavigateToSettings()
+      BookmarkUiEffect.AddBookmark -> navigator.goTo(AddBookmark())
+      BookmarkUiEffect.NavigateToSettings -> navigator.goTo(Screen.Settings)
+      is BookmarkUiEffect.OpenBookmark -> navigator.goTo(Screen.Url(effect.bookmark.url))
     }
   }
 
-  Bookmarks(state, modifier, eventSink)
+  BookmarksScreen(state, modifier, eventSink)
 }
 
 @OptIn(
@@ -90,7 +90,7 @@ fun Bookmarks(
   ExperimentalComposeUiApi::class,
 )
 @Composable
-fun Bookmarks(
+private fun BookmarksScreen(
   state: BookmarksUiState,
   modifier: Modifier = Modifier,
   eventSink: (BookmarksUiEvent) -> Unit,

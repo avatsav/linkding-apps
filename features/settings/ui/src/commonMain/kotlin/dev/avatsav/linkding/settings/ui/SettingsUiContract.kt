@@ -29,10 +29,10 @@ sealed interface SettingsUiEvent {
   data object ShowPrivacyPolicy : SettingsUiEvent
 }
 
-sealed interface SettingsEffect {
-  data object NavigateUp : SettingsEffect
+sealed interface SettingsUiEffect {
+  data object NavigateUp : SettingsUiEffect
 
-  data object ResetToAuth : SettingsEffect
+  data object ResetToAuth : SettingsUiEffect
 
-  data class OpenUrl(val url: String) : SettingsEffect
+  data class OpenUrl(val url: String) : SettingsUiEffect
 }

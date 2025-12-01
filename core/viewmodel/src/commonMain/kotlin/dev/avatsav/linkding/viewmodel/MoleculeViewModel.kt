@@ -13,6 +13,7 @@ import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 
 /**
  * Common interface for managing state, events, and effects using Molecule.
@@ -97,16 +98,8 @@ abstract class MoleculePresenter<Event, Model, Effect>(scope: CoroutineScope) :
    * Emits a side effect. Suspends if buffer is full. Use from suspending contexts (e.g., within
    * `presenterScope.launch`).
    */
-  protected suspend fun emitEffect(effect: Effect) {
-    _effects.send(effect)
-  }
-
-  /**
-   * Emits a side effect without suspending. Throws if buffer is full. Use from non-suspending
-   * contexts (e.g., event handlers).
-   */
-  protected fun trySendEffect(effect: Effect) {
-    _effects.trySend(effect).getOrThrow()
+  protected fun emitEffect(effect: Effect) {
+    presenterScope.launch { _effects.send(effect) }
   }
 
   @Composable protected abstract fun models(events: Flow<Event>): Model

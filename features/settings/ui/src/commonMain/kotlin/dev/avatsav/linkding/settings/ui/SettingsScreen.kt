@@ -35,6 +35,8 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.avatsav.linkding.data.model.prefs.AppTheme
+import dev.avatsav.linkding.navigation.LocalNavigator
+import dev.avatsav.linkding.navigation.Screen
 import dev.avatsav.linkding.settings.ui.SettingsUiEvent.Close
 import dev.avatsav.linkding.settings.ui.SettingsUiEvent.ResetApiConfig
 import dev.avatsav.linkding.settings.ui.SettingsUiEvent.SetAppTheme
@@ -51,30 +53,27 @@ import dev.avatsav.linkding.viewmodel.ObserveEffects
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class, ExperimentalMaterial3Api::class)
 @Composable
-fun Settings(
-  viewModel: SettingsViewModel,
-  onOpenUrl: (String) -> Unit,
-  onResetToAuth: () -> Unit,
-  onNavigateUp: () -> Unit,
-  modifier: Modifier = Modifier,
-) {
+fun SettingsScreen(viewModel: SettingsViewModel, modifier: Modifier = Modifier) {
+  val navigator = LocalNavigator.current
   val state by viewModel.models.collectAsStateWithLifecycle()
   val eventSink = viewModel::eventSink
 
   ObserveEffects(viewModel.effects) { effect ->
     when (effect) {
-      SettingsEffect.NavigateUp -> onNavigateUp()
-      is SettingsEffect.OpenUrl -> onOpenUrl(effect.url)
-      SettingsEffect.ResetToAuth -> onResetToAuth()
+      SettingsUiEffect.NavigateUp -> navigator.pop()
+      is SettingsUiEffect.OpenUrl -> navigator.goTo(Screen.Url(effect.url))
+      SettingsUiEffect.ResetToAuth -> {
+        // NO-OP
+      }
     }
   }
 
-  Settings(state, modifier, eventSink)
+  SettingsScreen(state, modifier, eventSink)
 }
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class, ExperimentalMaterial3Api::class)
 @Composable
-fun Settings(
+private fun SettingsScreen(
   state: SettingsUiState,
   modifier: Modifier = Modifier,
   eventSink: (SettingsUiEvent) -> Unit,
