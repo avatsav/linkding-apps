@@ -1,5 +1,4 @@
 plugins {
-  id("convention.android.library")
   id("convention.kotlin.multiplatform")
   id("convention.compose")
 }
@@ -11,8 +10,8 @@ kotlin {
       implementation(libs.compose.foundation)
       implementation(libs.compose.lifecycle)
       implementation(libs.compose.viewmodel)
+      implementation(libs.compose.viewmodel.navigation3)
+      implementation(libs.metro.viewmodel)
     }
   }
 }
-
-android { namespace = "dev.avatsav.linkding.di" }

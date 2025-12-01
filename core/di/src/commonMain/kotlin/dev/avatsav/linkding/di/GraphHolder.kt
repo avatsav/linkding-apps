@@ -1,6 +1,6 @@
 package dev.avatsav.linkding.di
 
-object ComponentHolder {
+object GraphHolder {
 
   val components = mutableSetOf<Any>()
 

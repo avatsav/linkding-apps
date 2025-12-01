@@ -3,17 +3,11 @@ package dev.avatsav.linkding.di
 import android.app.Application
 import android.content.pm.ApplicationInfo
 import dev.avatsav.linkding.AppInfo
-import dev.avatsav.linkding.initializers.AppInitializer
-import dev.avatsav.linkding.prefs.AppPreferences
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Provides
 import dev.zacsweers.metro.SingleIn
 
-interface SharedAndroidAppGraph {
-
-  val appPreferences: AppPreferences
-
-  val appInitializer: AppInitializer
+interface SharedAndroidAppGraph : AppGraph {
 
   @SingleIn(AppScope::class)
   @Provides

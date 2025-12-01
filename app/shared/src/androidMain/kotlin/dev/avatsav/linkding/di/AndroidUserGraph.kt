@@ -8,11 +8,11 @@ import dev.zacsweers.metro.GraphExtension
 import dev.zacsweers.metro.Provides
 
 @GraphExtension(UserScope::class)
-interface AndroidUserComponent : UserComponent {
+interface AndroidUserGraph : UserGraph {
 
   @ContributesTo(AppScope::class)
   @GraphExtension.Factory
-  interface Factory : UserComponent.Factory {
-    override fun create(@Provides apiConfig: ApiConfig): AndroidUserComponent
+  interface Factory : UserGraph.Factory {
+    override fun create(@Provides apiConfig: ApiConfig): AndroidUserGraph
   }
 }

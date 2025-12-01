@@ -1,7 +1,6 @@
 package dev.avatsav.linkding.di
 
 import dev.avatsav.linkding.AppInfo
-import dev.avatsav.linkding.initializers.AppInitializer
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.DependencyGraph
 import dev.zacsweers.metro.Provides
@@ -9,9 +8,7 @@ import dev.zacsweers.metro.SingleIn
 import java.util.prefs.Preferences
 
 @DependencyGraph(AppScope::class)
-interface DesktopAppComponent {
-
-  val appInitializer: AppInitializer
+interface DesktopAppGraph : AppGraph {
 
   @SingleIn(AppScope::class)
   @Provides

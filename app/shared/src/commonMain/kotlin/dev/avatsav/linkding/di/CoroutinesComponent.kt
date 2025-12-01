@@ -12,7 +12,7 @@ import kotlinx.coroutines.IO
 import kotlinx.coroutines.SupervisorJob
 
 @ContributesTo(AppScope::class)
-interface SharedAppComponent {
+interface CoroutinesComponent {
 
   @Provides
   @SingleIn(AppScope::class)

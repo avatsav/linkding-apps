@@ -5,8 +5,8 @@ import dev.avatsav.linkding.di.scope.UserScope
 import dev.zacsweers.metro.SingleIn
 
 @SingleIn(UserScope::class)
-interface UserComponent {
+interface UserGraph {
   interface Factory {
-    fun create(apiConfig: ApiConfig): UserComponent
+    fun create(apiConfig: ApiConfig): UserGraph
   }
 }

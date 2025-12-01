@@ -15,8 +15,8 @@ import dev.avatsav.linkding.auth.api.AuthManager
 import dev.avatsav.linkding.data.model.ApiConfig
 import dev.avatsav.linkding.data.model.app.LaunchMode
 import dev.avatsav.linkding.data.model.prefs.AppTheme
-import dev.avatsav.linkding.di.ComponentHolder
-import dev.avatsav.linkding.di.UserComponent
+import dev.avatsav.linkding.di.GraphHolder
+import dev.avatsav.linkding.di.UserGraph
 import dev.avatsav.linkding.di.scope.UiScope
 import dev.avatsav.linkding.navigation.LocalNavigator
 import dev.avatsav.linkding.navigation.Screen
@@ -73,10 +73,10 @@ internal fun AuthenticatedContent(
   onRootPop: () -> Unit,
   modifier: Modifier = Modifier,
 ) {
-  val userComponent =
+  val userGraph =
     remember(apiConfig) {
-      ComponentHolder.component<UserComponent.Factory>().create(apiConfig).also { component ->
-        ComponentHolder.updateComponent(component)
+      GraphHolder.component<UserGraph.Factory>().create(apiConfig).also { component ->
+        GraphHolder.updateComponent(component)
       }
     }
 }

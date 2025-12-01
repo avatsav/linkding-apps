@@ -36,6 +36,12 @@ kotlin {
       api(projects.features.settings.api)
       api(projects.features.settings.impl)
       api(projects.features.settings.ui)
+
+      api(libs.compose.lifecycle)
+      api(libs.compose.viewmodel)
+      api(libs.compose.viewmodel.navigation3)
+      api(libs.metro.viewmodel)
+      api(libs.metro.viewmodel.compose)
     }
 
     targets.withType<KotlinNativeTarget>().configureEach {

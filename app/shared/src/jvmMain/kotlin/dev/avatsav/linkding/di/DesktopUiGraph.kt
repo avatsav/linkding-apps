@@ -7,13 +7,13 @@ import dev.zacsweers.metro.ContributesTo
 import dev.zacsweers.metro.GraphExtension
 
 @GraphExtension(UiScope::class)
-interface AndroidUiComponent {
+interface DesktopUiGraph {
 
   val appUi: AppUi
 
   @ContributesTo(AppScope::class)
   @GraphExtension.Factory
   interface Factory {
-    fun create(): AndroidUiComponent
+    fun create(): DesktopUiGraph
   }
 }

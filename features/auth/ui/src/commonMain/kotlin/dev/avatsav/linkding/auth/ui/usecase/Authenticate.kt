@@ -5,10 +5,13 @@ import dev.avatsav.linkding.AppCoroutineDispatchers
 import dev.avatsav.linkding.auth.api.AuthRepository
 import dev.avatsav.linkding.data.model.AuthError
 import dev.avatsav.linkding.domain.Interactor
+import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.SingleIn
 import kotlinx.coroutines.withContext
 
 @Inject
+@SingleIn(AppScope::class)
 class Authenticate(
   private val authRepository: AuthRepository,
   private val dispatchers: AppCoroutineDispatchers,

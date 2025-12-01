@@ -13,13 +13,16 @@ kotlin {
       implementation(projects.core.di)
       implementation(projects.core.preferences)
       implementation(projects.core.viewmodel)
+      implementation(projects.ui.theme)
+      implementation(projects.ui.navigation)
       implementation(projects.ui.compose)
       implementation(projects.ui.theme)
       implementation(libs.compose.foundation)
       implementation(libs.compose.m3expressive)
       implementation(libs.compose.viewmodel)
-      api(projects.ui.theme)
-      api(projects.ui.navigation)
+      implementation(libs.compose.viewmodel.navigation3)
+      implementation(libs.metro.viewmodel)
+      implementation(libs.metro.viewmodel.compose)
     }
   }
 }

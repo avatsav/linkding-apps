@@ -1,7 +1,6 @@
 package dev.avatsav.linkding.di
 
 import dev.avatsav.linkding.AppInfo
-import dev.avatsav.linkding.initializers.AppInitializer
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.DependencyGraph
 import dev.zacsweers.metro.Provides
@@ -12,9 +11,7 @@ import kotlin.experimental.ExperimentalNativeApi
 
 @OptIn(ExperimentalNativeApi::class)
 @DependencyGraph(AppScope::class)
-abstract class IosAppComponent {
-
-  abstract val appInitializer: AppInitializer
+abstract class IosAppGraph : AppGraph {
 
   @SingleIn(AppScope::class)
   @Provides

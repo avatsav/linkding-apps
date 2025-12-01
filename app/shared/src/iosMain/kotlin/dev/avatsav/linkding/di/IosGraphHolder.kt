@@ -1,7 +1,7 @@
 package dev.avatsav.linkding.di
 
-object IosComponentHolder {
+object IosGraphHolder {
   fun addComponent(component: Any) {
-    ComponentHolder.components += component
+    GraphHolder.components += component
   }
 }

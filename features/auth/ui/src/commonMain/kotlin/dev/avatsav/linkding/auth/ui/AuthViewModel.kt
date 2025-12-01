@@ -6,6 +6,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.michaelbull.result.onFailure
 import com.github.michaelbull.result.onSuccess
@@ -13,7 +14,6 @@ import dev.avatsav.linkding.auth.ui.usecase.Authenticate
 import dev.avatsav.linkding.data.model.AuthError.InvalidApiKey
 import dev.avatsav.linkding.data.model.AuthError.InvalidHostname
 import dev.avatsav.linkding.data.model.AuthError.Other
-import dev.avatsav.linkding.di.viewmodel.ViewModelKey
 import dev.avatsav.linkding.viewmodel.MoleculePresenter
 import dev.avatsav.linkding.viewmodel.MoleculeViewModel
 import dev.zacsweers.metro.AppScope
@@ -22,11 +22,14 @@ import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.AssistedInject
 import dev.zacsweers.metro.ContributesIntoMap
 import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.SingleIn
+import dev.zacsweers.metro.binding
+import dev.zacsweers.metrox.viewmodel.ViewModelKey
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
-@ContributesIntoMap(AppScope::class)
+@ContributesIntoMap(AppScope::class, binding<ViewModel>())
 @ViewModelKey(AuthViewModel::class)
 @Inject
 class AuthViewModel(authPresenterFactory: AuthPresenter.Factory) :
@@ -77,6 +80,7 @@ class AuthPresenter(
   }
 
   @AssistedFactory
+  @SingleIn(AppScope::class)
   interface Factory {
     fun create(coroutineScope: CoroutineScope): AuthPresenter
   }

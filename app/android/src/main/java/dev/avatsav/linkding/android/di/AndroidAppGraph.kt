@@ -1,24 +1,17 @@
 package dev.avatsav.linkding.android.di
 
-import android.app.Activity
 import android.app.Application
 import dev.avatsav.linkding.di.SharedAndroidAppGraph
-import dev.avatsav.linkding.di.viewmodel.ViewModelGraph
+import dev.avatsav.linkding.prefs.AppPreferences
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.DependencyGraph
-import dev.zacsweers.metro.Multibinds
-import dev.zacsweers.metro.Provider
 import dev.zacsweers.metro.Provides
-import kotlin.reflect.KClass
+import dev.zacsweers.metrox.android.MetroAppComponentProviders
 
 @DependencyGraph(AppScope::class)
-interface AndroidAppGraph : SharedAndroidAppGraph, ViewModelGraph {
+interface AndroidAppGraph : SharedAndroidAppGraph, MetroAppComponentProviders {
 
-  /**
-   * A multibinding map of activity classes to their providers accessible for
-   * [MetroAppComponentFactory].
-   */
-  @Multibinds val activityProviders: Map<KClass<out Activity>, Provider<Activity>>
+  val appPreferences: AppPreferences
 
   @DependencyGraph.Factory
   interface Factory {

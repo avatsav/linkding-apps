@@ -25,7 +25,7 @@ stately = "2.1.0"
 kotlinPoet = "2.2.0"
 kotest = "6.0.5"
 uuid = "0.8.4"
-metro = "0.8.0-20251129.082136-138" # https://github.com/ZacSweers/metro/releases
+metro = "0.8.0-SNAPSHOT" # https://github.com/ZacSweers/metro/releases
 molecule = "2.2.0"
 gradleVersions = "0.53.0"
 
@@ -124,7 +124,7 @@ uuid = { module = "com.benasher44:uuid", version.ref = "uuid" }
 molecule = { module = "app.cash.molecule:molecule-runtime", version.ref = "molecule" }
 detektComposeRules = "io.nlopez.compose.rules:detekt:0.4.28"
 
-metro-android = { module = "dev.zacsweers.metrox:metrox-android", version.ref = "metro" }
+metro-android = { module = "dev.zacsweers.metro:metrox-android", version.ref = "metro" }
 metro-viewmodel = { module = "dev.zacsweers.metro:metrox-viewmodel", version.ref = "metro" }
 metro-viewmodel-compose = { module = "dev.zacsweers.metro:metrox-viewmodel-compose", version.ref = "metro" }
 

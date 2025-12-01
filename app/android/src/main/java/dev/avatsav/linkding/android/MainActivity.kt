@@ -9,6 +9,7 @@ import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.browser.customtabs.CustomTabsIntent
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import androidx.core.net.toUri
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
@@ -19,23 +20,24 @@ import androidx.lifecycle.repeatOnLifecycle
 import dev.avatsav.linkding.android.di.AndroidAppGraph
 import dev.avatsav.linkding.data.model.app.LaunchMode
 import dev.avatsav.linkding.data.model.prefs.AppTheme
-import dev.avatsav.linkding.di.AndroidUiComponent
-import dev.avatsav.linkding.di.ComponentHolder
-import dev.avatsav.linkding.di.activity.ActivityKey
+import dev.avatsav.linkding.di.AndroidUiGraph
+import dev.avatsav.linkding.di.GraphHolder
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesIntoMap
 import dev.zacsweers.metro.Inject
 import dev.zacsweers.metro.binding
+import dev.zacsweers.metrox.android.ActivityKey
+import dev.zacsweers.metrox.viewmodel.LocalMetroViewModelFactory
+import dev.zacsweers.metrox.viewmodel.MetroViewModelFactory
 import kotlinx.coroutines.launch
 
 @ContributesIntoMap(AppScope::class, binding<Activity>())
 @ActivityKey(MainActivity::class)
 @Inject
-class MainActivity(private val viewModelProviderFactory: ViewModelProvider.Factory) :
-  ComponentActivity() {
+class MainActivity(private val metroViewModelFactory: MetroViewModelFactory) : ComponentActivity() {
 
   override val defaultViewModelProviderFactory: ViewModelProvider.Factory
-    get() = viewModelProviderFactory
+    get() = metroViewModelFactory
 
   @Suppress("UnusedPrivateProperty")
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,24 +45,24 @@ class MainActivity(private val viewModelProviderFactory: ViewModelProvider.Facto
     super.onCreate(savedInstanceState)
     val launchMode = getLaunchMode()
 
-    val appComponent: AndroidAppGraph = ComponentHolder.component()
-    val uiComponent =
-      ComponentHolder.component<AndroidUiComponent.Factory>().create().also {
-        ComponentHolder.components += it
-      }
+    val appGraph: AndroidAppGraph = GraphHolder.component()
+    val uiGraph =
+      GraphHolder.component<AndroidUiGraph.Factory>().create().also { GraphHolder.components += it }
     lifecycleScope.launch {
       repeatOnLifecycle(Lifecycle.State.STARTED) {
-        appComponent.appPreferences.observeAppTheme().collect(::enableEdgeToEdge)
+        appGraph.appPreferences.observeAppTheme().collect(::enableEdgeToEdge)
       }
     }
 
     // Pass the sharedLink to the appUi
     setContent {
-      uiComponent.appUi.Content(
-        launchMode = launchMode,
-        onOpenUrl = { launchUrl(it) },
-        modifier = Modifier,
-      )
+      CompositionLocalProvider(LocalMetroViewModelFactory provides metroViewModelFactory) {
+        uiGraph.appUi.Content(
+          launchMode = launchMode,
+          onOpenUrl = { launchUrl(it) },
+          modifier = Modifier,
+        )
+      }
     }
   }
 

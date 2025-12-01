@@ -1,19 +1,19 @@
 package dev.avatsav.linkding.di
 
 import dev.avatsav.linkding.di.scope.UiScope
-import dev.avatsav.linkding.ui.MainUIViewControllerFactory
+import dev.avatsav.linkding.ui.AppUi
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesTo
 import dev.zacsweers.metro.GraphExtension
 
 @GraphExtension(UiScope::class)
-interface IosUiComponent {
+interface AndroidUiGraph {
 
-  val uiViewControllerFactory: MainUIViewControllerFactory
+  val appUi: AppUi
 
   @ContributesTo(AppScope::class)
   @GraphExtension.Factory
   interface Factory {
-    fun createUiComponent(): IosUiComponent
+    fun create(): AndroidUiGraph
   }
 }

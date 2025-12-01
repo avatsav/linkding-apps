@@ -18,8 +18,11 @@ kotlin {
       implementation(libs.compose.foundation)
       implementation(libs.compose.m3expressive)
       implementation(libs.compose.viewmodel)
+      implementation(libs.compose.viewmodel.navigation3)
       implementation(libs.paging.compose)
       implementation(libs.kotlin.datetime)
+      implementation(libs.metro.viewmodel)
+      implementation(libs.metro.viewmodel.compose)
     }
   }
 }

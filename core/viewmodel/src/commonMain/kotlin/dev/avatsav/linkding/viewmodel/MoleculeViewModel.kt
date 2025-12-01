@@ -6,7 +6,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import app.cash.molecule.RecompositionMode.ContextClock
 import app.cash.molecule.launchMolecule
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.Channel
@@ -76,7 +75,7 @@ abstract class MoleculePresenter<Event, Model, Effect>(scope: CoroutineScope) :
   Presenter<Event, Model, Effect> {
 
   val presenterScope = scope
-  private val moleculeScope = CoroutineScope(scope.coroutineContext + UiDispatcherContext)
+  private val moleculeScope = CoroutineScope(scope.coroutineContext + PlatformUiCoroutineContext)
 
   private val events = MutableSharedFlow<Event>(extraBufferCapacity = 20)
   private val _effects = Channel<Effect>(Channel.BUFFERED)
@@ -85,7 +84,7 @@ abstract class MoleculePresenter<Event, Model, Effect>(scope: CoroutineScope) :
 
   override val models: StateFlow<Model> by
     lazy(LazyThreadSafetyMode.NONE) {
-      moleculeScope.launchMolecule(mode = ContextClock) { models(events) }
+      moleculeScope.launchMolecule(mode = PlatformRecompositionMode) { models(events) }
     }
 
   override fun eventSink(event: Event) {
@@ -95,16 +94,16 @@ abstract class MoleculePresenter<Event, Model, Effect>(scope: CoroutineScope) :
   }
 
   /**
-   * Emits a side effect. Suspends if buffer is full.
-   * Use from suspending contexts (e.g., within `presenterScope.launch`).
+   * Emits a side effect. Suspends if buffer is full. Use from suspending contexts (e.g., within
+   * `presenterScope.launch`).
    */
   protected suspend fun emitEffect(effect: Effect) {
     _effects.send(effect)
   }
 
   /**
-   * Emits a side effect without suspending. Throws if buffer is full.
-   * Use from non-suspending contexts (e.g., event handlers).
+   * Emits a side effect without suspending. Throws if buffer is full. Use from non-suspending
+   * contexts (e.g., event handlers).
    */
   protected fun trySendEffect(effect: Effect) {
     _effects.trySend(effect).getOrThrow()
@@ -113,8 +112,8 @@ abstract class MoleculePresenter<Event, Model, Effect>(scope: CoroutineScope) :
   @Composable protected abstract fun models(events: Flow<Event>): Model
 
   /**
-   * Observes events from the UI and handles them in the presenter.
-   * Use [presenterScope] to launch coroutines.
+   * Observes events from the UI and handles them in the presenter. Use [presenterScope] to launch
+   * coroutines.
    */
   @Composable
   protected fun ObserveEvents(block: CoroutineScope.(Event) -> Unit) {
@@ -148,8 +147,8 @@ abstract class MoleculeViewModel<Event, Model, Effect> :
   ViewModel(), Presenter<Event, Model, Effect> {
 
   /**
-   * The presenter handling state and effects.
-   * Initialize lazily with [viewModelScope] from an injected factory.
+   * The presenter handling state and effects. Initialize lazily with [viewModelScope] from an
+   * injected factory.
    */
   protected abstract val presenter: MoleculePresenter<Event, Model, Effect>
 
