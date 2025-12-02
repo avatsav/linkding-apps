@@ -48,20 +48,14 @@ class DefaultAppUi(
 
   @Composable
   override fun Content(launchMode: LaunchMode, onOpenUrl: (String) -> Boolean, modifier: Modifier) {
-    val authState by authManager.state.collectAsState(authManager.getCurrentState())
-
-    val viewModelFactory = rememberViewModelFactory(authState, metroViewModelFactory)
-    val startScreen =
-      remember(authState, launchMode) {
-        when (authState) {
-          is AuthState.Loading,
-          is AuthState.Unauthenticated -> Screen.Auth
-          is AuthState.Authenticated -> launchMode.startScreen()
-        }
-      }
+    val initialAuthState = remember { authManager.getCurrentState() }
+    val startScreen = remember(launchMode) { initialAuthState.startScreen(launchMode) }
 
     val backStack = rememberNavBackStack(savedStateConfiguration, startScreen)
     val navigator = rememberNavigator(backStack)
+
+    val authState by authManager.state.collectAsState(initialAuthState)
+    val viewModelFactory = rememberViewModelFactory(authState, metroViewModelFactory)
 
     CompositionLocalProvider(
       LocalMetroViewModelFactory provides viewModelFactory,
@@ -89,9 +83,7 @@ private fun rememberViewModelFactory(
 ): MetroViewModelFactory {
   return when (authState) {
     is AuthState.Loading,
-    is AuthState.Unauthenticated -> {
-      defaultFactory
-    }
+    is AuthState.Unauthenticated -> defaultFactory
     is AuthState.Authenticated -> {
       remember(authState.apiConfig) {
           GraphHolder.graph<UserGraph.Factory>().create(authState.apiConfig).also { component ->
@@ -102,6 +94,13 @@ private fun rememberViewModelFactory(
     }
   }
 }
+
+private fun AuthState.startScreen(launchMode: LaunchMode): Screen =
+  when (this) {
+    is AuthState.Loading,
+    is AuthState.Unauthenticated -> Screen.Auth
+    is AuthState.Authenticated -> launchMode.startScreen()
+  }
 
 private fun LaunchMode.startScreen(): Screen =
   when (this) {
