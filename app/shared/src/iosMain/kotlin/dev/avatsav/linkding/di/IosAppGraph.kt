@@ -5,9 +5,9 @@ import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.DependencyGraph
 import dev.zacsweers.metro.Provides
 import dev.zacsweers.metro.SingleIn
+import kotlin.experimental.ExperimentalNativeApi
 import platform.Foundation.NSBundle
 import platform.Foundation.NSUserDefaults
-import kotlin.experimental.ExperimentalNativeApi
 
 @OptIn(ExperimentalNativeApi::class)
 @DependencyGraph(AppScope::class)

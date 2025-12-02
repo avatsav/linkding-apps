@@ -12,7 +12,7 @@ import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
 import androidx.savedstate.serialization.SavedStateConfiguration
 import dev.avatsav.linkding.auth.api.AuthManager
-import dev.avatsav.linkding.data.model.ApiConfig
+import dev.avatsav.linkding.auth.api.AuthState
 import dev.avatsav.linkding.data.model.app.LaunchMode
 import dev.avatsav.linkding.data.model.prefs.AppTheme
 import dev.avatsav.linkding.di.GraphHolder
@@ -49,11 +49,22 @@ class DefaultAppUi(
   @Composable
   override fun Content(launchMode: LaunchMode, onOpenUrl: (String) -> Boolean, modifier: Modifier) {
     val authState by authManager.state.collectAsState(authManager.getCurrentState())
-    val backStack = rememberNavBackStack(savedStateConfiguration, Screen.Auth)
+
+    val viewModelFactory = rememberViewModelFactory(authState, metroViewModelFactory)
+    val startScreen =
+      remember(authState, launchMode) {
+        when (authState) {
+          is AuthState.Loading,
+          is AuthState.Unauthenticated -> Screen.Auth
+          is AuthState.Authenticated -> launchMode.startScreen()
+        }
+      }
+
+    val backStack = rememberNavBackStack(savedStateConfiguration, startScreen)
     val navigator = rememberNavigator(backStack)
 
     CompositionLocalProvider(
-      LocalMetroViewModelFactory provides metroViewModelFactory,
+      LocalMetroViewModelFactory provides viewModelFactory,
       LocalNavigator provides navigator,
     ) {
       LinkdingTheme(
@@ -72,19 +83,24 @@ class DefaultAppUi(
 }
 
 @Composable
-internal fun AuthenticatedContent(
-  apiConfig: ApiConfig,
-  launchMode: LaunchMode,
-  onOpenUrl: (String) -> Boolean,
-  onRootPop: () -> Unit,
-  modifier: Modifier = Modifier,
-) {
-  val userGraph =
-    remember(apiConfig) {
-      GraphHolder.graph<UserGraph.Factory>().create(apiConfig).also { component ->
-        GraphHolder.updateGraph(component)
-      }
+private fun rememberViewModelFactory(
+  authState: AuthState,
+  defaultFactory: MetroViewModelFactory,
+): MetroViewModelFactory {
+  return when (authState) {
+    is AuthState.Loading,
+    is AuthState.Unauthenticated -> {
+      defaultFactory
     }
+    is AuthState.Authenticated -> {
+      remember(authState.apiConfig) {
+          GraphHolder.graph<UserGraph.Factory>().create(authState.apiConfig).also { component ->
+            GraphHolder.updateGraph(component)
+          }
+        }
+        .metroViewModelFactory
+    }
+  }
 }
 
 private fun LaunchMode.startScreen(): Screen =

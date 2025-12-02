@@ -22,7 +22,6 @@ import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.AssistedInject
 import dev.zacsweers.metro.ContributesIntoMap
 import dev.zacsweers.metro.Inject
-import dev.zacsweers.metro.SingleIn
 import dev.zacsweers.metro.binding
 import dev.zacsweers.metrox.viewmodel.ViewModelKey
 import kotlinx.coroutines.CoroutineScope
@@ -80,7 +79,6 @@ class AuthPresenter(
   }
 
   @AssistedFactory
-  @SingleIn(AppScope::class)
   interface Factory {
     fun create(coroutineScope: CoroutineScope): AuthPresenter
   }

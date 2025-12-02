@@ -1,6 +1,7 @@
 package dev.avatsav.linkding.di.viewmodel
 
 import androidx.lifecycle.ViewModel
+import dev.avatsav.linkding.di.scope.UserScope
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
 import dev.zacsweers.metro.Inject
@@ -14,7 +15,18 @@ import kotlin.reflect.KClass
 @Inject
 @ContributesBinding(AppScope::class)
 @SingleIn(AppScope::class)
-class LinkdingViewModelFactory(
+class AppScopeViewModelFactory(
+  override val viewModelProviders: Map<KClass<out ViewModel>, Provider<ViewModel>>,
+  override val assistedFactoryProviders:
+    Map<KClass<out ViewModel>, Provider<ViewModelAssistedFactory>>,
+  override val manualAssistedFactoryProviders:
+    Map<KClass<out ManualViewModelAssistedFactory>, Provider<ManualViewModelAssistedFactory>>,
+) : MetroViewModelFactory()
+
+@Inject
+@ContributesBinding(UserScope::class)
+@SingleIn(UserScope::class)
+class UserScopeViewModelFactory(
   override val viewModelProviders: Map<KClass<out ViewModel>, Provider<ViewModel>>,
   override val assistedFactoryProviders:
     Map<KClass<out ViewModel>, Provider<ViewModelAssistedFactory>>,
