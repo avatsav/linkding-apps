@@ -1,7 +1,6 @@
 package dev.avatsav.linkding.auth.ui
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.defaultMinSize
@@ -29,7 +28,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.input.ImeAction
@@ -91,66 +89,9 @@ private fun AuthScreen(
         scrollBehavior = scrollBehavior,
       )
     },
-    contentWindowInsets = WindowInsets(),
-  ) { padding ->
-    Box(modifier = Modifier.fillMaxSize().padding(padding)) {
-      // Scrollable content
-      Column(
-        modifier =
-          Modifier.fillMaxWidth().padding(horizontal = 16.dp).verticalScroll(rememberScrollState()),
-        verticalArrangement = Arrangement.spacedBy(12.dp),
-      ) {
-        Text(
-          text =
-            "Configure settings, so that the app can communicate with your linkding installation."
-        )
-        OutlinedTextField(
-          modifier = Modifier.fillMaxWidth(),
-          value = hostUrl,
-          enabled = !state.loading,
-          singleLine = true,
-          label = { Text(text = "Host URL") },
-          isError = state.invalidHostUrl,
-          supportingText = {
-            if (errorMessage.isNotBlank() && state.invalidHostUrl) {
-              Text(
-                modifier = Modifier.fillMaxWidth(),
-                text = errorMessage,
-                color = MaterialTheme.colorScheme.error,
-              )
-            }
-          },
-          keyboardOptions =
-            KeyboardOptions(
-              autoCorrectEnabled = false,
-              keyboardType = KeyboardType.Uri,
-              imeAction = ImeAction.Next,
-            ),
-          onValueChange = { hostUrl = it },
-        )
-        OutlinedTextField(
-          modifier = Modifier.fillMaxWidth(),
-          value = apiKey,
-          enabled = !state.loading,
-          singleLine = true,
-          label = { Text(text = "API Key") },
-          isError = state.invalidApiKey,
-          supportingText = {
-            if (errorMessage.isNotBlank() && state.invalidApiKey) {
-              Text(
-                modifier = Modifier.fillMaxWidth(),
-                text = errorMessage,
-                color = MaterialTheme.colorScheme.error,
-              )
-            }
-          },
-          onValueChange = { apiKey = it },
-        )
-      }
-
-      // Docked save button, positioned above keyboard
+    bottomBar = {
       BottomAppBar(
-        modifier = Modifier.align(Alignment.BottomEnd).fillMaxWidth().imePadding(),
+        modifier = Modifier.imePadding(),
         floatingActionButton = {
           Button(
             modifier = Modifier.defaultMinSize(minWidth = 56.dp, minHeight = 48.dp),
@@ -161,6 +102,63 @@ private fun AuthScreen(
           }
         },
         actions = {},
+      )
+    },
+    contentWindowInsets = WindowInsets(0.dp),
+  ) { padding ->
+    Column(
+      modifier =
+        Modifier.fillMaxSize()
+          .padding(padding)
+          .padding(horizontal = 16.dp)
+          .verticalScroll(rememberScrollState()),
+      verticalArrangement = Arrangement.spacedBy(12.dp),
+    ) {
+      Text(
+        text =
+          "Configure settings, so that the app can communicate with your linkding installation."
+      )
+      OutlinedTextField(
+        modifier = Modifier.fillMaxWidth(),
+        value = hostUrl,
+        enabled = !state.loading,
+        singleLine = true,
+        label = { Text(text = "Host URL") },
+        isError = state.invalidHostUrl,
+        supportingText = {
+          if (errorMessage.isNotBlank() && state.invalidHostUrl) {
+            Text(
+              modifier = Modifier.fillMaxWidth(),
+              text = errorMessage,
+              color = MaterialTheme.colorScheme.error,
+            )
+          }
+        },
+        keyboardOptions =
+          KeyboardOptions(
+            autoCorrectEnabled = false,
+            keyboardType = KeyboardType.Uri,
+            imeAction = ImeAction.Next,
+          ),
+        onValueChange = { hostUrl = it },
+      )
+      OutlinedTextField(
+        modifier = Modifier.fillMaxWidth(),
+        value = apiKey,
+        enabled = !state.loading,
+        singleLine = true,
+        label = { Text(text = "API Key") },
+        isError = state.invalidApiKey,
+        supportingText = {
+          if (errorMessage.isNotBlank() && state.invalidApiKey) {
+            Text(
+              modifier = Modifier.fillMaxWidth(),
+              text = errorMessage,
+              color = MaterialTheme.colorScheme.error,
+            )
+          }
+        },
+        onValueChange = { apiKey = it },
       )
     }
   }

@@ -1,7 +1,6 @@
 package dev.avatsav.linkding.bookmarks.ui.add
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.defaultMinSize
@@ -34,7 +33,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.input.ImeAction
@@ -93,6 +91,8 @@ private fun AddBookmark(
     currentEventSink(AddBookmarkUiEvent.CheckUrl(url))
   }
 
+  val saveEnabled = url.isNotBlank() && !state.saving
+
   Scaffold(
     modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
     topBar = {
@@ -106,73 +106,9 @@ private fun AddBookmark(
         },
       )
     },
-    contentWindowInsets = WindowInsets(),
-  ) { padding ->
-    Box(modifier = Modifier.fillMaxSize().padding(padding)) {
-      // Scrollable content
-      Column(
-        modifier =
-          Modifier.fillMaxWidth().padding(horizontal = 16.dp).verticalScroll(rememberScrollState()),
-        verticalArrangement = Arrangement.spacedBy(16.dp),
-      ) {
-        OutlinedTextField(
-          modifier = Modifier.fillMaxWidth(),
-          value = url,
-          label = { Text(text = "URL") },
-          keyboardOptions =
-            KeyboardOptions(
-              autoCorrectEnabled = false,
-              keyboardType = KeyboardType.Uri,
-              imeAction = ImeAction.Next,
-            ),
-          supportingText = {
-            if (state.checkUrlResult?.alreadyBookmarked == true) {
-              Text(
-                text = "This URL is already bookmarked. Saving will update the existing bookmark."
-              )
-            }
-          },
-          onValueChange = { value -> url = value },
-        )
-        OutlinedTagsTextField(
-          modifier = Modifier.fillMaxWidth(),
-          value = tagsValue,
-          label = { Text(text = "Tags") },
-        )
-        OutlinedTextField(
-          modifier = Modifier.fillMaxWidth(),
-          value = title,
-          label = { Text(text = "Title") },
-          visualTransformation =
-            PlaceholderVisualTransformation(
-              text = state.checkUrlResult?.title ?: "",
-              color = MaterialTheme.colorScheme.onSurfaceVariant,
-            ),
-          supportingText = { Text(text = "Optional, leave empty to use title from website.") },
-          trailingIcon = { if (state.checkingUrl) SmallCircularProgressIndicator() },
-          onValueChange = { title = it },
-        )
-        OutlinedTextField(
-          modifier = Modifier.fillMaxWidth(),
-          value = description,
-          label = { Text(text = "Description") },
-          trailingIcon = { if (state.checkingUrl) SmallCircularProgressIndicator() },
-          visualTransformation =
-            PlaceholderVisualTransformation(
-              text = state.checkUrlResult?.description ?: "",
-              color = MaterialTheme.colorScheme.onSurfaceVariant,
-            ),
-          supportingText = {
-            Text(text = "Optional, leave empty to use description from website.")
-          },
-          onValueChange = { description = it },
-        )
-      }
-
-      val saveEnabled = url.isNotBlank() && !state.saving
-      // Docked save button, positioned above keyboard
+    bottomBar = {
       BottomAppBar(
-        modifier = Modifier.align(Alignment.BottomEnd).fillMaxWidth().imePadding(),
+        modifier = Modifier.imePadding(),
         floatingActionButton = {
           Button(
             modifier = Modifier.defaultMinSize(minWidth = 56.dp, minHeight = 48.dp),
@@ -194,6 +130,65 @@ private fun AddBookmark(
             )
           }
         },
+      )
+    },
+    contentWindowInsets = WindowInsets(0.dp),
+  ) { padding ->
+    Column(
+      modifier =
+        Modifier.fillMaxSize()
+          .padding(padding)
+          .padding(16.dp)
+          .verticalScroll(rememberScrollState()),
+      verticalArrangement = Arrangement.spacedBy(16.dp),
+    ) {
+      OutlinedTextField(
+        modifier = Modifier.fillMaxWidth(),
+        value = url,
+        label = { Text(text = "URL") },
+        keyboardOptions =
+          KeyboardOptions(
+            autoCorrectEnabled = false,
+            keyboardType = KeyboardType.Uri,
+            imeAction = ImeAction.Next,
+          ),
+        supportingText = {
+          if (state.checkUrlResult?.alreadyBookmarked == true) {
+            Text(text = "This URL is already bookmarked. Saving will update the existing bookmark.")
+          }
+        },
+        onValueChange = { value -> url = value },
+      )
+      OutlinedTagsTextField(
+        modifier = Modifier.fillMaxWidth(),
+        value = tagsValue,
+        label = { Text(text = "Tags") },
+      )
+      OutlinedTextField(
+        modifier = Modifier.fillMaxWidth(),
+        value = title,
+        label = { Text(text = "Title") },
+        visualTransformation =
+          PlaceholderVisualTransformation(
+            text = state.checkUrlResult?.title ?: "",
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+          ),
+        supportingText = { Text(text = "Optional, leave empty to use title from website.") },
+        trailingIcon = { if (state.checkingUrl) SmallCircularProgressIndicator() },
+        onValueChange = { title = it },
+      )
+      OutlinedTextField(
+        modifier = Modifier.fillMaxWidth(),
+        value = description,
+        label = { Text(text = "Description") },
+        trailingIcon = { if (state.checkingUrl) SmallCircularProgressIndicator() },
+        visualTransformation =
+          PlaceholderVisualTransformation(
+            text = state.checkUrlResult?.description ?: "",
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+          ),
+        supportingText = { Text(text = "Optional, leave empty to use description from website.") },
+        onValueChange = { description = it },
       )
     }
   }
