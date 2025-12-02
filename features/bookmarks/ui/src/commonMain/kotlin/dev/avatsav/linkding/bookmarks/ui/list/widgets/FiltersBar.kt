@@ -31,7 +31,7 @@ fun FiltersBar(
   selectedCategory: BookmarkCategory,
   onSelectCategory: (BookmarkCategory) -> Unit,
   selectedTags: List<Tag>,
-  onSelectTag: (Tag) -> Unit,
+  @Suppress("UnusedParameter") onSelectTag: (Tag) -> Unit,
   onRemoveTag: (Tag) -> Unit,
   modifier: Modifier = Modifier,
 ) {
@@ -49,6 +49,7 @@ fun FiltersBar(
     }
     item("tag_chip") {
       val hasTags = selectedTags.isNotEmpty()
+      @Suppress("ForbiddenComment")
       // TODO: Reimplement tag selection using Material 3 ModalBottomSheet
       AssistChip(
         modifier = Modifier.animateItem(),

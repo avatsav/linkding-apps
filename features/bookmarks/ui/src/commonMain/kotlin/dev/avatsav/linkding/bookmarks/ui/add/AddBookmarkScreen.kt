@@ -32,6 +32,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -42,6 +43,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.avatsav.linkding.bookmarks.ui.add.AddBookmarkUiEvent.Close
 import dev.avatsav.linkding.bookmarks.ui.add.AddBookmarkUiEvent.Save
+import dev.avatsav.linkding.navigation.LocalNavigator
 import dev.avatsav.linkding.ui.compose.widgets.OutlinedTagsTextField
 import dev.avatsav.linkding.ui.compose.widgets.PlaceholderVisualTransformation
 import dev.avatsav.linkding.ui.compose.widgets.SmallCircularProgressIndicator
@@ -53,19 +55,15 @@ private const val DebounceDelay = 500L
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-fun AddBookmark(
-  viewModel: AddBookmarkViewModel,
-  onBookmarkSaved: () -> Unit,
-  onNavigateUp: () -> Unit,
-  modifier: Modifier = Modifier,
-) {
+fun AddBookmarkScreen(viewModel: AddBookmarkViewModel, modifier: Modifier = Modifier) {
+  val navigator = LocalNavigator.current
   val state by viewModel.models.collectAsStateWithLifecycle()
   val eventSink = viewModel::eventSink
 
   ObserveEffects(viewModel.effects) { effect ->
     when (effect) {
-      AddBookmarkUiEffect.BookmarkSaved -> onBookmarkSaved()
-      AddBookmarkUiEffect.NavigateUp -> onNavigateUp()
+      AddBookmarkUiEffect.BookmarkSaved,
+      AddBookmarkUiEffect.NavigateUp -> navigator.pop()
     }
   }
 
@@ -74,12 +72,12 @@ fun AddBookmark(
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-fun AddBookmark(
+private fun AddBookmark(
   state: AddBookmarkUiState,
   modifier: Modifier = Modifier,
   eventSink: (AddBookmarkUiEvent) -> Unit,
 ) {
-
+  val currentEventSink by rememberUpdatedState(eventSink)
   val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
 
   var url by remember { mutableStateOf(state.sharedUrl ?: "") }
@@ -92,7 +90,7 @@ fun AddBookmark(
   LaunchedEffect(url) {
     if (url.isBlank()) return@LaunchedEffect
     delay(DebounceDelay)
-    eventSink(AddBookmarkUiEvent.CheckUrl(url))
+    currentEventSink(AddBookmarkUiEvent.CheckUrl(url))
   }
 
   Scaffold(

@@ -99,6 +99,8 @@ private fun BookmarksScreen(
   val actionableBookmark = remember { mutableStateOf<Bookmark?>(null) }
   val snackbarHostState = remember { SnackbarHostState() }
 
+  val currentEventSink by rememberUpdatedState(eventSink)
+
   NavigationBackHandler(
     state = rememberNavigationEventState(NavigationEventInfo.None),
     isBackEnabled = actionableBookmark.value != null,
@@ -124,7 +126,7 @@ private fun BookmarksScreen(
           message.onAction?.invoke()
         }
         SnackbarResult.Dismissed -> {
-          eventSink(BookmarkFeedUiEvent.DismissSnackbar)
+          currentEventSink(BookmarkFeedUiEvent.DismissSnackbar)
         }
       }
     }
@@ -230,7 +232,7 @@ private fun BookmarksScreen(
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-fun ActionableBookmarkToolbar(
+internal fun ActionableBookmarkToolbar(
   actionableBookmark: Bookmark?,
   onDismiss: () -> Unit,
   editBookmark: (Bookmark) -> Unit,

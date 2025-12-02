@@ -19,7 +19,7 @@ interface SharedAndroidAppGraph : AppGraph {
     return AppInfo(
       packageName = application.packageName,
       debug = (applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE) != 0,
-      version = packageInfo.versionName!!,
+      version = packageInfo.versionName.orEmpty(),
     )
   }
 }

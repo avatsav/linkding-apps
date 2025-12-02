@@ -16,6 +16,7 @@ import androidx.paging.cachedIn
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.filter
 import dev.avatsav.linkding.bookmarks.api.interactors.ArchiveBookmark
+import dev.avatsav.linkding.bookmarks.api.interactors.ClearSearchHistory as ClearSearchHistoryInteractor
 import dev.avatsav.linkding.bookmarks.api.interactors.DeleteBookmark
 import dev.avatsav.linkding.bookmarks.api.interactors.SaveSearchState
 import dev.avatsav.linkding.bookmarks.api.interactors.UnarchiveBookmark
@@ -43,13 +44,12 @@ import dev.avatsav.linkding.viewmodel.MoleculePresenter
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.AssistedInject
+import kotlin.time.Clock
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.launch
-import kotlin.time.Clock
-import dev.avatsav.linkding.bookmarks.api.interactors.ClearSearchHistory as ClearSearchHistoryInteractor
 
 @AssistedInject
 class BookmarkSearchPresenter(

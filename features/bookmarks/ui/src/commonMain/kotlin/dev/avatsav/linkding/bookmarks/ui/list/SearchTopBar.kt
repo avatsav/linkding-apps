@@ -36,9 +36,11 @@ import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -62,7 +64,7 @@ private const val SearchTextDebounce = 800L
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 @Suppress("ModifierMissing")
-fun SearchTopBar(
+internal fun SearchTopBar(
   searchBarState: SearchBarState,
   searchState: BookmarkSearchUiState,
   onShowSettings: () -> Unit,
@@ -70,6 +72,7 @@ fun SearchTopBar(
 ) {
   val textFieldState = rememberTextFieldState(searchState.query)
   val scope = rememberCoroutineScope()
+  val currentEventSink by rememberUpdatedState(eventSink)
 
   // Sync text field with external query changes (e.g., from search history)
   LaunchedEffect(searchState.query) {
@@ -90,7 +93,7 @@ fun SearchTopBar(
       delay(SearchTextDebounce)
     }
     if (searchQuery != searchState.query) {
-      eventSink(BookmarkSearchUiEvent.Search(searchQuery))
+      currentEventSink(BookmarkSearchUiEvent.Search(searchQuery))
     }
   }
 
@@ -99,7 +102,7 @@ fun SearchTopBar(
       .collect { newValue ->
         if (newValue == SearchBarValue.Collapsed) {
           // Clear search when collapsing the search bar
-          eventSink(BookmarkSearchUiEvent.ClearSearch)
+          currentEventSink(BookmarkSearchUiEvent.ClearSearch)
           textFieldState.clearText()
         }
       }
@@ -169,6 +172,7 @@ private fun SearchResultsContent(
 ) {
   val actionableBookmark = remember { mutableStateOf<Bookmark?>(null) }
   val snackbarHostState = remember { SnackbarHostState() }
+  val currentEventSink by rememberUpdatedState(eventSink)
 
   // Handle snackbar messages
   LaunchedEffect(searchState.snackbarMessage) {
@@ -185,7 +189,7 @@ private fun SearchResultsContent(
           message.onAction?.invoke()
         }
         SnackbarResult.Dismissed -> {
-          eventSink(BookmarkSearchUiEvent.DismissSnackbar)
+          currentEventSink(BookmarkSearchUiEvent.DismissSnackbar)
         }
       }
     }
