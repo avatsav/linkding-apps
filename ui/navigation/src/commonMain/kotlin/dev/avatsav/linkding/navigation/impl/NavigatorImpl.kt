@@ -6,9 +6,15 @@ import dev.avatsav.linkding.navigation.NavResult
 import dev.avatsav.linkding.navigation.Navigator
 import dev.avatsav.linkding.navigation.Screen
 
-internal class NavigatorImpl(private val backStack: NavBackStack<NavKey>) : Navigator {
+internal class NavigatorImpl(
+  private val backStack: NavBackStack<NavKey>,
+  private val onOpenUrl: ((String) -> Boolean)? = null,
+) : Navigator {
 
   override fun goTo(screen: Screen): Boolean {
+    if (screen is Screen.Url && onOpenUrl != null) {
+      return onOpenUrl(screen.url)
+    }
     backStack.add(screen)
     return true
   }

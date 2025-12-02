@@ -33,6 +33,9 @@ class NoOpNavigator : Navigator {
 }
 
 @Composable
-fun rememberNavigator(backStack: NavBackStack<NavKey>): Navigator {
-  return remember { NavigatorImpl(backStack) }
+fun rememberNavigator(
+  backStack: NavBackStack<NavKey>,
+  onOpenUrl: ((String) -> Boolean)? = null,
+): Navigator {
+  return remember { NavigatorImpl(backStack, onOpenUrl) }
 }

@@ -52,7 +52,7 @@ class DefaultAppUi(
     val startScreen = remember(launchMode) { initialAuthState.startScreen(launchMode) }
 
     val backStack = rememberNavBackStack(savedStateConfiguration, startScreen)
-    val navigator = rememberNavigator(backStack)
+    val navigator = rememberNavigator(backStack, onOpenUrl)
 
     val authState by authManager.state.collectAsState(initialAuthState)
     val viewModelFactory = rememberViewModelFactory(authState, metroViewModelFactory)
