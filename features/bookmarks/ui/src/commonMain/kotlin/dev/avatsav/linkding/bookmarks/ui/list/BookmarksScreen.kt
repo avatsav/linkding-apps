@@ -53,8 +53,10 @@ import androidx.navigationevent.compose.rememberNavigationEventState
 import androidx.paging.LoadState
 import androidx.paging.compose.itemKey
 import dev.avatsav.linkding.bookmarks.ui.list.widgets.BookmarkListItem
+import dev.avatsav.linkding.bookmarks.ui.tags.TagsSelectionResult
 import dev.avatsav.linkding.data.model.Bookmark
 import dev.avatsav.linkding.navigation.LocalNavigator
+import dev.avatsav.linkding.navigation.ResultEffect
 import dev.avatsav.linkding.navigation.Screen
 import dev.avatsav.linkding.navigation.Screen.AddBookmark
 import dev.avatsav.linkding.ui.compose.appearFromBottom
@@ -72,6 +74,10 @@ fun BookmarksScreen(viewModel: BookmarksViewModel, modifier: Modifier = Modifier
   val navigator = LocalNavigator.current
   val state by viewModel.models.collectAsStateWithLifecycle()
   val eventSink = viewModel::eventSink
+
+  ResultEffect<TagsSelectionResult> { result ->
+    viewModel.eventSink(BookmarkSearchUiEvent.SetTags(result.selectedTags))
+  }
 
   ObserveEffects(viewModel.effects) { effect ->
     when (effect) {

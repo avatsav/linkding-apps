@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.avatsav.linkding.navigation.LocalNavigator
 import dev.avatsav.linkding.navigation.LocalResultEventBus
+import dev.avatsav.linkding.navigation.sendResult
 import dev.avatsav.linkding.ui.compose.none
 import dev.avatsav.linkding.viewmodel.ObserveEffects
 
