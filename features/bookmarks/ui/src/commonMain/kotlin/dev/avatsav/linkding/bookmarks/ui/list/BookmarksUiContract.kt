@@ -40,7 +40,7 @@ sealed interface BookmarkSearchUiEvent : BookmarksUiEvent {
 
   data class SelectBookmarkCategory(val category: BookmarkCategory) : BookmarkSearchUiEvent
 
-  data class SelectTag(val tag: Tag) : BookmarkSearchUiEvent
+  data class SetTags(val tags: List<Tag>) : BookmarkSearchUiEvent
 
   data class RemoveTag(val tag: Tag) : BookmarkSearchUiEvent
 

@@ -4,16 +4,21 @@ import androidx.compose.runtime.Immutable
 import androidx.paging.compose.LazyPagingItems
 import dev.avatsav.linkding.data.model.Tag
 
+/** Result wrapper for tag selection to avoid type erasure issues with generic List<Tag>. */
+@Immutable data class TagsSelectionResult(val selectedTags: List<Tag>)
+
 @Immutable data class TagsUiState(val selectedTags: List<Tag>, val tags: LazyPagingItems<Tag>)
 
 sealed interface TagsUiEvent {
-  data class SelectTag(val tag: Tag) : TagsUiEvent
+  data class ToggleTag(val tag: Tag) : TagsUiEvent
+
+  data object Confirm : TagsUiEvent
 
   data object Close : TagsUiEvent
 }
 
-sealed interface TagsEffect {
-  data class TagSelected(val tag: Tag) : TagsEffect
+sealed interface TagsUiEffect {
+  data class TagsConfirmed(val selectedTags: List<Tag>) : TagsUiEffect
 
-  data object Dismiss : TagsEffect
+  data object Dismiss : TagsUiEffect
 }

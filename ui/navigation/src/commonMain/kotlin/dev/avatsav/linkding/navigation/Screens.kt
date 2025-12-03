@@ -21,7 +21,7 @@ sealed interface Screen : NavKey {
 
   @Serializable data object Settings : Screen
 
-  @Serializable data object Tags : Screen
+  @Serializable data class Tags(val selectedTagIds: List<Long> = emptyList()) : Screen
 }
 
 @ContributesTo(AppScope::class)

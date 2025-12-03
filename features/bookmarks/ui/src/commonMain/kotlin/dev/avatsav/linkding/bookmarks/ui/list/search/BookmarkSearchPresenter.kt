@@ -31,7 +31,7 @@ import dev.avatsav.linkding.bookmarks.ui.list.BookmarkSearchUiEvent.RemoveTag
 import dev.avatsav.linkding.bookmarks.ui.list.BookmarkSearchUiEvent.Search
 import dev.avatsav.linkding.bookmarks.ui.list.BookmarkSearchUiEvent.SelectBookmarkCategory
 import dev.avatsav.linkding.bookmarks.ui.list.BookmarkSearchUiEvent.SelectSearchHistoryItem
-import dev.avatsav.linkding.bookmarks.ui.list.BookmarkSearchUiEvent.SelectTag
+import dev.avatsav.linkding.bookmarks.ui.list.BookmarkSearchUiEvent.SetTags
 import dev.avatsav.linkding.bookmarks.ui.list.BookmarkSearchUiEvent.ToggleArchive
 import dev.avatsav.linkding.bookmarks.ui.list.BookmarkUiEffect
 import dev.avatsav.linkding.bookmarks.ui.list.common.PendingAction
@@ -81,12 +81,12 @@ class BookmarkSearchPresenter(
 
     var basePagingFlow by remember { mutableStateOf<Flow<PagingData<Bookmark>>>(emptyFlow()) }
 
-    LaunchedEffect(searchQuery, bookmarkCategory, selectedTags.size) {
+    LaunchedEffect(searchQuery, bookmarkCategory, selectedTags.toList()) {
       observeSearchResults(
         ObserveSearchResults.Param(
           query = searchQuery,
           category = bookmarkCategory,
-          tags = selectedTags,
+          tags = selectedTags.toList(),
           pagingConfig = PagingConfig(initialLoadSize = 20, pageSize = 20),
         )
       )
@@ -150,11 +150,10 @@ class BookmarkSearchPresenter(
           actionHandler.clearPendingIds()
         }
 
-        is SelectTag -> {
-          if (!selectedTags.contains(event.tag)) {
-            selectedTags.add(0, event.tag)
-            actionHandler.clearPendingIds()
-          }
+        is SetTags -> {
+          selectedTags.clear()
+          selectedTags.addAll(event.tags)
+          actionHandler.clearPendingIds()
         }
 
         is Search -> {

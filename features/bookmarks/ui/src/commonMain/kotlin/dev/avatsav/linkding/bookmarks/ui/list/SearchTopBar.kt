@@ -55,6 +55,8 @@ import dev.avatsav.linkding.bookmarks.ui.list.widgets.FiltersBar
 import dev.avatsav.linkding.bookmarks.ui.list.widgets.SearchHistoryHeader
 import dev.avatsav.linkding.bookmarks.ui.list.widgets.SearchHistoryItem
 import dev.avatsav.linkding.data.model.Bookmark
+import dev.avatsav.linkding.navigation.LocalNavigator
+import dev.avatsav.linkding.navigation.Screen
 import dev.avatsav.linkding.ui.theme.Material3ShapeDefaults
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -170,6 +172,7 @@ private fun SearchResultsContent(
   eventSink: (BookmarkSearchUiEvent) -> Unit,
   modifier: Modifier = Modifier,
 ) {
+  val navigator = LocalNavigator.current
   val actionableBookmark = remember { mutableStateOf<Bookmark?>(null) }
   val snackbarHostState = remember { SnackbarHostState() }
   val currentEventSink by rememberUpdatedState(eventSink)
@@ -222,7 +225,9 @@ private fun SearchResultsContent(
             selectedCategory = searchState.filters.bookmarkCategory,
             onSelectCategory = { eventSink(BookmarkSearchUiEvent.SelectBookmarkCategory(it)) },
             selectedTags = searchState.filters.selectedTags,
-            onSelectTag = { eventSink(BookmarkSearchUiEvent.SelectTag(it)) },
+            onOpenTagSelector = {
+              navigator.goTo(Screen.Tags(searchState.filters.selectedTags.map { it.id }))
+            },
             onRemoveTag = { eventSink(BookmarkSearchUiEvent.RemoveTag(it)) },
             modifier = Modifier.fillMaxWidth().animateItem(),
           )

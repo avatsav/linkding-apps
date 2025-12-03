@@ -1,9 +1,17 @@
 package dev.avatsav.linkding.bookmarks.ui.di
 
+import androidx.compose.material3.ExperimentalMaterial3Api
 import dev.avatsav.linkding.bookmarks.ui.add.AddBookmarkScreen
 import dev.avatsav.linkding.bookmarks.ui.add.AddBookmarkViewModel
+import dev.avatsav.linkding.bookmarks.ui.list.BookmarkSearchUiEvent
 import dev.avatsav.linkding.bookmarks.ui.list.BookmarksScreen
+import dev.avatsav.linkding.bookmarks.ui.list.BookmarksViewModel
+import dev.avatsav.linkding.bookmarks.ui.tags.TagsScreen
+import dev.avatsav.linkding.bookmarks.ui.tags.TagsSelectionResult
+import dev.avatsav.linkding.bookmarks.ui.tags.TagsViewModel
 import dev.avatsav.linkding.di.scope.UiScope
+import dev.avatsav.linkding.navigation.BottomSheetSceneStrategy
+import dev.avatsav.linkding.navigation.ResultEffect
 import dev.avatsav.linkding.navigation.Screen
 import dev.avatsav.linkding.navigation.ScreenEntryProviderScope
 import dev.zacsweers.metro.ContributesTo
@@ -17,7 +25,13 @@ interface BookmarksScreenComponent {
   @IntoSet
   @Provides
   fun provideBookmarksEntryProviderScope(): ScreenEntryProviderScope = {
-    entry<Screen.BookmarksFeed> { BookmarksScreen(viewModel = metroViewModel()) }
+    entry<Screen.BookmarksFeed> {
+      val viewModel = metroViewModel<BookmarksViewModel>()
+      ResultEffect<TagsSelectionResult> { result ->
+        viewModel.eventSink(BookmarkSearchUiEvent.SetTags(result.selectedTags))
+      }
+      BookmarksScreen(viewModel = metroViewModel())
+    }
   }
 
   @IntoSet
@@ -28,6 +42,20 @@ interface BookmarksScreenComponent {
         viewModel =
           assistedMetroViewModel<AddBookmarkViewModel, AddBookmarkViewModel.Factory> {
             create(screen.sharedUrl)
+          }
+      )
+    }
+  }
+
+  @OptIn(ExperimentalMaterial3Api::class)
+  @IntoSet
+  @Provides
+  fun provideTagsEntryProviderScope(): ScreenEntryProviderScope = {
+    entry<Screen.Tags>(metadata = BottomSheetSceneStrategy.bottomSheetExpanded()) { screen ->
+      TagsScreen(
+        viewModel =
+          assistedMetroViewModel<TagsViewModel, TagsViewModel.Factory> {
+            create(screen.selectedTagIds)
           }
       )
     }
