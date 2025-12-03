@@ -9,13 +9,10 @@ kotlin {
     commonMain.dependencies {
       implementation(projects.core.base)
       api(projects.data.database) // Implements database contracts
-      implementation(libs.kotlin.atomicfu)
       api(libs.sqldelight.coroutines)
       implementation(libs.sqldelight.primitive)
       implementation(projects.data.models) // Internal use, models exposed via database contract
       implementation(libs.kotlin.datetime)
-      implementation(libs.kotlin.coroutines.core)
-      implementation(libs.paging.common)
     }
     androidMain.dependencies { implementation(libs.sqldelight.android) }
     iosMain.dependencies {

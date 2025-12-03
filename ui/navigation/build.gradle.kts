@@ -6,9 +6,8 @@ plugins {
 kotlin {
   sourceSets {
     commonMain.dependencies {
-      implementation(projects.ui.compose)
       implementation(libs.kotlin.serialization.json)
-      implementation(projects.core.di)
+      implementation(libs.compose.m3expressive)
       api(libs.compose.navigation3)
       api(libs.compose.navigationEvent)
     }

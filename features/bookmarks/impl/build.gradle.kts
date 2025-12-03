@@ -11,14 +11,11 @@ kotlin {
       api(projects.features.bookmarks.api)
 
       // Data layer dependencies
-      implementation(projects.data.models)
       implementation(projects.data.linkdingApi)
       implementation(projects.data.database)
       implementation(projects.data.databaseSqldelight)
 
       // External dependencies (internal use only, not exposed)
-      implementation(libs.paging.common)
-      implementation(libs.kotlinResult)
       implementation(libs.multiplatform.settings)
       implementation(libs.multiplatform.settings.coroutines)
       implementation(libs.kotlin.serialization.json)
