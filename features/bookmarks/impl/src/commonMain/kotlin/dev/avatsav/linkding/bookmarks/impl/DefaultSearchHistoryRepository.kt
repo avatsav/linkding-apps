@@ -3,7 +3,7 @@ package dev.avatsav.linkding.bookmarks.impl
 import dev.avatsav.linkding.bookmarks.api.SearchHistoryRepository
 import dev.avatsav.linkding.data.db.daos.SearchHistoryDao
 import dev.avatsav.linkding.data.model.SearchHistory
-import dev.avatsav.linkding.inject.UserScope
+import dev.avatsav.linkding.di.scope.UserScope
 import dev.zacsweers.metro.ContributesBinding
 import dev.zacsweers.metro.Inject
 import dev.zacsweers.metro.SingleIn

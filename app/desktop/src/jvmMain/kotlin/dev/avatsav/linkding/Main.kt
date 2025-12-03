@@ -9,31 +9,28 @@ import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
 import dev.avatsav.linkding.data.model.app.LaunchMode
-import dev.avatsav.linkding.inject.ComponentHolder
-import dev.avatsav.linkding.inject.DesktopAppComponent
-import dev.avatsav.linkding.inject.DesktopUiComponent
+import dev.avatsav.linkding.di.DesktopAppGraph
+import dev.avatsav.linkding.di.DesktopUiGraph
+import dev.avatsav.linkding.di.GraphHolder
 import dev.zacsweers.metro.createGraph
 import java.awt.Desktop
 import java.net.URI
 
 fun main() = application {
-  createGraph<DesktopAppComponent>()
-    .also { ComponentHolder.components += it }
+  createGraph<DesktopAppGraph>()
+    .also { GraphHolder.graphs += it }
     .also { it.appInitializer.initialize() }
 
-  val uiComponent: DesktopUiComponent =
-    ComponentHolder.component<DesktopUiComponent.Factory>().create().also {
-      ComponentHolder.components += it
-    }
+  val uiGraph: DesktopUiGraph =
+    GraphHolder.graph<DesktopUiGraph.Factory>().create().also { GraphHolder.graphs += it }
 
   val windowState =
     rememberWindowState(size = DpSize(450.dp, 900.dp), position = WindowPosition(Alignment.Center))
 
   Window(title = "Linkding", state = windowState, onCloseRequest = ::exitApplication) {
-    uiComponent.appUi.Content(
+    uiGraph.appUi.Content(
       launchMode = LaunchMode.Normal,
       onOpenUrl = { launchUrl(it) },
-      onRootPop = { /* */ },
       modifier = Modifier,
     )
   }

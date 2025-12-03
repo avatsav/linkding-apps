@@ -18,31 +18,23 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
-import com.slack.circuit.overlay.LocalOverlayHost
-import dev.avatsav.linkding.bookmarks.ui.tags.mapToTag
-import dev.avatsav.linkding.bookmarks.ui.tags.showTagsBottomSheet
 import dev.avatsav.linkding.data.model.BookmarkCategory
 import dev.avatsav.linkding.data.model.Tag
-import dev.avatsav.linkding.ui.TagsScreenResult
 import dev.avatsav.linkding.ui.compose.widgets.TagInputChip
-import kotlinx.coroutines.launch
 
 @Composable
 fun FiltersBar(
   selectedCategory: BookmarkCategory,
   onSelectCategory: (BookmarkCategory) -> Unit,
   selectedTags: List<Tag>,
-  onSelectTag: (Tag) -> Unit,
+  onOpenTagSelector: () -> Unit,
   onRemoveTag: (Tag) -> Unit,
   modifier: Modifier = Modifier,
 ) {
-  val scope = rememberCoroutineScope()
-  val overlayHost = LocalOverlayHost.current
   LazyRow(
     modifier = modifier,
     contentPadding = PaddingValues(horizontal = 16.dp),
@@ -59,14 +51,7 @@ fun FiltersBar(
       val hasTags = selectedTags.isNotEmpty()
       AssistChip(
         modifier = Modifier.animateItem(),
-        onClick = {
-          scope.launch {
-            when (val result = overlayHost.showTagsBottomSheet(selectedTags)) {
-              TagsScreenResult.Dismissed -> {}
-              is TagsScreenResult.Selected -> onSelectTag(result.tag.mapToTag())
-            }
-          }
-        },
+        onClick = onOpenTagSelector,
         label = { Text("Tags") },
         colors =
           if (!hasTags) AssistChipDefaults.assistChipColors()

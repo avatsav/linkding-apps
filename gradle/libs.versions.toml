@@ -1,26 +1,31 @@
 [versions]
-agp = "8.13.0"
+agp = "8.13.1"
+appcompat = "1.7.1"
 kotlin = "2.2.21"
 coroutines = "1.10.2"
-ksp = "2.3.2" # https://github.com/google/ksp/releases
+ksp = "2.3.3" # https://github.com/google/ksp/releases
 ktmft = "0.25.0"
 detekt = "1.23.8"
 multiplatform-settings = "1.3.0"
-ktor = "3.3.2"
+ktor = "3.3.3"
 datetime = "0.7.1-0.6.x-compat"
-compose-multiplatform = "1.10.0-beta01" # https://github.com/JetBrains/compose-multiplatform/releases
-compose-material3 = "1.10.0-alpha04" # https://www.jetbrains.com/help/kotlin-multiplatform-dev/whats-new-compose-190.html#material-3-expressive-theme
-compose-navigationEvent = "1.0.0-beta01"
+compose-multiplatform = "1.10.0-rc01" # https://github.com/JetBrains/compose-multiplatform/releases
+compose-material3 = "1.10.0-alpha05" # https://www.jetbrains.com/help/kotlin-multiplatform-dev/whats-new-compose-190.html#material-3-expressive-theme
+compose-lifecycle = "2.10.0-alpha06"
+compose-navigation3 = "1.0.0-alpha06"
+compose-navigationEvent = "1.0.0-rc01"
+compose-materialIconsExtended = "1.7.3"
+compose-material3Adaptive = "1.3.0-alpha02"
 paging = "3.4.0-alpha04"
-circuit = "0.31.0"
 kotlinResult = "2.1.0"
-androidxActivity = "1.12.0-rc01"
-sqldelight = "2.1.0"
+androidxActivity = "1.12.1"
+sqldelight = "2.2.1"
 stately = "2.1.0"
 kotlinPoet = "2.2.0"
-kotest = "6.0.4"
+kotest = "6.0.7"
 uuid = "0.8.4"
-metro = "0.7.5" # https://github.com/ZacSweers/metro/releases
+metro = "0.8.0" # https://github.com/ZacSweers/metro/releases
+molecule = "2.2.0"
 gradleVersions = "0.53.0"
 
 compileSdk = "36"
@@ -50,14 +55,22 @@ gradleVersions = { id = "com.github.ben-manes.versions", version.ref = "gradleVe
 [libraries]
 androidx-activity = { module = "androidx.activity:activity", version.ref = "androidxActivity" }
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidxActivity" }
+androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appcompat" }
 androidx-core = "androidx.core:core-ktx:1.17.0"
 androidx-splashscreen = "androidx.core:core-splashscreen:1.2.0"
 androidx-browser = "androidx.browser:browser:1.9.0"
 androidx-preference = "androidx.preference:preference-ktx:1.2.1"
+compose-foundation = { module = "org.jetbrains.compose.foundation:foundation", version.ref = "compose-multiplatform" }
+compose-materialIconsExtended = { module = "org.jetbrains.compose.material:material-icons-extended", version.ref = "compose-materialIconsExtended" }
+compose-lifecycle = { module = "org.jetbrains.androidx.lifecycle:lifecycle-runtime-compose", version.ref = "compose-lifecycle" }
+compose-viewmodel = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "compose-lifecycle" }
+compose-viewmodel-navigation3 = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-navigation3", version.ref = "compose-lifecycle" }
 compose-navigationEvent = { module = "org.jetbrains.androidx.navigationevent:navigationevent-compose", version.ref = "compose-navigationEvent" }
+compose-navigation3 = { module = "org.jetbrains.androidx.navigation3:navigation3-ui", version.ref = "compose-navigation3" }
 
 # https://www.jetbrains.com/help/kotlin-multiplatform-dev/whats-new-compose-190.html#material-3-expressive-theme
 compose-m3expressive = { module = "org.jetbrains.compose.material3:material3", version.ref = "compose-material3" }
+compose-m3adaptive-navigation3 = { module = "org.jetbrains.compose.material3.adaptive:adaptive-navigation3", version.ref = "compose-material3Adaptive" }
 
 paging-common = { module = "androidx.paging:paging-common", version.ref = "paging" }
 paging-compose = { module = "androidx.paging:paging-compose", version.ref = "paging" }
@@ -100,15 +113,6 @@ androidx-test-espresso = "androidx.test.espresso:espresso-core:3.7.0"
 turbine = "app.cash.turbine:turbine:1.2.1"
 kotest-assertions = { module = "io.kotest:kotest-assertions-core", version.ref = "kotest" }
 
-circuit-foundation = { module = "com.slack.circuit:circuit-foundation", version.ref = "circuit" }
-circuit-runtime = { module = "com.slack.circuit:circuit-runtime", version.ref = "circuit" }
-circuit-overlay = { module = "com.slack.circuit:circuit-overlay", version.ref = "circuit" }
-circuit-retained = { module = "com.slack.circuit:circuit-retained", version.ref = "circuit" }
-circuitx-gestureNavigation = { module = "com.slack.circuit:circuitx-gesture-navigation", version.ref = "circuit" }
-circuitx-overlays = { module = "com.slack.circuit:circuitx-overlays", version.ref = "circuit" }
-circuit-codegen-annotations = { module = "com.slack.circuit:circuit-codegen-annotations", version.ref = "circuit" }
-circuit-codegen = { module = "com.slack.circuit:circuit-codegen", version.ref = "circuit" }
-
 sqldelight-android = { module = "app.cash.sqldelight:android-driver", version.ref = "sqldelight" }
 sqldelight-native = { module = "app.cash.sqldelight:native-driver", version.ref = "sqldelight" }
 sqldelight-sqlite = { module = "app.cash.sqldelight:sqlite-driver", version.ref = "sqldelight" }
@@ -116,12 +120,17 @@ sqldelight-coroutines = { module = "app.cash.sqldelight:coroutines-extensions", 
 sqldelight-primitive = { module = "app.cash.sqldelight:primitive-adapters", version.ref = "sqldelight" }
 stately = { module = "co.touchlab:stately-common", version.ref = "stately" }
 uuid = { module = "com.benasher44:uuid", version.ref = "uuid" }
+molecule = { module = "app.cash.molecule:molecule-runtime", version.ref = "molecule" }
+detektComposeRules = "io.nlopez.compose.rules:detekt:0.4.28"
 
-detektComposeRules = "io.nlopez.compose.rules:detekt:0.4.27"
+metro-android = { module = "dev.zacsweers.metro:metrox-android", version.ref = "metro" }
+metro-viewmodel = { module = "dev.zacsweers.metro:metrox-viewmodel", version.ref = "metro" }
+metro-viewmodel-compose = { module = "dev.zacsweers.metro:metrox-viewmodel-compose", version.ref = "metro" }
 
 # Build logic dependencies
 android-gradlePlugin = { module = "com.android.tools.build:gradle", version.ref = "agp" }
 kotlin-gradlePlugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
+kotlin-serialization-gradlePlugin = { module = "org.jetbrains.kotlin.plugin.serialization:org.jetbrains.kotlin.plugin.serialization.gradle.plugin", version.ref = "kotlin" }
 compose-gradlePlugin = { module = "org.jetbrains.compose:compose-gradle-plugin", version.ref = "compose-multiplatform" }
 composeCompiler-gradlePlugin = { module = "org.jetbrains.kotlin:compose-compiler-gradle-plugin", version.ref = "kotlin" }
 ksp-gradlePlugin = { module = "com.google.devtools.ksp:com.google.devtools.ksp.gradle.plugin", version.ref = "ksp" }

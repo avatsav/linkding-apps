@@ -1,28 +1,35 @@
 package dev.avatsav.linkding.android
 
+import android.app.Activity
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
-import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.browser.customtabs.CustomTabsIntent
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.core.net.toUri
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import dev.avatsav.linkding.android.di.AndroidAppGraph
 import dev.avatsav.linkding.data.model.app.LaunchMode
 import dev.avatsav.linkding.data.model.prefs.AppTheme
-import dev.avatsav.linkding.inject.AndroidAppComponent
-import dev.avatsav.linkding.inject.AndroidUiComponent
-import dev.avatsav.linkding.inject.ComponentHolder
+import dev.avatsav.linkding.di.AndroidUiGraph
+import dev.avatsav.linkding.di.GraphHolder
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesIntoMap
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.binding
+import dev.zacsweers.metrox.android.ActivityKey
 import kotlinx.coroutines.launch
 
+@ContributesIntoMap(AppScope::class, binding<Activity>())
+@ActivityKey(MainActivity::class)
+@Inject
 class MainActivity : ComponentActivity() {
 
   @Suppress("UnusedPrivateProperty")
@@ -31,23 +38,20 @@ class MainActivity : ComponentActivity() {
     super.onCreate(savedInstanceState)
     val launchMode = getLaunchMode()
 
-    val appComponent: AndroidAppComponent = ComponentHolder.component()
-    val component =
-      ComponentHolder.component<AndroidUiComponent.Factory>().create().also {
-        ComponentHolder.components += it
-      }
+    val appGraph: AndroidAppGraph = GraphHolder.graph()
+    val uiGraph =
+      GraphHolder.graph<AndroidUiGraph.Factory>().create().also { GraphHolder.graphs += it }
     lifecycleScope.launch {
       repeatOnLifecycle(Lifecycle.State.STARTED) {
-        appComponent.appPreferences.observeAppTheme().collect(::enableEdgeToEdge)
+        appGraph.appPreferences.observeAppTheme().collect(::enableEdgeToEdge)
       }
     }
 
     // Pass the sharedLink to the appUi
     setContent {
-      component.appUi.Content(
+      uiGraph.appUi.Content(
         launchMode = launchMode,
         onOpenUrl = { launchUrl(it) },
-        onRootPop = backDispatcherRootPop(),
         modifier = Modifier,
       )
     }
@@ -75,17 +79,6 @@ private val customTabsIntent =
     .setColorScheme(CustomTabsIntent.COLOR_SCHEME_SYSTEM)
     .setShareState(CustomTabsIntent.SHARE_STATE_OFF)
     .build()
-
-/**
- * https://github.com/slackhq/circuit/blob/158d07b703778816a69f3cb13b63ef456a8c42e9/circuit-foundation/src/androidMain/kotlin/com/slack/circuit/foundation/Navigator.android.kt#L34
- */
-@Composable
-private fun backDispatcherRootPop(): () -> Unit {
-  val onBackPressedDispatcher =
-    LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
-      ?: error("No OnBackPressedDispatcherOwner found, unable to handle root navigation pops.")
-  return { onBackPressedDispatcher.onBackPressed() }
-}
 
 private fun MainActivity.launchUrl(url: String): Boolean {
   customTabsIntent.launchUrl(this, url.toUri())

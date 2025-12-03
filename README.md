@@ -1,23 +1,21 @@
 # Linkding Apps
 
-Unofficial Android and iOS app for [Linkding](https://github.com/sissbruecker/linkding) self-hosted
-bookmarking service.
+Unofficial Android and iOS app for [Linkding](https://github.com/sissbruecker/linkding) self-hosted bookmarking service.
 
-> [!WARNING]  
-> This is work-in-in progress.
+> [!WARNING]
+> This is work-in-progress.
 
 ## Motivation
 
-I developed this app for personal use, aiming to integrate with my Linkding instance while also
-serving as a playground for exploring architecture, Gradle, diverse libraries, design patterns, API
-design, and more.
+I developed this app for personal use, aiming to integrate with my Linkding instance while also serving as a playground for exploring architecture, Gradle, diverse libraries, design patterns, API design, and more.
 
 This project owes its multiplatform foundation to the excellent [Tivi](https://github.com/chrisbanes/tivi) project.
 
 ## Colophon
 
 - Kotlin + Compose Multiplatform
-- [Circuit](https://slackhq.github.io/circuit/) : Compose-based presentation framework
+- [Navigation 3](https://developer.android.com/develop/ui/compose/navigation): Type-safe Compose navigation
+- [Molecule](https://github.com/cashapp/molecule): Composable-based reactive state management
 - [Metro](https://github.com/ZacSweers/metro): Dependency Injection
 - Icons generated with [Icon Kitchen](https://icon.kitchen)
 
@@ -26,7 +24,7 @@ This project owes its multiplatform foundation to the excellent [Tivi](https://g
 ```
 MIT License
 
-Copyright (c) 2022 Abhijith Srivatsav
+Copyright (c) 2025 Abhijith Srivatsav
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

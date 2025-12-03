@@ -8,9 +8,10 @@ kotlin {
     commonMain.dependencies {
       implementation(projects.features.auth.api)
       implementation(projects.core.base)
+      implementation(projects.core.di)
       implementation(projects.core.preferences)
       implementation(projects.data.models)
-      implementation(projects.data.linkdingApi) // Brings in ktor deps
+      implementation(projects.data.linkdingApi)
     }
   }
 }

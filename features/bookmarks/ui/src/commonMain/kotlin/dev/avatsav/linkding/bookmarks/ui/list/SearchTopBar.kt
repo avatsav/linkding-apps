@@ -36,9 +36,11 @@ import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -46,8 +48,6 @@ import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.paging.compose.itemKey
-import com.slack.circuit.overlay.ContentWithOverlays
-import dev.avatsav.linkding.bookmarks.ui.list.search.BookmarkSearchUiEvent
 import dev.avatsav.linkding.bookmarks.ui.list.search.BookmarkSearchUiState
 import dev.avatsav.linkding.bookmarks.ui.list.widgets.BookmarkListItem
 import dev.avatsav.linkding.bookmarks.ui.list.widgets.EmptySearchResults
@@ -55,6 +55,8 @@ import dev.avatsav.linkding.bookmarks.ui.list.widgets.FiltersBar
 import dev.avatsav.linkding.bookmarks.ui.list.widgets.SearchHistoryHeader
 import dev.avatsav.linkding.bookmarks.ui.list.widgets.SearchHistoryItem
 import dev.avatsav.linkding.data.model.Bookmark
+import dev.avatsav.linkding.navigation.LocalNavigator
+import dev.avatsav.linkding.navigation.Screen
 import dev.avatsav.linkding.ui.theme.Material3ShapeDefaults
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -64,13 +66,15 @@ private const val SearchTextDebounce = 800L
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 @Suppress("ModifierMissing")
-fun SearchTopBar(
+internal fun SearchTopBar(
   searchBarState: SearchBarState,
   searchState: BookmarkSearchUiState,
   onShowSettings: () -> Unit,
+  eventSink: (BookmarkSearchUiEvent) -> Unit,
 ) {
   val textFieldState = rememberTextFieldState(searchState.query)
   val scope = rememberCoroutineScope()
+  val currentEventSink by rememberUpdatedState(eventSink)
 
   // Sync text field with external query changes (e.g., from search history)
   LaunchedEffect(searchState.query) {
@@ -91,7 +95,7 @@ fun SearchTopBar(
       delay(SearchTextDebounce)
     }
     if (searchQuery != searchState.query) {
-      searchState.eventSink(BookmarkSearchUiEvent.Search(searchQuery))
+      currentEventSink(BookmarkSearchUiEvent.Search(searchQuery))
     }
   }
 
@@ -100,7 +104,7 @@ fun SearchTopBar(
       .collect { newValue ->
         if (newValue == SearchBarValue.Collapsed) {
           // Clear search when collapsing the search bar
-          searchState.eventSink(BookmarkSearchUiEvent.ClearSearch)
+          currentEventSink(BookmarkSearchUiEvent.ClearSearch)
           textFieldState.clearText()
         }
       }
@@ -112,9 +116,7 @@ fun SearchTopBar(
         searchBarState = searchBarState,
         textFieldState = textFieldState,
         onSearch = {
-          scope.launch {
-            searchState.eventSink(BookmarkSearchUiEvent.Search(textFieldState.text.toString()))
-          }
+          scope.launch { eventSink(BookmarkSearchUiEvent.Search(textFieldState.text.toString())) }
         },
         placeholder = { Text(text = "Search") },
         leadingIcon = {
@@ -155,7 +157,11 @@ fun SearchTopBar(
   )
 
   ExpandedFullScreenSearchBar(state = searchBarState, inputField = inputField) {
-    SearchResultsContent(searchState = searchState, modifier = Modifier.fillMaxSize())
+    SearchResultsContent(
+      searchState = searchState,
+      eventSink = eventSink,
+      modifier = Modifier.fillMaxSize(),
+    )
   }
 }
 
@@ -163,10 +169,13 @@ fun SearchTopBar(
 @Composable
 private fun SearchResultsContent(
   searchState: BookmarkSearchUiState,
+  eventSink: (BookmarkSearchUiEvent) -> Unit,
   modifier: Modifier = Modifier,
 ) {
+  val navigator = LocalNavigator.current
   val actionableBookmark = remember { mutableStateOf<Bookmark?>(null) }
   val snackbarHostState = remember { SnackbarHostState() }
+  val currentEventSink by rememberUpdatedState(eventSink)
 
   // Handle snackbar messages
   LaunchedEffect(searchState.snackbarMessage) {
@@ -183,62 +192,59 @@ private fun SearchResultsContent(
           message.onAction?.invoke()
         }
         SnackbarResult.Dismissed -> {
-          searchState.eventSink(BookmarkSearchUiEvent.DismissSnackbar)
+          currentEventSink(BookmarkSearchUiEvent.DismissSnackbar)
         }
       }
     }
   }
 
-  ContentWithOverlays {
-    Scaffold(snackbarHost = { SnackbarHost(snackbarHostState) }, modifier = modifier) {
-      paddingValues ->
-      Box(Modifier.fillMaxSize()) {
-        ActionableBookmarkToolbar(
-          actionableBookmark = actionableBookmark.value,
-          onDismiss = { actionableBookmark.value = null },
-          editBookmark = { searchState.eventSink(BookmarkSearchUiEvent.Edit(it)) },
-          toggleArchive = { searchState.eventSink(BookmarkSearchUiEvent.ToggleArchive(it)) },
-          deleteBookmark = { searchState.eventSink(BookmarkSearchUiEvent.Delete(it)) },
-          modifier =
-            Modifier.align(Alignment.BottomCenter)
-              .navigationBarsPadding()
-              .offset(y = -ScreenOffset)
-              .zIndex(1f),
+  Scaffold(snackbarHost = { SnackbarHost(snackbarHostState) }, modifier = modifier) { paddingValues
+    ->
+    Box(Modifier.fillMaxSize()) {
+      ActionableBookmarkToolbar(
+        actionableBookmark = actionableBookmark.value,
+        onDismiss = { actionableBookmark.value = null },
+        editBookmark = { eventSink(BookmarkSearchUiEvent.Edit(it)) },
+        toggleArchive = { eventSink(BookmarkSearchUiEvent.ToggleArchive(it)) },
+        deleteBookmark = { eventSink(BookmarkSearchUiEvent.Delete(it)) },
+        modifier =
+          Modifier.align(Alignment.BottomCenter)
+            .navigationBarsPadding()
+            .offset(y = -ScreenOffset)
+            .zIndex(1f),
+      )
+      LazyColumn(
+        Modifier.floatingToolbarVerticalNestedScroll(
+          expanded = actionableBookmark.value != null,
+          onExpand = { actionableBookmark.value = null },
+          onCollapse = { actionableBookmark.value = null },
         )
-        LazyColumn(
-          Modifier.floatingToolbarVerticalNestedScroll(
-            expanded = actionableBookmark.value != null,
-            onExpand = { actionableBookmark.value = null },
-            onCollapse = { actionableBookmark.value = null },
+      ) {
+        item(key = searchState.filters.bookmarkCategory) {
+          FiltersBar(
+            selectedCategory = searchState.filters.bookmarkCategory,
+            onSelectCategory = { eventSink(BookmarkSearchUiEvent.SelectBookmarkCategory(it)) },
+            selectedTags = searchState.filters.selectedTags,
+            onOpenTagSelector = {
+              navigator.goTo(Screen.Tags(searchState.filters.selectedTags.map { it.id }))
+            },
+            onRemoveTag = { eventSink(BookmarkSearchUiEvent.RemoveTag(it)) },
+            modifier = Modifier.fillMaxWidth().animateItem(),
           )
-        ) {
-          item(key = searchState.filters.bookmarkCategory) {
-            FiltersBar(
-              selectedCategory = searchState.filters.bookmarkCategory,
-              onSelectCategory = {
-                searchState.eventSink(BookmarkSearchUiEvent.SelectBookmarkCategory(it))
-              },
-              selectedTags = searchState.filters.selectedTags,
-              onSelectTag = { searchState.eventSink(BookmarkSearchUiEvent.SelectTag(it)) },
-              onRemoveTag = { searchState.eventSink(BookmarkSearchUiEvent.RemoveTag(it)) },
-              modifier = Modifier.fillMaxWidth().animateItem(),
-            )
-          }
-          when {
-            searchState.isIdle() -> searchHistoryItems(searchState = searchState)
+        }
+        when {
+          searchState.isIdle() ->
+            searchHistoryItems(searchState = searchState, eventSink = eventSink)
 
-            searchState.isLoading() -> searchResultsLoading()
-            searchState.hasNoSearchResults() -> searchResultsEmpty()
-            else ->
-              searchResultItems(
-                searchState = searchState,
-                isSelected = { bookmark -> actionableBookmark.value == bookmark },
-                openBookmark = { bookmark ->
-                  searchState.eventSink(BookmarkSearchUiEvent.Open(bookmark))
-                },
-                toggleActions = { bookmark -> actionableBookmark.value = bookmark },
-              )
-          }
+          searchState.isLoading() -> searchResultsLoading()
+          searchState.hasNoSearchResults() -> searchResultsEmpty()
+          else ->
+            searchResultItems(
+              searchState = searchState,
+              isSelected = { bookmark -> actionableBookmark.value == bookmark },
+              openBookmark = { bookmark -> eventSink(BookmarkSearchUiEvent.Open(bookmark)) },
+              toggleActions = { bookmark -> actionableBookmark.value = bookmark },
+            )
         }
       }
     }
@@ -266,10 +272,13 @@ private fun LazyListScope.searchResultItems(
   }
 }
 
-fun LazyListScope.searchHistoryItems(searchState: BookmarkSearchUiState) {
+fun LazyListScope.searchHistoryItems(
+  searchState: BookmarkSearchUiState,
+  eventSink: (BookmarkSearchUiEvent) -> Unit,
+) {
   item(key = "history_header") {
     SearchHistoryHeader(
-      onClearHistory = { searchState.eventSink(BookmarkSearchUiEvent.ClearSearchHistory) },
+      onClearHistory = { eventSink(BookmarkSearchUiEvent.ClearSearchHistory) },
       modifier = Modifier.animateItem(),
     )
   }
@@ -280,9 +289,7 @@ fun LazyListScope.searchHistoryItems(searchState: BookmarkSearchUiState) {
     val historyItem = searchState.history[index]
     SearchHistoryItem(
       searchHistory = historyItem,
-      onClick = {
-        searchState.eventSink(BookmarkSearchUiEvent.SelectSearchHistoryItem(historyItem))
-      },
+      onClick = { eventSink(BookmarkSearchUiEvent.SelectSearchHistoryItem(historyItem)) },
       modifier = Modifier.animateItem(),
       shape = Material3ShapeDefaults.itemShape(index, searchState.history.size),
     )

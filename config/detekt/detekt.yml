@@ -814,7 +814,7 @@ Compose:
   CompositionLocalAllowlist:
     active: true
     # -- You can optionally define a list of CompositionLocals that are allowed here
-    # allowedCompositionLocals: LocalSomething,LocalSomethingElse
+    allowedCompositionLocals: LocalNavigator,LocalResultEventBus
   CompositionLocalNaming:
     active: true
   ContentEmitterReturningValues:
@@ -923,5 +923,4 @@ Compose:
     # allowedForwardingOfTypes: PotatoViewModel,(Apple|Banana)ViewModel,.*FancyViewModel
   ViewModelInjection:
     active: true
-    # -- You can optionally add your own ViewModel factories here
-    # viewModelFactories: hiltViewModel,potatoViewModel
+    viewModelFactories: metroViewModel

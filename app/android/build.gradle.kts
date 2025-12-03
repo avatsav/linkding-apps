@@ -46,12 +46,19 @@ android {
 
 dependencies {
   implementation(projects.app.shared)
+  implementation(projects.core.di)
+  implementation(libs.androidx.appcompat)
   implementation(libs.androidx.activity)
   implementation(libs.androidx.activity.compose)
   implementation(libs.androidx.browser)
   implementation(libs.androidx.splashscreen)
   implementation(libs.kotlin.coroutines.android)
-  implementation(libs.circuit.runtime)
+  implementation(libs.compose.lifecycle)
+  implementation(libs.compose.viewmodel)
+  implementation(libs.compose.viewmodel.navigation3)
+  implementation(libs.metro.viewmodel)
+  implementation(libs.metro.viewmodel.compose)
+  implementation(libs.metro.android)
 
   debugImplementation(libs.leakCanary)
 
