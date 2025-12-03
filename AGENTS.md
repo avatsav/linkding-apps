@@ -46,7 +46,6 @@ Kotlin Multiplatform and Compose Multiplatform.
 
 - Don't put implementations in API modules
 - Don't import impl modules from UI modules
-- Don't use Circuit (removed) - use MoleculeViewModel instead
 - Don't hardcode colors/dimensions - use theme tokens
 - Don't create monolithic components - keep them small and focused
 
