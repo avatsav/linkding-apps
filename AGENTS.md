@@ -55,6 +55,7 @@ Kotlin Multiplatform and Compose Multiplatform.
 - [Architecture](docs/architecture.md) - Module organization, DI scopes
 - [Presentation](docs/presentation.md) - MoleculeViewModel pattern
 - [Navigation](docs/navigation.md) - Navigation 3 setup
+- [Screen Results](docs/screen-results.md) - Passing results between screens
 - [Creating Features](docs/creating-features.md) - Step-by-step guide
 
 ## Memory Imports
@@ -62,4 +63,5 @@ Kotlin Multiplatform and Compose Multiplatform.
 @docs/architecture.md
 @docs/presentation.md
 @docs/navigation.md
+@docs/screen-results.md
 @docs/creating-features.md
