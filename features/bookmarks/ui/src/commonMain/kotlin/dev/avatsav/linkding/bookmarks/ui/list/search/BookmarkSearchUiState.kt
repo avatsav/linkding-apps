@@ -2,8 +2,6 @@ package dev.avatsav.linkding.bookmarks.ui.list.search
 
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
-import com.slack.circuit.runtime.CircuitUiEvent
-import com.slack.circuit.runtime.CircuitUiState
 import dev.avatsav.linkding.bookmarks.ui.list.common.SnackbarMessage
 import dev.avatsav.linkding.data.model.Bookmark
 import dev.avatsav.linkding.data.model.BookmarkCategory
@@ -16,8 +14,7 @@ data class BookmarkSearchUiState(
   val results: LazyPagingItems<Bookmark>,
   val history: List<SearchHistory> = listOf(),
   val snackbarMessage: SnackbarMessage? = null,
-  val eventSink: (BookmarkSearchUiEvent) -> Unit,
-) : CircuitUiState {
+) {
 
   fun isIdle(): Boolean = !isActive() && history.isNotEmpty()
 
@@ -39,31 +36,3 @@ data class BookmarkFiltersUiState(
   val bookmarkCategory: BookmarkCategory = BookmarkCategory.All,
   val selectedTags: List<Tag> = listOf(),
 )
-
-sealed interface BookmarkSearchUiEvent : CircuitUiEvent {
-  data class Search(val query: String) : BookmarkSearchUiEvent
-
-  data class SelectBookmarkCategory(val category: BookmarkCategory) : BookmarkSearchUiEvent
-
-  data class SelectTag(val tag: Tag) : BookmarkSearchUiEvent
-
-  data class RemoveTag(val tag: Tag) : BookmarkSearchUiEvent
-
-  data class Open(val bookmark: Bookmark) : BookmarkSearchUiEvent
-
-  data class Edit(val bookmark: Bookmark) : BookmarkSearchUiEvent
-
-  data class ToggleArchive(val bookmark: Bookmark) : BookmarkSearchUiEvent
-
-  data class Delete(val bookmark: Bookmark) : BookmarkSearchUiEvent
-
-  data class SelectSearchHistoryItem(val item: SearchHistory) : BookmarkSearchUiEvent
-
-  data object ClearSearch : BookmarkSearchUiEvent
-
-  data object ClearSearchHistory : BookmarkSearchUiEvent
-
-  data object UndoAction : BookmarkSearchUiEvent
-
-  data object DismissSnackbar : BookmarkSearchUiEvent
-}

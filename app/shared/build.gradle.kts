@@ -1,4 +1,3 @@
-import dev.avatsav.gradle.addKspDependencyForAllTargets
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 
 plugins {
@@ -15,36 +14,34 @@ kotlin {
     commonMain.dependencies {
       // Core infrastructure - needed by apps
       api(projects.core.base)
+      api(projects.core.di)
       api(projects.core.preferences)
-      api(projects.core.connectivity) // DI components need this
+      api(projects.core.connectivity)
 
-      // Data layer - exposed for DI components
-      api(projects.data.models) // Export for iOS framework
-      api(projects.data.linkdingApi) // DI components need this
-      api(projects.data.databaseSqldelight) // DI components need this
+      api(projects.data.models)
+      api(projects.data.linkdingApi)
+      api(projects.data.databaseSqldelight)
 
-      // UI infrastructure - expose theme for apps
       api(projects.ui.theme)
+      api(projects.ui.navigation)
 
-      // Feature modules - expose all for DI wiring
       api(projects.features.auth.api)
-      api(projects.features.auth.impl) // DI needs access to components
+      api(projects.features.auth.impl)
       api(projects.features.auth.ui)
 
       api(projects.features.bookmarks.api)
-      api(projects.features.bookmarks.impl) // DI needs access to components
+      api(projects.features.bookmarks.impl)
       api(projects.features.bookmarks.ui)
 
       api(projects.features.settings.api)
-      api(projects.features.settings.impl) // DI needs access to components
+      api(projects.features.settings.impl)
       api(projects.features.settings.ui)
 
-      // Circuit - needed by apps for navigation
-      api(libs.circuit.foundation)
-      api(libs.circuit.runtime)
-      api(libs.circuit.overlay)
-      api(libs.circuitx.gestureNavigation)
-      api(libs.circuit.codegen.annotations)
+      api(libs.compose.lifecycle)
+      api(libs.compose.viewmodel)
+      api(libs.compose.viewmodel.navigation3)
+      api(libs.metro.viewmodel)
+      api(libs.metro.viewmodel.compose)
     }
 
     targets.withType<KotlinNativeTarget>().configureEach {
@@ -56,7 +53,3 @@ kotlin {
     }
   }
 }
-
-ksp { arg("circuit.codegen.mode", "metro") }
-
-addKspDependencyForAllTargets(libs.circuit.codegen)

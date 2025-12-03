@@ -1,20 +1,24 @@
 package dev.avatsav.linkding.android
 
 import android.app.Application
-import dev.avatsav.linkding.inject.AndroidAppComponent
-import dev.avatsav.linkding.inject.ComponentHolder
+import dev.avatsav.linkding.android.di.AndroidAppGraph
+import dev.avatsav.linkding.di.GraphHolder
 import dev.zacsweers.metro.createGraphFactory
+import dev.zacsweers.metrox.android.MetroAppComponentProviders
+import dev.zacsweers.metrox.android.MetroApplication
 
-class LinkdingApplication : Application() {
+class LinkdingApplication : Application(), MetroApplication {
 
-  val appGraph: AndroidAppComponent by lazy {
-    createGraphFactory<AndroidAppComponent.Factory>().create(this).also {
-      it.appInitializer.initialize()
-    }
+  val appGraph: AndroidAppGraph by lazy {
+    createGraphFactory<AndroidAppGraph.Factory>().create(this)
   }
+
+  override val appComponentProviders: MetroAppComponentProviders
+    get() = appGraph
 
   override fun onCreate() {
     super.onCreate()
-    ComponentHolder.components += appGraph
+    appGraph.appInitializer.initialize()
+    GraphHolder.graphs += appGraph
   }
 }
