@@ -90,7 +90,7 @@ fun BookmarksScreen(viewModel: BookmarksViewModel, modifier: Modifier = Modifier
   ObserveEffects(viewModel.effects) { effect ->
     when (effect) {
       BookmarkUiEffect.AddBookmark -> navigator.goTo(AddBookmark())
-      BookmarkUiEffect.NavigateToSettings -> navigator.goTo(Screen.Settings())
+      BookmarkUiEffect.NavigateToSettings -> navigator.goTo(Screen.Settings)
       is BookmarkUiEffect.OpenBookmark -> navigator.goTo(Screen.Url(effect.bookmark.url))
     }
   }

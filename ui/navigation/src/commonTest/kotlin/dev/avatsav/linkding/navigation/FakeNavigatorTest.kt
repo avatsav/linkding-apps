@@ -11,9 +11,9 @@ import kotlinx.coroutines.test.runTest
 
 class FakeNavigatorTest {
 
-  private val screenA = TestScreens.screenA()
-  private val screenB = TestScreens.screenB()
-  private val screenC = TestScreens.screenC()
+  private val screenA = TestScreens.screenA
+  private val screenB = TestScreens.screenB
+  private val screenC = TestScreens.screenC
 
   @Test
   fun `goTo records event and updates backstack`() = runTest {

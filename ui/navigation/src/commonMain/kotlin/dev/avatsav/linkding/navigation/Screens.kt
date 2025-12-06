@@ -10,14 +10,12 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic
 import kotlinx.serialization.modules.subclass
-import kotlin.uuid.ExperimentalUuidApi
-import kotlin.uuid.Uuid
 
 /**
  * Sealed interface representing all navigable screens in the app.
  *
- * Each screen type is serializable for state restoration. Every screen instance has a unique [key] property (defaulting to a random UUID)
- * that enables result routing between screens.
+ * Each screen type is serializable for state restoration. Every screen instance has a [key]
+ * property (defaulting to `toString()`) that enables result routing between screens.
  *
  * ## Result-Returning Screens
  *
@@ -28,7 +26,7 @@ import kotlin.uuid.Uuid
  *
  * ```kotlin
  * // Simple navigation
- * navigator.goTo(Screen.Settings())
+ * navigator.goTo(Screen.Settings)
  *
  * // Navigation with parameters
  * navigator.goTo(Screen.AddBookmark(sharedUrl = "https://example.com"))
@@ -47,39 +45,30 @@ import kotlin.uuid.Uuid
  * @see ScreenWithResult
  * @see rememberResultNavigator
  */
-@OptIn(ExperimentalUuidApi::class)
 @Serializable
 sealed interface Screen {
   /**
-   * Unique key for this screen instance.
+   * Key for this screen instance, used for result routing.
    *
-   * Used for result routing - when a screen pops with a result, this key identifies which caller
-   * should receive the result. Defaults to a random UUID to ensure each screen instance is uniquely
-   * identifiable.
+   * Defaults to `toString()`, which provides a content-based key. Override this property if you
+   * need unique keys for screens with identical parameters on the same back stack.
    */
   val key: String
+    get() = toString()
 
-  @Serializable data class Auth(override val key: String = Uuid.random().toString()) : Screen
+  @Serializable data object Auth : Screen
 
-  @Serializable
-  data class BookmarksFeed(override val key: String = Uuid.random().toString()) : Screen
+  @Serializable data object BookmarksFeed : Screen
 
-  @Serializable
-  data class AddBookmark(
-    val sharedUrl: String? = null,
-    override val key: String = Uuid.random().toString(),
-  ) : Screen
+  @Serializable data class AddBookmark(val sharedUrl: String? = null) : Screen
 
-  @Serializable
-  data class Url(val url: String, override val key: String = Uuid.random().toString()) : Screen
+  @Serializable data class Url(val url: String) : Screen
 
-  @Serializable data class Settings(override val key: String = Uuid.random().toString()) : Screen
+  @Serializable data object Settings : Screen
 
   @Serializable
-  data class Tags(
-    val selectedTagIds: List<Long> = emptyList(),
-    override val key: String = Uuid.random().toString(),
-  ) : Screen, ScreenWithResult<Tags.Result> {
+  data class Tags(val selectedTagIds: List<Long> = emptyList()) :
+    Screen, ScreenWithResult<Tags.Result> {
 
     sealed interface Result : NavResult {
       @Serializable data class Confirmed(val selectedTags: List<Tag>) : Result

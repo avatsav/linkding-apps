@@ -10,9 +10,9 @@ import kotlin.test.Test
 
 class NavigatorImplTest {
 
-  private val screenA = TestScreens.screenA()
-  private val screenB = TestScreens.screenB()
-  private val screenC = TestScreens.screenC()
+  private val screenA = TestScreens.screenA
+  private val screenB = TestScreens.screenB
+  private val screenC = TestScreens.screenC
 
   private val backStack = ScreenBackStack(screenA)
   private val resultHandler = NavigationResultHandler()
@@ -113,7 +113,7 @@ class NavigatorImplTest {
 
   @Test
   fun `pop with result routes to result handler`() {
-    val callerScreen = TestScreens.screenA("caller")
+    val callerScreen = TestScreens.screenA
     val callerBackStack = ScreenBackStack(callerScreen)
     val handler = NavigationResultHandler()
     val nav = NavigatorImpl(callerBackStack, handler)

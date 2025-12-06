@@ -10,9 +10,9 @@ import kotlin.test.Test
 
 class ScreenBackStackTest {
 
-  private val screenA = TestScreens.screenA()
-  private val screenB = TestScreens.screenB()
-  private val screenC = TestScreens.screenC()
+  private val screenA = TestScreens.screenA
+  private val screenB = TestScreens.screenB
+  private val screenC = TestScreens.screenC
 
   @Test
   fun `empty constructor creates empty backstack`() {

@@ -19,7 +19,7 @@ package dev.avatsav.linkding.navigation
  * tagsNavigator(Screen.Tags())
  *
  * // This would NOT compile - type safety!
- * // tagsNavigator.goTo(Screen.Settings()) // Error: Type mismatch
+ * // tagsNavigator.goTo(Screen.Settings) // Error: Type mismatch
  * ```
  *
  * @param S The screen type this navigator can navigate to

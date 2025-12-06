@@ -19,7 +19,7 @@ import androidx.compose.runtime.compositionLocalOf
  * Access the navigator in any composable:
  * ```kotlin
  * val navigator = LocalNavigator.current
- * navigator.goTo(Screen.Settings())
+ * navigator.goTo(Screen.Settings)
  * ```
  *
  * @see Navigator

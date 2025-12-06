@@ -3,22 +3,24 @@ package dev.avatsav.linkding.navigation
 /**
  * Test screen aliases using the actual Screen types.
  *
- * Since Screen is a sealed interface, we use factory functions to create test screen instances with
- * predictable keys for testing.
+ * Screen keys now default to `toString()`, providing predictable, content-based keys for testing.
  */
 object TestScreens {
 
-  fun screenA(key: String = "screen-a") = Screen.Auth(key)
+  val screenA: Screen = Screen.Auth // key = "Auth"
 
-  fun screenB(key: String = "screen-b") = Screen.Settings(key)
+  val screenB: Screen = Screen.Settings // key = "Settings"
 
-  fun screenC(key: String = "screen-c") = Screen.BookmarksFeed(key)
+  val screenC: Screen = Screen.BookmarksFeed // key = "BookmarksFeed"
 
   fun screenWithParam(id: Long) =
-    Screen.AddBookmark(sharedUrl = "https://example.com/$id", key = "screen-with-param-$id")
+    Screen.AddBookmark(
+      sharedUrl = "https://example.com/$id"
+    ) // key = "AddBookmark(sharedUrl=https://example.com/$id)"
 
   /** Use the existing Tags screen which already implements ScreenWithResult. */
-  fun resultScreen(key: String = "result-screen") = Screen.Tags(key = key)
+  fun resultScreen(selectedTagIds: List<Long> = emptyList()) =
+    Screen.Tags(selectedTagIds = selectedTagIds) // key = "Tags(selectedTagIds=[...])"
 
   /** Result type aliases for Tags screen results. */
   object Results {

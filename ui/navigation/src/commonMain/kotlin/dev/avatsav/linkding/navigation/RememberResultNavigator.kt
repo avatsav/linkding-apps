@@ -39,7 +39,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
  *   }
  *
  *   // This would NOT compile - type safety!
- *   // tagsNavigator(Screen.Settings()) // Error: Type mismatch
+ *   // tagsNavigator(Screen.Settings) // Error: Type mismatch
  * }
  * ```
  *

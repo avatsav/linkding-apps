@@ -30,7 +30,7 @@ import dev.avatsav.linkding.navigation.impl.NavigatorImpl
  * Access the navigator in any composable:
  * ```kotlin
  * val navigator = LocalNavigator.current
- * navigator.goTo(Screen.Settings())
+ * navigator.goTo(Screen.Settings)
  * ```
  *
  * For type-safe result navigation, use [rememberResultNavigator] instead of direct navigation.

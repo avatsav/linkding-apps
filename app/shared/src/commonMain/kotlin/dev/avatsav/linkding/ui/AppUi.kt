@@ -107,13 +107,13 @@ private fun rememberViewModelFactory(
 private fun AuthState.startScreen(launchMode: LaunchMode): Screen =
   when (this) {
     is AuthState.Loading,
-    is AuthState.Unauthenticated -> Screen.Auth()
+    is AuthState.Unauthenticated -> Screen.Auth
     is AuthState.Authenticated -> launchMode.startScreen()
   }
 
 private fun LaunchMode.startScreen(): Screen =
   when (this) {
-    LaunchMode.Normal -> Screen.BookmarksFeed()
+    LaunchMode.Normal -> Screen.BookmarksFeed
     is LaunchMode.SharedLink -> Screen.AddBookmark(this.sharedLink)
   }
 
