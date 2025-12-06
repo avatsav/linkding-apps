@@ -1,5 +1,7 @@
 package dev.avatsav.linkding.navigation
 
-import androidx.compose.runtime.Immutable
-
-@Immutable interface NavResult
+/**
+ * Marker interface for results passed via [Navigator.pop] and received via
+ * [rememberResultNavigator].
+ */
+interface NavResult

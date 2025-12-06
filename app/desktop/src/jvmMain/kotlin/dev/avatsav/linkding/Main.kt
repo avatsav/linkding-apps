@@ -31,6 +31,7 @@ fun main() = application {
     uiGraph.appUi.Content(
       launchMode = LaunchMode.Normal,
       onOpenUrl = { launchUrl(it) },
+      onRootPop = ::exitApplication,
       modifier = Modifier,
     )
   }

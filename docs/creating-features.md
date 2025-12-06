@@ -101,5 +101,5 @@ api(projects.features.{feature}.ui)
 - [ ] API module has only interfaces
 - [ ] UI depends only on API (not impl)
 - [ ] ViewModel uses `@ContributesIntoMap` + `@ViewModelKey`
-- [ ] Screen registered via `@IntoSet` in ScreenComponent
+- [ ] Route registered via `@IntoSet` in ScreenComponent
 - [ ] Package: `dev.avatsav.linkding.{feature}.{layer}.*`

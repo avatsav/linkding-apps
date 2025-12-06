@@ -29,8 +29,7 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.avatsav.linkding.navigation.LocalNavigator
-import dev.avatsav.linkding.navigation.LocalResultEventBus
-import dev.avatsav.linkding.navigation.sendResult
+import dev.avatsav.linkding.navigation.Route
 import dev.avatsav.linkding.ui.compose.none
 import dev.avatsav.linkding.viewmodel.ObserveEffects
 
@@ -38,17 +37,15 @@ import dev.avatsav.linkding.viewmodel.ObserveEffects
 @Composable
 fun TagsScreen(viewModel: TagsViewModel, modifier: Modifier = Modifier) {
   val navigator = LocalNavigator.current
-  val resultEventBus = LocalResultEventBus.current
   val state by viewModel.models.collectAsStateWithLifecycle()
   val eventSink = viewModel::eventSink
 
   ObserveEffects(viewModel.effects) { effect ->
     when (effect) {
       is TagsUiEffect.TagsConfirmed -> {
-        resultEventBus.sendResult(result = TagsSelectionResult(effect.selectedTags))
-        navigator.pop()
+        navigator.pop(Route.Tags.Result.Confirmed(effect.selectedTags))
       }
-      TagsUiEffect.Dismiss -> navigator.pop()
+      TagsUiEffect.Dismiss -> navigator.pop(Route.Tags.Result.Dismissed)
     }
   }
 
