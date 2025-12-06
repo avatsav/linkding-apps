@@ -7,6 +7,8 @@ import androidx.navigation3.runtime.NavKey
 import dev.avatsav.linkding.navigation.impl.NavigatorImpl
 
 interface Navigator {
+  /** The current screen on top of the backstack. */
+  val currentScreen: Screen?
 
   fun goTo(screen: Screen): Boolean
 
@@ -20,6 +22,7 @@ interface Navigator {
 }
 
 class NoOpNavigator : Navigator {
+  override val currentScreen: Screen? = null
 
   override fun goTo(screen: Screen): Boolean = false
 
@@ -35,7 +38,8 @@ class NoOpNavigator : Navigator {
 @Composable
 fun rememberNavigator(
   backStack: NavBackStack<NavKey>,
+  resultHandler: NavigationResultHandler,
   onOpenUrl: ((String) -> Boolean)? = null,
 ): Navigator {
-  return remember { NavigatorImpl(backStack, onOpenUrl) }
+  return remember { NavigatorImpl(backStack, resultHandler, onOpenUrl) }
 }

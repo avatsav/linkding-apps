@@ -62,7 +62,7 @@ fun SettingsScreen(viewModel: SettingsViewModel, modifier: Modifier = Modifier) 
     when (effect) {
       SettingsUiEffect.NavigateUp -> navigator.pop()
       is SettingsUiEffect.OpenUrl -> navigator.goTo(Screen.Url(effect.url))
-      SettingsUiEffect.ResetToAuth -> navigator.resetRoot(Screen.Auth)
+      SettingsUiEffect.ResetToAuth -> navigator.resetRoot(Screen.Auth())
     }
   }
 

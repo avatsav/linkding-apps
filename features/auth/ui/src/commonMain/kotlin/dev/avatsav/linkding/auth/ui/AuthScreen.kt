@@ -49,7 +49,7 @@ fun AuthScreen(viewModel: AuthViewModel, modifier: Modifier = Modifier) {
 
   ObserveEffects(viewModel.effects) { effect ->
     when (effect) {
-      AuthEffect.AuthenticationSuccess -> navigator.resetRoot(Screen.BookmarksFeed)
+      AuthEffect.AuthenticationSuccess -> navigator.resetRoot(Screen.BookmarksFeed())
     }
   }
 

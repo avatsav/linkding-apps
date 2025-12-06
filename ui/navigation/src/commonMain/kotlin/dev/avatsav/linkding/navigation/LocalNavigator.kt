@@ -6,3 +6,8 @@ import androidx.compose.runtime.compositionLocalOf
 val LocalNavigator: ProvidableCompositionLocal<Navigator> = compositionLocalOf {
   error("No Navigator provided")
 }
+
+val LocalNavigationResultHandler: ProvidableCompositionLocal<NavigationResultHandler> =
+  compositionLocalOf {
+    error("No AnsweringResultHandler provided")
+  }

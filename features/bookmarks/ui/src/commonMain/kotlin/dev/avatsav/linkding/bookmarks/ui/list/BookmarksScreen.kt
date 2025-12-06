@@ -53,12 +53,12 @@ import androidx.navigationevent.compose.rememberNavigationEventState
 import androidx.paging.LoadState
 import androidx.paging.compose.itemKey
 import dev.avatsav.linkding.bookmarks.ui.list.widgets.BookmarkListItem
-import dev.avatsav.linkding.bookmarks.ui.tags.TagsSelectionResult
 import dev.avatsav.linkding.data.model.Bookmark
 import dev.avatsav.linkding.navigation.LocalNavigator
-import dev.avatsav.linkding.navigation.ResultEffect
 import dev.avatsav.linkding.navigation.Screen
 import dev.avatsav.linkding.navigation.Screen.AddBookmark
+import dev.avatsav.linkding.navigation.ScreenNavigator
+import dev.avatsav.linkding.navigation.rememberResultNavigator
 import dev.avatsav.linkding.ui.compose.appearFromBottom
 import dev.avatsav.linkding.ui.compose.disappearToBottom
 import dev.avatsav.linkding.ui.compose.widgets.AnimatedVisibilityWithElevation
@@ -75,19 +75,27 @@ fun BookmarksScreen(viewModel: BookmarksViewModel, modifier: Modifier = Modifier
   val state by viewModel.models.collectAsStateWithLifecycle()
   val eventSink = viewModel::eventSink
 
-  ResultEffect<TagsSelectionResult> { result ->
-    viewModel.eventSink(BookmarkSearchUiEvent.SetTags(result.selectedTags))
-  }
+  val tagsNavigator =
+    rememberResultNavigator<Screen.Tags, Screen.Tags.Result> { result ->
+      when (result) {
+        is Screen.Tags.Result.Confirmed -> {
+          viewModel.eventSink(BookmarkSearchUiEvent.SetTags(result.selectedTags))
+        }
+        Screen.Tags.Result.Dismissed -> {
+          // No action needed on dismissal
+        }
+      }
+    }
 
   ObserveEffects(viewModel.effects) { effect ->
     when (effect) {
       BookmarkUiEffect.AddBookmark -> navigator.goTo(AddBookmark())
-      BookmarkUiEffect.NavigateToSettings -> navigator.goTo(Screen.Settings)
+      BookmarkUiEffect.NavigateToSettings -> navigator.goTo(Screen.Settings())
       is BookmarkUiEffect.OpenBookmark -> navigator.goTo(Screen.Url(effect.bookmark.url))
     }
   }
 
-  BookmarksScreen(state, modifier, eventSink)
+  BookmarksScreen(state, modifier, tagsNavigator, eventSink)
 }
 
 @OptIn(
@@ -99,6 +107,7 @@ fun BookmarksScreen(viewModel: BookmarksViewModel, modifier: Modifier = Modifier
 private fun BookmarksScreen(
   state: BookmarksUiState,
   modifier: Modifier = Modifier,
+  tagsNavigator: ScreenNavigator<Screen.Tags>,
   eventSink: (BookmarksUiEvent) -> Unit,
 ) {
   val searchBarState = rememberSearchBarState()
@@ -145,6 +154,7 @@ private fun BookmarksScreen(
       SearchTopBar(
         searchBarState = searchBarState,
         searchState = state.searchState,
+        tagsNavigator = tagsNavigator,
         onShowSettings = { eventSink(BookmarksUiEvent.ShowSettings) },
         eventSink = eventSink,
       )

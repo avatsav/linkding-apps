@@ -6,6 +6,7 @@ plugins {
 kotlin {
   sourceSets {
     commonMain.dependencies {
+      implementation(projects.data.models)
       implementation(libs.kotlin.serialization.json)
       implementation(libs.compose.m3expressive)
       api(libs.compose.navigation3)

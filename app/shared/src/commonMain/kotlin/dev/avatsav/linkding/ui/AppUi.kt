@@ -22,12 +22,12 @@ import dev.avatsav.linkding.di.GraphHolder
 import dev.avatsav.linkding.di.UserGraph
 import dev.avatsav.linkding.di.scope.UiScope
 import dev.avatsav.linkding.navigation.BottomSheetSceneStrategy
+import dev.avatsav.linkding.navigation.LocalNavigationResultHandler
 import dev.avatsav.linkding.navigation.LocalNavigator
-import dev.avatsav.linkding.navigation.LocalResultEventBus
 import dev.avatsav.linkding.navigation.Screen
 import dev.avatsav.linkding.navigation.ScreenEntryProviderScope
+import dev.avatsav.linkding.navigation.rememberNavigationResultHandler
 import dev.avatsav.linkding.navigation.rememberNavigator
-import dev.avatsav.linkding.navigation.rememberResultEventBus
 import dev.avatsav.linkding.prefs.AppPreferences
 import dev.avatsav.linkding.ui.theme.LinkdingTheme
 import dev.zacsweers.metro.ContributesBinding
@@ -58,8 +58,8 @@ class DefaultAppUi(
     val startScreen = remember(launchMode) { initialAuthState.startScreen(launchMode) }
 
     val backStack = rememberNavBackStack(savedStateConfiguration, startScreen)
-    val navigator = rememberNavigator(backStack, onOpenUrl)
-    val resultEventBus = rememberResultEventBus()
+    val navigationResultHandler = rememberNavigationResultHandler()
+    val navigator = rememberNavigator(backStack, navigationResultHandler, onOpenUrl)
     val bottomSheetSceneStrategy = remember { BottomSheetSceneStrategy<NavKey>() }
 
     val authState by authManager.state.collectAsState(initialAuthState)
@@ -68,7 +68,7 @@ class DefaultAppUi(
     CompositionLocalProvider(
       LocalMetroViewModelFactory provides viewModelFactory,
       LocalNavigator provides navigator,
-      LocalResultEventBus provides resultEventBus,
+      LocalNavigationResultHandler provides navigationResultHandler,
     ) {
       LinkdingTheme(
         darkTheme = preferences.shouldUseDarkTheme(),
@@ -113,13 +113,13 @@ private fun rememberViewModelFactory(
 private fun AuthState.startScreen(launchMode: LaunchMode): Screen =
   when (this) {
     is AuthState.Loading,
-    is AuthState.Unauthenticated -> Screen.Auth
+    is AuthState.Unauthenticated -> Screen.Auth()
     is AuthState.Authenticated -> launchMode.startScreen()
   }
 
 private fun LaunchMode.startScreen(): Screen =
   when (this) {
-    LaunchMode.Normal -> Screen.BookmarksFeed
+    LaunchMode.Normal -> Screen.BookmarksFeed()
     is LaunchMode.SharedLink -> Screen.AddBookmark(this.sharedLink)
   }
 
