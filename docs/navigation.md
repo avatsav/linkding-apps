@@ -2,6 +2,21 @@
 
 The app uses **Jetpack Navigation 3** for type-safe, Compose-first navigation.
 
+## Setup
+
+```kotlin
+val backStack = rememberScreenBackStack(savedStateConfig, startScreen)
+val navigator = rememberNavigator(backStack, onOpenUrl)
+
+NavigatorCompositionLocals(navigator) {
+  NavDisplay(
+    backStack = backStack,
+    onBack = { navigator.pop() },
+    ...
+  )
+}
+```
+
 ## Screens
 
 Defined in `ui/navigation/Screens.kt`:
@@ -15,6 +30,16 @@ sealed interface Screen : NavKey {
   @Serializable data object Settings : Screen
   @Serializable data object Tags : Screen
 }
+```
+
+## ScreenBackStack
+
+Type-safe backstack for managing screens:
+
+```kotlin
+val backStack = rememberScreenBackStack(savedStateConfig, Screen.Home())
+backStack += Screen.Details(itemId)  // push
+backStack.removeLast()               // pop
 ```
 
 ## Navigator

@@ -1,20 +1,19 @@
 package dev.avatsav.linkding.navigation.impl
 
-import androidx.navigation3.runtime.NavBackStack
-import androidx.navigation3.runtime.NavKey
 import dev.avatsav.linkding.navigation.NavResult
 import dev.avatsav.linkding.navigation.NavigationResultHandler
 import dev.avatsav.linkding.navigation.Navigator
 import dev.avatsav.linkding.navigation.Screen
+import dev.avatsav.linkding.navigation.ScreenBackStack
 
 internal class NavigatorImpl(
-  private val backStack: NavBackStack<NavKey>,
+  private val backStack: ScreenBackStack,
   internal val resultHandler: NavigationResultHandler,
   private val onOpenUrl: ((String) -> Boolean)? = null,
 ) : Navigator {
 
   override val currentScreen: Screen?
-    get() = backStack.lastOrNull() as? Screen
+    get() = backStack.lastOrNull()
 
   override fun goTo(screen: Screen): Boolean {
     if (screen is Screen.Url && onOpenUrl != null) {
@@ -29,24 +28,16 @@ internal class NavigatorImpl(
     if (backStack.size <= 1) return null
 
     // Get the screen being popped (current top)
-    val poppedScreen = backStack.lastOrNull() as? Screen
+    val poppedScreen = backStack.lastOrNull()
 
     // Get the screen we're returning to (will be the new top after pop)
-    val returningToScreen =
-      if (backStack.size > 1) {
-        backStack[backStack.size - 2] as? Screen
-      } else {
-        null
-      }
+    val returningToScreen = if (backStack.size > 1) backStack[backStack.size - 2] else null
 
     // Pop the screen
     backStack.removeLast()
 
     // If there's a result and a screen to return to, route the result
     if (result != null && poppedScreen != null && returningToScreen != null) {
-      // The result should go to any result handler that was set up by the returning screen
-      // We use the returning screen's key as the caller key
-      // The resultKey is managed by rememberResultNavigator
       routeResult(returningToScreen.key, result)
     }
 
@@ -66,9 +57,7 @@ internal class NavigatorImpl(
 
   override fun peek(): Screen? = currentScreen
 
-  override fun peekBackStack(): List<Screen> {
-    return backStack.mapNotNull { it as? Screen }
-  }
+  override fun peekBackStack(): List<Screen> = backStack.toList()
 
   override fun resetRoot(newRoot: Screen): Boolean {
     backStack.clear()

@@ -8,7 +8,7 @@ import androidx.compose.runtime.compositionLocalOf
  *
  * This is provided automatically by [NavigatorCompositionLocals]:
  * ```kotlin
- * val backStack = rememberNavBackStack(savedStateConfig, startScreen)
+ * val backStack = rememberScreenBackStack(savedStateConfig, startScreen)
  * val navigator = rememberNavigator(backStack, onOpenUrl)
  *
  * NavigatorCompositionLocals(navigator) {
@@ -25,6 +25,7 @@ import androidx.compose.runtime.compositionLocalOf
  * @see Navigator
  * @see NavigatorCompositionLocals
  * @see rememberNavigator
+ * @see rememberScreenBackStack
  */
 val LocalNavigator: ProvidableCompositionLocal<Navigator> = compositionLocalOf {
   error("No Navigator provided. Ensure LocalNavigator is provided in your composition hierarchy.")

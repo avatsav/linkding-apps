@@ -3,8 +3,6 @@ package dev.avatsav.linkding.navigation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.remember
-import androidx.navigation3.runtime.NavBackStack
-import androidx.navigation3.runtime.NavKey
 import dev.avatsav.linkding.navigation.impl.NavigatorImpl
 
 /**
@@ -18,7 +16,7 @@ import dev.avatsav.linkding.navigation.impl.NavigatorImpl
  *
  * Create a navigator with [rememberNavigator] and provide it via [NavigatorCompositionLocals]:
  * ```kotlin
- * val backStack = rememberNavBackStack(savedStateConfig, startScreen)
+ * val backStack = rememberScreenBackStack(savedStateConfig, startScreen)
  * val navigator = rememberNavigator(backStack, onOpenUrl)
  *
  * NavigatorCompositionLocals(navigator) {
@@ -40,6 +38,7 @@ import dev.avatsav.linkding.navigation.impl.NavigatorImpl
  * @see LocalNavigator
  * @see NavigatorCompositionLocals
  * @see rememberResultNavigator
+ * @see ScreenBackStack
  */
 interface Navigator {
   /**
@@ -125,7 +124,7 @@ class NoOpNavigator : Navigator {
  * [NavigatorCompositionLocals] to provide the required composition locals.
  *
  * ```kotlin
- * val backStack = rememberNavBackStack(savedStateConfig, startScreen)
+ * val backStack = rememberScreenBackStack(savedStateConfig, startScreen)
  * val navigator = rememberNavigator(backStack, onOpenUrl)
  *
  * NavigatorCompositionLocals(navigator) {
@@ -133,14 +132,15 @@ class NoOpNavigator : Navigator {
  * }
  * ```
  *
- * @param backStack The Navigation 3 backstack to manage
+ * @param backStack The [ScreenBackStack] to manage
  * @param onOpenUrl Optional callback to handle [Screen.Url] navigation (e.g., open in browser)
  * @return A remembered [Navigator] instance
  * @see NavigatorCompositionLocals
+ * @see rememberScreenBackStack
  */
 @Composable
 fun rememberNavigator(
-  backStack: NavBackStack<NavKey>,
+  backStack: ScreenBackStack,
   onOpenUrl: ((String) -> Boolean)? = null,
 ): Navigator {
   val resultHandler = rememberNavigationResultHandler()
@@ -154,7 +154,7 @@ fun rememberNavigator(
  * [rememberResultNavigator] to work. Wrap your app's navigation content with this.
  *
  * ```kotlin
- * val backStack = rememberNavBackStack(savedStateConfig, startScreen)
+ * val backStack = rememberScreenBackStack(savedStateConfig, startScreen)
  * val navigator = rememberNavigator(backStack, onOpenUrl)
  *
  * NavigatorCompositionLocals(navigator) {
@@ -169,6 +169,7 @@ fun rememberNavigator(
  * @param navigator The navigator instance created via [rememberNavigator]
  * @param content The composable content that will have access to navigation locals
  * @see rememberNavigator
+ * @see rememberScreenBackStack
  * @see LocalNavigator
  */
 @Composable

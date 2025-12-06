@@ -8,9 +8,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
-import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
-import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import androidx.savedstate.serialization.SavedStateConfiguration
@@ -26,6 +24,7 @@ import dev.avatsav.linkding.navigation.NavigatorCompositionLocals
 import dev.avatsav.linkding.navigation.Screen
 import dev.avatsav.linkding.navigation.ScreenEntryProviderScope
 import dev.avatsav.linkding.navigation.rememberNavigator
+import dev.avatsav.linkding.navigation.rememberScreenBackStack
 import dev.avatsav.linkding.prefs.AppPreferences
 import dev.avatsav.linkding.ui.theme.LinkdingTheme
 import dev.zacsweers.metro.ContributesBinding
@@ -55,9 +54,9 @@ class DefaultAppUi(
     val initialAuthState = remember { authManager.getCurrentState() }
     val startScreen = remember(launchMode) { initialAuthState.startScreen(launchMode) }
 
-    val backStack = rememberNavBackStack(savedStateConfiguration, startScreen)
+    val backStack = rememberScreenBackStack(savedStateConfiguration, startScreen)
     val navigator = rememberNavigator(backStack, onOpenUrl)
-    val bottomSheetSceneStrategy = remember { BottomSheetSceneStrategy<NavKey>() }
+    val bottomSheetSceneStrategy = remember { BottomSheetSceneStrategy<Screen>() }
 
     val authState by authManager.state.collectAsState(initialAuthState)
     val viewModelFactory = rememberViewModelFactory(authState, metroViewModelFactory)

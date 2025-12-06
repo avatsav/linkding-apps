@@ -4,10 +4,10 @@ The app uses a **type-safe result navigation** pattern inspired by Circuit's Ans
 
 ## Setup
 
-The navigation system is set up using `rememberNavigator` and `NavigatorCompositionLocals`:
+The navigation system is set up using `rememberScreenBackStack`, `rememberNavigator`, and `NavigatorCompositionLocals`:
 
 ```kotlin
-val backStack = rememberNavBackStack(savedStateConfig, startScreen)
+val backStack = rememberScreenBackStack(savedStateConfig, startScreen)
 val navigator = rememberNavigator(backStack, onOpenUrl)
 
 NavigatorCompositionLocals(navigator) {
