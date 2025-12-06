@@ -8,9 +8,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
-import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
-import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import androidx.savedstate.serialization.SavedStateConfiguration
@@ -22,12 +20,11 @@ import dev.avatsav.linkding.di.GraphHolder
 import dev.avatsav.linkding.di.UserGraph
 import dev.avatsav.linkding.di.scope.UiScope
 import dev.avatsav.linkding.navigation.BottomSheetSceneStrategy
-import dev.avatsav.linkding.navigation.LocalNavigator
-import dev.avatsav.linkding.navigation.LocalResultEventBus
-import dev.avatsav.linkding.navigation.Screen
-import dev.avatsav.linkding.navigation.ScreenEntryProviderScope
+import dev.avatsav.linkding.navigation.NavigatorCompositionLocals
+import dev.avatsav.linkding.navigation.Route
+import dev.avatsav.linkding.navigation.RouteEntryProviderScope
 import dev.avatsav.linkding.navigation.rememberNavigator
-import dev.avatsav.linkding.navigation.rememberResultEventBus
+import dev.avatsav.linkding.navigation.rememberRouteBackStack
 import dev.avatsav.linkding.prefs.AppPreferences
 import dev.avatsav.linkding.ui.theme.LinkdingTheme
 import dev.zacsweers.metro.ContributesBinding
@@ -38,14 +35,19 @@ import dev.zacsweers.metrox.viewmodel.MetroViewModelFactory
 
 interface AppUi {
   @Composable
-  fun Content(launchMode: LaunchMode, onOpenUrl: (String) -> Boolean, modifier: Modifier)
+  fun Content(
+    launchMode: LaunchMode,
+    onOpenUrl: (String) -> Boolean,
+    onRootPop: () -> Unit,
+    modifier: Modifier,
+  )
 }
 
 @ContributesBinding(UiScope::class)
 @SingleIn(UiScope::class)
 @Inject
 class DefaultAppUi(
-  private val screenEntryScope: Set<ScreenEntryProviderScope>,
+  private val routeEntryScope: Set<RouteEntryProviderScope>,
   private val preferences: AppPreferences,
   private val authManager: AuthManager,
   private val savedStateConfiguration: SavedStateConfiguration,
@@ -53,39 +55,41 @@ class DefaultAppUi(
 ) : AppUi {
 
   @Composable
-  override fun Content(launchMode: LaunchMode, onOpenUrl: (String) -> Boolean, modifier: Modifier) {
+  override fun Content(
+    launchMode: LaunchMode,
+    onOpenUrl: (String) -> Boolean,
+    onRootPop: () -> Unit,
+    modifier: Modifier,
+  ) {
     val initialAuthState = remember { authManager.getCurrentState() }
-    val startScreen = remember(launchMode) { initialAuthState.startScreen(launchMode) }
+    val startRoute = remember(launchMode) { initialAuthState.startRoute(launchMode) }
 
-    val backStack = rememberNavBackStack(savedStateConfiguration, startScreen)
-    val navigator = rememberNavigator(backStack, onOpenUrl)
-    val resultEventBus = rememberResultEventBus()
-    val bottomSheetSceneStrategy = remember { BottomSheetSceneStrategy<NavKey>() }
+    val backStack = rememberRouteBackStack(savedStateConfiguration, startRoute)
+    val navigator = rememberNavigator(backStack, onOpenUrl, onRootPop)
+    val bottomSheetSceneStrategy = remember { BottomSheetSceneStrategy<Route>() }
 
     val authState by authManager.state.collectAsState(initialAuthState)
     val viewModelFactory = rememberViewModelFactory(authState, metroViewModelFactory)
 
-    CompositionLocalProvider(
-      LocalMetroViewModelFactory provides viewModelFactory,
-      LocalNavigator provides navigator,
-      LocalResultEventBus provides resultEventBus,
-    ) {
-      LinkdingTheme(
-        darkTheme = preferences.shouldUseDarkTheme(),
-        dynamicColors = preferences.shouldUseDynamicColors(),
-      ) {
-        NavDisplay(
-          entryDecorators =
-            listOf(
-              rememberSaveableStateHolderNavEntryDecorator(),
-              rememberViewModelStoreNavEntryDecorator(),
-            ),
-          backStack = backStack,
-          onBack = { navigator.pop() },
-          sceneStrategy = bottomSheetSceneStrategy,
-          entryProvider =
-            entryProvider(builder = { screenEntryScope.forEach { builder -> this.builder() } }),
-        )
+    CompositionLocalProvider(LocalMetroViewModelFactory provides viewModelFactory) {
+      NavigatorCompositionLocals(navigator) {
+        LinkdingTheme(
+          darkTheme = preferences.shouldUseDarkTheme(),
+          dynamicColors = preferences.shouldUseDynamicColors(),
+        ) {
+          NavDisplay(
+            entryDecorators =
+              listOf(
+                rememberSaveableStateHolderNavEntryDecorator(),
+                rememberViewModelStoreNavEntryDecorator(),
+              ),
+            backStack = backStack,
+            onBack = { navigator.pop() },
+            sceneStrategy = bottomSheetSceneStrategy,
+            entryProvider =
+              entryProvider(builder = { routeEntryScope.forEach { builder -> this.builder() } }),
+          )
+        }
       }
     }
   }
@@ -110,17 +114,17 @@ private fun rememberViewModelFactory(
   }
 }
 
-private fun AuthState.startScreen(launchMode: LaunchMode): Screen =
+private fun AuthState.startRoute(launchMode: LaunchMode): Route =
   when (this) {
     is AuthState.Loading,
-    is AuthState.Unauthenticated -> Screen.Auth
-    is AuthState.Authenticated -> launchMode.startScreen()
+    is AuthState.Unauthenticated -> Route.Auth
+    is AuthState.Authenticated -> launchMode.startRoute()
   }
 
-private fun LaunchMode.startScreen(): Screen =
+private fun LaunchMode.startRoute(): Route =
   when (this) {
-    LaunchMode.Normal -> Screen.BookmarksFeed
-    is LaunchMode.SharedLink -> Screen.AddBookmark(this.sharedLink)
+    LaunchMode.Normal -> Route.BookmarksFeed
+    is LaunchMode.SharedLink -> Route.AddBookmark(this.sharedLink)
   }
 
 @Composable

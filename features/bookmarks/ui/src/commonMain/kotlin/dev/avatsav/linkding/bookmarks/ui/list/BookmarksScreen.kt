@@ -53,12 +53,12 @@ import androidx.navigationevent.compose.rememberNavigationEventState
 import androidx.paging.LoadState
 import androidx.paging.compose.itemKey
 import dev.avatsav.linkding.bookmarks.ui.list.widgets.BookmarkListItem
-import dev.avatsav.linkding.bookmarks.ui.tags.TagsSelectionResult
 import dev.avatsav.linkding.data.model.Bookmark
 import dev.avatsav.linkding.navigation.LocalNavigator
-import dev.avatsav.linkding.navigation.ResultEffect
-import dev.avatsav.linkding.navigation.Screen
-import dev.avatsav.linkding.navigation.Screen.AddBookmark
+import dev.avatsav.linkding.navigation.Route
+import dev.avatsav.linkding.navigation.Route.AddBookmark
+import dev.avatsav.linkding.navigation.RouteNavigator
+import dev.avatsav.linkding.navigation.rememberResultNavigator
 import dev.avatsav.linkding.ui.compose.appearFromBottom
 import dev.avatsav.linkding.ui.compose.disappearToBottom
 import dev.avatsav.linkding.ui.compose.widgets.AnimatedVisibilityWithElevation
@@ -75,19 +75,27 @@ fun BookmarksScreen(viewModel: BookmarksViewModel, modifier: Modifier = Modifier
   val state by viewModel.models.collectAsStateWithLifecycle()
   val eventSink = viewModel::eventSink
 
-  ResultEffect<TagsSelectionResult> { result ->
-    viewModel.eventSink(BookmarkSearchUiEvent.SetTags(result.selectedTags))
-  }
+  val tagsNavigator =
+    rememberResultNavigator<Route.Tags, Route.Tags.Result> { result ->
+      when (result) {
+        is Route.Tags.Result.Confirmed -> {
+          viewModel.eventSink(BookmarkSearchUiEvent.SetTags(result.selectedTags))
+        }
+        Route.Tags.Result.Dismissed -> {
+          // No action needed on dismissal
+        }
+      }
+    }
 
   ObserveEffects(viewModel.effects) { effect ->
     when (effect) {
       BookmarkUiEffect.AddBookmark -> navigator.goTo(AddBookmark())
-      BookmarkUiEffect.NavigateToSettings -> navigator.goTo(Screen.Settings)
-      is BookmarkUiEffect.OpenBookmark -> navigator.goTo(Screen.Url(effect.bookmark.url))
+      BookmarkUiEffect.NavigateToSettings -> navigator.goTo(Route.Settings)
+      is BookmarkUiEffect.OpenBookmark -> navigator.goTo(Route.Url(effect.bookmark.url))
     }
   }
 
-  BookmarksScreen(state, modifier, eventSink)
+  BookmarksScreen(state, tagsNavigator, modifier, eventSink)
 }
 
 @OptIn(
@@ -98,6 +106,7 @@ fun BookmarksScreen(viewModel: BookmarksViewModel, modifier: Modifier = Modifier
 @Composable
 private fun BookmarksScreen(
   state: BookmarksUiState,
+  tagsNavigator: RouteNavigator<Route.Tags>,
   modifier: Modifier = Modifier,
   eventSink: (BookmarksUiEvent) -> Unit,
 ) {
@@ -145,6 +154,7 @@ private fun BookmarksScreen(
       SearchTopBar(
         searchBarState = searchBarState,
         searchState = state.searchState,
+        tagsNavigator = tagsNavigator,
         onShowSettings = { eventSink(BookmarksUiEvent.ShowSettings) },
         eventSink = eventSink,
       )

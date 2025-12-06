@@ -1,98 +1,53 @@
-# Screen Results
+# Route Results
 
-The app uses **ResultEventBus** for passing results between screens. This is useful when a screen needs to return data to a previous screen (e.g., selection from a bottom sheet).
+Type-safe result passing between routes using `RouteWithResult` and `rememberResultNavigator`.
 
-## Core Components
-
-### ResultEventBus
-
-Access via `LocalResultEventBus.current`:
+## Define a Result-Returning Route
 
 ```kotlin
-interface ResultEventBus {
-  fun getResultFlow(resultKey: String): Flow<Any?>
-  fun sendResult(resultKey: String, result: Any?)
-  fun removeResult(resultKey: String)
-}
-```
-
-### ResultEffect
-
-A composable effect for receiving results:
-
-```kotlin
-@Composable
-inline fun <reified T> ResultEffect(
-  resultEventBus: ResultEventBus = LocalResultEventBus.current,
-  resultKey: String = T::class.toString(),
-  onResult: suspend (T) -> Unit,
-)
-```
-
-## Usage
-
-### 1. Define a Result Type
-
-Create a wrapper class to avoid type erasure issues with generics:
-
-```kotlin
-// In {Feature}UiContract.kt
-@Immutable
-data class TagsSelectionResult(val selectedTags: List<Tag>)
-```
-
-### 2. Send Results
-
-From the screen that produces the result:
-
-```kotlin
-@Composable
-fun TagsScreen(viewModel: TagsViewModel) {
-  val navigator = LocalNavigator.current
-  val resultEventBus = LocalResultEventBus.current
-
-  ObserveEffects(viewModel.effects) { effect ->
-    when (effect) {
-      is TagsUiEffect.TagsConfirmed -> {
-        resultEventBus.sendResult(TagsSelectionResult(effect.selectedTags))
-        navigator.pop()
-      }
-    }
+@Serializable
+data class Tags(val selectedTagIds: List<Long> = emptyList()) : Route, RouteWithResult<Tags.Result> {
+  sealed interface Result : NavResult {
+    @Serializable data class Confirmed(val selectedTags: List<Tag>) : Result
+    @Serializable data object Dismissed : Result
   }
 }
 ```
 
-### 3. Receive Results
+## Return Results
 
-In the screen that needs the result:
+Use `navigator.pop(result)` from the target route:
 
 ```kotlin
-@Composable
-fun BookmarksScreen(viewModel: BookmarksViewModel) {
-  ResultEffect<TagsSelectionResult> { result ->
-    viewModel.eventSink(BookmarkSearchUiEvent.SetTags(result.selectedTags))
+ObserveEffects(viewModel.effects) { effect ->
+  when (effect) {
+    is TagsUiEffect.Confirmed -> navigator.pop(Route.Tags.Result.Confirmed(effect.tags))
+    TagsUiEffect.Dismiss -> navigator.pop(Route.Tags.Result.Dismissed)
   }
-
-  // ... rest of the screen
 }
 ```
 
-## Important Notes
+## Navigate and Receive Results
 
-- **Use wrapper classes**: Avoid using generic types like `List<Tag>` directly as result types due to type erasure. Always wrap in a data class.
-- **Cleanup is automatic**: `ResultEffect` automatically cleans up the channel when the composable leaves composition.
-- **Import extension functions**: When using `sendResult` with type inference, import the extension function:
-  ```kotlin
-  import dev.avatsav.linkding.navigation.sendResult
-  ```
+```kotlin
+val tagsNavigator = rememberResultNavigator<Route.Tags, Route.Tags.Result> { result ->
+  when (result) {
+    is Route.Tags.Result.Confirmed -> viewModel.eventSink(SetTags(result.selectedTags))
+    Route.Tags.Result.Dismissed -> { }
+  }
+}
+
+Button(onClick = { tagsNavigator(Route.Tags(selectedTagIds)) }) {
+  Text("Select Tags")
+}
+```
 
 ## Bottom Sheets
 
-Results work seamlessly with bottom sheets. The channel-based approach ensures results are buffered and delivered even when the bottom sheet overlay closes:
+Results work seamlessly with bottom sheets—delivered when the sheet dismisses:
 
 ```kotlin
-// In ScreenComponent
-entry<Screen.Tags>(metadata = BottomSheetSceneStrategy.bottomSheetExpanded()) { screen ->
+entry<Route.Tags>(metadata = BottomSheetSceneStrategy.bottomSheetExpanded()) { route ->
   TagsScreen(viewModel = ...)
 }
 ```

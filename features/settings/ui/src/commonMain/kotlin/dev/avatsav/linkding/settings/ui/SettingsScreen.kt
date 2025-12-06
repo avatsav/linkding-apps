@@ -36,7 +36,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.avatsav.linkding.data.model.prefs.AppTheme
 import dev.avatsav.linkding.navigation.LocalNavigator
-import dev.avatsav.linkding.navigation.Screen
+import dev.avatsav.linkding.navigation.Route
 import dev.avatsav.linkding.settings.ui.SettingsUiEvent.Close
 import dev.avatsav.linkding.settings.ui.SettingsUiEvent.ResetApiConfig
 import dev.avatsav.linkding.settings.ui.SettingsUiEvent.SetAppTheme
@@ -61,8 +61,8 @@ fun SettingsScreen(viewModel: SettingsViewModel, modifier: Modifier = Modifier) 
   ObserveEffects(viewModel.effects) { effect ->
     when (effect) {
       SettingsUiEffect.NavigateUp -> navigator.pop()
-      is SettingsUiEffect.OpenUrl -> navigator.goTo(Screen.Url(effect.url))
-      SettingsUiEffect.ResetToAuth -> navigator.resetRoot(Screen.Auth)
+      is SettingsUiEffect.OpenUrl -> navigator.goTo(Route.Url(effect.url))
+      SettingsUiEffect.ResetToAuth -> navigator.resetRoot(Route.Auth)
     }
   }
 

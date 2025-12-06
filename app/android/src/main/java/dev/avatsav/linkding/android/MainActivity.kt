@@ -52,6 +52,7 @@ class MainActivity : ComponentActivity() {
       uiGraph.appUi.Content(
         launchMode = launchMode,
         onOpenUrl = { launchUrl(it) },
+        onRootPop = { finish() },
         modifier = Modifier,
       )
     }
