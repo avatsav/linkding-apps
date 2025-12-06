@@ -95,7 +95,7 @@ fun BookmarksScreen(viewModel: BookmarksViewModel, modifier: Modifier = Modifier
     }
   }
 
-  BookmarksScreen(state, modifier, tagsNavigator, eventSink)
+  BookmarksScreen(state, tagsNavigator, modifier, eventSink)
 }
 
 @OptIn(
@@ -106,8 +106,8 @@ fun BookmarksScreen(viewModel: BookmarksViewModel, modifier: Modifier = Modifier
 @Composable
 private fun BookmarksScreen(
   state: BookmarksUiState,
-  modifier: Modifier = Modifier,
   tagsNavigator: ScreenNavigator<Screen.Tags>,
+  modifier: Modifier = Modifier,
   eventSink: (BookmarksUiEvent) -> Unit,
 ) {
   val searchBarState = rememberSearchBarState()

@@ -8,10 +8,36 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.snapshots.SnapshotStateMap
 
 /**
- * Handles result passing between screens using screen keys.
+ * Coordinates result passing between screens during navigation.
  *
- * Results are stored temporarily and retrieved when the calling screen becomes active again. Uses a
- * (callerKey, resultKey) pair to route results to the correct destination.
+ * This handler manages the lifecycle of navigation results, ensuring that when a screen pops with a
+ * result, that result is delivered to the correct caller screen. Results are stored temporarily and
+ * consumed when the calling screen retrieves them.
+ *
+ * ## How It Works
+ * 1. When a screen wants to receive a result, it registers via [prepareForResult]
+ * 2. The target screen pops with a result via [Navigator.pop]
+ * 3. [NavigatorImpl] routes the result via [sendResult]
+ * 4. The original screen retrieves the result via [awaitResult]
+ *
+ * ## Usage
+ *
+ * This class is used internally by [rememberResultNavigator] and [Navigator]. You typically don't
+ * interact with it directly. Instead, use:
+ * ```kotlin
+ * // In the calling screen
+ * val tagsNavigator = rememberResultNavigator<Screen.Tags, Screen.Tags.Result> { result ->
+ *   // Handle result
+ * }
+ * tagsNavigator(Screen.Tags())
+ *
+ * // In the target screen
+ * navigator.pop(Screen.Tags.Result.Confirmed(selectedTags))
+ * ```
+ *
+ * @see rememberResultNavigator
+ * @see Navigator.pop
+ * @see LocalNavigationResultHandler
  */
 @Stable
 class NavigationResultHandler
@@ -60,22 +86,45 @@ internal constructor(
     return result
   }
 
-  /** Cancel awaiting a result. */
+  /**
+   * Cancel awaiting a result and clean up any pending results.
+   *
+   * Called automatically by [rememberResultNavigator] when the calling screen leaves composition
+   * (e.g., removed from backstack via [Navigator.resetRoot]). This prevents memory leaks from
+   * orphaned entries.
+   *
+   * @param callerKey The key of the screen that was expecting a result
+   * @param resultKey The result key that was used when preparing
+   */
   fun cancelAwait(callerKey: String, resultKey: String) {
     val key = callerKey to resultKey
     awaitingResults.remove(key)
     pendingResults.remove(key)
   }
 
-  companion object Companion {
-    /** Special result key used when popping with a result directly. */
+  companion object {
+    /**
+     * Special result key used for results passed via [Navigator.pop].
+     *
+     * This constant is used internally to route results from popped screens back to their callers.
+     */
     const val RESULT_KEY_FROM_POP = "pop_result"
   }
 }
 
-/** Remember an [NavigationResultHandler] with state preservation. */
+/**
+ * Create and remember a [NavigationResultHandler] instance with state preservation.
+ *
+ * This is an internal function called by [rememberNavigator]. Users don't need to call this
+ * directly.
+ *
+ * Note: Pending results are not persisted across process death - they are transient by design since
+ * the navigation state would also be restored.
+ *
+ * @return A remembered [NavigationResultHandler] instance
+ */
 @Composable
-fun rememberNavigationResultHandler(): NavigationResultHandler {
+internal fun rememberNavigationResultHandler(): NavigationResultHandler {
   return rememberSaveable(saver = resultHandlerSaver()) { NavigationResultHandler() }
 }
 

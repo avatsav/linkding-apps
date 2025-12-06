@@ -1,6 +1,7 @@
 package dev.avatsav.linkding.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -11,29 +12,51 @@ import androidx.compose.runtime.saveable.rememberSaveable
 /**
  * Creates a type-safe navigator that receives results from a specific screen type.
  *
- * The navigator is constrained to only navigate to screens of type [S], ensuring compile-time
- * safety that you can't navigate to a different screen and expect results.
+ * This composable returns a [ScreenNavigator] constrained to only navigate to screens of type [S],
+ * ensuring compile-time safety that you can't navigate to a different screen and expect results.
+ * When the target screen pops with a result, the [onResult] callback is invoked.
  *
- * Usage:
+ * ## Usage
+ *
  * ```kotlin
- * val tagsNavigator = rememberResultNavigator<Screen.Tags, Screen.Tags.Result> { result ->
- *   when (result) {
- *     is Screen.Tags.Result.Confirmed -> handleTags(result.selectedTags)
- *     is Screen.Tags.Result.Dismissed -> { /* handle dismissal */ }
+ * @Composable
+ * fun BookmarksScreen(viewModel: BookmarksViewModel) {
+ *   val tagsNavigator = rememberResultNavigator<Screen.Tags, Screen.Tags.Result> { result ->
+ *     when (result) {
+ *       is Screen.Tags.Result.Confirmed -> viewModel.setTags(result.selectedTags)
+ *       Screen.Tags.Result.Dismissed -> { /* handle dismissal */ }
+ *     }
  *   }
+ *
+ *   // Navigate using invoke operator
+ *   Button(onClick = { tagsNavigator(Screen.Tags(selectedTagIds)) }) {
+ *     Text("Select Tags")
+ *   }
+ *
+ *   // Or using goTo method
+ *   Button(onClick = { tagsNavigator.goTo(Screen.Tags(selectedTagIds)) }) {
+ *     Text("Select Tags")
+ *   }
+ *
+ *   // This would NOT compile - type safety!
+ *   // tagsNavigator(Screen.Settings()) // Error: Type mismatch
  * }
- *
- * // Navigate - only Screen.Tags is allowed!
- * tagsNavigator.goTo(Screen.Tags(currentSelectedIds))
- *
- * // This would NOT compile:
- * // tagsNavigator.goTo(Screen.Settings()) // Error: Type mismatch
  * ```
  *
- * @param S The screen type to navigate to (must implement ScreenWithResult<R>)
- * @param R The result type expected from the target screen
+ * ## How It Works
+ * 1. When you navigate via the returned [ScreenNavigator], it registers with
+ *    [NavigationResultHandler]
+ * 2. The target screen can pop with a result via `navigator.pop(result)`
+ * 3. When you return to this screen, the result is delivered to [onResult]
+ *
+ * @param S The screen type to navigate to (must implement [ScreenWithResult])
+ * @param R The result type expected from the target screen (must implement [NavResult])
  * @param onResult Callback invoked when the target screen returns a result
- * @return A [ScreenNavigator] constrained to only navigate to screens of type S
+ * @return A [ScreenNavigator] constrained to only navigate to screens of type [S]
+ * @see ScreenNavigator
+ * @see ScreenWithResult
+ * @see NavResult
+ * @see Navigator.pop
  */
 @Composable
 inline fun <reified S, reified R : NavResult> rememberResultNavigator(
@@ -70,6 +93,14 @@ inline fun <reified S, reified R : NavResult> rememberResultNavigator(
           hasNavigated.value = false
         }
       }
+    }
+  }
+
+  // Clean up when the composable leaves composition (e.g., screen removed from backstack)
+  DisposableEffect(callerKey, resultKey) {
+    onDispose {
+      // Cancel any pending result awaits to prevent memory leaks
+      resultHandler.cancelAwait(callerKey, resultKey)
     }
   }
 

@@ -22,11 +22,9 @@ import dev.avatsav.linkding.di.GraphHolder
 import dev.avatsav.linkding.di.UserGraph
 import dev.avatsav.linkding.di.scope.UiScope
 import dev.avatsav.linkding.navigation.BottomSheetSceneStrategy
-import dev.avatsav.linkding.navigation.LocalNavigationResultHandler
-import dev.avatsav.linkding.navigation.LocalNavigator
+import dev.avatsav.linkding.navigation.NavigatorCompositionLocals
 import dev.avatsav.linkding.navigation.Screen
 import dev.avatsav.linkding.navigation.ScreenEntryProviderScope
-import dev.avatsav.linkding.navigation.rememberNavigationResultHandler
 import dev.avatsav.linkding.navigation.rememberNavigator
 import dev.avatsav.linkding.prefs.AppPreferences
 import dev.avatsav.linkding.ui.theme.LinkdingTheme
@@ -58,34 +56,31 @@ class DefaultAppUi(
     val startScreen = remember(launchMode) { initialAuthState.startScreen(launchMode) }
 
     val backStack = rememberNavBackStack(savedStateConfiguration, startScreen)
-    val navigationResultHandler = rememberNavigationResultHandler()
-    val navigator = rememberNavigator(backStack, navigationResultHandler, onOpenUrl)
+    val navigator = rememberNavigator(backStack, onOpenUrl)
     val bottomSheetSceneStrategy = remember { BottomSheetSceneStrategy<NavKey>() }
 
     val authState by authManager.state.collectAsState(initialAuthState)
     val viewModelFactory = rememberViewModelFactory(authState, metroViewModelFactory)
 
-    CompositionLocalProvider(
-      LocalMetroViewModelFactory provides viewModelFactory,
-      LocalNavigator provides navigator,
-      LocalNavigationResultHandler provides navigationResultHandler,
-    ) {
-      LinkdingTheme(
-        darkTheme = preferences.shouldUseDarkTheme(),
-        dynamicColors = preferences.shouldUseDynamicColors(),
-      ) {
-        NavDisplay(
-          entryDecorators =
-            listOf(
-              rememberSaveableStateHolderNavEntryDecorator(),
-              rememberViewModelStoreNavEntryDecorator(),
-            ),
-          backStack = backStack,
-          onBack = { navigator.pop() },
-          sceneStrategy = bottomSheetSceneStrategy,
-          entryProvider =
-            entryProvider(builder = { screenEntryScope.forEach { builder -> this.builder() } }),
-        )
+    CompositionLocalProvider(LocalMetroViewModelFactory provides viewModelFactory) {
+      NavigatorCompositionLocals(navigator) {
+        LinkdingTheme(
+          darkTheme = preferences.shouldUseDarkTheme(),
+          dynamicColors = preferences.shouldUseDynamicColors(),
+        ) {
+          NavDisplay(
+            entryDecorators =
+              listOf(
+                rememberSaveableStateHolderNavEntryDecorator(),
+                rememberViewModelStoreNavEntryDecorator(),
+              ),
+            backStack = backStack,
+            onBack = { navigator.pop() },
+            sceneStrategy = bottomSheetSceneStrategy,
+            entryProvider =
+              entryProvider(builder = { screenEntryScope.forEach { builder -> this.builder() } }),
+          )
+        }
       }
     }
   }

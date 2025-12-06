@@ -9,7 +9,7 @@ import dev.avatsav.linkding.navigation.Screen
 
 internal class NavigatorImpl(
   private val backStack: NavBackStack<NavKey>,
-  private val resultHandler: NavigationResultHandler,
+  internal val resultHandler: NavigationResultHandler,
   private val onOpenUrl: ((String) -> Boolean)? = null,
 ) : Navigator {
 
