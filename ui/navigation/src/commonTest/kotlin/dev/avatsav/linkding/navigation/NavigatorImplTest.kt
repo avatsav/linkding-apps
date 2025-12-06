@@ -112,6 +112,28 @@ class NavigatorImplTest {
   }
 
   @Test
+  fun `pop at root invokes onRootPop callback`() {
+    var onRootPopCount = 0
+    val nav = NavigatorImpl(backStack, resultHandler, onRootPop = { onRootPopCount++ })
+
+    // Only one route in backstack, pop should invoke callback
+    nav.pop()
+
+    onRootPopCount shouldBe 1
+  }
+
+  @Test
+  fun `pop not at root does not invoke onRootPop callback`() {
+    var onRootPopCount = 0
+    val nav = NavigatorImpl(backStack, resultHandler, onRootPop = { onRootPopCount++ })
+
+    nav.goTo(routeB)
+    nav.pop()
+
+    onRootPopCount shouldBe 0
+  }
+
+  @Test
   fun `pop with result routes to result handler`() {
     val callerRoute = TestRoutes.routeA
     val callerBackStack = RouteBackStack(callerRoute)

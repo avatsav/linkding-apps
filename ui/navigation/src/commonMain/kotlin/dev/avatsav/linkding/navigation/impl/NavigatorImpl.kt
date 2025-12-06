@@ -10,6 +10,7 @@ internal class NavigatorImpl(
   private val backStack: RouteBackStack,
   internal val resultHandler: NavigationResultHandler,
   private val onOpenUrl: ((String) -> Boolean)? = null,
+  private val onRootPop: () -> Unit = {},
 ) : Navigator {
 
   override val currentRoute: Route?
@@ -24,8 +25,11 @@ internal class NavigatorImpl(
   }
 
   override fun pop(result: NavResult?): Route? {
-    // Only pop if we have more than one route (don't pop the root)
-    if (backStack.size <= 1) return null
+    // When at root, invoke callback and return null (don't pop the root)
+    if (backStack.size <= 1) {
+      onRootPop()
+      return null
+    }
 
     // Get the route being popped (current top)
     val poppedRoute = backStack.lastOrNull()

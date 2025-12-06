@@ -35,7 +35,12 @@ import dev.zacsweers.metrox.viewmodel.MetroViewModelFactory
 
 interface AppUi {
   @Composable
-  fun Content(launchMode: LaunchMode, onOpenUrl: (String) -> Boolean, modifier: Modifier)
+  fun Content(
+    launchMode: LaunchMode,
+    onOpenUrl: (String) -> Boolean,
+    onRootPop: () -> Unit,
+    modifier: Modifier,
+  )
 }
 
 @ContributesBinding(UiScope::class)
@@ -50,12 +55,17 @@ class DefaultAppUi(
 ) : AppUi {
 
   @Composable
-  override fun Content(launchMode: LaunchMode, onOpenUrl: (String) -> Boolean, modifier: Modifier) {
+  override fun Content(
+    launchMode: LaunchMode,
+    onOpenUrl: (String) -> Boolean,
+    onRootPop: () -> Unit,
+    modifier: Modifier,
+  ) {
     val initialAuthState = remember { authManager.getCurrentState() }
     val startRoute = remember(launchMode) { initialAuthState.startRoute(launchMode) }
 
     val backStack = rememberRouteBackStack(savedStateConfiguration, startRoute)
-    val navigator = rememberNavigator(backStack, onOpenUrl)
+    val navigator = rememberNavigator(backStack, onOpenUrl, onRootPop)
     val bottomSheetSceneStrategy = remember { BottomSheetSceneStrategy<Route>() }
 
     val authState by authManager.state.collectAsState(initialAuthState)

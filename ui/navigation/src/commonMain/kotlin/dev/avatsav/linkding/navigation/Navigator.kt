@@ -52,18 +52,28 @@ class NoOpNavigator : Navigator {
 /**
  * Create and remember a [Navigator] instance.
  *
+ * @param backStack The route back stack to manage.
+ * @param onOpenUrl Handler for [Route.Url] navigation.
+ * @param onRootPop Called when [Navigator.pop] is invoked on the root route. Use this to finish the
+ *   activity or exit the app.
+ *
  * ```kotlin
  * val backStack = rememberRouteBackStack(config, Route.BookmarksFeed)
- * val navigator = rememberNavigator(backStack, onOpenUrl = { url -> openUrl(url) })
+ * val navigator = rememberNavigator(
+ *   backStack = backStack,
+ *   onOpenUrl = { url -> openUrl(url) },
+ *   onRootPop = { activity.finish() }
+ * )
  * ```
  */
 @Composable
 fun rememberNavigator(
   backStack: RouteBackStack,
   onOpenUrl: ((String) -> Boolean)? = null,
+  onRootPop: () -> Unit = {},
 ): Navigator {
   val resultHandler = rememberNavigationResultHandler()
-  return remember(resultHandler) { NavigatorImpl(backStack, resultHandler, onOpenUrl) }
+  return remember(resultHandler) { NavigatorImpl(backStack, resultHandler, onOpenUrl, onRootPop) }
 }
 
 /**
