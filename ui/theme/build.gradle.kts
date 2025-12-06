@@ -10,6 +10,7 @@ kotlin {
       api(libs.compose.foundation)
       api(libs.compose.m3expressive)
       api(libs.compose.materialIconsExtended)
+      implementation(libs.compose.components.resources)
     }
   }
 }
