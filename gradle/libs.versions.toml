@@ -61,6 +61,8 @@ androidx-splashscreen = "androidx.core:core-splashscreen:1.2.0"
 androidx-browser = "androidx.browser:browser:1.9.0"
 androidx-preference = "androidx.preference:preference-ktx:1.2.1"
 compose-foundation = { module = "org.jetbrains.compose.foundation:foundation", version.ref = "compose-multiplatform" }
+compose-components-resources = { module = "org.jetbrains.compose.components:components-resources", version.ref = "compose-multiplatform" }
+compose-uiToolingPreview = { module = "org.jetbrains.compose.ui:ui-tooling-preview", version.ref = "compose-multiplatform" }
 compose-materialIconsExtended = { module = "org.jetbrains.compose.material:material-icons-extended", version.ref = "compose-materialIconsExtended" }
 compose-lifecycle = { module = "org.jetbrains.androidx.lifecycle:lifecycle-runtime-compose", version.ref = "compose-lifecycle" }
 compose-viewmodel = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "compose-lifecycle" }

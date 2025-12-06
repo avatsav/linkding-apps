@@ -10,6 +10,7 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Link
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -20,6 +21,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import dev.avatsav.linkding.data.model.Bookmark
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun BookmarkContent(bookmark: Bookmark, modifier: Modifier = Modifier) {
   Column(
@@ -31,6 +33,7 @@ fun BookmarkContent(bookmark: Bookmark, modifier: Modifier = Modifier) {
       color = MaterialTheme.colorScheme.primary,
       maxLines = 2,
       overflow = TextOverflow.Ellipsis,
+      style = MaterialTheme.typography.titleMedium,
     )
     Row(
       verticalAlignment = Alignment.CenterVertically,
@@ -62,7 +65,7 @@ fun BookmarkContent(bookmark: Bookmark, modifier: Modifier = Modifier) {
         Text(
           text = "#$tagName",
           color = MaterialTheme.colorScheme.tertiary,
-          style = MaterialTheme.typography.labelMedium,
+          style = MaterialTheme.typography.labelSmallEmphasized,
         )
       }
     }
