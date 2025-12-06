@@ -228,7 +228,7 @@ private fun SearchResultsContent(
             onSelectCategory = { eventSink(BookmarkSearchUiEvent.SelectBookmarkCategory(it)) },
             selectedTags = searchState.filters.selectedTags,
             onOpenTagSelector = {
-              tagsNavigator.goTo(Screen.Tags(searchState.filters.selectedTags.map { it.id }))
+              tagsNavigator(Screen.Tags(searchState.filters.selectedTags.map { it.id }))
             },
             onRemoveTag = { eventSink(BookmarkSearchUiEvent.RemoveTag(it)) },
             modifier = Modifier.fillMaxWidth().animateItem(),

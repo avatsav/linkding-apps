@@ -9,6 +9,7 @@ package dev.avatsav.linkding.navigation
  * @param S The screen type this navigator can navigate to
  */
 interface ScreenNavigator<in S : Screen> {
+
   /**
    * Navigate to the given screen.
    *
@@ -16,4 +17,12 @@ interface ScreenNavigator<in S : Screen> {
    * @return true if navigation was successful
    */
   fun goTo(screen: S): Boolean
+
+  /**
+   * Navigate to the given screen.
+   *
+   * @param screen The screen to navigate to
+   * @return true if navigation was successful
+   */
+  operator fun invoke(screen: S): Boolean = goTo(screen)
 }

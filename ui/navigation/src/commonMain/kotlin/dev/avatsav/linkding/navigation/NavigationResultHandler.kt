@@ -69,7 +69,7 @@ internal constructor(
 
   companion object Companion {
     /** Special result key used when popping with a result directly. */
-    const val RESULT_KEY_FROM_POP = "_pop_result_"
+    const val RESULT_KEY_FROM_POP = "pop_result"
   }
 }
 
