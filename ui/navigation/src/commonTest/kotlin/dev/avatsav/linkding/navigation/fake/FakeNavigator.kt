@@ -3,8 +3,8 @@ package dev.avatsav.linkding.navigation.fake
 import app.cash.turbine.Turbine
 import dev.avatsav.linkding.navigation.NavResult
 import dev.avatsav.linkding.navigation.Navigator
-import dev.avatsav.linkding.navigation.Screen
-import dev.avatsav.linkding.navigation.ScreenBackStack
+import dev.avatsav.linkding.navigation.Route
+import dev.avatsav.linkding.navigation.RouteBackStack
 
 /**
  * A fake [Navigator] implementation for testing that records all navigation events.
@@ -16,59 +16,59 @@ import dev.avatsav.linkding.navigation.ScreenBackStack
  * ```kotlin
  * @Test
  * fun testNavigation() = runTest {
- *   val navigator = FakeNavigator(TestScreen.Home)
+ *   val navigator = FakeNavigator(TestRoute.Home)
  *
  *   // Perform navigation
- *   navigator.goTo(TestScreen.Details)
+ *   navigator.goTo(TestRoute.Details)
  *
  *   // Assert
- *   navigator.awaitGoTo() shouldBe TestScreen.Details
+ *   navigator.awaitGoTo() shouldBe TestRoute.Details
  *   navigator.assertGoToIsEmpty()
  * }
  * ```
  */
-class FakeNavigator(vararg initialScreens: Screen) : Navigator {
+class FakeNavigator(vararg initialRoutes: Route) : Navigator {
 
-  private val backStack = ScreenBackStack(*initialScreens)
+  private val backStack = RouteBackStack(*initialRoutes)
 
   private val goToEvents = Turbine<GoToEvent>()
   private val popEvents = Turbine<PopEvent>()
   private val resetRootEvents = Turbine<ResetRootEvent>()
 
-  override val currentScreen: Screen?
+  override val currentRoute: Route?
     get() = backStack.lastOrNull()
 
-  override fun goTo(screen: Screen): Boolean {
+  override fun goTo(route: Route): Boolean {
     val currentTop = backStack.lastOrNull()
-    // Don't navigate to the same screen
-    if (currentTop == screen) {
-      goToEvents.add(GoToEvent(screen, success = false))
+    // Don't navigate to the same route
+    if (currentTop == route) {
+      goToEvents.add(GoToEvent(route, success = false))
       return false
     }
-    backStack.add(screen)
-    goToEvents.add(GoToEvent(screen, success = true))
+    backStack.add(route)
+    goToEvents.add(GoToEvent(route, success = true))
     return true
   }
 
-  override fun pop(result: NavResult?): Screen? {
+  override fun pop(result: NavResult?): Route? {
     if (backStack.size <= 1) {
-      popEvents.add(PopEvent(poppedScreen = null, result = result))
+      popEvents.add(PopEvent(poppedRoute = null, result = result))
       return null
     }
-    val poppedScreen = backStack.removeLastOrNull()
-    popEvents.add(PopEvent(poppedScreen = poppedScreen, result = result))
+    val poppedRoute = backStack.removeLastOrNull()
+    popEvents.add(PopEvent(poppedRoute = poppedRoute, result = result))
     return backStack.lastOrNull()
   }
 
-  override fun peek(): Screen? = backStack.lastOrNull()
+  override fun peek(): Route? = backStack.lastOrNull()
 
-  override fun peekBackStack(): List<Screen> = backStack.toList()
+  override fun peekBackStack(): List<Route> = backStack.toList()
 
-  override fun resetRoot(newRoot: Screen): Boolean {
-    val oldScreens = backStack.toList()
+  override fun resetRoot(newRoot: Route): Boolean {
+    val oldRoutes = backStack.toList()
     backStack.clear()
     backStack.add(newRoot)
-    resetRootEvents.add(ResetRootEvent(newRoot = newRoot, oldScreens = oldScreens))
+    resetRootEvents.add(ResetRootEvent(newRoot = newRoot, oldRoutes = oldRoutes))
     return true
   }
 
@@ -77,8 +77,8 @@ class FakeNavigator(vararg initialScreens: Screen) : Navigator {
   /** Await and return the next goTo event. */
   suspend fun awaitGoTo(): GoToEvent = goToEvents.awaitItem()
 
-  /** Await and return the next screen navigated to. */
-  suspend fun awaitNextScreen(): Screen = goToEvents.awaitItem().screen
+  /** Await and return the next route navigated to. */
+  suspend fun awaitNextRoute(): Route = goToEvents.awaitItem().route
 
   /** Await and return the next pop event. */
   suspend fun awaitPop(): PopEvent = popEvents.awaitItem()
@@ -109,11 +109,11 @@ class FakeNavigator(vararg initialScreens: Screen) : Navigator {
   }
 
   /** Event recorded when [goTo] is called. */
-  data class GoToEvent(val screen: Screen, val success: Boolean)
+  data class GoToEvent(val route: Route, val success: Boolean)
 
   /** Event recorded when [pop] is called. */
-  data class PopEvent(val poppedScreen: Screen?, val result: NavResult? = null)
+  data class PopEvent(val poppedRoute: Route?, val result: NavResult? = null)
 
   /** Event recorded when [resetRoot] is called. */
-  data class ResetRootEvent(val newRoot: Screen, val oldScreens: List<Screen>)
+  data class ResetRootEvent(val newRoot: Route, val oldRoutes: List<Route>)
 }

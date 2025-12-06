@@ -55,8 +55,8 @@ import dev.avatsav.linkding.bookmarks.ui.list.widgets.FiltersBar
 import dev.avatsav.linkding.bookmarks.ui.list.widgets.SearchHistoryHeader
 import dev.avatsav.linkding.bookmarks.ui.list.widgets.SearchHistoryItem
 import dev.avatsav.linkding.data.model.Bookmark
-import dev.avatsav.linkding.navigation.Screen
-import dev.avatsav.linkding.navigation.ScreenNavigator
+import dev.avatsav.linkding.navigation.Route
+import dev.avatsav.linkding.navigation.RouteNavigator
 import dev.avatsav.linkding.ui.theme.Material3ShapeDefaults
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -69,7 +69,7 @@ private const val SearchTextDebounce = 800L
 internal fun SearchTopBar(
   searchBarState: SearchBarState,
   searchState: BookmarkSearchUiState,
-  tagsNavigator: ScreenNavigator<Screen.Tags>,
+  tagsNavigator: RouteNavigator<Route.Tags>,
   onShowSettings: () -> Unit,
   eventSink: (BookmarkSearchUiEvent) -> Unit,
 ) {
@@ -171,7 +171,7 @@ internal fun SearchTopBar(
 @Composable
 private fun SearchResultsContent(
   searchState: BookmarkSearchUiState,
-  tagsNavigator: ScreenNavigator<Screen.Tags>,
+  tagsNavigator: RouteNavigator<Route.Tags>,
   eventSink: (BookmarkSearchUiEvent) -> Unit,
   modifier: Modifier = Modifier,
 ) {
@@ -228,7 +228,7 @@ private fun SearchResultsContent(
             onSelectCategory = { eventSink(BookmarkSearchUiEvent.SelectBookmarkCategory(it)) },
             selectedTags = searchState.filters.selectedTags,
             onOpenTagSelector = {
-              tagsNavigator(Screen.Tags(searchState.filters.selectedTags.map { it.id }))
+              tagsNavigator(Route.Tags(searchState.filters.selectedTags.map { it.id }))
             },
             onRemoveTag = { eventSink(BookmarkSearchUiEvent.RemoveTag(it)) },
             modifier = Modifier.fillMaxWidth().animateItem(),

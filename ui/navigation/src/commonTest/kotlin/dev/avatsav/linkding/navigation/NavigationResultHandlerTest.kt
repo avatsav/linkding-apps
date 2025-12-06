@@ -13,15 +13,15 @@ class NavigationResultHandlerTest {
     handler.prepareForResult("caller-1", "result-key")
 
     // Sending a result should work after preparation
-    handler.sendResult("caller-1", "result-key", TestScreens.Results.dismissed)
+    handler.sendResult("caller-1", "result-key", TestRoutes.Results.dismissed)
 
-    handler.awaitResult("caller-1", "result-key") shouldBe TestScreens.Results.dismissed
+    handler.awaitResult("caller-1", "result-key") shouldBe TestRoutes.Results.dismissed
   }
 
   @Test
   fun `sendResult only sends to awaiting callers`() {
     // Don't prepare - just send
-    handler.sendResult("caller-1", "result-key", TestScreens.Results.dismissed)
+    handler.sendResult("caller-1", "result-key", TestRoutes.Results.dismissed)
 
     // Result should not be stored since no one was awaiting
     handler.awaitResult("caller-1", "result-key").shouldBeNull()
@@ -30,10 +30,10 @@ class NavigationResultHandlerTest {
   @Test
   fun `awaitResult consumes the result`() {
     handler.prepareForResult("caller-1", "result-key")
-    handler.sendResult("caller-1", "result-key", TestScreens.Results.dismissed)
+    handler.sendResult("caller-1", "result-key", TestRoutes.Results.dismissed)
 
     // First await should return the result
-    handler.awaitResult("caller-1", "result-key") shouldBe TestScreens.Results.dismissed
+    handler.awaitResult("caller-1", "result-key") shouldBe TestRoutes.Results.dismissed
 
     // Second await should return null (consumed)
     handler.awaitResult("caller-1", "result-key").shouldBeNull()
@@ -50,7 +50,7 @@ class NavigationResultHandlerTest {
   @Test
   fun `cancelAwait cleans up pending results`() {
     handler.prepareForResult("caller-1", "result-key")
-    handler.sendResult("caller-1", "result-key", TestScreens.Results.dismissed)
+    handler.sendResult("caller-1", "result-key", TestRoutes.Results.dismissed)
 
     // Cancel before consuming
     handler.cancelAwait("caller-1", "result-key")
@@ -65,7 +65,7 @@ class NavigationResultHandlerTest {
     handler.cancelAwait("caller-1", "result-key")
 
     // Sending after cancel should not store the result
-    handler.sendResult("caller-1", "result-key", TestScreens.Results.dismissed)
+    handler.sendResult("caller-1", "result-key", TestRoutes.Results.dismissed)
 
     handler.awaitResult("caller-1", "result-key").shouldBeNull()
   }
@@ -75,8 +75,8 @@ class NavigationResultHandlerTest {
     handler.prepareForResult("caller-1", "result-key")
     handler.prepareForResult("caller-2", "result-key")
 
-    val result1 = TestScreens.Results.success(emptyList())
-    val result2 = TestScreens.Results.dismissed
+    val result1 = TestRoutes.Results.success(emptyList())
+    val result2 = TestRoutes.Results.dismissed
 
     handler.sendResult("caller-1", "result-key", result1)
     handler.sendResult("caller-2", "result-key", result2)
@@ -90,8 +90,8 @@ class NavigationResultHandlerTest {
     handler.prepareForResult("caller-1", "key-a")
     handler.prepareForResult("caller-1", "key-b")
 
-    val resultA = TestScreens.Results.success(emptyList())
-    val resultB = TestScreens.Results.dismissed
+    val resultA = TestRoutes.Results.success(emptyList())
+    val resultB = TestRoutes.Results.dismissed
 
     handler.sendResult("caller-1", "key-a", resultA)
     handler.sendResult("caller-1", "key-b", resultB)
@@ -105,10 +105,10 @@ class NavigationResultHandlerTest {
     handler.prepareForResult("caller-1", "result-key")
     // caller-2 did NOT prepare
 
-    handler.sendResult("caller-1", "result-key", TestScreens.Results.dismissed)
+    handler.sendResult("caller-1", "result-key", TestRoutes.Results.dismissed)
 
     // caller-1 should receive the result
-    handler.awaitResult("caller-1", "result-key") shouldBe TestScreens.Results.dismissed
+    handler.awaitResult("caller-1", "result-key") shouldBe TestRoutes.Results.dismissed
 
     // caller-2 should not receive anything
     handler.awaitResult("caller-2", "result-key").shouldBeNull()

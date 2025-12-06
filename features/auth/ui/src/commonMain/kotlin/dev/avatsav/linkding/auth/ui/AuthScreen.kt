@@ -36,7 +36,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.avatsav.linkding.auth.ui.AuthUiEvent.SaveCredentials
 import dev.avatsav.linkding.navigation.LocalNavigator
-import dev.avatsav.linkding.navigation.Screen
+import dev.avatsav.linkding.navigation.Route
 import dev.avatsav.linkding.ui.compose.widgets.SmallCircularProgressIndicator
 import dev.avatsav.linkding.viewmodel.ObserveEffects
 
@@ -49,7 +49,7 @@ fun AuthScreen(viewModel: AuthViewModel, modifier: Modifier = Modifier) {
 
   ObserveEffects(viewModel.effects) { effect ->
     when (effect) {
-      AuthEffect.AuthenticationSuccess -> navigator.resetRoot(Screen.BookmarksFeed)
+      AuthEffect.AuthenticationSuccess -> navigator.resetRoot(Route.BookmarksFeed)
     }
   }
 

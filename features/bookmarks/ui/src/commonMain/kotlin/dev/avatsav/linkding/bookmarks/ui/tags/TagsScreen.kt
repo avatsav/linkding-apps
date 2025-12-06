@@ -29,7 +29,7 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.avatsav.linkding.navigation.LocalNavigator
-import dev.avatsav.linkding.navigation.Screen
+import dev.avatsav.linkding.navigation.Route
 import dev.avatsav.linkding.ui.compose.none
 import dev.avatsav.linkding.viewmodel.ObserveEffects
 
@@ -43,9 +43,9 @@ fun TagsScreen(viewModel: TagsViewModel, modifier: Modifier = Modifier) {
   ObserveEffects(viewModel.effects) { effect ->
     when (effect) {
       is TagsUiEffect.TagsConfirmed -> {
-        navigator.pop(Screen.Tags.Result.Confirmed(effect.selectedTags))
+        navigator.pop(Route.Tags.Result.Confirmed(effect.selectedTags))
       }
-      TagsUiEffect.Dismiss -> navigator.pop(Screen.Tags.Result.Dismissed)
+      TagsUiEffect.Dismiss -> navigator.pop(Route.Tags.Result.Dismissed)
     }
   }
 

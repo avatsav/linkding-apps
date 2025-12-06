@@ -3,45 +3,45 @@ package dev.avatsav.linkding.navigation.impl
 import dev.avatsav.linkding.navigation.NavResult
 import dev.avatsav.linkding.navigation.NavigationResultHandler
 import dev.avatsav.linkding.navigation.Navigator
-import dev.avatsav.linkding.navigation.Screen
-import dev.avatsav.linkding.navigation.ScreenBackStack
+import dev.avatsav.linkding.navigation.Route
+import dev.avatsav.linkding.navigation.RouteBackStack
 
 internal class NavigatorImpl(
-  private val backStack: ScreenBackStack,
+  private val backStack: RouteBackStack,
   internal val resultHandler: NavigationResultHandler,
   private val onOpenUrl: ((String) -> Boolean)? = null,
 ) : Navigator {
 
-  override val currentScreen: Screen?
+  override val currentRoute: Route?
     get() = backStack.lastOrNull()
 
-  override fun goTo(screen: Screen): Boolean {
-    if (screen is Screen.Url && onOpenUrl != null) {
-      return onOpenUrl(screen.url)
+  override fun goTo(route: Route): Boolean {
+    if (route is Route.Url && onOpenUrl != null) {
+      return onOpenUrl(route.url)
     }
-    backStack.add(screen)
+    backStack.add(route)
     return true
   }
 
-  override fun pop(result: NavResult?): Screen? {
-    // Only pop if we have more than one screen (don't pop the root)
+  override fun pop(result: NavResult?): Route? {
+    // Only pop if we have more than one route (don't pop the root)
     if (backStack.size <= 1) return null
 
-    // Get the screen being popped (current top)
-    val poppedScreen = backStack.lastOrNull()
+    // Get the route being popped (current top)
+    val poppedRoute = backStack.lastOrNull()
 
-    // Get the screen we're returning to (will be the new top after pop)
-    val returningToScreen = if (backStack.size > 1) backStack[backStack.size - 2] else null
+    // Get the route we're returning to (will be the new top after pop)
+    val returningToRoute = if (backStack.size > 1) backStack[backStack.size - 2] else null
 
-    // Pop the screen
+    // Pop the route
     backStack.removeLast()
 
-    // If there's a result and a screen to return to, route the result
-    if (result != null && poppedScreen != null && returningToScreen != null) {
-      routeResult(returningToScreen.key, result)
+    // If there's a result and a route to return to, route the result
+    if (result != null && poppedRoute != null && returningToRoute != null) {
+      routeResult(returningToRoute.key, result)
     }
 
-    return currentScreen
+    return currentRoute
   }
 
   /**
@@ -55,11 +55,11 @@ internal class NavigatorImpl(
     resultHandler.sendResult(callerKey, NavigationResultHandler.RESULT_KEY_FROM_POP, result)
   }
 
-  override fun peek(): Screen? = currentScreen
+  override fun peek(): Route? = currentRoute
 
-  override fun peekBackStack(): List<Screen> = backStack.toList()
+  override fun peekBackStack(): List<Route> = backStack.toList()
 
-  override fun resetRoot(newRoot: Screen): Boolean {
+  override fun resetRoot(newRoot: Route): Boolean {
     backStack.clear()
     backStack.add(newRoot)
     return true

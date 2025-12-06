@@ -1,48 +1,31 @@
 # Navigation
 
-The app uses **Jetpack Navigation 3** for type-safe, Compose-first navigation.
+Type-safe navigation using **Jetpack Navigation 3**.
 
 ## Setup
 
 ```kotlin
-val backStack = rememberScreenBackStack(savedStateConfig, startScreen)
+val backStack = rememberRouteBackStack(savedStateConfig, startRoute)
 val navigator = rememberNavigator(backStack, onOpenUrl)
 
 NavigatorCompositionLocals(navigator) {
-  NavDisplay(
-    backStack = backStack,
-    onBack = { navigator.pop() },
-    ...
-  )
+  NavDisplay(backStack = backStack, onBack = { navigator.pop() })
 }
 ```
 
-## Screens
+## Routes
 
-Defined in `ui/navigation/Screens.kt`:
+Defined in `ui/navigation/Routes.kt`. Use `data object` for parameterless routes, `data class` for routes with parameters:
 
 ```kotlin
 @Serializable
-sealed interface Screen {
-  val key: String  // Unique key for result routing
+sealed interface Route {
+  val key: String get() = toString()
 
-  @Serializable data class Auth(override val key: String = Uuid.random().toString()) : Screen
-  @Serializable data class BookmarksFeed(override val key: String = Uuid.random().toString()) : Screen
-  @Serializable data class AddBookmark(val sharedUrl: String? = null, override val key: String = ...) : Screen
-  @Serializable data class Url(val url: String, override val key: String = ...) : Screen
-  @Serializable data class Settings(override val key: String = ...) : Screen
-  @Serializable data class Tags(val selectedTagIds: List<Long> = emptyList(), override val key: String = ...) : Screen
+  @Serializable data object Auth : Route
+  @Serializable data object Settings : Route
+  @Serializable data class AddBookmark(val sharedUrl: String? = null) : Route
 }
-```
-
-## ScreenBackStack
-
-Type-safe backstack for managing screens:
-
-```kotlin
-val backStack = rememberScreenBackStack(savedStateConfig, Screen.Home())
-backStack += Screen.Details(itemId)  // push
-backStack.removeLast()               // pop
 ```
 
 ## Navigator
@@ -50,45 +33,27 @@ backStack.removeLast()               // pop
 Access via `LocalNavigator.current`:
 
 ```kotlin
-interface Navigator {
-  fun goTo(screen: Screen): Boolean
-  fun pop(result: NavResult? = null): Screen?
-  fun resetRoot(newRoot: Screen): Boolean
-}
+val navigator = LocalNavigator.current
+navigator.goTo(Route.Settings)      // push
+navigator.pop()                     // pop
+navigator.pop(result)               // pop with result
+navigator.resetRoot(Route.Auth)     // clear and set new root
 ```
 
-## Screen Registration
+## Route Registration
 
-Register screens in `di/{Feature}ScreenComponent.kt`:
+Register routes in `di/{Feature}ScreenComponent.kt`:
 
 ```kotlin
 @ContributesTo(UiScope::class)
 interface MyScreenComponent {
-  @IntoSet
-  @Provides
-  fun provideMyScreenEntry(): ScreenEntryProviderScope = {
-    entry<Screen.MyScreen> {
-      MyScreen(viewModel = metroViewModel())
-    }
-  }
-
-  // With parameters
-  @IntoSet
-  @Provides
-  fun provideDetailEntry(): ScreenEntryProviderScope = {
-    entry<Screen.Detail> { screen ->
-      DetailScreen(
-        viewModel = assistedMetroViewModel<DetailViewModel, DetailViewModel.Factory> {
-          create(screen.id)
-        }
-      )
-    }
+  @IntoSet @Provides
+  fun provideEntry(): RouteEntryProviderScope = {
+    entry<Route.MyRoute> { MyScreen(viewModel = metroViewModel()) }
   }
 }
 ```
 
 ## URL Handling
 
-`Screen.Url` navigation is intercepted and delegated to platform-specific handlers:
-- **Android**: Chrome Custom Tabs
-- **Desktop**: System browser
+`Route.Url` is intercepted and delegated to platform handlers (Chrome Custom Tabs on Android, system browser on Desktop).

@@ -11,32 +11,32 @@ import kotlinx.coroutines.test.runTest
 
 class FakeNavigatorTest {
 
-  private val screenA = TestScreens.screenA
-  private val screenB = TestScreens.screenB
-  private val screenC = TestScreens.screenC
+  private val routeA = TestRoutes.routeA
+  private val routeB = TestRoutes.routeB
+  private val routeC = TestRoutes.routeC
 
   @Test
   fun `goTo records event and updates backstack`() = runTest {
-    val navigator = FakeNavigator(screenA)
+    val navigator = FakeNavigator(routeA)
 
-    navigator.goTo(screenB)
+    navigator.goTo(routeB)
 
     val event = navigator.awaitGoTo()
-    event.screen shouldBe screenB
+    event.route shouldBe routeB
     event.success.shouldBeTrue()
 
-    navigator.currentScreen shouldBe screenB
+    navigator.currentRoute shouldBe routeB
     navigator.cancel()
   }
 
   @Test
-  fun `goTo to same screen records failure`() = runTest {
-    val navigator = FakeNavigator(screenA)
+  fun `goTo to same route records failure`() = runTest {
+    val navigator = FakeNavigator(routeA)
 
-    navigator.goTo(screenB)
+    navigator.goTo(routeB)
     navigator.awaitGoTo() // consume first event
 
-    navigator.goTo(screenB) // same screen
+    navigator.goTo(routeB) // same route
 
     val event = navigator.awaitGoTo()
     event.success.shouldBeFalse()
@@ -44,99 +44,99 @@ class FakeNavigatorTest {
   }
 
   @Test
-  fun `awaitNextScreen returns navigated screen`() = runTest {
-    val navigator = FakeNavigator(screenA)
+  fun `awaitNextRoute returns navigated route`() = runTest {
+    val navigator = FakeNavigator(routeA)
 
-    navigator.goTo(screenB)
+    navigator.goTo(routeB)
 
-    navigator.awaitNextScreen() shouldBe screenB
+    navigator.awaitNextRoute() shouldBe routeB
     navigator.cancel()
   }
 
   @Test
   fun `pop records event`() = runTest {
-    val navigator = FakeNavigator(screenA)
+    val navigator = FakeNavigator(routeA)
 
-    navigator.goTo(screenB)
+    navigator.goTo(routeB)
     navigator.awaitGoTo() // consume
 
     navigator.pop()
 
     val event = navigator.awaitPop()
-    event.poppedScreen shouldBe screenB
+    event.poppedRoute shouldBe routeB
     event.result.shouldBeNull()
     navigator.cancel()
   }
 
   @Test
   fun `pop with result records result`() = runTest {
-    val navigator = FakeNavigator(screenA)
-    val resultScreen = TestScreens.resultScreen()
+    val navigator = FakeNavigator(routeA)
+    val resultRoute = TestRoutes.resultRoute()
 
-    navigator.goTo(resultScreen)
+    navigator.goTo(resultRoute)
     navigator.awaitGoTo() // consume
 
-    navigator.pop(TestScreens.Results.dismissed)
+    navigator.pop(TestRoutes.Results.dismissed)
 
     val event = navigator.awaitPop()
-    event.poppedScreen shouldBe resultScreen
-    event.result shouldBe TestScreens.Results.dismissed
+    event.poppedRoute shouldBe resultRoute
+    event.result shouldBe TestRoutes.Results.dismissed
     navigator.cancel()
   }
 
   @Test
-  fun `pop at root records null poppedScreen`() = runTest {
-    val navigator = FakeNavigator(screenA)
+  fun `pop at root records null poppedRoute`() = runTest {
+    val navigator = FakeNavigator(routeA)
 
     navigator.pop()
 
     val event = navigator.awaitPop()
-    event.poppedScreen.shouldBeNull()
+    event.poppedRoute.shouldBeNull()
     navigator.cancel()
   }
 
   @Test
-  fun `resetRoot records event with old screens`() = runTest {
-    val navigator = FakeNavigator(screenA)
+  fun `resetRoot records event with old routes`() = runTest {
+    val navigator = FakeNavigator(routeA)
 
-    navigator.goTo(screenB)
+    navigator.goTo(routeB)
     navigator.awaitGoTo() // consume
 
-    navigator.resetRoot(screenC)
+    navigator.resetRoot(routeC)
 
     val event = navigator.awaitResetRoot()
-    event.newRoot shouldBe screenC
-    event.oldScreens shouldContainExactly listOf(screenA, screenB)
+    event.newRoot shouldBe routeC
+    event.oldRoutes shouldContainExactly listOf(routeA, routeB)
     navigator.cancel()
   }
 
   @Test
   fun `peekBackStack returns current state`() = runTest {
-    val navigator = FakeNavigator(screenA)
+    val navigator = FakeNavigator(routeA)
 
-    navigator.goTo(screenB)
-    navigator.goTo(screenC)
+    navigator.goTo(routeB)
+    navigator.goTo(routeC)
 
-    navigator.peekBackStack() shouldContainExactly listOf(screenA, screenB, screenC)
+    navigator.peekBackStack() shouldContainExactly listOf(routeA, routeB, routeC)
     navigator.cancel()
   }
 
   @Test
-  fun `peek returns current screen`() = runTest {
-    val navigator = FakeNavigator(screenA)
+  fun `peek returns current route`() = runTest {
+    val navigator = FakeNavigator(routeA)
 
-    navigator.goTo(screenB)
+    navigator.goTo(routeB)
 
-    navigator.peek() shouldBe screenB
+    navigator.peek() shouldBe routeB
     navigator.cancel()
   }
 
   @Test
-  fun `initializing with multiple screens works`() = runTest {
-    val nav = FakeNavigator(screenA, screenB, screenC)
+  fun `initializing with multiple routes works`() = runTest {
+    val nav = FakeNavigator(routeA, routeB, routeC)
 
-    nav.currentScreen shouldBe screenC
-    nav.peekBackStack() shouldContainExactly listOf(screenA, screenB, screenC)
+    nav.currentRoute shouldBe routeC
+    nav.peekBackStack() shouldContainExactly listOf(routeA, routeB, routeC)
     nav.cancel()
   }
 }

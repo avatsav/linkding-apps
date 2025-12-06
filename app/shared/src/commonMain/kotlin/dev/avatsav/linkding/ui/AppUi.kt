@@ -21,10 +21,10 @@ import dev.avatsav.linkding.di.UserGraph
 import dev.avatsav.linkding.di.scope.UiScope
 import dev.avatsav.linkding.navigation.BottomSheetSceneStrategy
 import dev.avatsav.linkding.navigation.NavigatorCompositionLocals
-import dev.avatsav.linkding.navigation.Screen
-import dev.avatsav.linkding.navigation.ScreenEntryProviderScope
+import dev.avatsav.linkding.navigation.Route
+import dev.avatsav.linkding.navigation.RouteEntryProviderScope
 import dev.avatsav.linkding.navigation.rememberNavigator
-import dev.avatsav.linkding.navigation.rememberScreenBackStack
+import dev.avatsav.linkding.navigation.rememberRouteBackStack
 import dev.avatsav.linkding.prefs.AppPreferences
 import dev.avatsav.linkding.ui.theme.LinkdingTheme
 import dev.zacsweers.metro.ContributesBinding
@@ -42,7 +42,7 @@ interface AppUi {
 @SingleIn(UiScope::class)
 @Inject
 class DefaultAppUi(
-  private val screenEntryScope: Set<ScreenEntryProviderScope>,
+  private val routeEntryScope: Set<RouteEntryProviderScope>,
   private val preferences: AppPreferences,
   private val authManager: AuthManager,
   private val savedStateConfiguration: SavedStateConfiguration,
@@ -52,11 +52,11 @@ class DefaultAppUi(
   @Composable
   override fun Content(launchMode: LaunchMode, onOpenUrl: (String) -> Boolean, modifier: Modifier) {
     val initialAuthState = remember { authManager.getCurrentState() }
-    val startScreen = remember(launchMode) { initialAuthState.startScreen(launchMode) }
+    val startRoute = remember(launchMode) { initialAuthState.startRoute(launchMode) }
 
-    val backStack = rememberScreenBackStack(savedStateConfiguration, startScreen)
+    val backStack = rememberRouteBackStack(savedStateConfiguration, startRoute)
     val navigator = rememberNavigator(backStack, onOpenUrl)
-    val bottomSheetSceneStrategy = remember { BottomSheetSceneStrategy<Screen>() }
+    val bottomSheetSceneStrategy = remember { BottomSheetSceneStrategy<Route>() }
 
     val authState by authManager.state.collectAsState(initialAuthState)
     val viewModelFactory = rememberViewModelFactory(authState, metroViewModelFactory)
@@ -77,7 +77,7 @@ class DefaultAppUi(
             onBack = { navigator.pop() },
             sceneStrategy = bottomSheetSceneStrategy,
             entryProvider =
-              entryProvider(builder = { screenEntryScope.forEach { builder -> this.builder() } }),
+              entryProvider(builder = { routeEntryScope.forEach { builder -> this.builder() } }),
           )
         }
       }
@@ -104,17 +104,17 @@ private fun rememberViewModelFactory(
   }
 }
 
-private fun AuthState.startScreen(launchMode: LaunchMode): Screen =
+private fun AuthState.startRoute(launchMode: LaunchMode): Route =
   when (this) {
     is AuthState.Loading,
-    is AuthState.Unauthenticated -> Screen.Auth
-    is AuthState.Authenticated -> launchMode.startScreen()
+    is AuthState.Unauthenticated -> Route.Auth
+    is AuthState.Authenticated -> launchMode.startRoute()
   }
 
-private fun LaunchMode.startScreen(): Screen =
+private fun LaunchMode.startRoute(): Route =
   when (this) {
-    LaunchMode.Normal -> Screen.BookmarksFeed
-    is LaunchMode.SharedLink -> Screen.AddBookmark(this.sharedLink)
+    LaunchMode.Normal -> Route.BookmarksFeed
+    is LaunchMode.SharedLink -> Route.AddBookmark(this.sharedLink)
   }
 
 @Composable

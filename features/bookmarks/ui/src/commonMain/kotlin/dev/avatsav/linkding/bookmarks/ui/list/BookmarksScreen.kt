@@ -55,9 +55,9 @@ import androidx.paging.compose.itemKey
 import dev.avatsav.linkding.bookmarks.ui.list.widgets.BookmarkListItem
 import dev.avatsav.linkding.data.model.Bookmark
 import dev.avatsav.linkding.navigation.LocalNavigator
-import dev.avatsav.linkding.navigation.Screen
-import dev.avatsav.linkding.navigation.Screen.AddBookmark
-import dev.avatsav.linkding.navigation.ScreenNavigator
+import dev.avatsav.linkding.navigation.Route
+import dev.avatsav.linkding.navigation.Route.AddBookmark
+import dev.avatsav.linkding.navigation.RouteNavigator
 import dev.avatsav.linkding.navigation.rememberResultNavigator
 import dev.avatsav.linkding.ui.compose.appearFromBottom
 import dev.avatsav.linkding.ui.compose.disappearToBottom
@@ -76,12 +76,12 @@ fun BookmarksScreen(viewModel: BookmarksViewModel, modifier: Modifier = Modifier
   val eventSink = viewModel::eventSink
 
   val tagsNavigator =
-    rememberResultNavigator<Screen.Tags, Screen.Tags.Result> { result ->
+    rememberResultNavigator<Route.Tags, Route.Tags.Result> { result ->
       when (result) {
-        is Screen.Tags.Result.Confirmed -> {
+        is Route.Tags.Result.Confirmed -> {
           viewModel.eventSink(BookmarkSearchUiEvent.SetTags(result.selectedTags))
         }
-        Screen.Tags.Result.Dismissed -> {
+        Route.Tags.Result.Dismissed -> {
           // No action needed on dismissal
         }
       }
@@ -90,8 +90,8 @@ fun BookmarksScreen(viewModel: BookmarksViewModel, modifier: Modifier = Modifier
   ObserveEffects(viewModel.effects) { effect ->
     when (effect) {
       BookmarkUiEffect.AddBookmark -> navigator.goTo(AddBookmark())
-      BookmarkUiEffect.NavigateToSettings -> navigator.goTo(Screen.Settings)
-      is BookmarkUiEffect.OpenBookmark -> navigator.goTo(Screen.Url(effect.bookmark.url))
+      BookmarkUiEffect.NavigateToSettings -> navigator.goTo(Route.Settings)
+      is BookmarkUiEffect.OpenBookmark -> navigator.goTo(Route.Url(effect.bookmark.url))
     }
   }
 
@@ -106,7 +106,7 @@ fun BookmarksScreen(viewModel: BookmarksViewModel, modifier: Modifier = Modifier
 @Composable
 private fun BookmarksScreen(
   state: BookmarksUiState,
-  tagsNavigator: ScreenNavigator<Screen.Tags>,
+  tagsNavigator: RouteNavigator<Route.Tags>,
   modifier: Modifier = Modifier,
   eventSink: (BookmarksUiEvent) -> Unit,
 ) {

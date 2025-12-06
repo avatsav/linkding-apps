@@ -8,8 +8,8 @@ import dev.avatsav.linkding.bookmarks.ui.tags.TagsScreen
 import dev.avatsav.linkding.bookmarks.ui.tags.TagsViewModel
 import dev.avatsav.linkding.di.scope.UiScope
 import dev.avatsav.linkding.navigation.BottomSheetSceneStrategy
-import dev.avatsav.linkding.navigation.Screen
-import dev.avatsav.linkding.navigation.ScreenEntryProviderScope
+import dev.avatsav.linkding.navigation.Route
+import dev.avatsav.linkding.navigation.RouteEntryProviderScope
 import dev.zacsweers.metro.ContributesTo
 import dev.zacsweers.metro.IntoSet
 import dev.zacsweers.metro.Provides
@@ -20,18 +20,18 @@ import dev.zacsweers.metrox.viewmodel.metroViewModel
 interface BookmarksScreenComponent {
   @IntoSet
   @Provides
-  fun provideBookmarksEntryProviderScope(): ScreenEntryProviderScope = {
-    entry<Screen.BookmarksFeed> { BookmarksScreen(viewModel = metroViewModel()) }
+  fun provideBookmarksEntryProviderScope(): RouteEntryProviderScope = {
+    entry<Route.BookmarksFeed> { BookmarksScreen(viewModel = metroViewModel()) }
   }
 
   @IntoSet
   @Provides
-  fun provideAddBookmarkEntryProviderScope(): ScreenEntryProviderScope = {
-    entry<Screen.AddBookmark> { screen ->
+  fun provideAddBookmarkEntryProviderScope(): RouteEntryProviderScope = {
+    entry<Route.AddBookmark> { route ->
       AddBookmarkScreen(
         viewModel =
           assistedMetroViewModel<AddBookmarkViewModel, AddBookmarkViewModel.Factory> {
-            create(screen.sharedUrl)
+            create(route.sharedUrl)
           }
       )
     }
@@ -40,12 +40,12 @@ interface BookmarksScreenComponent {
   @OptIn(ExperimentalMaterial3Api::class)
   @IntoSet
   @Provides
-  fun provideTagsEntryProviderScope(): ScreenEntryProviderScope = {
-    entry<Screen.Tags>(metadata = BottomSheetSceneStrategy.bottomSheetExpanded()) { screen ->
+  fun provideTagsEntryProviderScope(): RouteEntryProviderScope = {
+    entry<Route.Tags>(metadata = BottomSheetSceneStrategy.bottomSheetExpanded()) { route ->
       TagsScreen(
         viewModel =
           assistedMetroViewModel<TagsViewModel, TagsViewModel.Factory> {
-            create(screen.selectedTagIds)
+            create(route.selectedTagIds)
           }
       )
     }

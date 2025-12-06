@@ -1,66 +1,12 @@
-# Screen Results
+# Route Results
 
-The app uses a **type-safe result navigation** pattern inspired by Circuit's AnsweringNavigator. This enables compile-time safe result passing between screens with full type inference.
+Type-safe result passing between routes using `RouteWithResult` and `rememberResultNavigator`.
 
-## Setup
-
-The navigation system is set up using `rememberScreenBackStack`, `rememberNavigator`, and `NavigatorCompositionLocals`:
-
-```kotlin
-val backStack = rememberScreenBackStack(savedStateConfig, startScreen)
-val navigator = rememberNavigator(backStack, onOpenUrl)
-
-NavigatorCompositionLocals(navigator) {
-  // Your app content - LocalNavigator and result handling are available
-  NavDisplay(backStack = backStack, ...)
-}
-```
-
-## Core Components
-
-### ScreenWithResult
-
-Marker interface for screens that return typed results:
-
-```kotlin
-interface ScreenWithResult<R : NavResult>
-```
-
-### rememberResultNavigator
-
-Creates a type-safe navigator constrained to a specific screen type:
-
-```kotlin
-@Composable
-inline fun <reified S, reified R : NavResult> rememberResultNavigator(
-  noinline onResult: (R) -> Unit
-): ScreenNavigator<S> where S : Screen, S : ScreenWithResult<R>
-```
-
-### ScreenNavigator
-
-A navigator constrained to a specific screen type:
-
-```kotlin
-interface ScreenNavigator<in S : Screen> {
-  fun goTo(screen: S): Boolean
-  operator fun invoke(screen: S): Boolean = goTo(screen)
-}
-```
-
-## Usage
-
-### 1. Define a Result-Returning Screen
-
-In `Screens.kt`, define a screen that implements `ScreenWithResult`:
+## Define a Result-Returning Route
 
 ```kotlin
 @Serializable
-data class Tags(
-  val selectedTagIds: List<Long> = emptyList(),
-  override val key: String = Uuid.random().toString(),
-) : Screen, ScreenWithResult<Tags.Result> {
-
+data class Tags(val selectedTagIds: List<Long> = emptyList()) : Route, RouteWithResult<Tags.Result> {
   sealed interface Result : NavResult {
     @Serializable data class Confirmed(val selectedTags: List<Tag>) : Result
     @Serializable data object Dismissed : Result
@@ -68,94 +14,40 @@ data class Tags(
 }
 ```
 
-### 2. Return Results from the Target Screen
+## Return Results
 
-Use `navigator.pop(result)` to return a result when the screen closes:
+Use `navigator.pop(result)` from the target route:
 
 ```kotlin
-@Composable
-fun TagsScreen(viewModel: TagsViewModel) {
-  val navigator = LocalNavigator.current
-
-  ObserveEffects(viewModel.effects) { effect ->
-    when (effect) {
-      is TagsUiEffect.TagsConfirmed -> {
-        navigator.pop(Screen.Tags.Result.Confirmed(effect.selectedTags))
-      }
-      TagsUiEffect.Dismiss -> {
-        navigator.pop(Screen.Tags.Result.Dismissed)
-      }
-    }
+ObserveEffects(viewModel.effects) { effect ->
+  when (effect) {
+    is TagsUiEffect.Confirmed -> navigator.pop(Route.Tags.Result.Confirmed(effect.tags))
+    TagsUiEffect.Dismiss -> navigator.pop(Route.Tags.Result.Dismissed)
   }
-
-  // ... rest of the screen
 }
 ```
 
-### 3. Navigate and Receive Results
-
-Use `rememberResultNavigator` to create a type-safe navigator:
+## Navigate and Receive Results
 
 ```kotlin
-@Composable
-fun BookmarksScreen(viewModel: BookmarksViewModel) {
-  val tagsNavigator = rememberResultNavigator<Screen.Tags, Screen.Tags.Result> { result ->
-    when (result) {
-      is Screen.Tags.Result.Confirmed -> {
-        viewModel.eventSink(BookmarkSearchUiEvent.SetTags(result.selectedTags))
-      }
-      Screen.Tags.Result.Dismissed -> {
-        // Handle dismissal if needed
-      }
-    }
+val tagsNavigator = rememberResultNavigator<Route.Tags, Route.Tags.Result> { result ->
+  when (result) {
+    is Route.Tags.Result.Confirmed -> viewModel.eventSink(SetTags(result.selectedTags))
+    Route.Tags.Result.Dismissed -> { }
   }
+}
 
-  // Navigate using invoke operator
-  Button(onClick = { tagsNavigator(Screen.Tags(selectedTagIds)) }) {
-    Text("Select Tags")
-  }
-
-  // Or using goTo method
-  Button(onClick = { tagsNavigator.goTo(Screen.Tags(selectedTagIds)) }) {
-    Text("Select Tags")
-  }
-
-  // This would NOT compile - type safety!
-  // tagsNavigator(Screen.Settings) // Error: Type mismatch
+Button(onClick = { tagsNavigator(Route.Tags(selectedTagIds)) }) {
+  Text("Select Tags")
 }
 ```
-
-## Type Safety Benefits
-
-The pattern provides compile-time guarantees:
-
-1. **Navigation constraints**: `ScreenNavigator<S>` only allows navigation to screens of type `S`
-2. **Result type matching**: The result callback receives exactly the type declared by `ScreenWithResult<R>`
-3. **No type erasure issues**: Results are defined as sealed interfaces, avoiding generic type erasure
-
-## How It Works
-
-1. When you call `tagsNavigator(Screen.Tags(...))`, the navigator:
-   - Registers that the current screen expects a result
-   - Navigates to the Tags screen
-
-2. When the Tags screen calls `navigator.pop(result)`:
-   - The result is stored in `NavigationResultHandler`
-   - Navigation returns to the previous screen
-
-3. When the calling screen becomes active:
-   - `rememberResultNavigator` retrieves the pending result
-   - The `onResult` callback is invoked with the typed result
 
 ## Bottom Sheets
 
-Results work seamlessly with bottom sheets:
+Results work seamlessly with bottom sheets—delivered when the sheet dismisses:
 
 ```kotlin
-// In ScreenComponent
-entry<Screen.Tags>(metadata = BottomSheetSceneStrategy.bottomSheetExpanded()) { screen ->
+entry<Route.Tags>(metadata = BottomSheetSceneStrategy.bottomSheetExpanded()) { route ->
   TagsScreen(viewModel = ...)
 }
 ```
-
-The result is delivered when the bottom sheet dismisses and the calling screen becomes active again.
