@@ -1,7 +1,5 @@
 package dev.avatsav.linkding.navigation
 
-import androidx.compose.runtime.Immutable
-
 /**
  * Marker interface for navigation results passed between screens.
  *
@@ -21,32 +19,4 @@ import androidx.compose.runtime.Immutable
  * @see Navigator.pop
  * @see rememberResultNavigator
  */
-@Immutable interface NavResult
-
-/**
- * Marker interface for screens that return a typed result.
- *
- * Implement this interface on [Screen] subclasses that can return results when popped. The type
- * parameter [R] specifies the result type, enabling compile-time type safety when using
- * [rememberResultNavigator].
- *
- * Example:
- * ```kotlin
- * @Serializable
- * data class Tags(
- *   val selectedTagIds: List<Long> = emptyList(),
- *   override val key: String = Uuid.random().toString(),
- * ) : Screen, ScreenWithResult<Tags.Result> {
- *
- *   sealed interface Result : NavResult {
- *     data class Confirmed(val selectedTags: List<Tag>) : Result
- *     data object Dismissed : Result
- *   }
- * }
- * ```
- *
- * @param R The result type this screen can return (must extend [NavResult])
- * @see NavResult
- * @see rememberResultNavigator
- */
-interface ScreenWithResult<R : NavResult>
+interface NavResult

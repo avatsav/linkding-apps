@@ -12,5 +12,11 @@ kotlin {
       api(libs.compose.navigation3)
       api(libs.compose.navigationEvent)
     }
+    commonTest.dependencies {
+      implementation(libs.kotlin.test)
+      implementation(libs.kotlin.coroutines.test)
+      implementation(libs.kotest.assertions)
+      implementation(libs.turbine)
+    }
   }
 }

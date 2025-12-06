@@ -62,11 +62,8 @@ data class Tags(
 ) : Screen, ScreenWithResult<Tags.Result> {
 
   sealed interface Result : NavResult {
-    @Serializable @Immutable
-    data class Confirmed(val selectedTags: List<Tag>) : Result
-
-    @Serializable @Immutable
-    data object Dismissed : Result
+    @Serializable data class Confirmed(val selectedTags: List<Tag>) : Result
+    @Serializable data object Dismissed : Result
   }
 }
 ```

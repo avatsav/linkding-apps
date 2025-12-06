@@ -37,9 +37,8 @@ import kotlinx.serialization.encoding.Encoder
  * @see Screen
  */
 @Stable
-class ScreenBackStack internal constructor(
-  internal val base: SnapshotStateList<Screen>,
-) : MutableList<Screen> by base, StateObject by base, RandomAccess {
+class ScreenBackStack internal constructor(internal val base: SnapshotStateList<Screen>) :
+  MutableList<Screen> by base, StateObject by base, RandomAccess {
 
   constructor() : this(base = mutableStateListOf())
 
@@ -49,9 +48,9 @@ class ScreenBackStack internal constructor(
 /**
  * Creates and remembers a [ScreenBackStack] that survives process death and configuration changes.
  *
- * This function handles serialization of the backstack using the provided [SavedStateConfiguration].
- * The configuration must include a [SerializersModule] that registers all [Screen] subtypes for
- * polymorphic serialization.
+ * This function handles serialization of the backstack using the provided
+ * [SavedStateConfiguration]. The configuration must include a [SerializersModule] that registers
+ * all [Screen] subtypes for polymorphic serialization.
  *
  * ## Example
  *
