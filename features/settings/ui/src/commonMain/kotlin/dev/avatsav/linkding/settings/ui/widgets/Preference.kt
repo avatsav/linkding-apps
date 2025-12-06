@@ -132,13 +132,15 @@ fun PreferenceColumnScope.Preference(
 ) {
   Surface(
     modifier =
-      modifier.defaultMinSize(56.dp).clip(shape).onCondition(clickable) { clickable { onClick() } },
+      modifier.defaultMinSize(minHeight = 56.dp).clip(shape).onCondition(clickable) {
+        clickable { onClick() }
+      },
     shape = shape,
     tonalElevation = 8.dp,
   ) {
     Row(modifier = Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
       Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
-        Text(text = title, style = MaterialTheme.typography.labelLarge)
+        Text(text = title, style = MaterialTheme.typography.titleMedium)
 
         if (description != null) {
           AnimatedContent(
@@ -182,7 +184,7 @@ private fun PreferenceHeader(title: String, modifier: Modifier = Modifier) {
   Surface(modifier = modifier.padding(8.dp)) {
     Text(
       text = title,
-      style = MaterialTheme.typography.labelLarge,
+      style = MaterialTheme.typography.titleSmall,
       color = MaterialTheme.colorScheme.primary,
     )
   }
