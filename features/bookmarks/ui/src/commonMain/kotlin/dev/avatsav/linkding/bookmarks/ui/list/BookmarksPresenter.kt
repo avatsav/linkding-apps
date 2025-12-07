@@ -1,4 +1,4 @@
-package dev.avatsav.linkding.bookmarks.ui.list.search
+package dev.avatsav.linkding.bookmarks.ui.list
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -16,24 +16,12 @@ import androidx.paging.cachedIn
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.filter
 import dev.avatsav.linkding.bookmarks.api.interactors.ArchiveBookmark
-import dev.avatsav.linkding.bookmarks.api.interactors.ClearSearchHistory as ClearSearchHistoryInteractor
+import dev.avatsav.linkding.bookmarks.api.interactors.ClearSearchHistory
 import dev.avatsav.linkding.bookmarks.api.interactors.DeleteBookmark
 import dev.avatsav.linkding.bookmarks.api.interactors.SaveSearchState
 import dev.avatsav.linkding.bookmarks.api.interactors.UnarchiveBookmark
+import dev.avatsav.linkding.bookmarks.api.observers.ObserveBookmarks
 import dev.avatsav.linkding.bookmarks.api.observers.ObserveSearchHistory
-import dev.avatsav.linkding.bookmarks.api.observers.ObserveSearchResults
-import dev.avatsav.linkding.bookmarks.ui.list.BookmarkSearchUiEvent
-import dev.avatsav.linkding.bookmarks.ui.list.BookmarkSearchUiEvent.ClearSearch
-import dev.avatsav.linkding.bookmarks.ui.list.BookmarkSearchUiEvent.ClearSearchHistory
-import dev.avatsav.linkding.bookmarks.ui.list.BookmarkSearchUiEvent.Delete
-import dev.avatsav.linkding.bookmarks.ui.list.BookmarkSearchUiEvent.Open
-import dev.avatsav.linkding.bookmarks.ui.list.BookmarkSearchUiEvent.RemoveTag
-import dev.avatsav.linkding.bookmarks.ui.list.BookmarkSearchUiEvent.Search
-import dev.avatsav.linkding.bookmarks.ui.list.BookmarkSearchUiEvent.SelectBookmarkCategory
-import dev.avatsav.linkding.bookmarks.ui.list.BookmarkSearchUiEvent.SelectSearchHistoryItem
-import dev.avatsav.linkding.bookmarks.ui.list.BookmarkSearchUiEvent.SetTags
-import dev.avatsav.linkding.bookmarks.ui.list.BookmarkSearchUiEvent.ToggleArchive
-import dev.avatsav.linkding.bookmarks.ui.list.BookmarkUiEffect
 import dev.avatsav.linkding.bookmarks.ui.list.common.PendingAction
 import dev.avatsav.linkding.bookmarks.ui.list.common.rememberPendingActionHandler
 import dev.avatsav.linkding.data.model.Bookmark
@@ -44,28 +32,28 @@ import dev.avatsav.linkding.viewmodel.MoleculePresenter
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.AssistedInject
-import kotlin.time.Clock
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.launch
+import kotlin.time.Clock
 
 @AssistedInject
-class BookmarkSearchPresenter(
+class BookmarksPresenter(
   @Assisted scope: CoroutineScope,
-  private val observeSearchResults: ObserveSearchResults,
+  private val observeBookmarks: ObserveBookmarks,
   private val observeSearchHistory: ObserveSearchHistory,
   private val saveSearchState: SaveSearchState,
-  private val clearSearchHistory: ClearSearchHistoryInteractor,
+  private val clearSearchHistory: ClearSearchHistory,
   private val deleteBookmark: DeleteBookmark,
   private val archiveBookmark: ArchiveBookmark,
   private val unarchiveBookmark: UnarchiveBookmark,
-) : MoleculePresenter<BookmarkSearchUiEvent, BookmarkSearchUiState, BookmarkUiEffect>(scope) {
+) : MoleculePresenter<BookmarksUiEvent, BookmarksUiState, BookmarkUiEffect>(scope) {
 
   @Suppress("CyclomaticComplexMethod")
   @Composable
-  override fun models(events: Flow<BookmarkSearchUiEvent>): BookmarkSearchUiState {
+  override fun models(events: Flow<BookmarksUiEvent>): BookmarksUiState {
     var searchQuery by rememberSaveable { mutableStateOf("") }
     var bookmarkCategory by rememberSaveable { mutableStateOf(BookmarkCategory.All) }
     val selectedTags = remember { mutableStateListOf<Tag>() }
@@ -76,28 +64,37 @@ class BookmarkSearchPresenter(
         deleteBookmark = deleteBookmark,
         archiveBookmark = archiveBookmark,
         unarchiveBookmark = unarchiveBookmark,
-        // onSuccess: no-op, keep items hidden in search results
+        // Keep items hidden after action (will refresh from server/db)
+        removePendingIdsOnSuccess = true,
+        onSuccess = {},
       )
+
+    // Determine if we should use cached data or fetch from API
+    val isSearchActive =
+      searchQuery.isNotBlank() ||
+        bookmarkCategory != BookmarkCategory.All ||
+        selectedTags.isNotEmpty()
 
     var basePagingFlow by remember { mutableStateOf<Flow<PagingData<Bookmark>>>(emptyFlow()) }
 
     LaunchedEffect(searchQuery, bookmarkCategory, selectedTags.toList()) {
-      observeSearchResults(
-        ObserveSearchResults.Param(
+      observeBookmarks(
+        ObserveBookmarks.Param(
+          cached = !isSearchActive, // Use cache for feed, API for search/filter
           query = searchQuery,
           category = bookmarkCategory,
           tags = selectedTags.toList(),
           pagingConfig = PagingConfig(initialLoadSize = 20, pageSize = 20),
         )
       )
-      basePagingFlow = observeSearchResults.flow.cachedIn(presenterScope)
+      basePagingFlow = observeBookmarks.flow.cachedIn(presenterScope)
     }
 
     // Combine paging data with pendingIds changes to filter locally without reloading
-    var searchResultsFlow by remember { mutableStateOf<Flow<PagingData<Bookmark>>>(emptyFlow()) }
+    var bookmarksFlow by remember { mutableStateOf<Flow<PagingData<Bookmark>>>(emptyFlow()) }
 
     LaunchedEffect(basePagingFlow) {
-      searchResultsFlow =
+      bookmarksFlow =
         combine(basePagingFlow, snapshotFlow { actionHandler.pendingIds.toSet() }) {
           pagingData,
           pending ->
@@ -105,8 +102,9 @@ class BookmarkSearchPresenter(
         }
     }
 
-    val searchResults = searchResultsFlow.collectAsLazyPagingItems()
+    val bookmarks = bookmarksFlow.collectAsLazyPagingItems()
 
+    // Observe search history
     var searchHistoryFlow by remember { mutableStateOf<Flow<List<SearchHistory>>>(emptyFlow()) }
     LaunchedEffect(Unit) {
       observeSearchHistory(ObserveSearchHistory.Params)
@@ -116,7 +114,65 @@ class BookmarkSearchPresenter(
 
     ObserveEvents { event ->
       when (event) {
-        is ToggleArchive -> {
+        // Navigation
+        BookmarksUiEvent.AddBookmark -> emitEffect(BookmarkUiEffect.AddBookmark)
+        BookmarksUiEvent.ShowSettings -> emitEffect(BookmarkUiEffect.NavigateToSettings)
+
+        // Search & Filters
+        is BookmarksUiEvent.Search -> {
+          searchQuery = event.query
+          if (event.query.isNotBlank()) {
+            presenterScope.launch {
+              saveSearchState(
+                param =
+                  SaveSearchState.Params(
+                    SearchHistory(query = event.query, modified = Clock.System.now())
+                  )
+              )
+            }
+          }
+          actionHandler.clearPendingIds()
+        }
+
+        is BookmarksUiEvent.SelectCategory -> {
+          bookmarkCategory = event.category
+          actionHandler.clearPendingIds()
+        }
+
+        is BookmarksUiEvent.SetTags -> {
+          selectedTags.clear()
+          selectedTags.addAll(event.tags)
+          actionHandler.clearPendingIds()
+        }
+
+        is BookmarksUiEvent.RemoveTag -> {
+          selectedTags.remove(event.tag)
+          actionHandler.clearPendingIds()
+        }
+
+        is BookmarksUiEvent.SelectSearchHistory -> {
+          searchQuery = event.item.query
+          actionHandler.clearPendingIds()
+        }
+
+        BookmarksUiEvent.ClearSearch -> {
+          searchQuery = ""
+          // Keep category and tags as per user preference
+          actionHandler.clearPendingIds()
+        }
+
+        BookmarksUiEvent.ClearSearchHistory -> {
+          presenterScope.launch { clearSearchHistory(ClearSearchHistory.Params) }
+        }
+
+        // Bookmark actions
+        is BookmarksUiEvent.Open -> emitEffect(BookmarkUiEffect.OpenBookmark(event.bookmark))
+
+        is BookmarksUiEvent.Edit -> {
+          // Editing bookmarks not yet implemented
+        }
+
+        is BookmarksUiEvent.ToggleArchive -> {
           val action =
             if (event.bookmark.archived) {
               PendingAction.Unarchive(bookmarkId = event.bookmark.id, bookmark = event.bookmark)
@@ -126,97 +182,31 @@ class BookmarkSearchPresenter(
           actionHandler.scheduleAction(action)
         }
 
-        is Delete -> {
+        is BookmarksUiEvent.Delete -> {
           actionHandler.scheduleAction(
             PendingAction.Delete(bookmarkId = event.bookmark.id, bookmark = event.bookmark)
           )
         }
 
-        is Open -> {
-          emitEffect(BookmarkUiEffect.OpenBookmark(event.bookmark))
-        }
-
-        is BookmarkSearchUiEvent.Edit -> {
-          // Editing bookmarks not yet implemented
-        }
-
-        is SelectBookmarkCategory -> {
-          bookmarkCategory = event.category
-          actionHandler.clearPendingIds()
-        }
-
-        is RemoveTag -> {
-          selectedTags.remove(event.tag)
-          actionHandler.clearPendingIds()
-        }
-
-        is SetTags -> {
-          selectedTags.clear()
-          selectedTags.addAll(event.tags)
-          actionHandler.clearPendingIds()
-        }
-
-        is Search -> {
-          searchQuery = event.query
-          if (event.query.isNotBlank()) {
-            presenterScope.launch {
-              saveSearchState(
-                param =
-                  SaveSearchState.Params(
-                    SearchHistory(
-                      query = event.query,
-                      bookmarkCategory = bookmarkCategory,
-                      selectedTags = selectedTags,
-                      timestamp = Clock.System.now(),
-                    )
-                  )
-              )
-            }
-          }
-          actionHandler.clearPendingIds()
-        }
-
-        is SelectSearchHistoryItem -> {
-          searchQuery = event.item.query
-          bookmarkCategory = event.item.bookmarkCategory
-          selectedTags.clear()
-          selectedTags.addAll(event.item.selectedTags)
-          actionHandler.clearPendingIds()
-        }
-
-        ClearSearch -> {
-          searchQuery = ""
-          bookmarkCategory = BookmarkCategory.All
-          selectedTags.clear()
-          actionHandler.clearPendingIds()
-        }
-
-        ClearSearchHistory -> {
-          presenterScope.launch { clearSearchHistory(ClearSearchHistoryInteractor.Params) }
-        }
-
-        BookmarkSearchUiEvent.UndoAction -> {
-          actionHandler.undoAction()
-        }
-
-        BookmarkSearchUiEvent.DismissSnackbar -> {
-          actionHandler.dismissSnackbar()
-        }
+        // Refresh & Undo
+        BookmarksUiEvent.Refresh -> presenterScope.launch { bookmarks.refresh() }
+        BookmarksUiEvent.UndoAction -> actionHandler.undoAction()
+        BookmarksUiEvent.DismissSnackbar -> actionHandler.dismissSnackbar()
       }
     }
 
-    return BookmarkSearchUiState(
+    return BookmarksUiState(
+      bookmarks = bookmarks,
       query = searchQuery,
-      results = searchResults,
-      history = searchHistory,
+      category = bookmarkCategory,
+      selectedTags = selectedTags.toList(),
+      searchHistory = searchHistory,
       snackbarMessage = actionHandler.snackbarMessage,
-      filters =
-        BookmarkFiltersUiState(bookmarkCategory = bookmarkCategory, selectedTags = selectedTags),
     )
   }
 
   @AssistedFactory
   interface Factory {
-    fun create(scope: CoroutineScope): BookmarkSearchPresenter
+    fun create(scope: CoroutineScope): BookmarksPresenter
   }
 }

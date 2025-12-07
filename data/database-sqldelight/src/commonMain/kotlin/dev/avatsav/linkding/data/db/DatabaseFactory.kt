@@ -1,7 +1,6 @@
 package dev.avatsav.linkding.data.db
 
 import app.cash.sqldelight.db.SqlDriver
-import dev.avatsav.linkding.data.db.adapters.BookmarkCategoryColumnAdapter
 import dev.avatsav.linkding.data.db.adapters.InstantColumnAdapter
 import dev.avatsav.linkding.data.db.adapters.StringSetColumnAdapter
 import dev.zacsweers.metro.Inject
@@ -18,11 +17,6 @@ class DatabaseFactory(private val sqlDriver: SqlDriver) {
           addedAdapter = InstantColumnAdapter,
           modifiedAdapter = InstantColumnAdapter,
         ),
-      search_historyAdapter =
-        Search_history.Adapter(
-          bookmark_categoryAdapter = BookmarkCategoryColumnAdapter,
-          tagsAdapter = StringSetColumnAdapter,
-          timestampAdapter = InstantColumnAdapter,
-        ),
+      search_historyAdapter = Search_history.Adapter(modifiedAdapter = InstantColumnAdapter),
     )
 }
