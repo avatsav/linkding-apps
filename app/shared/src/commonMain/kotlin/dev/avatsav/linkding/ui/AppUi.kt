@@ -1,5 +1,13 @@
 package dev.avatsav.linkding.ui
 
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.AnimatedContentTransitionScope.SlideDirection
+import androidx.compose.animation.ContentTransform
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.core.LinearOutSlowInEasing
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.unveilIn
+import androidx.compose.animation.veilOut
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -10,7 +18,9 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
+import androidx.navigation3.scene.Scene
 import androidx.navigation3.ui.NavDisplay
+import androidx.navigationevent.NavigationEvent.SwipeEdge
 import androidx.savedstate.serialization.SavedStateConfiguration
 import dev.avatsav.linkding.auth.api.AuthManager
 import dev.avatsav.linkding.auth.api.AuthState
@@ -88,11 +98,31 @@ class DefaultAppUi(
             sceneStrategy = bottomSheetSceneStrategy,
             entryProvider =
               entryProvider(builder = { routeEntryScope.forEach { builder -> this.builder() } }),
+            predictivePopTransitionSpec = predictivePopTransitionSpec(),
           )
         }
       }
     }
   }
+}
+
+@OptIn(ExperimentalAnimationApi::class)
+private fun <T : Any> predictivePopTransitionSpec():
+  AnimatedContentTransitionScope<Scene<T>>.(@SwipeEdge Int) -> ContentTransform = { edge ->
+  val towards = SlideDirection.Right
+  ContentTransform(
+    targetContentEnter =
+      slideIntoContainer(
+        towards = towards,
+        initialOffset = { it / 5 },
+        animationSpec = tween(500, easing = LinearOutSlowInEasing),
+      ) + unveilIn(),
+    initialContentExit =
+      slideOutOfContainer(
+        towards = towards,
+        animationSpec = tween(500, easing = LinearOutSlowInEasing),
+      ) + veilOut(),
+  )
 }
 
 @Composable
