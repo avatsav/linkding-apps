@@ -4,10 +4,7 @@ import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.AnimatedContentTransitionScope.SlideDirection
 import androidx.compose.animation.ContentTransform
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.animation.core.LinearOutSlowInEasing
-import androidx.compose.animation.core.tween
 import androidx.compose.animation.unveilIn
-import androidx.compose.animation.veilOut
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -112,16 +109,8 @@ private fun <T : Any> predictivePopTransitionSpec():
   val towards = SlideDirection.Right
   ContentTransform(
     targetContentEnter =
-      slideIntoContainer(
-        towards = towards,
-        initialOffset = { it / 5 },
-        animationSpec = tween(500, easing = LinearOutSlowInEasing),
-      ) + unveilIn(),
-    initialContentExit =
-      slideOutOfContainer(
-        towards = towards,
-        animationSpec = tween(500, easing = LinearOutSlowInEasing),
-      ) + veilOut(),
+      slideIntoContainer(towards = towards, initialOffset = { it / 4 }) + unveilIn(),
+    initialContentExit = slideOutOfContainer(towards = towards),
   )
 }
 
