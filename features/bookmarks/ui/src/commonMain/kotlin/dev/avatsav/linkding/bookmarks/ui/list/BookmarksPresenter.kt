@@ -1,11 +1,11 @@
 package dev.avatsav.linkding.bookmarks.ui.list
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -23,7 +23,7 @@ import dev.avatsav.linkding.bookmarks.api.interactors.UnarchiveBookmark
 import dev.avatsav.linkding.bookmarks.api.observers.ObserveBookmarks
 import dev.avatsav.linkding.bookmarks.api.observers.ObserveSearchHistory
 import dev.avatsav.linkding.bookmarks.ui.list.common.PendingAction
-import dev.avatsav.linkding.bookmarks.ui.list.common.rememberPendingActionHandler
+import dev.avatsav.linkding.bookmarks.ui.list.common.rememberPendingBookmarkActionHandler
 import dev.avatsav.linkding.data.model.Bookmark
 import dev.avatsav.linkding.data.model.BookmarkCategory
 import dev.avatsav.linkding.data.model.SearchHistory
@@ -57,68 +57,64 @@ class BookmarksPresenter(
     var searchQuery by rememberSaveable { mutableStateOf("") }
     var bookmarkCategory by rememberSaveable { mutableStateOf(BookmarkCategory.All) }
     val selectedTags = remember { mutableStateListOf<Tag>() }
-
-    val actionHandler =
-      rememberPendingActionHandler(
-        scope = presenterScope,
-        deleteBookmark = deleteBookmark,
-        archiveBookmark = archiveBookmark,
-        unarchiveBookmark = unarchiveBookmark,
-        // Keep items hidden after action (will refresh from server/db)
-        removePendingIdsOnSuccess = true,
-        onSuccess = {},
-      )
-
-    // Determine if we should use cached data or fetch from API
-    val isSearchActive =
+    val isSearchOrFilteringActive =
       searchQuery.isNotBlank() ||
         bookmarkCategory != BookmarkCategory.All ||
         selectedTags.isNotEmpty()
 
-    var basePagingFlow by remember { mutableStateOf<Flow<PagingData<Bookmark>>>(emptyFlow()) }
-
-    LaunchedEffect(searchQuery, bookmarkCategory, selectedTags.toList()) {
-      observeBookmarks(
-        ObserveBookmarks.Param(
-          cached = !isSearchActive, // Use cache for feed, API for search/filter
-          query = searchQuery,
-          category = bookmarkCategory,
-          tags = selectedTags.toList(),
-          pagingConfig = PagingConfig(initialLoadSize = 20, pageSize = 20),
-        )
+    val actionHandler =
+      rememberPendingBookmarkActionHandler(
+        scope = presenterScope,
+        deleteBookmark = deleteBookmark,
+        archiveBookmark = archiveBookmark,
+        unarchiveBookmark = unarchiveBookmark,
+        removePendingIdsOnSuccess = { !isSearchOrFilteringActive },
       )
-      basePagingFlow = observeBookmarks.flow.cachedIn(presenterScope)
-    }
 
-    // Combine paging data with pendingIds changes to filter locally without reloading
-    var bookmarksFlow by remember { mutableStateOf<Flow<PagingData<Bookmark>>>(emptyFlow()) }
+    val baseBookmarksFlow: Flow<PagingData<Bookmark>> by
+      produceState(
+        initialValue = emptyFlow(),
+        key1 = searchQuery,
+        key2 = bookmarkCategory,
+        key3 = selectedTags.toList(),
+      ) {
+        observeBookmarks(
+          ObserveBookmarks.Param(
+            cached = !isSearchOrFilteringActive, // Use cache for feed, API for search/filter
+            query = searchQuery,
+            category = bookmarkCategory,
+            tags = selectedTags.toList(),
+            pagingConfig = PagingConfig(initialLoadSize = 20, pageSize = 20),
+          )
+        )
+        value = observeBookmarks.flow.cachedIn(presenterScope)
+      }
 
-    LaunchedEffect(basePagingFlow) {
-      bookmarksFlow =
-        combine(basePagingFlow, snapshotFlow { actionHandler.pendingIds.toSet() }) {
-          pagingData,
-          pending ->
-          pagingData.filter { bookmark -> bookmark.id !in pending }
-        }
-    }
+    val bookmarksFlow: Flow<PagingData<Bookmark>> by
+      produceState(emptyFlow(), key1 = baseBookmarksFlow) {
+        value =
+          combine(baseBookmarksFlow, snapshotFlow { actionHandler.pendingIds.toSet() }) {
+            pagingData,
+            pending ->
+            pagingData.filter { bookmark -> bookmark.id !in pending }
+          }
+      }
 
     val bookmarks = bookmarksFlow.collectAsLazyPagingItems()
 
-    // Observe search history
-    var searchHistoryFlow by remember { mutableStateOf<Flow<List<SearchHistory>>>(emptyFlow()) }
-    LaunchedEffect(Unit) {
-      observeSearchHistory(ObserveSearchHistory.Params)
-      searchHistoryFlow = observeSearchHistory.flow
-    }
-    val searchHistory by searchHistoryFlow.collectAsState(initial = emptyList())
+    val searchHistoryFlow: Flow<List<SearchHistory>> by
+      produceState(emptyFlow()) {
+        observeSearchHistory(ObserveSearchHistory.Params)
+        value = observeSearchHistory.flow
+      }
+
+    val searchHistory by searchHistoryFlow.collectAsState(emptyList())
 
     ObserveEvents { event ->
       when (event) {
-        // Navigation
         BookmarksUiEvent.AddBookmark -> emitEffect(BookmarkUiEffect.AddBookmark)
         BookmarksUiEvent.ShowSettings -> emitEffect(BookmarkUiEffect.NavigateToSettings)
 
-        // Search & Filters
         is BookmarksUiEvent.Search -> {
           searchQuery = event.query
           if (event.query.isNotBlank()) {
@@ -165,7 +161,6 @@ class BookmarksPresenter(
           presenterScope.launch { clearSearchHistory(ClearSearchHistory.Params) }
         }
 
-        // Bookmark actions
         is BookmarksUiEvent.Open -> emitEffect(BookmarkUiEffect.OpenBookmark(event.bookmark))
 
         is BookmarksUiEvent.Edit -> {
@@ -188,7 +183,6 @@ class BookmarksPresenter(
           )
         }
 
-        // Refresh & Undo
         BookmarksUiEvent.Refresh -> presenterScope.launch { bookmarks.refresh() }
         BookmarksUiEvent.UndoAction -> actionHandler.undoAction()
         BookmarksUiEvent.DismissSnackbar -> actionHandler.dismissSnackbar()

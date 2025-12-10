@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewModelScope
@@ -55,20 +56,20 @@ class TagsPresenter(
 
   @Composable
   override fun models(events: Flow<TagsUiEvent>): TagsUiState {
-    var tagsFlow by remember { mutableStateOf<Flow<PagingData<Tag>>>(emptyFlow()) }
     var selectedTags by remember { mutableStateOf<List<Tag>>(emptyList()) }
 
-    LaunchedEffect(Unit) {
-      observeTags(
-        ObserveTags.Param(emptyList(), PagingConfig(initialLoadSize = 100, pageSize = 100))
-      )
-      tagsFlow = observeTags.flow.cachedIn(presenterScope)
-    }
-
-    // Initialize selected tags from IDs when tags are loaded
+    val tagsFlow: Flow<PagingData<Tag>> by
+      produceState(emptyFlow()) {
+        observeTags(
+          ObserveTags.Param(emptyList(), PagingConfig(initialLoadSize = 100, pageSize = 100))
+        )
+        value = observeTags.flow.cachedIn(presenterScope)
+      }
     val tags = tagsFlow.collectAsLazyPagingItems()
+
     // Track the IDs we've initialized with to detect changes
     var initializedWithIds by remember { mutableStateOf<List<Long>?>(null) }
+
     LaunchedEffect(tags.itemCount, initialSelectedTagIds) {
       // Initialize when tags are loaded and IDs haven't been processed yet
       if (initializedWithIds != initialSelectedTagIds && tags.itemCount > 0) {
