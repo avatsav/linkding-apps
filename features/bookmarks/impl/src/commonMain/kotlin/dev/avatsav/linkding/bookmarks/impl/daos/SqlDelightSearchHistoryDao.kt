@@ -6,7 +6,6 @@ import dev.avatsav.linkding.AppCoroutineDispatchers
 import dev.avatsav.linkding.data.db.Database
 import dev.avatsav.linkding.data.db.daos.SearchHistoryDao
 import dev.avatsav.linkding.data.model.SearchHistory
-import dev.avatsav.linkding.data.model.Tag
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
 import dev.zacsweers.metro.Inject
@@ -23,12 +22,7 @@ class SqlDelightSearchHistoryDao(
 ) : SearchHistoryDao {
 
   override fun upsert(history: SearchHistory) {
-    db.search_historyQueries.upsert(
-      query = history.query,
-      bookmark_category = history.bookmarkCategory,
-      tags = history.selectedTags.map { it.name }.toSet(),
-      timestamp = history.timestamp,
-    )
+    db.search_historyQueries.upsert(query = history.query, modified = history.modified)
   }
 
   override fun insertAll(histories: List<SearchHistory>) {
@@ -38,14 +32,7 @@ class SqlDelightSearchHistoryDao(
   override fun observeRecent(limit: Long): Flow<List<SearchHistory>> {
     return db.search_historyQueries.selectRecent(limit).asFlow().mapToList(dispatchers.io).map {
       list ->
-      list.map { row ->
-        SearchHistory(
-          query = row.query,
-          bookmarkCategory = row.bookmark_category,
-          selectedTags = row.tags.map { Tag(id = 0L, name = it) },
-          timestamp = row.timestamp,
-        )
-      }
+      list.map { row -> SearchHistory(query = row.query, modified = row.modified) }
     }
   }
 

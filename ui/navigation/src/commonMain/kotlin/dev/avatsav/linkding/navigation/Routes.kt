@@ -38,7 +38,7 @@ sealed interface Route {
   @Serializable data object Settings : Route
 
   @Serializable
-  data class Tags(val selectedTagIds: List<Long> = emptyList()) :
+  data class Tags(val selectedTagIds: Set<Long> = emptySet()) :
     Route, RouteWithResult<Tags.Result> {
 
     sealed interface Result : NavResult {

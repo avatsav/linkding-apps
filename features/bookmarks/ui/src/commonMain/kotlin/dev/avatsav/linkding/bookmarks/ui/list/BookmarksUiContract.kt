@@ -1,66 +1,65 @@
 package dev.avatsav.linkding.bookmarks.ui.list
 
-import dev.avatsav.linkding.bookmarks.ui.list.feed.BookmarkFeedUiState
-import dev.avatsav.linkding.bookmarks.ui.list.search.BookmarkSearchUiState
+import androidx.paging.compose.LazyPagingItems
+import dev.avatsav.linkding.bookmarks.ui.list.common.SnackbarMessage
 import dev.avatsav.linkding.data.model.Bookmark
 import dev.avatsav.linkding.data.model.BookmarkCategory
 import dev.avatsav.linkding.data.model.SearchHistory
 import dev.avatsav.linkding.data.model.Tag
 
 data class BookmarksUiState(
-  val feedState: BookmarkFeedUiState,
-  val searchState: BookmarkSearchUiState,
-)
+  val bookmarks: LazyPagingItems<Bookmark>,
+  val query: String = "",
+  val category: BookmarkCategory = BookmarkCategory.All,
+  val selectedTags: List<Tag> = emptyList(),
+  val searchHistory: List<SearchHistory> = emptyList(),
+  val snackbarMessage: SnackbarMessage? = null,
+) {
+  val isSearchActive: Boolean
+    get() = query.isNotBlank() || category != BookmarkCategory.All || selectedTags.isNotEmpty()
+
+  val filteredHistory: List<SearchHistory>
+    get() =
+      if (query.isBlank()) searchHistory
+      else searchHistory.filter { it.query.contains(query, ignoreCase = true) }
+}
 
 sealed interface BookmarksUiEvent {
-
+  // Navigation
   data object AddBookmark : BookmarksUiEvent
 
   data object ShowSettings : BookmarksUiEvent
-}
 
-sealed interface BookmarkFeedUiEvent : BookmarksUiEvent {
-  data object Refresh : BookmarkFeedUiEvent
+  // Search & Filters
+  data class Search(val query: String) : BookmarksUiEvent
 
-  data class ToggleArchive(val bookmark: Bookmark) : BookmarkFeedUiEvent
+  data class SelectCategory(val category: BookmarkCategory) : BookmarksUiEvent
 
-  data class Delete(val bookmark: Bookmark) : BookmarkFeedUiEvent
+  data class SetTags(val tags: List<Tag>) : BookmarksUiEvent
 
-  data class Edit(val bookmark: Bookmark) : BookmarkFeedUiEvent
+  data class RemoveTag(val tag: Tag) : BookmarksUiEvent
 
-  data class Open(val bookmark: Bookmark) : BookmarkFeedUiEvent
+  data class SelectSearchHistory(val item: SearchHistory) : BookmarksUiEvent
 
-  data object UndoAction : BookmarkFeedUiEvent
+  data object ClearSearch : BookmarksUiEvent // Clears query only, keeps category/tags
 
-  data object DismissSnackbar : BookmarkFeedUiEvent
-}
+  data object ClearSearchHistory : BookmarksUiEvent
 
-sealed interface BookmarkSearchUiEvent : BookmarksUiEvent {
-  data class Search(val query: String) : BookmarkSearchUiEvent
+  // Bookmark actions
+  data class Open(val bookmark: Bookmark) : BookmarksUiEvent
 
-  data class SelectBookmarkCategory(val category: BookmarkCategory) : BookmarkSearchUiEvent
+  data class Edit(val bookmark: Bookmark) : BookmarksUiEvent
 
-  data class SetTags(val tags: List<Tag>) : BookmarkSearchUiEvent
+  data class ToggleArchive(val bookmark: Bookmark) : BookmarksUiEvent
 
-  data class RemoveTag(val tag: Tag) : BookmarkSearchUiEvent
+  data class Delete(val bookmark: Bookmark) : BookmarksUiEvent
 
-  data class Open(val bookmark: Bookmark) : BookmarkSearchUiEvent
+  // Refresh & Undo
+  data object Refresh : BookmarksUiEvent
 
-  data class Edit(val bookmark: Bookmark) : BookmarkSearchUiEvent
+  data object UndoAction : BookmarksUiEvent
 
-  data class ToggleArchive(val bookmark: Bookmark) : BookmarkSearchUiEvent
-
-  data class Delete(val bookmark: Bookmark) : BookmarkSearchUiEvent
-
-  data class SelectSearchHistoryItem(val item: SearchHistory) : BookmarkSearchUiEvent
-
-  data object ClearSearch : BookmarkSearchUiEvent
-
-  data object ClearSearchHistory : BookmarkSearchUiEvent
-
-  data object UndoAction : BookmarkSearchUiEvent
-
-  data object DismissSnackbar : BookmarkSearchUiEvent
+  data object DismissSnackbar : BookmarksUiEvent
 }
 
 sealed interface BookmarkUiEffect {

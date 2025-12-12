@@ -13,7 +13,7 @@ object TestRoutes {
       sharedUrl = "https://example.com/$id"
     ) // key = "AddBookmark(sharedUrl=https://example.com/$id)"
 
-  fun resultRoute(selectedTagIds: List<Long> = emptyList()) =
+  fun resultRoute(selectedTagIds: Set<Long> = emptySet()) =
     Route.Tags(selectedTagIds = selectedTagIds) // key = "Tags(selectedTagIds=[...])"
 
   object Results {

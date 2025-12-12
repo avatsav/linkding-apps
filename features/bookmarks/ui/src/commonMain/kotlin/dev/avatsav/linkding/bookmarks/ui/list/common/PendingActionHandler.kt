@@ -52,12 +52,12 @@ internal data class PendingActionHandlerState(
 )
 
 @Composable
-internal fun rememberPendingActionHandler(
+internal fun rememberPendingBookmarkActionHandler(
   scope: CoroutineScope,
   deleteBookmark: DeleteBookmark,
   archiveBookmark: ArchiveBookmark,
   unarchiveBookmark: UnarchiveBookmark,
-  removePendingIdsOnSuccess: Boolean = false,
+  removePendingIdsOnSuccess: () -> Boolean = { false },
   onSuccess: (PendingAction) -> Unit = {},
   onFailure: (PendingAction) -> Unit = {},
 ): PendingActionHandlerState {
@@ -79,7 +79,7 @@ internal fun rememberPendingActionHandler(
 
     result
       .onSuccess {
-        if (removePendingIdsOnSuccess) {
+        if (removePendingIdsOnSuccess()) {
           pendingIds.remove(action.bookmarkId)
         }
         onSuccess(action)

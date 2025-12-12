@@ -1,48 +1,39 @@
-import kotlin.String;
-import kotlin.collections.Set;
 import kotlin.time.Instant;
-import dev.avatsav.linkding.data.model.BookmarkCategory;
 
 CREATE TABLE IF NOT EXISTS `search_history` (
     `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
     `query` TEXT NOT NULL,
-    `bookmark_category` TEXT AS BookmarkCategory NOT NULL,
-    `tags` TEXT AS Set<String> NOT NULL,
-    `timestamp` TEXT AS Instant NOT NULL
+    `modified` TEXT AS Instant NOT NULL
 );
 
-CREATE UNIQUE INDEX IF NOT EXISTS `index_search_history_unique` ON `search_history` (`query`, `bookmark_category`, `tags`);
+CREATE UNIQUE INDEX IF NOT EXISTS `index_search_history_unique` ON `search_history` (`query`);
 
 selectRecent:
 SELECT *
 FROM search_history
-ORDER BY `timestamp` DESC
+ORDER BY `modified` DESC
 LIMIT :limit;
 
 insert:
 INSERT INTO search_history (
     `query`,
-    `bookmark_category`,
-    `tags`,
-    `timestamp`
+    `modified`
 ) VALUES (
     :query,
-    :bookmark_category,
-    :tags,
-    :timestamp
+    :modified
 );
 
-updateTimestamp:
-UPDATE search_history SET `timestamp` = :timestamp
-WHERE `query` = :query AND `bookmark_category` = :bookmark_category AND `tags` = :tags;
+updatemodified:
+UPDATE search_history SET `modified` = :modified
+WHERE `query` = :query;
 
 upsert {
-  UPDATE search_history SET `timestamp` = :timestamp
-  WHERE `query` = :query AND `bookmark_category` = :bookmark_category AND `tags` = :tags;
+  UPDATE search_history SET `modified` = :modified
+  WHERE `query` = :query;
   INSERT OR IGNORE INTO search_history (
-    `query`, `bookmark_category`, `tags`, `timestamp`
+    `query`, `modified`
   ) VALUES (
-    :query, :bookmark_category, :tags, :timestamp
+    :query, :modified
   );
 }
 
@@ -51,5 +42,5 @@ DELETE FROM search_history;
 
 pruneBeyond:
 DELETE FROM search_history WHERE `id` NOT IN (
-  SELECT `id` FROM search_history ORDER BY `timestamp` DESC LIMIT :limit
+  SELECT `id` FROM search_history ORDER BY `modified` DESC LIMIT :limit
 );

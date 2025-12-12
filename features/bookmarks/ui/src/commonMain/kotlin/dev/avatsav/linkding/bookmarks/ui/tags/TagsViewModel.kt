@@ -1,9 +1,9 @@
 package dev.avatsav.linkding.bookmarks.ui.tags
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewModelScope
@@ -15,6 +15,7 @@ import dev.avatsav.linkding.bookmarks.api.observers.ObserveTags
 import dev.avatsav.linkding.bookmarks.ui.tags.TagsUiEvent.Close
 import dev.avatsav.linkding.bookmarks.ui.tags.TagsUiEvent.Confirm
 import dev.avatsav.linkding.bookmarks.ui.tags.TagsUiEvent.ToggleTag
+import dev.avatsav.linkding.bookmarks.ui.util.loadedList
 import dev.avatsav.linkding.data.model.Tag
 import dev.avatsav.linkding.di.scope.UserScope
 import dev.avatsav.linkding.viewmodel.MoleculePresenter
@@ -31,7 +32,7 @@ import kotlinx.coroutines.flow.emptyFlow
 
 @AssistedInject
 class TagsViewModel(
-  @Assisted private val initialSelectedTagIds: List<Long>,
+  @Assisted private val initialSelectedTagIds: Set<Long>,
   tagsPresenterFactory: TagsPresenter.Factory,
 ) : MoleculeViewModel<TagsUiEvent, TagsUiState, TagsUiEffect>() {
   override val presenter by lazy {
@@ -42,62 +43,50 @@ class TagsViewModel(
   @ManualViewModelAssistedFactoryKey(Factory::class)
   @ContributesIntoMap(UserScope::class)
   interface Factory : ManualViewModelAssistedFactory {
-    fun create(initialSelectedTagIds: List<Long>): TagsViewModel
+    fun create(initialSelectedTagIds: Set<Long>): TagsViewModel
   }
 }
 
 @AssistedInject
 class TagsPresenter(
   @Assisted coroutineScope: CoroutineScope,
-  @Assisted private val initialSelectedTagIds: List<Long>,
+  @Assisted private val initialSelectedTagIds: Set<Long>,
   private val observeTags: ObserveTags,
 ) : MoleculePresenter<TagsUiEvent, TagsUiState, TagsUiEffect>(coroutineScope) {
 
   @Composable
   override fun models(events: Flow<TagsUiEvent>): TagsUiState {
-    var tagsFlow by remember { mutableStateOf<Flow<PagingData<Tag>>>(emptyFlow()) }
-    var selectedTags by remember { mutableStateOf<List<Tag>>(emptyList()) }
+    var selectedTagIds by remember { mutableStateOf(initialSelectedTagIds) }
 
-    LaunchedEffect(Unit) {
-      observeTags(
-        ObserveTags.Param(emptyList(), PagingConfig(initialLoadSize = 100, pageSize = 100))
-      )
-      tagsFlow = observeTags.flow.cachedIn(presenterScope)
-    }
-
-    // Initialize selected tags from IDs when tags are loaded
-    val tags = tagsFlow.collectAsLazyPagingItems()
-    // Track the IDs we've initialized with to detect changes
-    var initializedWithIds by remember { mutableStateOf<List<Long>?>(null) }
-    LaunchedEffect(tags.itemCount, initialSelectedTagIds) {
-      // Initialize when tags are loaded and IDs haven't been processed yet
-      if (initializedWithIds != initialSelectedTagIds && tags.itemCount > 0) {
-        initializedWithIds = initialSelectedTagIds
-        val allTags = (0 until tags.itemCount).mapNotNull { tags[it] }
-        selectedTags = allTags.filter { it.id in initialSelectedTagIds }
+    val tagsFlow: Flow<PagingData<Tag>> by
+      produceState(emptyFlow()) {
+        observeTags(
+          ObserveTags.Param(emptyList(), PagingConfig(initialLoadSize = 100, pageSize = 100))
+        )
+        value = observeTags.flow.cachedIn(presenterScope)
       }
-    }
+    val tags = tagsFlow.collectAsLazyPagingItems()
 
     ObserveEvents { event ->
       when (event) {
         is ToggleTag -> {
-          selectedTags =
-            if (event.tag in selectedTags) {
-              selectedTags - event.tag
-            } else {
-              selectedTags + event.tag
-            }
+          selectedTagIds =
+            if (event.tag.id in selectedTagIds) selectedTagIds - event.tag.id
+            else selectedTagIds + event.tag.id
         }
-        Confirm -> emitEffect(TagsUiEffect.TagsConfirmed(selectedTags))
+        Confirm -> {
+          val selectedTags = tags.loadedList().filter { it.id in selectedTagIds }
+          emitEffect(TagsUiEffect.TagsConfirmed(selectedTags))
+        }
         Close -> emitEffect(TagsUiEffect.Dismiss)
       }
     }
 
-    return TagsUiState(selectedTags = selectedTags, tags = tags)
+    return TagsUiState(selectedTagIds = selectedTagIds, tags = tags)
   }
 
   @AssistedFactory
   interface Factory {
-    fun create(coroutineScope: CoroutineScope, initialSelectedTagIds: List<Long>): TagsPresenter
+    fun create(coroutineScope: CoroutineScope, initialSelectedTagIds: Set<Long>): TagsPresenter
   }
 }
