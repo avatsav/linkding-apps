@@ -5,7 +5,7 @@ Kotlin Multiplatform and Compose Multiplatform.
 
 ## Stack
 
-- **Compose Multiplatform - UI
+- **Compose Multiplatform** - UI
 - **Navigation 3** - Type-safe navigation
 - **Molecule** - Composable-based state management
 - **Metro DI** - Dependency injection
