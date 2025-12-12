@@ -1,12 +1,8 @@
 package dev.avatsav.linkding.bookmarks.ui.list.widgets
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
@@ -15,7 +11,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ClearAll
 import androidx.compose.material.icons.filled.History
-import androidx.compose.material3.AssistChipDefaults
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -28,7 +23,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import dev.avatsav.linkding.data.model.BookmarkCategory
 import dev.avatsav.linkding.data.model.SearchHistory
 
 @OptIn(ExperimentalLayoutApi::class)
@@ -43,9 +37,10 @@ fun SearchHistoryItem(
     modifier = modifier.padding(horizontal = 12.dp, vertical = 1.dp),
     shape = shape,
     tonalElevation = 4.dp,
+    onClick = onClick,
   ) {
     ListItem(
-      modifier = Modifier.defaultMinSize(minHeight = 36.dp).clickable { onClick() },
+      modifier = Modifier.defaultMinSize(minHeight = 36.dp),
       headlineContent = {
         Text(
           text = searchHistory.query,
@@ -57,45 +52,8 @@ fun SearchHistoryItem(
       leadingContent = {
         Icon(imageVector = Icons.Default.History, contentDescription = "Search History")
       },
-      supportingContent =
-        if (searchHistory.hasFilterCriteria()) {
-          {
-            FlowRow(
-              modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
-              horizontalArrangement = Arrangement.spacedBy(8.dp),
-              verticalArrangement = Arrangement.spacedBy(4.dp),
-            ) {
-              // Filter chip (if not All)
-              if (searchHistory.bookmarkCategory != BookmarkCategory.All) {
-                FilterCriteriaItem(searchHistory.bookmarkCategory.name)
-              }
-
-              // Tag chips
-              searchHistory.selectedTags.forEach { tag -> FilterCriteriaItem(tag.name) }
-            }
-          }
-        } else null,
     )
   }
-}
-
-@Composable
-private fun FilterCriteriaItem(name: String, modifier: Modifier = Modifier) {
-  Text(
-    name,
-    modifier =
-      modifier
-        .background(
-          color = AssistChipDefaults.assistChipColors().containerColor,
-          shape = MaterialTheme.shapes.small,
-        )
-        .border(
-          border = AssistChipDefaults.assistChipBorder(true),
-          shape = AssistChipDefaults.shape,
-        )
-        .padding(horizontal = 8.dp, vertical = 4.dp),
-    style = MaterialTheme.typography.labelSmall,
-  )
 }
 
 @Composable
@@ -104,9 +62,9 @@ fun EmptySearchResults(modifier: Modifier = Modifier) {
     modifier = modifier.fillMaxWidth().padding(vertical = 32.dp, horizontal = 16.dp),
     verticalArrangement = Arrangement.spacedBy(8.dp),
   ) {
-    Text(text = "No matches found", style = MaterialTheme.typography.titleMedium)
+    Text(text = "No recent searches", style = MaterialTheme.typography.titleMedium)
     Text(
-      text = "Try a different search term or adjust your filters",
+      text = "Search for bookmarks by title, URL, or tags",
       style = MaterialTheme.typography.bodyMedium,
       color = MaterialTheme.colorScheme.onSurfaceVariant,
     )
@@ -122,7 +80,7 @@ fun SearchHistoryHeader(onClearHistory: () -> Unit, modifier: Modifier = Modifie
   ) {
     Text(
       text = "Recent Searches",
-      style = MaterialTheme.typography.labelLarge,
+      style = MaterialTheme.typography.titleSmall,
       color = MaterialTheme.colorScheme.primary,
     )
     Spacer(modifier = Modifier.weight(1f))

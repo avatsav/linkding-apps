@@ -4,7 +4,7 @@ import androidx.compose.runtime.Immutable
 import androidx.paging.compose.LazyPagingItems
 import dev.avatsav.linkding.data.model.Tag
 
-@Immutable data class TagsUiState(val selectedTags: List<Tag>, val tags: LazyPagingItems<Tag>)
+@Immutable data class TagsUiState(val selectedTagIds: Set<Long>, val tags: LazyPagingItems<Tag>)
 
 sealed interface TagsUiEvent {
   data class ToggleTag(val tag: Tag) : TagsUiEvent
