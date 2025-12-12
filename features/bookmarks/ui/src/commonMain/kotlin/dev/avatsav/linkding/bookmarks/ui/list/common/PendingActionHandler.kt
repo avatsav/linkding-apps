@@ -12,11 +12,11 @@ import dev.avatsav.linkding.bookmarks.api.interactors.ArchiveBookmark
 import dev.avatsav.linkding.bookmarks.api.interactors.DeleteBookmark
 import dev.avatsav.linkding.bookmarks.api.interactors.UnarchiveBookmark
 import dev.avatsav.linkding.data.model.Bookmark
+import kotlin.time.Clock
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlin.time.Clock
 
 internal sealed interface PendingAction {
   val bookmarkId: Long

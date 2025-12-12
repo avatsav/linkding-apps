@@ -17,29 +17,17 @@ fun googleSansFlexFontFamily() =
     Font(
       resource = Res.font.GoogleSansFlex_var,
       weight = FontWeight.Normal,
-      variationSettings =
-        FontVariation.Settings(
-          FontVariation.weight(FontWeight.Normal.weight),
-          FontVariation.width(100f),
-        ),
+      variationSettings = FontVariation.Settings(FontVariation.weight(FontWeight.Normal.weight)),
     ),
     Font(
       resource = Res.font.GoogleSansFlex_var,
       weight = FontWeight.Medium,
-      variationSettings =
-        FontVariation.Settings(
-          FontVariation.weight(FontWeight.Medium.weight),
-          FontVariation.width(100f),
-        ),
+      variationSettings = FontVariation.Settings(FontVariation.weight(FontWeight.Medium.weight)),
     ),
     Font(
       resource = Res.font.GoogleSansFlex_var,
       weight = FontWeight.Bold,
-      variationSettings =
-        FontVariation.Settings(
-          FontVariation.weight(FontWeight.Bold.weight),
-          FontVariation.width(100f),
-        ),
+      variationSettings = FontVariation.Settings(FontVariation.weight(FontWeight.Bold.weight)),
     ),
   )
 

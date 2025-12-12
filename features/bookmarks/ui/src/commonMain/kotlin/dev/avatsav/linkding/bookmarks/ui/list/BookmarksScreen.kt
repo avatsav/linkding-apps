@@ -315,7 +315,9 @@ private fun BookmarksScreen(
             selectedCategory = state.category,
             onSelectCategory = { currentEventSink(BookmarksUiEvent.SelectCategory(it)) },
             selectedTags = state.selectedTags,
-            onOpenTagSelector = { tagsNavigator(Route.Tags(state.selectedTags.map { it.id })) },
+            onOpenTagSelector = {
+              tagsNavigator(Route.Tags(state.selectedTags.map { it.id }.toSet()))
+            },
             onRemoveTag = { currentEventSink(BookmarksUiEvent.RemoveTag(it)) },
             modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp).animateItem(),
           )
@@ -427,9 +429,6 @@ private fun LazyListScope.searchHistoryItems(
 private fun LazyListScope.searchResultsEmpty() {
   item(key = "empty-results") { EmptySearchResults(modifier = Modifier.animateItem()) }
 }
-
-@OptIn(ExperimentalMaterial3Api::class)
-private fun SearchBarState.isCollapsed() = this.currentValue == SearchBarValue.Collapsed
 
 @OptIn(ExperimentalMaterial3Api::class)
 private fun SearchBarState.isExpanded() = this.currentValue == SearchBarValue.Expanded

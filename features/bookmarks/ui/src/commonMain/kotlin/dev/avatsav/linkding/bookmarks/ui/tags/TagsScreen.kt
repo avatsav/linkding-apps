@@ -89,10 +89,10 @@ private fun TagsContent(
           }
         },
         actions = {
-          if (state.selectedTags.isNotEmpty()) {
+          if (state.selectedTagIds.isNotEmpty()) {
             Text(
               modifier = Modifier.padding(horizontal = 16.dp),
-              text = "${state.selectedTags.size} selected",
+              text = "${state.selectedTagIds.size} selected",
               style = MaterialTheme.typography.bodyMedium,
             )
           }
@@ -104,7 +104,7 @@ private fun TagsContent(
       items(state.tags.itemCount) { index ->
         val tag = state.tags[index]
         if (tag != null) {
-          val isSelected = tag in state.selectedTags
+          val isSelected = tag.id in state.selectedTagIds
           ListItem(
             modifier = Modifier.clickable { eventSink(TagsUiEvent.ToggleTag(tag)) },
             headlineContent = { Text(tag.name) },
