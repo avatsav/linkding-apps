@@ -1,10 +1,14 @@
 plugins {
-  id("convention.android.library")
-  id("convention.kotlin.multiplatform")
+  id("convention.kmp.lib")
   id("convention.compose")
 }
 
 kotlin {
+  android {
+    namespace = "dev.avatsav.linkding.bookmarks.ui"
+    compileSdk { version = release(36) }
+  }
+
   sourceSets {
     commonMain.dependencies {
       api(projects.features.bookmarks.api)
@@ -22,5 +26,3 @@ kotlin {
     }
   }
 }
-
-android { namespace = "dev.avatsav.linkding.bookmarks.ui" }

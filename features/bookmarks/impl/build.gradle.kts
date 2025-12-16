@@ -1,9 +1,13 @@
 plugins {
-  id("convention.kotlin.multiplatform")
+  id("convention.kmp.lib")
   alias(libs.plugins.ksp)
 }
 
 kotlin {
+  android {
+    namespace = "dev.avatsav.linkding.bookmarks.impl"
+    compileSdk { version = release(36) }
+  }
   sourceSets {
     commonMain.dependencies {
       implementation(projects.core.base)

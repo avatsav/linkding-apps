@@ -1,10 +1,14 @@
 plugins {
-  id("convention.android.library")
-  id("convention.kotlin.multiplatform")
+  id("convention.kmp.lib")
   id("convention.compose")
 }
 
 kotlin {
+  android {
+    namespace = "dev.avatsav.linkding.viewmodel"
+    compileSdk { version = release(36) }
+  }
+
   sourceSets {
     commonMain.dependencies {
       api(libs.kotlin.coroutines.core)
@@ -14,5 +18,3 @@ kotlin {
     }
   }
 }
-
-android { namespace = "dev.avatsav.linkding.viewmodel" }

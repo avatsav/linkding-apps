@@ -1,15 +1,17 @@
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 
 plugins {
-  id("convention.android.library")
-  id("convention.kotlin.multiplatform")
+  id("convention.kmp.lib")
   id("convention.compose")
   alias(libs.plugins.ksp)
 }
 
-android { namespace = "dev.avatsav.linkding.shared" }
-
 kotlin {
+  android {
+    namespace = "dev.avatsav.linkding.shared"
+    compileSdk { version = release(36) }
+  }
+
   sourceSets {
     commonMain.dependencies {
       // Core infrastructure - needed by apps

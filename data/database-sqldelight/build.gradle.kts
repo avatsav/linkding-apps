@@ -1,10 +1,14 @@
 plugins {
-  id("convention.android.library")
-  id("convention.kotlin.multiplatform")
+  id("convention.kmp.lib")
   alias(libs.plugins.sqldelight)
 }
 
 kotlin {
+  android {
+    namespace = "dev.avatsav.linkding.data.db"
+    compileSdk { version = release(36) }
+  }
+
   sourceSets {
     commonMain.dependencies {
       implementation(projects.core.base)
@@ -25,6 +29,6 @@ kotlin {
   }
 }
 
-sqldelight { databases { create("Database") { packageName = "dev.avatsav.linkding.data.db" } } }
-
-android { namespace = "dev.avatsav.linkding.data.db" }
+sqldelight {
+  databases { create("Database") { packageName = "dev.avatsav.linkding.data.db" } }
+}

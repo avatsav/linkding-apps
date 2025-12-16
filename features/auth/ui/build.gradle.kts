@@ -1,11 +1,15 @@
 plugins {
-  id("convention.android.library")
-  id("convention.kotlin.multiplatform")
+  id("convention.kmp.lib")
   id("convention.compose")
   alias(libs.plugins.ksp)
 }
 
 kotlin {
+  android {
+    namespace = "dev.avatsav.linkding.auth.ui"
+    compileSdk { version = release(36) }
+  }
+
   sourceSets {
     commonMain.dependencies {
       implementation(projects.features.auth.api)
@@ -20,5 +24,3 @@ kotlin {
     }
   }
 }
-
-android { namespace = "dev.avatsav.linkding.auth.ui" }

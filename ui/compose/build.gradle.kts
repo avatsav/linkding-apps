@@ -1,10 +1,14 @@
 plugins {
-  id("convention.android.library")
-  id("convention.kotlin.multiplatform")
+  id("convention.kmp.lib")
   id("convention.compose")
 }
 
 kotlin {
+  android {
+    namespace = "dev.avatsav.linkding.ui.compose"
+    compileSdk { version = release(36) }
+  }
+
   sourceSets {
     commonMain.dependencies {
       implementation(projects.core.base)
@@ -12,5 +16,3 @@ kotlin {
     }
   }
 }
-
-android { namespace = "dev.avatsav.linkding.ui.compose" }

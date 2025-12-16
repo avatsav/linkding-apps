@@ -22,9 +22,14 @@ ktfmt { googleStyle() }
 
 gradlePlugin {
   plugins {
-    register("kotlinMultiplatform") {
-      id = "convention.kotlin.multiplatform"
-      implementationClass = "dev.avatsav.gradle.KotlinMultiplatformPlugin"
+    register("jvmApplication") {
+      id = "convention.desktop.app"
+      implementationClass = "dev.avatsav.gradle.DesktopApplicationPlugin"
+    }
+
+    register("kmpLibrary") {
+      id = "convention.kmp.lib"
+      implementationClass = "dev.avatsav.gradle.KmpLibraryPlugin"
     }
 
     register("composeMultiplatform") {
@@ -33,13 +38,8 @@ gradlePlugin {
     }
 
     register("androidApplication") {
-      id = "convention.android.application"
+      id = "convention.android.app"
       implementationClass = "dev.avatsav.gradle.AndroidApplicationPlugin"
-    }
-
-    register("androidLibrary") {
-      id = "convention.android.library"
-      implementationClass = "dev.avatsav.gradle.AndroidLibraryPlugin"
     }
   }
 }

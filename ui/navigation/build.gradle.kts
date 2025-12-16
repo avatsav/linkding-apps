@@ -1,9 +1,13 @@
 plugins {
-  id("convention.kotlin.multiplatform")
+  id("convention.kmp.lib")
   id("convention.compose")
 }
 
 kotlin {
+  android {
+    namespace = "dev.avatsav.linkding.shared"
+    compileSdk { version = release(36) }
+  }
   sourceSets {
     commonMain.dependencies {
       implementation(projects.data.models)

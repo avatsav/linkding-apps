@@ -3,20 +3,14 @@ import org.jetbrains.compose.desktop.application.dsl.TargetFormat.Dmg
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat.Msi
 
 plugins {
-  id("convention.kotlin.multiplatform")
+  id("convention.desktop.app")
   id("convention.compose")
 }
 
-kotlin {
-  sourceSets {
-    val jvmMain by getting {
-      dependencies {
-        implementation(projects.app.shared)
-        implementation(libs.kotlin.coroutines.swing)
-        implementation(compose.desktop.currentOs)
-      }
-    }
-  }
+dependencies {
+  implementation(projects.app.shared)
+  implementation(libs.kotlin.coroutines.swing)
+  implementation(compose.desktop.currentOs)
 }
 
 compose.desktop {
