@@ -5,7 +5,7 @@ import kotlinx.coroutines.CoroutineScope
 
 data class AppCoroutineDispatchers(
   val io: CoroutineDispatcher,
-  val computation: CoroutineDispatcher,
+  val default: CoroutineDispatcher,
   val main: CoroutineDispatcher,
 )
 
