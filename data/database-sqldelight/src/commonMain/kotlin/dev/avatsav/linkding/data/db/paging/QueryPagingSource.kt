@@ -60,7 +60,7 @@ internal abstract class QueryPagingSource<Key : Any, RowType : Any> :
  *
  * Queries will be executed on [context].
  */
-@Suppress("FunctionName")
+@Suppress("FunctionNaming")
 @JvmName("QueryPagingSourceInt")
 @JvmOverloads
 fun <RowType : Any> QueryPagingSource(
@@ -81,7 +81,7 @@ fun <RowType : Any> QueryPagingSource(
  *
  * @see toInt
  */
-@Suppress("FunctionName")
+@Suppress("FunctionNaming")
 @JvmName("QueryPagingSourceLong")
 @JvmOverloads
 fun <RowType : Any> QueryPagingSource(

@@ -78,7 +78,7 @@ private fun AddBookmark(
   val currentEventSink by rememberUpdatedState(eventSink)
   val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
 
-  var url by remember { mutableStateOf(state.sharedUrl ?: "") }
+  var url by remember { mutableStateOf(state.sharedUrl.orEmpty()) }
   val tagsValue by remember { mutableStateOf(TagsTextFieldValue()) }
 
   var title by remember { mutableStateOf("") }
@@ -170,7 +170,7 @@ private fun AddBookmark(
         label = { Text(text = "Title") },
         visualTransformation =
           PlaceholderVisualTransformation(
-            text = state.checkUrlResult?.title ?: "",
+            text = state.checkUrlResult?.title.orEmpty(),
             color = MaterialTheme.colorScheme.onSurfaceVariant,
           ),
         supportingText = { Text(text = "Optional, leave empty to use title from website.") },
@@ -184,7 +184,7 @@ private fun AddBookmark(
         trailingIcon = { if (state.checkingUrl) SmallCircularProgressIndicator() },
         visualTransformation =
           PlaceholderVisualTransformation(
-            text = state.checkUrlResult?.description ?: "",
+            text = state.checkUrlResult?.description.orEmpty(),
             color = MaterialTheme.colorScheme.onSurfaceVariant,
           ),
         supportingText = { Text(text = "Optional, leave empty to use description from website.") },

@@ -52,7 +52,6 @@ internal object HttpClientFactory {
 
       clientConfig.httpClientLoggingBlock?.let { Logging(it) }
     }
-    return clientConfig.httpClientBuilder?.invoke()?.config(defaultHttpConfig)
-      ?: HttpClient(defaultHttpConfig)
+    return clientConfig.httpClientBuilder.invoke().config(defaultHttpConfig)
   }
 }
