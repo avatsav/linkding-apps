@@ -16,10 +16,11 @@ interface CoroutinesComponent {
 
   @Provides
   @SingleIn(AppScope::class)
+  @Suppress("InjectDispatcher")
   fun provideAppCoroutineDispatchers(): AppCoroutineDispatchers =
     AppCoroutineDispatchers(
       io = Dispatchers.IO,
-      computation = Dispatchers.Default,
+      default = Dispatchers.Default,
       main = Dispatchers.Main,
     )
 
