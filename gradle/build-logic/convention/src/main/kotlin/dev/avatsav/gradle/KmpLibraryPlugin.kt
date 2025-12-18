@@ -8,13 +8,13 @@ import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 
+private const val ANDROID_KMP_LIBRARY_PLUGIN_ID = "com.android.kotlin.multiplatform.library"
 
 class KmpLibraryPlugin : Plugin<Project> {
   @OptIn(ExperimentalKotlinGradlePluginApi::class)
   override fun apply(target: Project) =
     with(target) {
       with(pluginManager) {
-        apply("com.android.kotlin.multiplatform.library")
         apply("org.jetbrains.kotlin.multiplatform")
         apply("org.jetbrains.kotlin.plugin.serialization")
         apply("dev.zacsweers.metro")
@@ -46,6 +46,15 @@ internal fun Project.configureKmpPlugin() {
     jvm()
     iosArm64()
     iosSimulatorArm64()
+
+    if (pluginManager.hasPlugin(ANDROID_KMP_LIBRARY_PLUGIN_ID)) {
+      pluginManager.withPlugin(ANDROID_KMP_LIBRARY_PLUGIN_ID) {
+        androidLibrary {
+          compileSdk = findVersion("compileSdk").toInt()
+          minSdk = findVersion("minSdk").toInt()
+        }
+      }
+    }
 
     targets.withType<KotlinNativeTarget>().configureEach {
       binaries.configureEach { linkerOpts("-lsqlite3") }

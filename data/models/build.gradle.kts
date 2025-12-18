@@ -4,10 +4,6 @@ plugins {
 }
 
 kotlin {
-  android {
-    namespace = "dev.avatsav.linkding.shared"
-    compileSdk { version = release(36) }
-  }
   sourceSets {
     commonMain.dependencies {
       api(libs.kotlin.datetime)

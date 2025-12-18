@@ -1,13 +1,14 @@
 plugins {
+  alias(libs.plugins.android.kmp.library)
   id("convention.kmp.lib")
 }
 
 kotlin {
-  android {
+  androidLibrary {
     namespace = "dev.avatsav.linkding.api"
-    compileSdk { version = release(36) }
+    compileSdk = 36
+    minSdk = 30
   }
-
   sourceSets {
     commonMain.dependencies {
       implementation(projects.core.base)

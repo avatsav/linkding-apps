@@ -4,11 +4,6 @@ plugins {
 }
 
 kotlin {
-  android {
-    namespace = "dev.avatsav.linkding.bookmarks.ui"
-    compileSdk { version = release(36) }
-  }
-
   sourceSets {
     commonMain.dependencies {
       api(projects.features.bookmarks.api)

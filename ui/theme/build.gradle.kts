@@ -1,13 +1,15 @@
 plugins {
+  alias(libs.plugins.android.kmp.library)
   id("convention.kmp.lib")
   id("convention.compose")
 }
 
 kotlin {
   sourceSets {
-    android {
+    androidLibrary {
       namespace = "dev.avatsav.linkding.ui.theme"
-      compileSdk { version = release(36) }
+      compileSdk = 36
+      minSdk = 30
     }
 
     commonMain.dependencies {

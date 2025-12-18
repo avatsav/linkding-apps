@@ -5,6 +5,7 @@ plugins {
 
 dependencies {
   compileOnly(libs.android.gradlePlugin)
+  compileOnly(libs.android.kmp.gradlePlugin)
   compileOnly(libs.kotlin.gradlePlugin)
   compileOnly(libs.kotlin.serialization.gradlePlugin)
   compileOnly(libs.compose.gradlePlugin)
@@ -22,11 +23,6 @@ ktfmt { googleStyle() }
 
 gradlePlugin {
   plugins {
-    register("jvmApplication") {
-      id = "convention.desktop.app"
-      implementationClass = "dev.avatsav.gradle.DesktopApplicationPlugin"
-    }
-
     register("kmpLibrary") {
       id = "convention.kmp.lib"
       implementationClass = "dev.avatsav.gradle.KmpLibraryPlugin"

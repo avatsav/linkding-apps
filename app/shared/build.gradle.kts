@@ -1,15 +1,17 @@
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 
 plugins {
+  alias(libs.plugins.android.kmp.library)
   id("convention.kmp.lib")
   id("convention.compose")
   alias(libs.plugins.ksp)
 }
 
 kotlin {
-  android {
+  androidLibrary {
     namespace = "dev.avatsav.linkding.shared"
-    compileSdk { version = release(36) }
+    compileSdk = 36
+    minSdk = 30
   }
 
   sourceSets {

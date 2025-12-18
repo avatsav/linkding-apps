@@ -1,10 +1,6 @@
 plugins { id("convention.kmp.lib") }
 
 kotlin {
-  android {
-    namespace = "dev.avatsav.linkding.core"
-    compileSdk { version = release(36) }
-  }
   sourceSets {
     commonMain.dependencies {
       api(libs.kotlin.atomicfu)
