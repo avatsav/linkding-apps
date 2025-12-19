@@ -1,6 +1,5 @@
 plugins {
-  id("convention.android.library")
-  id("convention.kotlin.multiplatform")
+  id("convention.kmp.lib")
   id("convention.compose")
 }
 
@@ -22,5 +21,3 @@ kotlin {
     }
   }
 }
-
-android { namespace = "dev.avatsav.linkding.bookmarks.ui" }
