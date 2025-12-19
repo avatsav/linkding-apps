@@ -3,7 +3,7 @@ import org.jetbrains.compose.desktop.application.dsl.TargetFormat.Dmg
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat.Msi
 
 plugins {
-  id("convention.kotlin.multiplatform")
+  id("convention.kmp.lib")
   id("convention.compose")
 }
 

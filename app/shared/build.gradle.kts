@@ -1,13 +1,10 @@
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 
 plugins {
-  id("convention.android.library")
-  id("convention.kotlin.multiplatform")
+  id("convention.kmp.lib")
   id("convention.compose")
   alias(libs.plugins.ksp)
 }
-
-android { namespace = "dev.avatsav.linkding.shared" }
 
 kotlin {
   sourceSets {

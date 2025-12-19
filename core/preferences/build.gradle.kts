@@ -1,6 +1,5 @@
 plugins {
-  id("convention.android.library")
-  id("convention.kotlin.multiplatform")
+  id("convention.kmp.lib")
 }
 
 kotlin {
@@ -19,5 +18,3 @@ kotlin {
     }
   }
 }
-
-android { namespace = "dev.avatsav.linkding.prefs" }

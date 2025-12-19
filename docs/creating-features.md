@@ -7,7 +7,7 @@ Follow the **3-layer pattern** for all features.
 ```kotlin
 // build.gradle.kts
 plugins {
-  id("convention.kotlin.multiplatform")
+  id("convention.kmp.lib")
 }
 
 kotlin {
@@ -30,7 +30,7 @@ kotlin {
 ```kotlin
 // build.gradle.kts
 plugins {
-  id("convention.kotlin.multiplatform")
+  id("convention.kmp.lib")
   alias(libs.plugins.ksp)
 }
 
@@ -54,8 +54,7 @@ kotlin {
 ```kotlin
 // build.gradle.kts
 plugins {
-  id("convention.android.library")
-  id("convention.kotlin.multiplatform")
+  id("convention.kmp.lib")
   id("convention.compose")
   alias(libs.plugins.ksp)
 }
