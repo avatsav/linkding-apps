@@ -7,9 +7,6 @@ plugins {
 }
 
 kotlin {
-  androidLibrary {
-    namespace = "dev.avatsav.linkding"
-  }
   sourceSets {
     commonMain.dependencies {
       // Core infrastructure - needed by apps
