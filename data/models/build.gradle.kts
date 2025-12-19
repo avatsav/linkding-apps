@@ -1,5 +1,5 @@
 plugins {
-  id("convention.kotlin.multiplatform")
+  id("convention.kmp.lib")
   alias(libs.plugins.kotlin.serialization)
 }
 

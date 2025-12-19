@@ -1,9 +1,6 @@
 plugins {
-  id("convention.android.library")
-  id("convention.kotlin.multiplatform")
+  id("convention.kmp.lib")
 }
-
-android { namespace = "dev.avatsav.linkding.api" }
 
 kotlin {
   sourceSets {

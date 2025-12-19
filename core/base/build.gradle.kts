@@ -1,4 +1,4 @@
-plugins { id("convention.kotlin.multiplatform") }
+plugins { id("convention.kmp.lib") }
 
 kotlin {
   sourceSets {

@@ -1,5 +1,5 @@
 plugins {
-  id("convention.android.application")
+  id("convention.android.app")
   id("convention.compose")
   alias(libs.plugins.metro)
   alias(libs.plugins.ksp)
