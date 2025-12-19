@@ -38,6 +38,8 @@ private fun Project.configureKmpPlugin() {
       minSdk = findVersion("minSdk").toInt()
       namespace = "dev.avatsav.linkding.${path.substring(1).replace(":", ".").replace("-", "_")}"
 
+      androidResources { enable = true }
+      withHostTest { isIncludeAndroidResources = true }
       withDeviceTestBuilder { sourceSetTreeName = KotlinSourceSetTree.test.name }
         .configure { instrumentationRunner = "androidx.test.runner.AndroidJUnitRunner" }
     }
