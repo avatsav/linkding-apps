@@ -1,20 +1,21 @@
 package dev.avatsav.gradle
 
+import com.android.build.api.dsl.KotlinMultiplatformAndroidLibraryExtension
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.withType
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
+import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSetTree
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
-
-private const val ANDROID_KMP_LIBRARY_PLUGIN_ID = "com.android.kotlin.multiplatform.library"
 
 class KmpLibraryPlugin : Plugin<Project> {
   @OptIn(ExperimentalKotlinGradlePluginApi::class)
   override fun apply(target: Project) =
     with(target) {
       with(pluginManager) {
+        apply("com.android.kotlin.multiplatform.library")
         apply("org.jetbrains.kotlin.multiplatform")
         apply("org.jetbrains.kotlin.plugin.serialization")
         apply("dev.zacsweers.metro")
@@ -24,7 +25,7 @@ class KmpLibraryPlugin : Plugin<Project> {
 }
 
 @OptIn(ExperimentalKotlinGradlePluginApi::class)
-internal fun Project.configureKmpPlugin() {
+private fun Project.configureKmpPlugin() {
   extensions.configure<KotlinMultiplatformExtension> {
     jvmToolchain(findVersion("jvmToolchain").toInt())
 
@@ -47,13 +48,13 @@ internal fun Project.configureKmpPlugin() {
     iosArm64()
     iosSimulatorArm64()
 
-    if (pluginManager.hasPlugin(ANDROID_KMP_LIBRARY_PLUGIN_ID)) {
-      pluginManager.withPlugin(ANDROID_KMP_LIBRARY_PLUGIN_ID) {
-        androidLibrary {
-          compileSdk = findVersion("compileSdk").toInt()
-          minSdk = findVersion("minSdk").toInt()
-        }
-      }
+    extensions.configure<KotlinMultiplatformAndroidLibraryExtension> {
+      compileSdk = findVersion("compileSdk").toInt()
+      minSdk = findVersion("minSdk").toInt()
+      namespace = "dev.avatsav.linkding.${path.substring(1).replace(":", ".").replace("-", "_")}"
+
+      withDeviceTestBuilder { sourceSetTreeName = KotlinSourceSetTree.test.name }
+        .configure { instrumentationRunner = "androidx.test.runner.AndroidJUnitRunner" }
     }
 
     targets.withType<KotlinNativeTarget>().configureEach {

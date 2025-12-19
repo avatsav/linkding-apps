@@ -1,7 +1,6 @@
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 
 plugins {
-  alias(libs.plugins.android.kmp.library)
   id("convention.kmp.lib")
   id("convention.compose")
   alias(libs.plugins.ksp)
@@ -9,11 +8,8 @@ plugins {
 
 kotlin {
   androidLibrary {
-    namespace = "dev.avatsav.linkding.shared"
-    compileSdk = 36
-    minSdk = 30
+    namespace = "dev.avatsav.linkding"
   }
-
   sourceSets {
     commonMain.dependencies {
       // Core infrastructure - needed by apps

@@ -5,7 +5,6 @@ plugins {
 
 dependencies {
   compileOnly(libs.android.gradlePlugin)
-  compileOnly(libs.android.kmp.gradlePlugin)
   compileOnly(libs.kotlin.gradlePlugin)
   compileOnly(libs.kotlin.serialization.gradlePlugin)
   compileOnly(libs.compose.gradlePlugin)
@@ -36,6 +35,10 @@ gradlePlugin {
     register("androidApplication") {
       id = "convention.android.app"
       implementationClass = "dev.avatsav.gradle.AndroidApplicationPlugin"
+    }
+    register("androidKmpLibrary") {
+      id = "convention.android.kmp.lib"
+      implementationClass = "dev.avatsav.gradle.AndroidKmpLibraryConventionPlugin"
     }
   }
 }
