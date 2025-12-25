@@ -164,7 +164,7 @@ class BookmarksPresenter(
         is BookmarksUiEvent.Open -> emitEffect(BookmarkUiEffect.OpenBookmark(event.bookmark))
 
         is BookmarksUiEvent.Edit -> {
-          // Editing bookmarks not yet implemented
+          emitEffect(BookmarkUiEffect.EditBookmark(event.bookmark))
         }
 
         is BookmarksUiEvent.ToggleArchive -> {

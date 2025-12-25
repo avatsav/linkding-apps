@@ -8,6 +8,7 @@ import dev.avatsav.linkding.data.model.BookmarkCategory
 import dev.avatsav.linkding.data.model.BookmarkError
 import dev.avatsav.linkding.data.model.CheckUrlResult
 import dev.avatsav.linkding.data.model.SaveBookmark
+import dev.avatsav.linkding.data.model.UpdateBookmark
 import kotlinx.coroutines.flow.Flow
 
 interface BookmarksRepository {
@@ -21,7 +22,11 @@ interface BookmarksRepository {
 
   suspend fun checkUrl(url: String): Result<CheckUrlResult, BookmarkError>
 
+  suspend fun getBookmark(id: Long): Result<Bookmark, BookmarkError>
+
   suspend fun saveBookmark(saveBookmark: SaveBookmark): Result<Bookmark, BookmarkError>
+
+  suspend fun updateBookmark(updateBookmark: UpdateBookmark): Result<Bookmark, BookmarkError>
 
   suspend fun archiveBookmark(id: Long): Result<Unit, BookmarkError>
 
