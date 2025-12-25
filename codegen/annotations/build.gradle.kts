@@ -1,3 +1,1 @@
-plugins {
-  id("convention.kmp.lib")
-}
+plugins { id("convention.kmp.lib") }

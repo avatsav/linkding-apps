@@ -26,12 +26,38 @@ interface BookmarksScreenComponent {
 
   @IntoSet
   @Provides
-  fun provideAddBookmarkEntryProviderScope(): RouteEntryProviderScope = {
-    entry<Route.AddBookmark> { route ->
+  fun provideNewBookmarkEntryProviderScope(): RouteEntryProviderScope = {
+    entry<Route.AddBookmark.New> {
       AddBookmarkScreen(
         viewModel =
           assistedMetroViewModel<AddBookmarkViewModel, AddBookmarkViewModel.Factory> {
-            create(route.sharedUrl)
+            create(Route.AddBookmark.New)
+          }
+      )
+    }
+  }
+
+  @IntoSet
+  @Provides
+  fun provideSharedBookmarkEntryProviderScope(): RouteEntryProviderScope = {
+    entry<Route.AddBookmark.Shared> { route ->
+      AddBookmarkScreen(
+        viewModel =
+          assistedMetroViewModel<AddBookmarkViewModel, AddBookmarkViewModel.Factory> {
+            create(route)
+          }
+      )
+    }
+  }
+
+  @IntoSet
+  @Provides
+  fun provideEditBookmarkEntryProviderScope(): RouteEntryProviderScope = {
+    entry<Route.AddBookmark.Edit> { route ->
+      AddBookmarkScreen(
+        viewModel =
+          assistedMetroViewModel<AddBookmarkViewModel, AddBookmarkViewModel.Factory> {
+            create(route)
           }
       )
     }

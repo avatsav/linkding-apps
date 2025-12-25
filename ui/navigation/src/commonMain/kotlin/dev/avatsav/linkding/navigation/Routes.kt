@@ -18,7 +18,9 @@ import kotlinx.serialization.modules.subclass
  *
  * ```kotlin
  * navigator.goTo(Route.Settings)
- * navigator.goTo(Route.AddBookmark(sharedUrl = "https://example.com"))
+ * navigator.goTo(Route.AddBookmark.New)
+ * navigator.goTo(Route.AddBookmark.Shared(url = "https://example.com"))
+ * navigator.goTo(Route.AddBookmark.Edit(bookmarkId = 123))
  * ```
  */
 @Serializable
@@ -31,7 +33,14 @@ sealed interface Route {
 
   @Serializable data object BookmarksFeed : Route
 
-  @Serializable data class AddBookmark(val sharedUrl: String? = null) : Route
+  @Serializable
+  sealed interface AddBookmark : Route {
+    @Serializable data object New : AddBookmark
+
+    @Serializable data class Shared(val url: String) : AddBookmark
+
+    @Serializable data class Edit(val bookmarkId: Long) : AddBookmark
+  }
 
   @Serializable data class Url(val url: String) : Route
 
@@ -59,7 +68,9 @@ interface NavigationComponent {
       polymorphic(Route::class) {
         subclass(Route.Auth::class)
         subclass(Route.BookmarksFeed::class)
-        subclass(Route.AddBookmark::class)
+        subclass(Route.AddBookmark.New::class)
+        subclass(Route.AddBookmark.Shared::class)
+        subclass(Route.AddBookmark.Edit::class)
         subclass(Route.Url::class)
         subclass(Route.Settings::class)
         subclass(Route.Tags::class)

@@ -24,6 +24,10 @@ internal suspend inline fun <reified T, reified E> HttpClient.delete(
   block: HttpRequestBuilder.() -> Unit
 ) = request<T, E>(HttpMethod.Delete, block)
 
+internal suspend inline fun <reified T, reified E> HttpClient.patch(
+  block: HttpRequestBuilder.() -> Unit
+) = request<T, E>(HttpMethod.Patch, block)
+
 @Suppress("TooGenericExceptionCaught")
 internal suspend inline fun <reified T, reified E> HttpClient.request(
   httpMethod: HttpMethod,
