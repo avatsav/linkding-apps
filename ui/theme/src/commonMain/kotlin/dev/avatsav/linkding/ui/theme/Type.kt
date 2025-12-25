@@ -17,17 +17,29 @@ fun googleSansFlexFontFamily() =
     Font(
       resource = Res.font.GoogleSansFlex_var,
       weight = FontWeight.Normal,
-      variationSettings = FontVariation.Settings(FontVariation.weight(FontWeight.Normal.weight)),
+      variationSettings =
+        FontVariation.Settings(
+          FontVariation.weight(FontWeight.Normal.weight),
+          FontVariation.Setting("ROND", 100f),
+        ),
     ),
     Font(
       resource = Res.font.GoogleSansFlex_var,
       weight = FontWeight.Medium,
-      variationSettings = FontVariation.Settings(FontVariation.weight(FontWeight.Medium.weight)),
+      variationSettings =
+        FontVariation.Settings(
+          FontVariation.weight(FontWeight.Medium.weight),
+          FontVariation.Setting("ROND", 100f),
+        ),
     ),
     Font(
       resource = Res.font.GoogleSansFlex_var,
       weight = FontWeight.Bold,
-      variationSettings = FontVariation.Settings(FontVariation.weight(FontWeight.Bold.weight)),
+      variationSettings =
+        FontVariation.Settings(
+          FontVariation.weight(FontWeight.Bold.weight),
+          FontVariation.Setting("ROND", 100f),
+        ),
     ),
   )
 
@@ -107,9 +119,25 @@ val LinkdingTypography
           lineHeight = 20.sp,
           letterSpacing = 0.1.sp,
         ),
+      bodySmall =
+        TextStyle(
+          fontFamily = googleSansFlexFontFamily(),
+          fontWeight = FontWeight.Normal,
+          fontSize = 14.sp,
+          lineHeight = 20.sp,
+          letterSpacing = 0.25.sp,
+        ),
+      bodyMedium =
+        TextStyle(
+          fontFamily = googleSansFlexFontFamily(),
+          fontWeight = FontWeight.Normal,
+          fontSize = 14.sp,
+          lineHeight = 20.sp,
+          letterSpacing = 0.5.sp,
+        ),
       bodyLarge =
         TextStyle(
-          fontFamily = FontFamily.Default,
+          fontFamily = googleSansFlexFontFamily(),
           fontWeight = FontWeight.Normal,
           fontSize = 16.sp,
           lineHeight = 24.sp,

@@ -4,10 +4,12 @@ import dev.avatsav.linkding.api.models.LinkdingBookmark
 import dev.avatsav.linkding.api.models.LinkdingBookmarkCategory
 import dev.avatsav.linkding.api.models.LinkdingBookmarksResponse
 import dev.avatsav.linkding.api.models.LinkdingSaveBookmarkRequest
+import dev.avatsav.linkding.api.models.LinkdingUpdateBookmarkRequest
 import dev.avatsav.linkding.data.model.Bookmark
 import dev.avatsav.linkding.data.model.BookmarkCategory
 import dev.avatsav.linkding.data.model.BookmarksResult
 import dev.avatsav.linkding.data.model.SaveBookmark
+import dev.avatsav.linkding.data.model.UpdateBookmark
 import dev.zacsweers.metro.Inject
 import io.ktor.http.Url
 
@@ -28,6 +30,10 @@ class BookmarkMapper {
       urlHost = Url(linkdingBookmark.url).host,
       title = linkdingBookmark.getSafeTitle(),
       description = linkdingBookmark.getSafeDescription(),
+      notes = linkdingBookmark.notes,
+      webArchiveSnapshotUrl = linkdingBookmark.webArchiveSnapshotUrl,
+      faviconUrl = linkdingBookmark.faviconUrl,
+      previewImageUrl = linkdingBookmark.previewImageUrl,
       archived = linkdingBookmark.isArchived,
       unread = linkdingBookmark.unread,
       tags = linkdingBookmark.tagNames,
@@ -40,10 +46,19 @@ class BookmarkMapper {
       url = saveBookmark.url,
       title = saveBookmark.title,
       description = saveBookmark.description,
+      notes = saveBookmark.notes,
       tagNames = saveBookmark.tags,
       isArchived = saveBookmark.archived,
       unread = saveBookmark.unread,
       shared = saveBookmark.shared,
+    )
+
+  fun map(updateBookmark: UpdateBookmark) =
+    LinkdingUpdateBookmarkRequest(
+      title = updateBookmark.title,
+      description = updateBookmark.description,
+      notes = updateBookmark.notes,
+      tagNames = updateBookmark.tags,
     )
 }
 

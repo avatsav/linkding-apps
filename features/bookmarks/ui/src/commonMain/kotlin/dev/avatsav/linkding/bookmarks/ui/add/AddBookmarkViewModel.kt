@@ -13,9 +13,14 @@ import com.github.michaelbull.result.onFailure
 import com.github.michaelbull.result.onSuccess
 import dev.avatsav.linkding.bookmarks.api.interactors.AddBookmark
 import dev.avatsav.linkding.bookmarks.api.interactors.CheckBookmarkUrl
+import dev.avatsav.linkding.bookmarks.api.interactors.GetBookmark
+import dev.avatsav.linkding.bookmarks.api.interactors.UpdateBookmark
+import dev.avatsav.linkding.data.model.Bookmark
 import dev.avatsav.linkding.data.model.CheckUrlResult
 import dev.avatsav.linkding.data.model.SaveBookmark
+import dev.avatsav.linkding.data.model.UpdateBookmark as UpdateBookmarkModel
 import dev.avatsav.linkding.di.scope.UserScope
+import dev.avatsav.linkding.navigation.Route
 import dev.avatsav.linkding.viewmodel.MoleculePresenter
 import dev.avatsav.linkding.viewmodel.MoleculeViewModel
 import dev.zacsweers.metro.Assisted
@@ -30,41 +35,73 @@ import kotlinx.coroutines.launch
 
 @AssistedInject
 class AddBookmarkViewModel(
-  @Assisted private val sharedUrl: String?,
+  @Assisted private val mode: Route.AddBookmark,
   addBookmarkPresenterFactory: AddBookmarkPresenter.Factory,
 ) : MoleculeViewModel<AddBookmarkUiEvent, AddBookmarkUiState, AddBookmarkUiEffect>() {
-  override val presenter by lazy { addBookmarkPresenterFactory.create(sharedUrl, viewModelScope) }
+  override val presenter by lazy { addBookmarkPresenterFactory.create(mode, viewModelScope) }
 
   @AssistedFactory
   @ManualViewModelAssistedFactoryKey(Factory::class)
   @ContributesIntoMap(UserScope::class)
   interface Factory : ManualViewModelAssistedFactory {
-    fun create(sharedUrl: String? = null): AddBookmarkViewModel
+    fun create(mode: Route.AddBookmark): AddBookmarkViewModel
   }
 }
 
 @AssistedInject
 class AddBookmarkPresenter(
-  @Assisted private val sharedUrl: String?,
+  @Assisted private val route: Route.AddBookmark,
   @Assisted coroutineScope: CoroutineScope,
   private val addBookmark: AddBookmark,
+  private val getBookmark: GetBookmark,
+  private val updateBookmark: UpdateBookmark,
   private val checkBookmarkUrl: CheckBookmarkUrl,
 ) : MoleculePresenter<AddBookmarkUiEvent, AddBookmarkUiState, AddBookmarkUiEffect>(coroutineScope) {
 
+  private val mode: BookmarkMode = route.toBookmarkMode()
+
   @Composable
   override fun models(events: Flow<AddBookmarkUiEvent>): AddBookmarkUiState {
+    var existingBookmark: Bookmark? by remember { mutableStateOf(null) }
+    var loadingBookmark by remember { mutableStateOf(false) }
     var checkUrlResult: CheckUrlResult? by remember { mutableStateOf(null) }
     var errorMessage by remember { mutableStateOf("") }
 
     val checkingUrl by checkBookmarkUrl.inProgress.collectAsState(false)
-    val saving by addBookmark.inProgress.collectAsState(false)
+    val savingNew by addBookmark.inProgress.collectAsState(false)
+    val updating by updateBookmark.inProgress.collectAsState(false)
+    val saving = savingNew || updating
 
-    // Check URL on initial load if sharedUrl is provided
-    LaunchedEffect(sharedUrl) {
-      if (!sharedUrl.isNullOrBlank()) {
-        checkBookmarkUrl(sharedUrl)
-          .onSuccess { checkUrlResult = it }
-          .onFailure { Logger.e { "CheckError: $it" } }
+    val isEditMode = mode is BookmarkMode.Edit || existingBookmark != null
+    val effectiveBookmarkId = (mode as? BookmarkMode.Edit)?.bookmarkId ?: existingBookmark?.id
+
+    // Load initial data based on mode
+    LaunchedEffect(mode) {
+      when (mode) {
+        is BookmarkMode.New -> {
+          /* Nothing to load */
+        }
+        is BookmarkMode.Shared -> {
+          checkBookmarkUrl(mode.url)
+            .onSuccess { result ->
+              checkUrlResult = result
+              if (result.existingBookmark != null) {
+                existingBookmark = result.existingBookmark
+                emitEffect(AddBookmarkUiEffect.ExistingBookmarkFound)
+              }
+            }
+            .onFailure { Logger.e { "CheckError: $it" } }
+        }
+        is BookmarkMode.Edit -> {
+          loadingBookmark = true
+          getBookmark(mode.bookmarkId)
+            .onSuccess { existingBookmark = it }
+            .onFailure {
+              Logger.e { "Failed to load bookmark: $it" }
+              errorMessage = it.message
+            }
+          loadingBookmark = false
+        }
       }
     }
 
@@ -73,25 +110,53 @@ class AddBookmarkPresenter(
         AddBookmarkUiEvent.Close -> emitEffect(AddBookmarkUiEffect.NavigateUp)
         is AddBookmarkUiEvent.Save ->
           presenterScope.launch {
-            addBookmark(SaveBookmark(event.url, event.title, event.description, event.tags.toSet()))
-              .onSuccess {
-                emitEffect(AddBookmarkUiEffect.BookmarkSaved)
-                emitEffect(AddBookmarkUiEffect.NavigateUp)
-              }
-              .onFailure { errorMessage = it.message }
+            if (isEditMode && effectiveBookmarkId != null) {
+              updateBookmark(
+                  UpdateBookmarkModel(
+                    id = effectiveBookmarkId,
+                    title = event.title,
+                    description = event.description,
+                    notes = event.notes,
+                    tags = event.tags.toSet(),
+                  )
+                )
+                .onSuccess { emitEffect(AddBookmarkUiEffect.BookmarkSaved) }
+                .onFailure { errorMessage = it.message }
+            } else {
+              addBookmark(
+                  SaveBookmark(
+                    url = event.url,
+                    title = event.title,
+                    description = event.description,
+                    notes = event.notes,
+                    tags = event.tags.toSet(),
+                  )
+                )
+                .onSuccess { emitEffect(AddBookmarkUiEffect.BookmarkSaved) }
+                .onFailure { errorMessage = it.message }
+            }
           }
 
         is AddBookmarkUiEvent.CheckUrl ->
           presenterScope.launch {
             checkBookmarkUrl(event.url)
-              .onSuccess { checkUrlResult = it }
+              .onSuccess { result ->
+                checkUrlResult = result
+                // If URL already exists, switch to edit mode automatically
+                if (result.existingBookmark != null && existingBookmark == null) {
+                  existingBookmark = result.existingBookmark
+                  emitEffect(AddBookmarkUiEffect.ExistingBookmarkFound)
+                }
+              }
               .onFailure { Logger.e { "CheckError: $it" } }
           }
       }
     }
 
     return AddBookmarkUiState(
-      sharedUrl = sharedUrl,
+      mode = mode,
+      existingBookmark = existingBookmark,
+      loading = loadingBookmark,
       checkingUrl = checkingUrl,
       checkUrlResult = checkUrlResult,
       saving = saving,
@@ -101,6 +166,13 @@ class AddBookmarkPresenter(
 
   @AssistedFactory
   interface Factory {
-    fun create(sharedUrl: String?, coroutineScope: CoroutineScope): AddBookmarkPresenter
+    fun create(route: Route.AddBookmark, coroutineScope: CoroutineScope): AddBookmarkPresenter
   }
 }
+
+private fun Route.AddBookmark.toBookmarkMode(): BookmarkMode =
+  when (this) {
+    is Route.AddBookmark.New -> BookmarkMode.New
+    is Route.AddBookmark.Shared -> BookmarkMode.Shared(url)
+    is Route.AddBookmark.Edit -> BookmarkMode.Edit(bookmarkId)
+  }

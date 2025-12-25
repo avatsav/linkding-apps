@@ -18,6 +18,7 @@ import dev.avatsav.linkding.data.model.BookmarkCategory
 import dev.avatsav.linkding.data.model.BookmarkError
 import dev.avatsav.linkding.data.model.CheckUrlResult
 import dev.avatsav.linkding.data.model.SaveBookmark
+import dev.avatsav.linkding.data.model.UpdateBookmark
 import dev.avatsav.linkding.di.scope.UserScope
 import dev.zacsweers.metro.ContributesBinding
 import dev.zacsweers.metro.Inject
@@ -50,11 +51,26 @@ class LinkdingBookmarksRepository(
   override suspend fun checkUrl(url: String): Result<CheckUrlResult, BookmarkError> =
     bookmarksApi.checkUrl(url).mapEither(success = checkUrlMapper::map, failure = errorMapper::map)
 
+  override suspend fun getBookmark(id: Long): Result<Bookmark, BookmarkError> =
+    bookmarksApi
+      .getBookmark(id)
+      .mapEither(success = bookmarkMapper::map, failure = errorMapper::map)
+
   override suspend fun saveBookmark(saveBookmark: SaveBookmark): Result<Bookmark, BookmarkError> {
     val request = bookmarkMapper.map(saveBookmark)
     return bookmarksApi
       .saveBookmark(request)
       .mapEither(success = bookmarkMapper::map, failure = errorMapper::map)
+  }
+
+  override suspend fun updateBookmark(
+    updateBookmark: UpdateBookmark
+  ): Result<Bookmark, BookmarkError> {
+    val request = bookmarkMapper.map(updateBookmark)
+    return bookmarksApi
+      .updateBookmark(updateBookmark.id, request)
+      .mapEither(success = bookmarkMapper::map, failure = errorMapper::map)
+      .onSuccess { bookmark -> bookmarksDao.upsert(bookmark) }
   }
 
   override suspend fun archiveBookmark(id: Long): Result<Unit, BookmarkError> =

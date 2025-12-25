@@ -65,6 +65,8 @@ sealed interface BookmarksUiEvent {
 sealed interface BookmarkUiEffect {
   data class OpenBookmark(val bookmark: Bookmark) : BookmarkUiEffect
 
+  data class EditBookmark(val bookmark: Bookmark) : BookmarkUiEffect
+
   data object AddBookmark : BookmarkUiEffect
 
   data object NavigateToSettings : BookmarkUiEffect

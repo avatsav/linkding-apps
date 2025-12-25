@@ -80,7 +80,6 @@ import dev.avatsav.linkding.data.model.Bookmark
 import dev.avatsav.linkding.data.model.SearchHistory
 import dev.avatsav.linkding.navigation.LocalNavigator
 import dev.avatsav.linkding.navigation.Route
-import dev.avatsav.linkding.navigation.Route.AddBookmark
 import dev.avatsav.linkding.navigation.RouteNavigator
 import dev.avatsav.linkding.navigation.rememberResultNavigator
 import dev.avatsav.linkding.ui.compose.appearFromBottom
@@ -115,7 +114,8 @@ fun BookmarksScreen(viewModel: BookmarksViewModel, modifier: Modifier = Modifier
 
   ObserveEffects(viewModel.effects) { effect ->
     when (effect) {
-      BookmarkUiEffect.AddBookmark -> navigator.goTo(AddBookmark())
+      BookmarkUiEffect.AddBookmark -> navigator.goTo(Route.AddBookmark.New)
+      is BookmarkUiEffect.EditBookmark -> navigator.goTo(Route.AddBookmark.Edit(effect.bookmark.id))
       BookmarkUiEffect.NavigateToSettings -> navigator.goTo(Route.Settings)
       is BookmarkUiEffect.OpenBookmark -> navigator.goTo(Route.Url(effect.bookmark.url))
     }
