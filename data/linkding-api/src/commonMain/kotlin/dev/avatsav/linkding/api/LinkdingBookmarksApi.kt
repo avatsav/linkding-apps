@@ -7,6 +7,7 @@ import dev.avatsav.linkding.api.models.LinkdingBookmarksResponse
 import dev.avatsav.linkding.api.models.LinkdingCheckUrlResponse
 import dev.avatsav.linkding.api.models.LinkdingError
 import dev.avatsav.linkding.api.models.LinkdingSaveBookmarkRequest
+import dev.avatsav.linkding.api.models.LinkdingUpdateBookmarkRequest
 
 interface LinkdingBookmarksApi {
   suspend fun getBookmarks(
@@ -20,7 +21,12 @@ interface LinkdingBookmarksApi {
   suspend fun getBookmark(id: Long): Result<LinkdingBookmark, LinkdingError>
 
   suspend fun saveBookmark(
-    saveBookmark: LinkdingSaveBookmarkRequest
+    request: LinkdingSaveBookmarkRequest
+  ): Result<LinkdingBookmark, LinkdingError>
+
+  suspend fun updateBookmark(
+    id: Long,
+    request: LinkdingUpdateBookmarkRequest,
   ): Result<LinkdingBookmark, LinkdingError>
 
   suspend fun checkUrl(url: String): Result<LinkdingCheckUrlResponse, LinkdingError>

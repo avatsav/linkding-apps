@@ -174,6 +174,10 @@ class TagsTextFieldValue(tags: List<Tag> = emptyList()) {
     tags = list
   }
 
+  fun replaceAll(tagNames: List<String>) {
+    tags = tagNames.map { Tag(it) }
+  }
+
   internal fun removeLastTag() {
     val list = tags.subList(0, tags.size - 1)
     tags = list

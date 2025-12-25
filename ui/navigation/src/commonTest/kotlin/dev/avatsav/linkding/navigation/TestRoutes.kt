@@ -9,9 +9,9 @@ object TestRoutes {
   val routeC: Route = Route.BookmarksFeed // key = "BookmarksFeed"
 
   fun routeWithParam(id: Long) =
-    Route.AddBookmark(
-      sharedUrl = "https://example.com/$id"
-    ) // key = "AddBookmark(sharedUrl=https://example.com/$id)"
+    Route.AddBookmark.Shared(
+      url = "https://example.com/$id"
+    ) // key = "Shared(url=https://example.com/$id)"
 
   fun resultRoute(selectedTagIds: Set<Long> = emptySet()) =
     Route.Tags(selectedTagIds = selectedTagIds) // key = "Tags(selectedTagIds=[...])"

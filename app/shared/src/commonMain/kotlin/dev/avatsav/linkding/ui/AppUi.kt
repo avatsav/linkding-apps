@@ -143,7 +143,7 @@ private fun AuthState.startRoute(launchMode: LaunchMode): Route =
 private fun LaunchMode.startRoute(): Route =
   when (this) {
     LaunchMode.Normal -> Route.BookmarksFeed
-    is LaunchMode.SharedLink -> Route.AddBookmark(this.sharedLink)
+    is LaunchMode.SharedLink -> Route.AddBookmark.Shared(this.sharedLink)
   }
 
 @Composable
