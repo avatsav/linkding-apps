@@ -4,29 +4,28 @@ import LinkdingKt
 import OSLog
 
 struct ComposeView: UIViewControllerRepresentable {
-    private let component: IosUiComponent
+    private let uiGraph: IosUiGraph
 
-    init(component: IosUiComponent) {
-        self.component = component
+    init(uiGraph: IosUiGraph) {
+        self.uiGraph = uiGraph
     }
 
     func makeUIViewController(context: Context) -> UIViewController {
-        component.uiViewControllerFactory.create()
+      uiGraph.uiViewControllerFactory.create()
     }
 
     func updateUIViewController(_ uiViewController: UIViewController, context: Context) {}
 }
 
 struct ContentView: View {
-    private let component: IosUiComponent
+    private let uiGraph: IosUiGraph
     private let logger: Logger
 
-    init(component: IosUiComponent) {
-        self.component = component
+    init(uiGraph: IosUiGraph) {
+        self.uiGraph = uiGraph
         self.logger = Logger()
     }
     var body: some View {
-        ComposeView(component: component)
-                .ignoresSafeArea(.all, edges: .all)
+        ComposeView(uiGraph: uiGraph).ignoresSafeArea(.all, edges: .all)
     }
 }

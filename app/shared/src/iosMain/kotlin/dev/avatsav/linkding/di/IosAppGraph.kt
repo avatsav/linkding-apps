@@ -11,7 +11,7 @@ import platform.Foundation.NSUserDefaults
 
 @OptIn(ExperimentalNativeApi::class)
 @DependencyGraph(AppScope::class)
-abstract class IosAppGraph : AppGraph {
+interface IosAppGraph : AppGraph {
 
   @SingleIn(AppScope::class)
   @Provides

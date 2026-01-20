@@ -15,7 +15,6 @@ import io.ktor.http.HttpHeaders
 import io.ktor.http.Url
 import io.ktor.http.takeFrom
 
-@LinkdingDsl
 fun LinkdingAuthentication(block: LinkdingClientConfig.() -> Unit): LinkdingAuthentication {
   val clientConfig = LinkdingClientConfig().apply(block)
   return DefaultLinkdingAuthentication(clientConfig)

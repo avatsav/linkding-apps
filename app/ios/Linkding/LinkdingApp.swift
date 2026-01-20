@@ -2,10 +2,10 @@ import SwiftUI
 import LinkdingKt
 
 class AppDelegate: UIResponder, UIApplicationDelegate {
-    lazy var applicationComponent: IosAppComponent = createAppComponent(appDelegate: self)
-    
+    lazy var appGraph: IosAppGraph = createAppGraph(appDelegate: self)
+
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
-        applicationComponent.appInitializer.initialize()
+        appGraph.appInitializer.initialize()
         return true
     }
 }
@@ -15,22 +15,20 @@ struct LinkdingApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
     var body: some Scene {
         WindowGroup {
-            let uiComponent = createUiComponent(
-                appComponent: delegate.applicationComponent
-            )
-            ContentView(component: uiComponent)
+            let uiGraph = createUiGraph(appGraph: delegate.appGraph)
+            ContentView(uiGraph: uiGraph)
         }
     }
 }
 
-private func createAppComponent(appDelegate: AppDelegate) -> IosAppComponent {
-    let component = IosComponentCreator().createAppComponent()
-    IosComponentHolder().addComponent(component: component)
-    return component
+private func createAppGraph(appDelegate: AppDelegate) -> IosAppGraph {
+    let appGraph = IosGraphCreator.shared.createAppGraph()
+    IosGraphHolder.shared.addGraph(graph: appGraph)
+    return appGraph
 }
 
-private func createUiComponent(appComponent: IosAppComponent) -> IosUiComponent {
-    let component = IosComponentCreator().createUiComponent(appComponent: appComponent)
-    IosComponentHolder().addComponent(component: component)
-    return component
+private func createUiGraph(appGraph: IosAppGraph) -> IosUiGraph {
+    let uiGraph = IosGraphCreator.shared.createUiGraph(appGraph: appGraph)
+    IosGraphHolder.shared.addGraph(graph: uiGraph)
+    return uiGraph
 }

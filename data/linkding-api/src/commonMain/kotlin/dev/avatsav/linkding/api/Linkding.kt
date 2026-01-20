@@ -4,7 +4,6 @@ import dev.avatsav.linkding.api.impl.DefaultLinkdingBookmarksApi
 import dev.avatsav.linkding.api.impl.DefaultLinkdingTagsApi
 import io.ktor.client.HttpClient
 
-@LinkdingDsl
 fun Linkding(apiConfig: LinkdingApiConfig, block: LinkdingClientConfig.() -> Unit): Linkding {
   val clientConfig = LinkdingClientConfig().apply(block)
   return DefaultLinkding(apiConfig, clientConfig)
