@@ -6,6 +6,14 @@ dependencyResolutionManagement {
     mavenCentral()
     gradlePluginPortal()
     maven("https://central.sonatype.com/repository/maven-snapshots")
+    maven("https://redirector.kotlinlang.org/maven/bootstrap") {
+      name = "kotlin-bootstrap"
+      content { includeGroupByRegex("org\\.jetbrains\\.kotlin.*") }
+    }
+    maven("https://redirector.kotlinlang.org/maven/dev/") {
+      name = "kotlin-dev"
+      content { includeGroupByRegex("org\\.jetbrains\\.kotlin.*") }
+    }
   }
   versionCatalogs {
     create("libs") {
