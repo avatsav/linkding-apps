@@ -1,7 +1,7 @@
 [versions]
 agp = "9.0.0"
-kgp = "2.3.20-Beta1"
-kotlin = "2.3.20-Beta1"
+kgp = "2.3.20-vega-42"
+kotlin = "2.3.20-vega-42"
 coroutines = "1.10.2"
 ksp = "2.3.4" # https://github.com/google/ksp/releases
 ktmft = "0.25.0"
