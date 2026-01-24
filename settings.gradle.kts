@@ -1,8 +1,10 @@
 @file:Suppress("UnstableApiUsage")
 
 pluginManagement {
+  // Non-delegate APIs are annoyingly not public so we have to use withGroovyBuilder
+  // Reference https://github.com/slackhq/circuit/blob/main/settings.gradle.kts
   fun hasProperty(key: String): Boolean {
-    return providers.gradleProperty(key).orNull.toBoolean()
+    return settings.withGroovyBuilder { "hasProperty"(key) as Boolean }
   }
 
   includeBuild("gradle/build-logic")
@@ -33,8 +35,10 @@ pluginManagement {
 }
 
 dependencyResolutionManagement {
+  // Non-delegate APIs are annoyingly not public so we have to use withGroovyBuilder
+  // Reference: https://github.com/slackhq/circuit/blob/main/settings.gradle.kts
   fun hasProperty(key: String): Boolean {
-    return providers.gradleProperty(key).orNull.toBoolean()
+    return settings.withGroovyBuilder { "hasProperty"(key) as Boolean }
   }
 
   repositories {
