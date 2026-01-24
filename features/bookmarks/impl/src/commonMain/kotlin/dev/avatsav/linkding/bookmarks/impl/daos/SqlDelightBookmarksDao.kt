@@ -14,7 +14,7 @@ import dev.zacsweers.metro.SingleIn
 class SqlDelightBookmarksDao(private val db: Database) : BookmarksDao {
 
   override fun insert(bookmark: Bookmark) {
-    db.bookmarksQueries.insert(
+    val _ = db.bookmarksQueries.insert(
       linkding_id = bookmark.id,
       url = bookmark.url,
       urlHost = bookmark.urlHost,
@@ -37,7 +37,7 @@ class SqlDelightBookmarksDao(private val db: Database) : BookmarksDao {
   }
 
   override fun update(bookmark: Bookmark) {
-    db.bookmarksQueries.update(
+    val _ = db.bookmarksQueries.update(
       linkding_id = bookmark.id,
       url = bookmark.url,
       urlHost = bookmark.urlHost,
@@ -52,7 +52,7 @@ class SqlDelightBookmarksDao(private val db: Database) : BookmarksDao {
   }
 
   override fun upsert(bookmark: Bookmark) {
-    db.bookmarksQueries.upsert(
+    val _ = db.bookmarksQueries.upsert(
       linkding_id = bookmark.id,
       url = bookmark.url,
       urlHost = bookmark.urlHost,
@@ -75,10 +75,10 @@ class SqlDelightBookmarksDao(private val db: Database) : BookmarksDao {
   }
 
   override fun delete(id: Long) {
-    db.bookmarksQueries.delete(id)
+    val _ = db.bookmarksQueries.delete(id)
   }
 
   override fun deleteAll() {
-    db.bookmarksQueries.deleteAll()
+    val _ = db.bookmarksQueries.deleteAll()
   }
 }

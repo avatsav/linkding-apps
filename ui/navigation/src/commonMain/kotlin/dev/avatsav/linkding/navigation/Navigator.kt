@@ -19,10 +19,10 @@ interface Navigator {
   val currentRoute: Route?
 
   /** Navigate to a route. [Route.Url] is handled by platform URL handler. */
-  fun goTo(route: Route): Boolean
+  @IgnorableReturnValue fun goTo(route: Route): Boolean
 
   /** Pop current route, optionally returning a [result]. Root cannot be popped. */
-  fun pop(result: NavResult? = null): Route?
+  @IgnorableReturnValue fun pop(result: NavResult? = null): Route?
 
   /** Peek at current route without modifying backstack. */
   fun peek(): Route?
@@ -31,7 +31,7 @@ interface Navigator {
   fun peekBackStack(): List<Route>
 
   /** Clear backstack and set a new root route. */
-  fun resetRoot(newRoot: Route): Boolean
+  @IgnorableReturnValue fun resetRoot(newRoot: Route): Boolean
 }
 
 /** No-op [Navigator] for previews and tests. */

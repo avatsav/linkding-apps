@@ -6,6 +6,7 @@ import org.gradle.api.Project
 import org.gradle.api.plugins.JavaPluginExtension
 import org.gradle.jvm.toolchain.JavaLanguageVersion
 import org.gradle.kotlin.dsl.configure
+import org.jetbrains.kotlin.gradle.dsl.KotlinAndroidExtension
 
 class AndroidApplicationPlugin : Plugin<Project> {
   override fun apply(target: Project) =
@@ -15,6 +16,7 @@ class AndroidApplicationPlugin : Plugin<Project> {
       configureJavaToolchain()
       configureKtfmt()
       configureDetekt()
+      configureKotlinCompilerOptions()
     }
 }
 
@@ -25,6 +27,16 @@ private fun Project.configureAndroidApplication() {
     defaultConfig {
       minSdk = findVersion("minSdk").toInt()
       targetSdk = targetSdkVersion
+    }
+  }
+}
+
+private fun Project.configureKotlinCompilerOptions() {
+  extensions.configure<KotlinAndroidExtension> {
+    jvmToolchain(findVersion("jvmToolchain").toInt())
+    compilerOptions {
+      freeCompilerArgs.addAll(CompilerOptions.freeCompilerArgs)
+      optIn.addAll(CompilerOptions.optIn)
     }
   }
 }

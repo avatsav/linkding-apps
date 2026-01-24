@@ -10,10 +10,10 @@ import kotlinx.coroutines.withContext
 
 /** Interactor for clearing all search history. */
 @Inject
-class ClearSearchHistory(
+class ClearSearchHistoryInteractor(
   private val repository: SearchHistoryRepository,
   private val dispatchers: AppCoroutineDispatchers,
-) : Interactor<ClearSearchHistory.Params, Unit, Nothing>() {
+) : Interactor<ClearSearchHistoryInteractor.Params, Unit, Nothing>() {
 
   /** Clears all saved search history. */
   override suspend fun doWork(param: Params): Result<Unit, Nothing> =

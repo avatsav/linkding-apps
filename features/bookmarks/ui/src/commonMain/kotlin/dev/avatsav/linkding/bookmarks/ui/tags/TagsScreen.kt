@@ -42,10 +42,10 @@ fun TagsScreen(viewModel: TagsViewModel, modifier: Modifier = Modifier) {
 
   ObserveEffects(viewModel.effects) { effect ->
     when (effect) {
-      is TagsUiEffect.TagsConfirmed -> {
+      is TagsConfirmed -> {
         navigator.pop(Route.Tags.Result.Confirmed(effect.selectedTags))
       }
-      TagsUiEffect.Dismiss -> navigator.pop(Route.Tags.Result.Dismissed)
+      Dismiss -> navigator.pop(Route.Tags.Result.Dismissed)
     }
   }
 

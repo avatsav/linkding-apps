@@ -1,3 +1,5 @@
+@file:Suppress("MagicNumber")
+
 package dev.avatsav.linkding.ui.theme
 
 import androidx.compose.material3.Typography
@@ -11,6 +13,8 @@ import linkding_apps.ui.theme.generated.resources.GoogleSansFlex_var
 import linkding_apps.ui.theme.generated.resources.Res
 import org.jetbrains.compose.resources.Font
 
+private val RoundFontVariation = FontVariation.Setting("ROND", 100f)
+
 @Composable
 fun googleSansFlexFontFamily() =
   FontFamily(
@@ -18,28 +22,19 @@ fun googleSansFlexFontFamily() =
       resource = Res.font.GoogleSansFlex_var,
       weight = FontWeight.Normal,
       variationSettings =
-        FontVariation.Settings(
-          FontVariation.weight(FontWeight.Normal.weight),
-          FontVariation.Setting("ROND", 100f),
-        ),
+        FontVariation.Settings(FontVariation.weight(FontWeight.Normal.weight), RoundFontVariation),
     ),
     Font(
       resource = Res.font.GoogleSansFlex_var,
       weight = FontWeight.Medium,
       variationSettings =
-        FontVariation.Settings(
-          FontVariation.weight(FontWeight.Medium.weight),
-          FontVariation.Setting("ROND", 100f),
-        ),
+        FontVariation.Settings(FontVariation.weight(FontWeight.Medium.weight), RoundFontVariation),
     ),
     Font(
       resource = Res.font.GoogleSansFlex_var,
       weight = FontWeight.Bold,
       variationSettings =
-        FontVariation.Settings(
-          FontVariation.weight(FontWeight.Bold.weight),
-          FontVariation.Setting("ROND", 100f),
-        ),
+        FontVariation.Settings(FontVariation.weight(FontWeight.Bold.weight), RoundFontVariation),
     ),
   )
 

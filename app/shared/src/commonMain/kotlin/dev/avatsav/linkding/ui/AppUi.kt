@@ -120,9 +120,9 @@ private fun rememberViewModelFactory(
   defaultFactory: MetroViewModelFactory,
 ): MetroViewModelFactory {
   return when (authState) {
-    is AuthState.Loading,
-    is AuthState.Unauthenticated -> defaultFactory
-    is AuthState.Authenticated -> {
+    is Loading,
+    is Unauthenticated -> defaultFactory
+    is Authenticated -> {
       remember(authState.apiConfig) {
           GraphHolder.graph<UserGraph.Factory>().create(authState.apiConfig).also { component ->
             GraphHolder.updateGraph(component)
@@ -135,15 +135,15 @@ private fun rememberViewModelFactory(
 
 private fun AuthState.startRoute(launchMode: LaunchMode): Route =
   when (this) {
-    is AuthState.Loading,
-    is AuthState.Unauthenticated -> Route.Auth
-    is AuthState.Authenticated -> launchMode.startRoute()
+    is Loading,
+    is Unauthenticated -> Route.Auth
+    is Authenticated -> launchMode.startRoute()
   }
 
 private fun LaunchMode.startRoute(): Route =
   when (this) {
-    LaunchMode.Normal -> Route.BookmarksFeed
-    is LaunchMode.SharedLink -> Route.AddBookmark.Shared(this.sharedLink)
+    Normal -> Route.BookmarksFeed
+    is SharedLink -> Route.AddBookmark.Shared(this.sharedLink)
   }
 
 @Composable
