@@ -46,23 +46,21 @@ class SettingsPresenter(
 
     ObserveEvents { event ->
       when (event) {
-        SettingsUiEvent.Close -> emitEffect(SettingsUiEffect.NavigateUp)
-        is SettingsUiEvent.SetAppTheme ->
-          presenterScope.launch { settingsManager.setAppTheme(event.appTheme) }
+        Close -> emitEffect(SettingsUiEffect.NavigateUp)
+        is SetAppTheme -> presenterScope.launch { settingsManager.setAppTheme(event.appTheme) }
 
-        SettingsUiEvent.ToggleUseDynamicColors ->
-          presenterScope.launch { settingsManager.toggleUseDynamicColors() }
+        ToggleUseDynamicColors -> presenterScope.launch { settingsManager.toggleUseDynamicColors() }
 
-        SettingsUiEvent.ResetApiConfig ->
+        ResetApiConfig ->
           presenterScope.launch {
             settingsManager.setApiConfig(null)
             emitEffect(SettingsUiEffect.ResetToAuth)
           }
 
-        SettingsUiEvent.ShowSourceCode ->
+        ShowSourceCode ->
           emitEffect(SettingsUiEffect.OpenUrl("https://github.com/avatsav/linkding-apps"))
 
-        SettingsUiEvent.ShowLicenses -> {}
+        ShowLicenses -> {}
         SettingsUiEvent.ShowPrivacyPolicy -> {}
       }
     }

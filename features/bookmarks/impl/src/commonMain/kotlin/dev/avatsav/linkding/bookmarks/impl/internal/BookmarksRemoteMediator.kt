@@ -36,11 +36,10 @@ class BookmarksRemoteMediator(
     withContext(dispatchers.io) {
       val offset =
         when (loadType) {
-          LoadType.REFRESH -> 0
-          LoadType.PREPEND ->
-            return@withContext MediatorResult.Success(endOfPaginationReached = true)
+          REFRESH -> 0
+          PREPEND -> return@withContext MediatorResult.Success(endOfPaginationReached = true)
 
-          LoadType.APPEND -> {
+          APPEND -> {
             bookmarksDao.countBookmarks().toInt()
           }
         }

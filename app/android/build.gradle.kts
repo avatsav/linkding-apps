@@ -23,7 +23,6 @@ android {
       setOf(
         "META-INF/proguard/*",
         "/*.properties",
-        "fabric/*.properties",
         "META-INF/*.properties",
         "LICENSE*",
         "META-INF/**/previous-compilation-data.bin",

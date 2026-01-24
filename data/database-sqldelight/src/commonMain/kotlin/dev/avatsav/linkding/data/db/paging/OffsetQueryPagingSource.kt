@@ -41,16 +41,16 @@ internal class OffsetQueryPagingSource<RowType : Any>(
       val key = params.key ?: initialOffset
       val limit =
         when (params) {
-          is LoadParams.Prepend<*> -> minOf(key, params.loadSize)
+          is Prepend<*> -> minOf(key, params.loadSize)
           else -> params.loadSize
         }
       val getPagingSourceLoadResult: TransactionCallbacks.() -> LoadResult.Page<Int, RowType> = {
         val count = countQuery.executeAsOne()
         val offset =
           when (params) {
-            is LoadParams.Prepend<*> -> maxOf(0, key - params.loadSize)
-            is LoadParams.Append<*> -> key
-            is LoadParams.Refresh<*> ->
+            is Prepend<*> -> maxOf(0, key - params.loadSize)
+            is Append<*> -> key
+            is Refresh<*> ->
               if (key >= count) {
                 maxOf(0, count - params.loadSize)
               } else {

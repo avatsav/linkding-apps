@@ -12,9 +12,6 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.compose.collectAsLazyPagingItems
 import dev.avatsav.linkding.bookmarks.api.observers.ObserveTags
-import dev.avatsav.linkding.bookmarks.ui.tags.TagsUiEvent.Close
-import dev.avatsav.linkding.bookmarks.ui.tags.TagsUiEvent.Confirm
-import dev.avatsav.linkding.bookmarks.ui.tags.TagsUiEvent.ToggleTag
 import dev.avatsav.linkding.bookmarks.ui.util.loadedList
 import dev.avatsav.linkding.data.model.Tag
 import dev.avatsav.linkding.di.scope.UserScope

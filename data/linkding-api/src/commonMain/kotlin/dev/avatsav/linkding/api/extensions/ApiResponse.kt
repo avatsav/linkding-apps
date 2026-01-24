@@ -10,7 +10,7 @@ import dev.avatsav.linkding.api.models.LinkdingErrorResponse
 internal fun <T> ApiResponse<T, LinkdingErrorResponse>.toLinkdingResult():
   Result<T, LinkdingError> =
   when (this) {
-    is ApiResponse.Success -> Ok(this.body)
+    is Success -> Ok(this.body)
     is ApiResponse.Error ->
       when (this) {
         is ApiResponse.ClientError ->

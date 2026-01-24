@@ -78,10 +78,10 @@ class AddBookmarkPresenter(
     // Load initial data based on mode
     LaunchedEffect(mode) {
       when (mode) {
-        is BookmarkMode.New -> {
+        is New -> {
           /* Nothing to load */
         }
-        is BookmarkMode.Shared -> {
+        is Shared -> {
           checkBookmarkUrl(mode.url)
             .onSuccess { result ->
               checkUrlResult = result
@@ -92,7 +92,7 @@ class AddBookmarkPresenter(
             }
             .onFailure { Logger.e { "CheckError: $it" } }
         }
-        is BookmarkMode.Edit -> {
+        is Edit -> {
           loadingBookmark = true
           getBookmark(mode.bookmarkId)
             .onSuccess { existingBookmark = it }
@@ -107,8 +107,8 @@ class AddBookmarkPresenter(
 
     ObserveEvents { event ->
       when (event) {
-        AddBookmarkUiEvent.Close -> emitEffect(AddBookmarkUiEffect.NavigateUp)
-        is AddBookmarkUiEvent.Save ->
+        Close -> emitEffect(AddBookmarkUiEffect.NavigateUp)
+        is Save ->
           presenterScope.launch {
             if (isEditMode && effectiveBookmarkId != null) {
               updateBookmark(
@@ -137,7 +137,7 @@ class AddBookmarkPresenter(
             }
           }
 
-        is AddBookmarkUiEvent.CheckUrl ->
+        is CheckUrl ->
           presenterScope.launch {
             checkBookmarkUrl(event.url)
               .onSuccess { result ->
@@ -172,7 +172,7 @@ class AddBookmarkPresenter(
 
 private fun Route.AddBookmark.toBookmarkMode(): BookmarkMode =
   when (this) {
-    is Route.AddBookmark.New -> BookmarkMode.New
-    is Route.AddBookmark.Shared -> BookmarkMode.Shared(url)
-    is Route.AddBookmark.Edit -> BookmarkMode.Edit(bookmarkId)
+    is New -> BookmarkMode.New
+    is Shared -> BookmarkMode.Shared(url)
+    is Edit -> BookmarkMode.Edit(bookmarkId)
   }

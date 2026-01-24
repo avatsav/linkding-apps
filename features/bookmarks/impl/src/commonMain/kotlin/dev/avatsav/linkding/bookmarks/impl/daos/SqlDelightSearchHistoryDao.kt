@@ -22,7 +22,7 @@ class SqlDelightSearchHistoryDao(
 ) : SearchHistoryDao {
 
   override fun upsert(history: SearchHistory) {
-    db.search_historyQueries.upsert(query = history.query, modified = history.modified)
+    val _ = db.search_historyQueries.upsert(query = history.query, modified = history.modified)
   }
 
   override fun insertAll(histories: List<SearchHistory>) {
@@ -37,10 +37,10 @@ class SqlDelightSearchHistoryDao(
   }
 
   override fun deleteAll() {
-    db.search_historyQueries.deleteAll()
+    val _ = db.search_historyQueries.deleteAll()
   }
 
   override fun pruneToLimit(limit: Long) {
-    db.search_historyQueries.pruneBeyond(limit)
+    val _ = db.search_historyQueries.pruneBeyond(limit)
   }
 }

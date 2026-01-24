@@ -49,8 +49,8 @@ interface Presenter<Event, Model, Effect> {
  *
  *     ObserveEvents { event ->
  *       when (event) {
- *         MyEvent.Increment -> count++
- *         MyEvent.Save -> presenterScope.launch {
+ *         Increment -> count++
+ *         Save -> presenterScope.launch {
  *           repository.save(count)
  *           emitEffect(MyEffect.Saved)
  *         }
@@ -79,8 +79,8 @@ abstract class MoleculePresenter<Event, Model, Effect>(scope: CoroutineScope) :
   private val moleculeScope = CoroutineScope(scope.coroutineContext + PlatformUiCoroutineContext)
 
   private val events = MutableSharedFlow<Event>(extraBufferCapacity = 20)
-  private val _effects = Channel<Effect>(Channel.BUFFERED)
 
+  private val _effects = Channel<Effect>(Channel.BUFFERED)
   override val effects: ReceiveChannel<Effect> = _effects
 
   override val models: StateFlow<Model> by
@@ -165,8 +165,8 @@ abstract class MoleculeViewModel<Event, Model, Effect> :
  *
  *   ObserveEffects(presenter.effects) { effect ->
  *     when (effect) {
- *       MyEffect.NavigateUp -> navigator.goBack()
- *       MyEffect.ShowMessage -> showSnackbar("Done")
+ *       NavigateUp -> navigator.goBack()
+ *       ShowMessage -> showSnackbar("Done")
  *     }
  *   }
  *

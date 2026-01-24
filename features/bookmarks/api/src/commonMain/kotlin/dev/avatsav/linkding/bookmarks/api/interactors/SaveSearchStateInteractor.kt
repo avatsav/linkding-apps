@@ -14,10 +14,10 @@ import kotlinx.coroutines.withContext
  * saved and manages duplicates.
  */
 @Inject
-class SaveSearchState(
+class SaveSearchStateInteractor(
   private val repository: SearchHistoryRepository,
   private val dispatchers: AppCoroutineDispatchers,
-) : Interactor<SaveSearchState.Params, Unit, Nothing>() {
+) : Interactor<SaveSearchStateInteractor.Params, Unit, Nothing>() {
 
   /** Saves a search state if it has a non-empty query. Doesn't save empty searches. */
   override suspend fun doWork(param: Params): Result<Unit, Nothing> {

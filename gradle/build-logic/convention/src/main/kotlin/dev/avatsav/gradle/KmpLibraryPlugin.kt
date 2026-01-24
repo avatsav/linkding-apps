@@ -49,12 +49,7 @@ private fun Project.configureKmpPlugin() {
 
       compilations.configureEach {
         compileTaskProvider.configure {
-          compilerOptions {
-            freeCompilerArgs.addAll(
-              "-opt-in=kotlinx.cinterop.ExperimentalForeignApi",
-              "-opt-in=kotlinx.cinterop.BetaInteropApi",
-            )
-          }
+          compilerOptions { optIn.addAll(CompilerOptions.nativeOptionIn) }
         }
       }
     }
@@ -63,8 +58,8 @@ private fun Project.configureKmpPlugin() {
       compilations.configureEach {
         compileTaskProvider.configure {
           compilerOptions {
-            freeCompilerArgs.add("-Xexpect-actual-classes")
-            optIn.add("kotlin.time.ExperimentalTime")
+            freeCompilerArgs.addAll(CompilerOptions.freeCompilerArgs)
+            optIn.addAll(CompilerOptions.optIn)
           }
         }
       }

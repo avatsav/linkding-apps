@@ -44,6 +44,9 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import dev.avatsav.linkding.data.model.prefs.AppTheme
+import dev.avatsav.linkding.data.model.prefs.AppTheme.Dark
+import dev.avatsav.linkding.data.model.prefs.AppTheme.Light
+import dev.avatsav.linkding.data.model.prefs.AppTheme.System
 import dev.avatsav.linkding.ui.compose.onCondition
 
 @Composable
@@ -197,7 +200,7 @@ private class PreferenceColumnScopeWrapper(scope: ColumnScope) :
 
 private fun AppTheme.icon() =
   when (this) {
-    AppTheme.System -> Icons.Default.AutoMode
-    AppTheme.Light -> Icons.Default.LightMode
-    AppTheme.Dark -> Icons.Default.DarkMode
+    System -> Icons.Default.AutoMode
+    Light -> Icons.Default.LightMode
+    Dark -> Icons.Default.DarkMode
   }
