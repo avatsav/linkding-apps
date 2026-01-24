@@ -20,6 +20,7 @@ abstract class Interactor<P, R, E> {
 
   val inProgress: Flow<Boolean> = loadingState.map { it > 0 }.distinctUntilChanged()
 
+  @IgnorableReturnValue
   suspend operator fun invoke(param: P): Result<R, E> =
     try {
       addLoader()

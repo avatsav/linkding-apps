@@ -1,8 +1,6 @@
 package dev.avatsav.linkding.api.extensions
 
 import dev.avatsav.linkding.api.models.LinkdingBookmarkCategory
-import dev.avatsav.linkding.api.models.LinkdingBookmarkCategory.Unread
-import dev.avatsav.linkding.api.models.LinkdingBookmarkCategory.Untagged
 import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.parameter
 import io.ktor.http.path
@@ -36,7 +34,8 @@ internal fun HttpRequestBuilder.parameterQuery(
         when (category) {
           Unread -> append("!unread ")
           Untagged -> append("!untagged ")
-          else -> {}
+          All -> TODO()
+          Archived -> TODO()
         }
       }
       .trim()

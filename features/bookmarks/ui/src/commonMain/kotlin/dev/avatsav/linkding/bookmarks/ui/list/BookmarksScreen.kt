@@ -44,7 +44,6 @@ import androidx.compose.material3.SearchBarValue
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
@@ -103,10 +102,10 @@ fun BookmarksScreen(viewModel: BookmarksViewModel, modifier: Modifier = Modifier
   val tagsNavigator =
     rememberResultNavigator<Route.Tags, Route.Tags.Result> { result ->
       when (result) {
-        is Route.Tags.Result.Confirmed -> {
+        is Confirmed -> {
           viewModel.eventSink(BookmarksUiEvent.SetTags(result.selectedTags))
         }
-        Route.Tags.Result.Dismissed -> {
+        Dismissed -> {
           // No action needed on dismissal
         }
       }
@@ -114,10 +113,10 @@ fun BookmarksScreen(viewModel: BookmarksViewModel, modifier: Modifier = Modifier
 
   ObserveEffects(viewModel.effects) { effect ->
     when (effect) {
-      BookmarkUiEffect.AddBookmark -> navigator.goTo(Route.AddBookmark.New)
-      is BookmarkUiEffect.EditBookmark -> navigator.goTo(Route.AddBookmark.Edit(effect.bookmark.id))
-      BookmarkUiEffect.NavigateToSettings -> navigator.goTo(Route.Settings)
-      is BookmarkUiEffect.OpenBookmark -> navigator.goTo(Route.Url(effect.bookmark.url))
+      AddBookmark -> navigator.goTo(Route.AddBookmark.New)
+      is EditBookmark -> navigator.goTo(Route.AddBookmark.Edit(effect.bookmark.id))
+      NavigateToSettings -> navigator.goTo(Route.Settings)
+      is OpenBookmark -> navigator.goTo(Route.Url(effect.bookmark.url))
     }
   }
 
@@ -161,12 +160,8 @@ private fun BookmarksScreen(
         )
 
       when (result) {
-        SnackbarResult.ActionPerformed -> {
-          message.onAction?.invoke()
-        }
-        SnackbarResult.Dismissed -> {
-          currentEventSink(BookmarksUiEvent.DismissSnackbar)
-        }
+        ActionPerformed -> message.onAction?.invoke()
+        Dismissed -> currentEventSink(BookmarksUiEvent.DismissSnackbar)
       }
     }
   }

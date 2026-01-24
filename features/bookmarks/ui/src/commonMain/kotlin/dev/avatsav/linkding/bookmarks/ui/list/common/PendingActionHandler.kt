@@ -72,9 +72,9 @@ internal fun rememberPendingBookmarkActionHandler(
   suspend fun executeActionInternal(action: PendingAction) {
     val result =
       when (action) {
-        is PendingAction.Delete -> deleteBookmark(action.bookmarkId)
-        is PendingAction.Archive -> archiveBookmark(action.bookmarkId)
-        is PendingAction.Unarchive -> unarchiveBookmark(action.bookmarkId)
+        is Delete -> deleteBookmark(action.bookmarkId)
+        is Archive -> archiveBookmark(action.bookmarkId)
+        is Unarchive -> unarchiveBookmark(action.bookmarkId)
       }
 
     result
@@ -129,9 +129,9 @@ internal fun rememberPendingBookmarkActionHandler(
       SnackbarMessage(
         message =
           when (action) {
-            is PendingAction.Delete -> "Bookmark deleted"
-            is PendingAction.Archive -> "Bookmark archived"
-            is PendingAction.Unarchive -> "Bookmark unarchived"
+            is Delete -> "Bookmark deleted"
+            is Archive -> "Bookmark archived"
+            is Unarchive -> "Bookmark unarchived"
           },
         actionLabel = "Undo",
         onAction = undoCurrentAction,
