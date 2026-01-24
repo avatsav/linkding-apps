@@ -62,9 +62,9 @@ fun AddBookmarkScreen(viewModel: AddBookmarkViewModel, modifier: Modifier = Modi
 
   ObserveEffects(viewModel.effects) { effect ->
     when (effect) {
-      AddBookmarkUiEffect.BookmarkSaved,
-      AddBookmarkUiEffect.NavigateUp -> navigator.pop()
-      AddBookmarkUiEffect.ExistingBookmarkFound ->
+      BookmarkSaved,
+      NavigateUp -> navigator.pop()
+      ExistingBookmarkFound ->
         snackbarHostState.showSnackbar("This bookmark already exists. Switched to edit mode.")
     }
   }

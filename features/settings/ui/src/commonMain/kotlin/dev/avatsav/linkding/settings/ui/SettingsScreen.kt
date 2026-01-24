@@ -60,9 +60,9 @@ fun SettingsScreen(viewModel: SettingsViewModel, modifier: Modifier = Modifier) 
 
   ObserveEffects(viewModel.effects) { effect ->
     when (effect) {
-      SettingsUiEffect.NavigateUp -> navigator.pop()
-      is SettingsUiEffect.OpenUrl -> navigator.goTo(Route.Url(effect.url))
-      SettingsUiEffect.ResetToAuth -> navigator.resetRoot(Route.Auth)
+      NavigateUp -> navigator.pop()
+      is OpenUrl -> navigator.goTo(Route.Url(effect.url))
+      ResetToAuth -> navigator.resetRoot(Route.Auth)
     }
   }
 
