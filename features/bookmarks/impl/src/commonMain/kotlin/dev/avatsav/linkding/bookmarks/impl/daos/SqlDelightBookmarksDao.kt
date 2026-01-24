@@ -14,18 +14,19 @@ import dev.zacsweers.metro.SingleIn
 class SqlDelightBookmarksDao(private val db: Database) : BookmarksDao {
 
   override fun insert(bookmark: Bookmark) {
-    val _ = db.bookmarksQueries.insert(
-      linkding_id = bookmark.id,
-      url = bookmark.url,
-      urlHost = bookmark.urlHost,
-      title = bookmark.title,
-      description = bookmark.description,
-      archived = bookmark.archived,
-      unread = bookmark.unread,
-      tags = bookmark.tags,
-      added = bookmark.added,
-      modified = bookmark.modified,
-    )
+    val _ =
+      db.bookmarksQueries.insert(
+        linkding_id = bookmark.id,
+        url = bookmark.url,
+        urlHost = bookmark.urlHost,
+        title = bookmark.title,
+        description = bookmark.description,
+        archived = bookmark.archived,
+        unread = bookmark.unread,
+        tags = bookmark.tags,
+        added = bookmark.added,
+        modified = bookmark.modified,
+      )
   }
 
   override fun insert(bookmarks: List<Bookmark>) {
@@ -37,33 +38,35 @@ class SqlDelightBookmarksDao(private val db: Database) : BookmarksDao {
   }
 
   override fun update(bookmark: Bookmark) {
-    val _ = db.bookmarksQueries.update(
-      linkding_id = bookmark.id,
-      url = bookmark.url,
-      urlHost = bookmark.urlHost,
-      title = bookmark.title,
-      description = bookmark.description,
-      archived = bookmark.archived,
-      unread = bookmark.unread,
-      tags = bookmark.tags,
-      added = bookmark.added,
-      modified = bookmark.modified,
-    )
+    val _ =
+      db.bookmarksQueries.update(
+        linkding_id = bookmark.id,
+        url = bookmark.url,
+        urlHost = bookmark.urlHost,
+        title = bookmark.title,
+        description = bookmark.description,
+        archived = bookmark.archived,
+        unread = bookmark.unread,
+        tags = bookmark.tags,
+        added = bookmark.added,
+        modified = bookmark.modified,
+      )
   }
 
   override fun upsert(bookmark: Bookmark) {
-    val _ = db.bookmarksQueries.upsert(
-      linkding_id = bookmark.id,
-      url = bookmark.url,
-      urlHost = bookmark.urlHost,
-      title = bookmark.title,
-      description = bookmark.description,
-      archived = bookmark.archived,
-      unread = bookmark.unread,
-      tags = bookmark.tags,
-      added = bookmark.added,
-      modified = bookmark.modified,
-    )
+    val _ =
+      db.bookmarksQueries.upsert(
+        linkding_id = bookmark.id,
+        url = bookmark.url,
+        urlHost = bookmark.urlHost,
+        title = bookmark.title,
+        description = bookmark.description,
+        archived = bookmark.archived,
+        unread = bookmark.unread,
+        tags = bookmark.tags,
+        added = bookmark.added,
+        modified = bookmark.modified,
+      )
   }
 
   override fun upsert(bookmarks: List<Bookmark>) {
