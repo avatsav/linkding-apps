@@ -10,7 +10,6 @@ internal object CompilerOptions {
       "-Xexplicit-backing-fields",
       "-Xdata-flow-based-exhaustiveness",
       "-Xcontext-sensitive-resolution",
-      "-XXLanguage:+ExplicitBackingFields",
     )
 
   val optIn =
