@@ -21,7 +21,12 @@ import androidx.navigationevent.NavigationEvent.SwipeEdge
 import androidx.savedstate.serialization.SavedStateConfiguration
 import dev.avatsav.linkding.auth.api.AuthManager
 import dev.avatsav.linkding.auth.api.AuthState
+import dev.avatsav.linkding.auth.api.AuthState.Authenticated
+import dev.avatsav.linkding.auth.api.AuthState.Loading
+import dev.avatsav.linkding.auth.api.AuthState.Unauthenticated
 import dev.avatsav.linkding.data.model.app.LaunchMode
+import dev.avatsav.linkding.data.model.app.LaunchMode.Normal
+import dev.avatsav.linkding.data.model.app.LaunchMode.SharedLink
 import dev.avatsav.linkding.data.model.prefs.AppTheme
 import dev.avatsav.linkding.di.GraphHolder
 import dev.avatsav.linkding.di.UserGraph
@@ -32,6 +37,7 @@ import dev.avatsav.linkding.navigation.Route
 import dev.avatsav.linkding.navigation.RouteEntryProviderScope
 import dev.avatsav.linkding.navigation.rememberNavigator
 import dev.avatsav.linkding.navigation.rememberRouteBackStack
+import dev.avatsav.linkding.navigation.retainNavigationResultHandler
 import dev.avatsav.linkding.prefs.AppPreferences
 import dev.avatsav.linkding.ui.theme.LinkdingTheme
 import dev.zacsweers.metro.ContributesBinding
@@ -72,14 +78,15 @@ class DefaultAppUi(
     val startRoute = remember(launchMode) { initialAuthState.startRoute(launchMode) }
 
     val backStack = rememberRouteBackStack(savedStateConfiguration, startRoute)
-    val navigator = rememberNavigator(backStack, onOpenUrl, onRootPop)
+    val resultHandler = retainNavigationResultHandler()
+    val navigator = rememberNavigator(backStack, resultHandler, onOpenUrl, onRootPop)
     val bottomSheetSceneStrategy = remember { BottomSheetSceneStrategy<Route>() }
 
     val authState by authManager.state.collectAsState(initialAuthState)
     val viewModelFactory = rememberViewModelFactory(authState, metroViewModelFactory)
 
     CompositionLocalProvider(LocalMetroViewModelFactory provides viewModelFactory) {
-      NavigatorCompositionLocals(navigator) {
+      NavigatorCompositionLocals(navigator, resultHandler) {
         LinkdingTheme(
           darkTheme = preferences.shouldUseDarkTheme(),
           dynamicColors = preferences.shouldUseDynamicColors(),
