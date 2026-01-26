@@ -4,10 +4,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberUpdatedState
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.compose.runtime.retain.RetainObserver
+import androidx.compose.runtime.retain.retain
 import app.cash.molecule.launchMolecule
+import co.touchlab.kermit.Logger
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.flow.Flow
@@ -72,11 +75,9 @@ interface Presenter<Event, Model, Effect> {
  * @param Model UI state model
  * @param Effect One-time side effects
  */
-abstract class MoleculePresenter<Event, Model, Effect>(scope: CoroutineScope) :
-  Presenter<Event, Model, Effect> {
+abstract class MoleculePresenter<Event, Model, Effect> : Presenter<Event, Model, Effect> {
 
-  val presenterScope = scope
-  private val moleculeScope = CoroutineScope(scope.coroutineContext + PlatformUiCoroutineContext)
+  val presenterScope = CoroutineScope(PlatformMainDispatcher + SupervisorJob())
 
   private val events = MutableSharedFlow<Event>(extraBufferCapacity = 20)
 
@@ -85,7 +86,7 @@ abstract class MoleculePresenter<Event, Model, Effect>(scope: CoroutineScope) :
 
   override val models: StateFlow<Model> by
     lazy(LazyThreadSafetyMode.NONE) {
-      moleculeScope.launchMolecule(mode = PlatformRecompositionMode) { models(events) }
+      presenterScope.launchMolecule(mode = PlatformRecompositionMode) { models(events) }
     }
 
   override fun eventSink(event: Event) {
@@ -113,45 +114,10 @@ abstract class MoleculePresenter<Event, Model, Effect>(scope: CoroutineScope) :
     val latestBlock by rememberUpdatedState(block)
     LaunchedEffect(Unit) { events.collect { event: Event -> latestBlock(event) } }
   }
-}
 
-/**
- * ViewModel that delegates to a [MoleculePresenter].
- *
- * Inject a presenter factory and create the presenter with [viewModelScope].
- *
- * Example:
- * ```kotlin
- * @Inject
- * class MyViewModel(
- *   presenterFactory: MyPresenter.Factory
- * ) : MoleculeViewModel<MyEvent, MyState, MyEffect>() {
- *   override val presenter by lazy {
- *     presenterFactory.create(viewModelScope)
- *   }
- * }
- * ```
- *
- * @param Event UI events
- * @param Model UI state
- * @param Effect Side effects
- */
-abstract class MoleculeViewModel<Event, Model, Effect> :
-  ViewModel(), Presenter<Event, Model, Effect> {
-
-  /**
-   * The presenter handling state and effects. Initialize lazily with [viewModelScope] from an
-   * injected factory.
-   */
-  protected abstract val presenter: MoleculePresenter<Event, Model, Effect>
-
-  override val models: StateFlow<Model>
-    get() = presenter.models
-
-  override val effects: ReceiveChannel<Effect>
-    get() = presenter.effects
-
-  override fun eventSink(event: Event) = presenter.eventSink(event)
+  fun close() {
+    presenterScope.cancel()
+  }
 }
 
 /**
@@ -182,4 +148,29 @@ fun <Effect> ObserveEffects(effects: ReceiveChannel<Effect>, block: suspend (Eff
       latestBlock(effect)
     }
   }
+}
+
+@Composable
+fun <P : MoleculePresenter<*, *, *>> retainedPresenter(presenter: P): P {
+  return retain {
+      object : RetainObserver {
+        val value = presenter
+
+        override fun onRetained() {
+          Logger.d { "Retained presenter: ${value::class.simpleName}" }
+        }
+
+        override fun onEnteredComposition() {}
+
+        override fun onExitedComposition() {}
+
+        override fun onRetired() {
+          value.close()
+          Logger.d { "Retired presenter: ${value::class.simpleName}" }
+        }
+
+        override fun onUnused() {}
+      }
+    }
+    .value
 }

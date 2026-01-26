@@ -53,12 +53,12 @@ import dev.avatsav.linkding.viewmodel.ObserveEffects
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class, ExperimentalMaterial3Api::class)
 @Composable
-fun SettingsScreen(viewModel: SettingsViewModel, modifier: Modifier = Modifier) {
+fun SettingsScreen(presenter: SettingsPresenter, modifier: Modifier = Modifier) {
   val navigator = LocalNavigator.current
-  val state by viewModel.models.collectAsStateWithLifecycle()
-  val eventSink = viewModel::eventSink
+  val state by presenter.models.collectAsStateWithLifecycle()
+  val eventSink = presenter::eventSink
 
-  ObserveEffects(viewModel.effects) { effect ->
+  ObserveEffects(presenter.effects) { effect ->
     when (effect) {
       NavigateUp -> navigator.pop()
       is OpenUrl -> navigator.goTo(Route.Url(effect.url))

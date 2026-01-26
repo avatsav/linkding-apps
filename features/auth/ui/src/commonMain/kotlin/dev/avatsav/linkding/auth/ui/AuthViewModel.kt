@@ -6,8 +6,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.github.michaelbull.result.onFailure
 import com.github.michaelbull.result.onSuccess
 import dev.avatsav.linkding.auth.ui.usecase.Authenticate
@@ -15,32 +13,13 @@ import dev.avatsav.linkding.data.model.AuthError.InvalidApiKey
 import dev.avatsav.linkding.data.model.AuthError.InvalidHostname
 import dev.avatsav.linkding.data.model.AuthError.Other
 import dev.avatsav.linkding.viewmodel.MoleculePresenter
-import dev.avatsav.linkding.viewmodel.MoleculeViewModel
-import dev.zacsweers.metro.AppScope
-import dev.zacsweers.metro.Assisted
-import dev.zacsweers.metro.AssistedFactory
-import dev.zacsweers.metro.AssistedInject
-import dev.zacsweers.metro.ContributesIntoMap
 import dev.zacsweers.metro.Inject
-import dev.zacsweers.metro.binding
-import dev.zacsweers.metrox.viewmodel.ViewModelKey
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
-@ContributesIntoMap(AppScope::class, binding<ViewModel>())
-@ViewModelKey(AuthViewModel::class)
 @Inject
-class AuthViewModel(authPresenterFactory: AuthPresenter.Factory) :
-  MoleculeViewModel<AuthUiEvent, AuthUiState, AuthEffect>() {
-  override val presenter by lazy { authPresenterFactory.create(viewModelScope) }
-}
-
-@AssistedInject
-class AuthPresenter(
-  @Assisted coroutineScope: CoroutineScope,
-  private val authenticate: Authenticate,
-) : MoleculePresenter<AuthUiEvent, AuthUiState, AuthEffect>(coroutineScope) {
+class AuthPresenter(private val authenticate: Authenticate) :
+  MoleculePresenter<AuthUiEvent, AuthUiState, AuthEffect>() {
 
   @Composable
   override fun models(events: Flow<AuthUiEvent>): AuthUiState {
@@ -76,10 +55,5 @@ class AuthPresenter(
       invalidApiKey = invalidApiKey,
       errorMessage = errorMessage,
     )
-  }
-
-  @AssistedFactory
-  interface Factory {
-    fun create(coroutineScope: CoroutineScope): AuthPresenter
   }
 }

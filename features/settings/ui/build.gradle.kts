@@ -13,9 +13,6 @@ kotlin {
       implementation(projects.core.viewmodel)
       implementation(projects.ui.compose)
       implementation(projects.ui.navigation)
-      implementation(libs.compose.viewmodel.navigation3)
-      implementation(libs.metro.viewmodel)
-      implementation(libs.metro.viewmodel.compose)
     }
   }
 }

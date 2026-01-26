@@ -42,12 +42,12 @@ import dev.avatsav.linkding.viewmodel.ObserveEffects
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-fun AuthScreen(viewModel: AuthViewModel, modifier: Modifier = Modifier) {
+fun AuthScreen(presenter: AuthPresenter, modifier: Modifier = Modifier) {
   val navigator = LocalNavigator.current
-  val state by viewModel.models.collectAsStateWithLifecycle()
-  val eventSink = viewModel::eventSink
+  val state by presenter.models.collectAsStateWithLifecycle()
+  val eventSink = presenter::eventSink
 
-  ObserveEffects(viewModel.effects) { effect ->
+  ObserveEffects(presenter.effects) { effect ->
     when (effect) {
       AuthEffect.AuthenticationSuccess -> navigator.resetRoot(Route.BookmarksFeed)
     }

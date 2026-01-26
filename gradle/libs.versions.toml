@@ -59,12 +59,12 @@ androidx-splashscreen = "androidx.core:core-splashscreen:1.2.0"
 androidx-browser = "androidx.browser:browser:1.9.0"
 androidx-preference = "androidx.preference:preference-ktx:1.2.1"
 compose-foundation = { module = "org.jetbrains.compose.foundation:foundation", version.ref = "compose-multiplatform" }
+compose-runtime = { module = "org.jetbrains.compose.runtime:runtime", version.ref = "compose-multiplatform" }
+compose-runtime-retain = { module = "org.jetbrains.compose.runtime:runtime-retain", version.ref = "compose-multiplatform" }
 compose-components-resources = { module = "org.jetbrains.compose.components:components-resources", version.ref = "compose-multiplatform" }
 compose-uiToolingPreview = { module = "org.jetbrains.compose.ui:ui-tooling-preview", version.ref = "compose-multiplatform" }
 compose-materialIconsExtended = { module = "org.jetbrains.compose.material:material-icons-extended", version.ref = "compose-materialIconsExtended" }
 compose-lifecycle = { module = "org.jetbrains.androidx.lifecycle:lifecycle-runtime-compose", version.ref = "compose-lifecycle" }
-compose-viewmodel = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "compose-lifecycle" }
-compose-viewmodel-navigation3 = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-navigation3", version.ref = "compose-lifecycle" }
 compose-navigationEvent = { module = "org.jetbrains.androidx.navigationevent:navigationevent-compose", version.ref = "compose-navigationEvent" }
 compose-navigation3 = { module = "org.jetbrains.androidx.navigation3:navigation3-ui", version.ref = "compose-navigation3" }
 
@@ -124,8 +124,6 @@ molecule = { module = "app.cash.molecule:molecule-runtime", version.ref = "molec
 detektComposeRules = "io.nlopez.compose.rules:detekt:0.5.5"
 
 metro-android = { module = "dev.zacsweers.metro:metrox-android", version.ref = "metro" }
-metro-viewmodel = { module = "dev.zacsweers.metro:metrox-viewmodel", version.ref = "metro" }
-metro-viewmodel-compose = { module = "dev.zacsweers.metro:metrox-viewmodel-compose", version.ref = "metro" }
 
 # Build logic dependencies
 android-gradlePlugin = { module = "com.android.tools.build:gradle", version.ref = "agp" }

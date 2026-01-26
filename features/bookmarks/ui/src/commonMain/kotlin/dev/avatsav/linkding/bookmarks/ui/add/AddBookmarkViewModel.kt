@@ -7,7 +7,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.lifecycle.viewModelScope
 import co.touchlab.kermit.Logger
 import com.github.michaelbull.result.onFailure
 import com.github.michaelbull.result.onSuccess
@@ -15,48 +14,29 @@ import dev.avatsav.linkding.bookmarks.api.interactors.AddBookmark
 import dev.avatsav.linkding.bookmarks.api.interactors.CheckBookmarkUrl
 import dev.avatsav.linkding.bookmarks.api.interactors.GetBookmark
 import dev.avatsav.linkding.bookmarks.api.interactors.UpdateBookmark
+import dev.avatsav.linkding.bookmarks.ui.add.AddBookmarkUiEvent.CheckUrl
+import dev.avatsav.linkding.bookmarks.ui.add.AddBookmarkUiEvent.Close
+import dev.avatsav.linkding.bookmarks.ui.add.AddBookmarkUiEvent.Save
 import dev.avatsav.linkding.data.model.Bookmark
 import dev.avatsav.linkding.data.model.CheckUrlResult
 import dev.avatsav.linkding.data.model.SaveBookmark
 import dev.avatsav.linkding.data.model.UpdateBookmark as UpdateBookmarkModel
-import dev.avatsav.linkding.di.scope.UserScope
 import dev.avatsav.linkding.navigation.Route
 import dev.avatsav.linkding.viewmodel.MoleculePresenter
-import dev.avatsav.linkding.viewmodel.MoleculeViewModel
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.AssistedInject
-import dev.zacsweers.metro.ContributesIntoMap
-import dev.zacsweers.metrox.viewmodel.ManualViewModelAssistedFactory
-import dev.zacsweers.metrox.viewmodel.ManualViewModelAssistedFactoryKey
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
 @AssistedInject
-class AddBookmarkViewModel(
-  @Assisted private val mode: Route.AddBookmark,
-  addBookmarkPresenterFactory: AddBookmarkPresenter.Factory,
-) : MoleculeViewModel<AddBookmarkUiEvent, AddBookmarkUiState, AddBookmarkUiEffect>() {
-  override val presenter by lazy { addBookmarkPresenterFactory.create(mode, viewModelScope) }
-
-  @AssistedFactory
-  @ManualViewModelAssistedFactoryKey(Factory::class)
-  @ContributesIntoMap(UserScope::class)
-  interface Factory : ManualViewModelAssistedFactory {
-    fun create(mode: Route.AddBookmark): AddBookmarkViewModel
-  }
-}
-
-@AssistedInject
 class AddBookmarkPresenter(
   @Assisted private val route: Route.AddBookmark,
-  @Assisted coroutineScope: CoroutineScope,
   private val addBookmark: AddBookmark,
   private val getBookmark: GetBookmark,
   private val updateBookmark: UpdateBookmark,
   private val checkBookmarkUrl: CheckBookmarkUrl,
-) : MoleculePresenter<AddBookmarkUiEvent, AddBookmarkUiState, AddBookmarkUiEffect>(coroutineScope) {
+) : MoleculePresenter<AddBookmarkUiEvent, AddBookmarkUiState, AddBookmarkUiEffect>() {
 
   private val mode: BookmarkMode = route.toBookmarkMode()
 
@@ -166,13 +146,13 @@ class AddBookmarkPresenter(
 
   @AssistedFactory
   interface Factory {
-    fun create(route: Route.AddBookmark, coroutineScope: CoroutineScope): AddBookmarkPresenter
+    fun create(route: Route.AddBookmark): AddBookmarkPresenter
   }
-}
 
-private fun Route.AddBookmark.toBookmarkMode(): BookmarkMode =
-  when (this) {
-    is New -> BookmarkMode.New
-    is Shared -> BookmarkMode.Shared(url)
-    is Edit -> BookmarkMode.Edit(bookmarkId)
-  }
+  private fun Route.AddBookmark.toBookmarkMode(): BookmarkMode =
+    when (this) {
+      is New -> BookmarkMode.New
+      is Shared -> BookmarkMode.Shared(url)
+      is Edit -> BookmarkMode.Edit(bookmarkId)
+    }
+}

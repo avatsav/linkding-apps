@@ -7,12 +7,10 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.unveilIn
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.scene.Scene
@@ -43,8 +41,6 @@ import dev.avatsav.linkding.ui.theme.LinkdingTheme
 import dev.zacsweers.metro.ContributesBinding
 import dev.zacsweers.metro.Inject
 import dev.zacsweers.metro.SingleIn
-import dev.zacsweers.metrox.viewmodel.LocalMetroViewModelFactory
-import dev.zacsweers.metrox.viewmodel.MetroViewModelFactory
 
 interface AppUi {
   @Composable
@@ -60,11 +56,10 @@ interface AppUi {
 @SingleIn(UiScope::class)
 @Inject
 class DefaultAppUi(
-  private val routeEntryScope: Set<RouteEntryProviderScope>,
+  private val baseRouteEntryScope: Set<RouteEntryProviderScope>,
   private val preferences: AppPreferences,
   private val authManager: AuthManager,
   private val savedStateConfiguration: SavedStateConfiguration,
-  private val metroViewModelFactory: MetroViewModelFactory,
 ) : AppUi {
 
   @Composable
@@ -83,28 +78,23 @@ class DefaultAppUi(
     val bottomSheetSceneStrategy = remember { BottomSheetSceneStrategy<Route>() }
 
     val authState by authManager.state.collectAsState(initialAuthState)
-    val viewModelFactory = rememberViewModelFactory(authState, metroViewModelFactory)
 
-    CompositionLocalProvider(LocalMetroViewModelFactory provides viewModelFactory) {
-      NavigatorCompositionLocals(navigator, resultHandler) {
-        LinkdingTheme(
-          darkTheme = preferences.shouldUseDarkTheme(),
-          dynamicColors = preferences.shouldUseDynamicColors(),
-        ) {
-          NavDisplay(
-            entryDecorators =
-              listOf(
-                rememberSaveableStateHolderNavEntryDecorator(),
-                rememberViewModelStoreNavEntryDecorator(),
-              ),
-            backStack = backStack,
-            onBack = { navigator.pop() },
-            sceneStrategy = bottomSheetSceneStrategy,
-            entryProvider =
-              entryProvider(builder = { routeEntryScope.forEach { builder -> this.builder() } }),
-            predictivePopTransitionSpec = predictivePopTransitionSpec(),
-          )
-        }
+    val routeEntryScope = rememberRouteEntryProviderScope(authState, baseRouteEntryScope)
+
+    NavigatorCompositionLocals(navigator, resultHandler) {
+      LinkdingTheme(
+        darkTheme = preferences.shouldUseDarkTheme(),
+        dynamicColors = preferences.shouldUseDynamicColors(),
+      ) {
+        NavDisplay(
+          entryDecorators = listOf(rememberSaveableStateHolderNavEntryDecorator()),
+          backStack = backStack,
+          onBack = { navigator.pop() },
+          sceneStrategy = bottomSheetSceneStrategy,
+          entryProvider =
+            entryProvider(builder = { routeEntryScope.forEach { builder -> this.builder() } }),
+          predictivePopTransitionSpec = predictivePopTransitionSpec(),
+        )
       }
     }
   }
@@ -122,20 +112,26 @@ private fun <T : Any> predictivePopTransitionSpec():
 }
 
 @Composable
-private fun rememberViewModelFactory(
+private fun rememberRouteEntryProviderScope(
   authState: AuthState,
-  defaultFactory: MetroViewModelFactory,
-): MetroViewModelFactory {
+  baseRouteEntryScope: Set<RouteEntryProviderScope>,
+): Set<RouteEntryProviderScope> {
   return when (authState) {
     is Loading,
-    is Unauthenticated -> defaultFactory
+    is Unauthenticated -> baseRouteEntryScope
+
     is Authenticated -> {
-      remember(authState.apiConfig) {
-          GraphHolder.graph<UserGraph.Factory>().create(authState.apiConfig).also { component ->
-            GraphHolder.updateGraph(component)
+      val userGraphRouteEntryScope =
+        remember(authState.apiConfig) {
+            GraphHolder.graph<UserGraph.Factory>().create(authState.apiConfig).also { component ->
+              GraphHolder.updateGraph(component)
+            }
           }
-        }
-        .metroViewModelFactory
+          .routeEntryScope
+      buildSet {
+        addAll(baseRouteEntryScope)
+        addAll(userGraphRouteEntryScope)
+      }
     }
   }
 }

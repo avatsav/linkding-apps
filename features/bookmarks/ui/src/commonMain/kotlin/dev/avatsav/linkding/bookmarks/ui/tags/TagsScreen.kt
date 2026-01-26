@@ -28,6 +28,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import dev.avatsav.linkding.bookmarks.ui.tags.TagsUiEffect.Dismiss
+import dev.avatsav.linkding.bookmarks.ui.tags.TagsUiEffect.TagsConfirmed
 import dev.avatsav.linkding.navigation.LocalNavigator
 import dev.avatsav.linkding.navigation.Route
 import dev.avatsav.linkding.ui.compose.none
@@ -35,12 +37,12 @@ import dev.avatsav.linkding.viewmodel.ObserveEffects
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TagsScreen(viewModel: TagsViewModel, modifier: Modifier = Modifier) {
+fun TagsScreen(presenter: TagsPresenter, modifier: Modifier = Modifier) {
   val navigator = LocalNavigator.current
-  val state by viewModel.models.collectAsStateWithLifecycle()
-  val eventSink = viewModel::eventSink
+  val state by presenter.models.collectAsStateWithLifecycle()
+  val eventSink = presenter::eventSink
 
-  ObserveEffects(viewModel.effects) { effect ->
+  ObserveEffects(presenter.effects) { effect ->
     when (effect) {
       is TagsConfirmed -> {
         navigator.pop(Route.Tags.Result.Confirmed(effect.selectedTags))
