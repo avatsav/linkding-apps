@@ -1,6 +1,6 @@
 # Presentation Architecture
 
-The app uses **MoleculeViewModel** - combining Jetpack ViewModel lifecycle with Molecule's Composable-based reactive state.
+The app uses **MoleculePresenter** with **retain** - combining Compose's `retain()` API for lifecycle management with Molecule's Composable-based reactive state.
 
 ## Core Components
 
@@ -33,15 +33,14 @@ sealed interface MyUiEffect {
 Handles state logic using Compose runtime:
 
 ```kotlin
-@AssistedInject
+@Inject
 class MyPresenter(
-  @Assisted coroutineScope: CoroutineScope,
   private val repository: Repository,
-) : MoleculePresenter<MyUiEvent, MyUiState, MyUiEffect>(coroutineScope) {
+) : MoleculePresenter<MyUiEvent, MyUiState, MyUiEffect>() {
 
   @Composable
   override fun models(events: Flow<MyUiEvent>): MyUiState {
-    var data by remember { mutableStateOf<Data?>(null) }
+    var data by rememberSaveable { mutableStateOf<Data?>(null) }
     var loading by remember { mutableStateOf(false) }
 
     ObserveEvents { event ->
@@ -60,48 +59,94 @@ class MyPresenter(
 
     return MyUiState(loading = loading, data = data)
   }
-
-  @AssistedFactory
-  interface Factory {
-    fun create(scope: CoroutineScope): MyPresenter
-  }
 }
 ```
 
-### 3. ViewModel
+### 3. Screen
 
-Thin wrapper that provides lifecycle:
-
-```kotlin
-@ContributesIntoMap(UserScope::class, binding<ViewModel>())
-@ViewModelKey(MyViewModel::class)
-@Inject
-class MyViewModel(presenterFactory: MyPresenter.Factory) :
-  MoleculeViewModel<MyUiEvent, MyUiState, MyUiEffect>() {
-  override val presenter by lazy { presenterFactory.create(viewModelScope) }
-}
-```
-
-### 4. Screen
-
-Compose UI with effect handling:
+Compose UI with presenter retention and effect handling:
 
 ```kotlin
 @Composable
-fun MyScreen(viewModel: MyViewModel, modifier: Modifier = Modifier) {
+fun MyScreen(presenter: MyPresenter, modifier: Modifier = Modifier) {
   val navigator = LocalNavigator.current
-  val state by viewModel.models.collectAsStateWithLifecycle()
+  val state by presenter.models.collectAsStateWithLifecycle()
 
-  ObserveEffects(viewModel.effects) { effect ->
+  ObserveEffects(presenter.effects) { effect ->
     when (effect) {
       MyUiEffect.NavigateBack -> navigator.pop()
       is MyUiEffect.ShowError -> { /* show snackbar */ }
     }
   }
 
-  MyScreenContent(state, viewModel::eventSink, modifier)
+  MyScreenContent(state, presenter::eventSink, modifier)
 }
 ```
+
+### 4. Route Registration
+
+Register routes with presenter retention in `di/{Feature}ScreenComponent.kt`:
+
+```kotlin
+@ContributesTo(UserScope::class)
+interface MyScreenComponent {
+  @IntoSet @Provides
+  fun provideEntry(presenter: Provider<MyPresenter>): RouteEntryProviderScope = {
+    entry<Route.MyRoute> { MyScreen(retainedPresenter(presenter())) }
+  }
+}
+```
+
+The `retainedPresenter()` function uses Compose's `retain()` API to:
+- Survive recomposition and configuration changes
+- Automatically clean up (call `presenter.close()`) when retired
+- Work seamlessly with navigation state restoration via `retain-nav3`
+
+## Assisted Injection (Route Parameters)
+
+Use `@AssistedInject` when your presenter needs route parameters (IDs, URLs, etc.):
+
+```kotlin
+@AssistedInject
+class AddBookmarkPresenter(
+  @Assisted private val route: Route.AddBookmark,
+  private val repository: BookmarkRepository,  // regular DI
+) : MoleculePresenter<AddBookmarkUiEvent, AddBookmarkUiState, AddBookmarkUiEffect>() {
+
+  @Composable
+  override fun models(events: Flow<AddBookmarkUiEvent>): AddBookmarkUiState {
+    val bookmarkId = route.bookmarkId
+    // ... use route parameters and repository
+    return AddBookmarkUiState()
+  }
+
+  @AssistedFactory
+  interface Factory {
+    fun create(route: Route.AddBookmark): AddBookmarkPresenter
+  }
+}
+```
+
+**Route registration with factory:**
+
+```kotlin
+@ContributesTo(UserScope::class)
+interface BookmarksScreenComponent {
+  @IntoSet @Provides
+  fun provideEntry(factory: AddBookmarkPresenter.Factory): RouteEntryProviderScope = {
+    entry<Route.AddBookmark> { route ->
+      AddBookmarkScreen(retainedPresenter(factory.create(route)))
+    }
+  }
+}
+```
+
+**Key points:**
+- `@Assisted` parameters come from route data
+- Regular parameters are injected by DI
+- Create an `@AssistedFactory` interface with a `create()` method
+- Inject the factory (not `Provider<Presenter>`) in the screen component
+- Call `factory.create(route)` or `factory.create(param)` with the route data
 
 ## Key APIs
 
@@ -113,3 +158,5 @@ fun MyScreen(viewModel: MyViewModel, modifier: Modifier = Modifier) {
 | `ObserveEvents { }` | Handle events in presenter |
 | `emitEffect(effect)` | Emit side effects |
 | `presenterScope` | Coroutine scope for async work |
+| `retainedPresenter(presenter)` | Retain presenter across recomposition |
+| `rememberSaveable` | Persist state across process death |
