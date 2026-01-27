@@ -121,7 +121,7 @@ sqldelight-primitive = { module = "app.cash.sqldelight:primitive-adapters", vers
 stately = { module = "co.touchlab:stately-common", version.ref = "stately" }
 uuid = { module = "com.benasher44:uuid", version.ref = "uuid" }
 molecule = { module = "app.cash.molecule:molecule-runtime", version.ref = "molecule" }
-detektComposeRules = "io.nlopez.compose.rules:detekt:0.5.5"
+detektComposeRules = "io.nlopez.compose.rules:detekt:0.5.6"
 
 metro-android = { module = "dev.zacsweers.metro:metrox-android", version.ref = "metro" }
 metro-viewmodel = { module = "dev.zacsweers.metro:metrox-viewmodel", version.ref = "metro" }
