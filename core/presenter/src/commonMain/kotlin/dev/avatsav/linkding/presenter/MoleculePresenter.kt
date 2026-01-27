@@ -6,7 +6,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberUpdatedState
 import app.cash.molecule.RecompositionMode
 import app.cash.molecule.launchMolecule
-import co.touchlab.kermit.Logger
 import kotlin.coroutines.CoroutineContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
@@ -113,7 +112,6 @@ abstract class MoleculePresenter<Event, Model, Effect> : Presenter<Event, Model,
   }
 
   fun close() {
-    Logger.d { "Closing presenter" }
     presenterScope.cancel()
   }
 }
