@@ -7,8 +7,7 @@ kotlin {
   sourceSets {
     commonMain.dependencies {
       implementation(projects.core.base)
-      implementation(libs.compose.viewmodel) // For ViewModel base class
-      implementation(libs.metro.viewmodel)
+      implementation(libs.compose.runtime)
     }
   }
 }

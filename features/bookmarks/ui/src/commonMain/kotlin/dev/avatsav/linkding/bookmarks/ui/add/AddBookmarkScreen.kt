@@ -43,24 +43,24 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.avatsav.linkding.bookmarks.ui.add.AddBookmarkUiEvent.Close
 import dev.avatsav.linkding.bookmarks.ui.add.AddBookmarkUiEvent.Save
 import dev.avatsav.linkding.navigation.LocalNavigator
+import dev.avatsav.linkding.presenter.ObserveEffects
 import dev.avatsav.linkding.ui.compose.widgets.OutlinedTagsTextField
 import dev.avatsav.linkding.ui.compose.widgets.PlaceholderVisualTransformation
 import dev.avatsav.linkding.ui.compose.widgets.SmallCircularProgressIndicator
 import dev.avatsav.linkding.ui.compose.widgets.TagsTextFieldValue
-import dev.avatsav.linkding.viewmodel.ObserveEffects
 import kotlinx.coroutines.delay
 
 private const val DebounceDelay = 500L
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-fun AddBookmarkScreen(viewModel: AddBookmarkViewModel, modifier: Modifier = Modifier) {
+fun AddBookmarkScreen(presenter: AddBookmarkPresenter, modifier: Modifier = Modifier) {
   val navigator = LocalNavigator.current
-  val state by viewModel.models.collectAsStateWithLifecycle()
-  val eventSink = viewModel::eventSink
+  val state by presenter.models.collectAsStateWithLifecycle()
+  val eventSink = presenter::eventSink
   val snackbarHostState = remember { SnackbarHostState() }
 
-  ObserveEffects(viewModel.effects) { effect ->
+  ObserveEffects(presenter.effects) { effect ->
     when (effect) {
       BookmarkSaved,
       NavigateUp -> navigator.pop()

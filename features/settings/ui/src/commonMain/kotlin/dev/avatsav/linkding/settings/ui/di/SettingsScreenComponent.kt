@@ -1,19 +1,23 @@
 package dev.avatsav.linkding.settings.ui.di
 
-import dev.avatsav.linkding.di.scope.UiScope
+import dev.avatsav.linkding.di.scope.UserScope
 import dev.avatsav.linkding.navigation.Route
 import dev.avatsav.linkding.navigation.RouteEntryProviderScope
+import dev.avatsav.linkding.presenter.retainedPresenter
+import dev.avatsav.linkding.settings.ui.SettingsPresenter
 import dev.avatsav.linkding.settings.ui.SettingsScreen
 import dev.zacsweers.metro.ContributesTo
 import dev.zacsweers.metro.IntoSet
+import dev.zacsweers.metro.Provider
 import dev.zacsweers.metro.Provides
-import dev.zacsweers.metrox.viewmodel.metroViewModel
 
-@ContributesTo(UiScope::class)
+@ContributesTo(UserScope::class)
 interface SettingsScreenComponent {
   @IntoSet
   @Provides
-  fun provideSettingsEntryProviderScope(): RouteEntryProviderScope = {
-    entry<Route.Settings> { SettingsScreen(viewModel = metroViewModel()) }
+  fun provideSettingsEntryProviderScope(
+    presenter: Provider<SettingsPresenter>
+  ): RouteEntryProviderScope = {
+    entry<Route.Settings> { SettingsScreen(retainedPresenter(presenter())) }
   }
 }

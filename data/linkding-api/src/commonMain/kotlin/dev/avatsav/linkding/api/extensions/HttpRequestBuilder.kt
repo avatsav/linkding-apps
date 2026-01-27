@@ -34,8 +34,7 @@ internal fun HttpRequestBuilder.parameterQuery(
         when (category) {
           Unread -> append("!unread ")
           Untagged -> append("!untagged ")
-          All -> TODO()
-          Archived -> TODO()
+          else -> {}
         }
       }
       .trim()

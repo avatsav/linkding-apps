@@ -44,7 +44,6 @@ internal class NavigatorImpl(
     if (result != null && poppedRoute != null && returningToRoute != null) {
       routeResult(returningToRoute.key, result)
     }
-
     return currentRoute
   }
 

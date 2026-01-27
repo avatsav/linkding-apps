@@ -8,7 +8,7 @@
 |--------|---------|
 | `:core:base` | `Interactor<P,R,E>`, `Observer<P,T>`, `AppCoroutineDispatchers` |
 | `:core:di` | Scopes (`AppScope`, `UiScope`, `UserScope`), `GraphHolder` |
-| `:core:viewmodel` | `MoleculeViewModel`, `MoleculePresenter`, `ObserveEffects` |
+| `:core:presenter` | `MoleculePresenter`, `ObserveEffects`, `retainedPresenter()` |
 | `:core:preferences` | Cross-platform preferences via `multiplatform-settings` |
 | `:core:connectivity` | Network state monitoring |
 
@@ -43,7 +43,7 @@
 features/{feature}/
 ├── api/        # Interfaces, Interactors, Observers
 ├── impl/       # Repository implementations, DI bindings
-└── ui/         # ViewModel, Presenter, Screen, UiContract
+└── ui/         # Presenter, Screen, UiContract
 ```
 
 ### Dependency Flow

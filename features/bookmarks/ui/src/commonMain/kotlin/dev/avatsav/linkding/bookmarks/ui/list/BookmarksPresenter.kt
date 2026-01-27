@@ -28,20 +28,16 @@ import dev.avatsav.linkding.data.model.Bookmark
 import dev.avatsav.linkding.data.model.BookmarkCategory
 import dev.avatsav.linkding.data.model.SearchHistory
 import dev.avatsav.linkding.data.model.Tag
-import dev.avatsav.linkding.viewmodel.MoleculePresenter
-import dev.zacsweers.metro.Assisted
-import dev.zacsweers.metro.AssistedFactory
-import dev.zacsweers.metro.AssistedInject
+import dev.avatsav.linkding.presenter.MoleculePresenter
+import dev.zacsweers.metro.Inject
 import kotlin.time.Clock
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.launch
 
-@AssistedInject
+@Inject
 class BookmarksPresenter(
-  @Assisted scope: CoroutineScope,
   private val observeBookmarks: ObserveBookmarks,
   private val observeSearchHistory: ObserveSearchHistory,
   private val saveSearchState: SaveSearchStateInteractor,
@@ -49,7 +45,7 @@ class BookmarksPresenter(
   private val deleteBookmark: DeleteBookmark,
   private val archiveBookmark: ArchiveBookmark,
   private val unarchiveBookmark: UnarchiveBookmark,
-) : MoleculePresenter<BookmarksUiEvent, BookmarksUiState, BookmarkUiEffect>(scope) {
+) : MoleculePresenter<BookmarksUiEvent, BookmarksUiState, BookmarkUiEffect>() {
 
   @Suppress("CyclomaticComplexMethod")
   @Composable
@@ -197,10 +193,5 @@ class BookmarksPresenter(
       searchHistory = searchHistory,
       snackbarMessage = actionHandler.snackbarMessage,
     )
-  }
-
-  @AssistedFactory
-  interface Factory {
-    fun create(scope: CoroutineScope): BookmarksPresenter
   }
 }

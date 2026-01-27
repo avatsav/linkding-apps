@@ -81,11 +81,11 @@ import dev.avatsav.linkding.navigation.LocalNavigator
 import dev.avatsav.linkding.navigation.Route
 import dev.avatsav.linkding.navigation.RouteNavigator
 import dev.avatsav.linkding.navigation.rememberResultNavigator
+import dev.avatsav.linkding.presenter.ObserveEffects
 import dev.avatsav.linkding.ui.compose.appearFromBottom
 import dev.avatsav.linkding.ui.compose.disappearToBottom
 import dev.avatsav.linkding.ui.compose.widgets.AnimatedVisibilityWithElevation
 import dev.avatsav.linkding.ui.theme.Material3ShapeDefaults
-import dev.avatsav.linkding.viewmodel.ObserveEffects
 import kotlinx.coroutines.launch
 
 @OptIn(
@@ -94,16 +94,16 @@ import kotlinx.coroutines.launch
   ExperimentalComposeUiApi::class,
 )
 @Composable
-fun BookmarksScreen(viewModel: BookmarksViewModel, modifier: Modifier = Modifier) {
+fun BookmarksScreen(presenter: BookmarksPresenter, modifier: Modifier = Modifier) {
   val navigator = LocalNavigator.current
-  val state by viewModel.models.collectAsStateWithLifecycle()
-  val eventSink = viewModel::eventSink
+  val state by presenter.models.collectAsStateWithLifecycle()
+  val eventSink = presenter::eventSink
 
   val tagsNavigator =
     rememberResultNavigator<Route.Tags, Route.Tags.Result> { result ->
       when (result) {
         is Confirmed -> {
-          viewModel.eventSink(BookmarksUiEvent.SetTags(result.selectedTags))
+          presenter.eventSink(BookmarksUiEvent.SetTags(result.selectedTags))
         }
         Dismissed -> {
           // No action needed on dismissal
@@ -111,7 +111,7 @@ fun BookmarksScreen(viewModel: BookmarksViewModel, modifier: Modifier = Modifier
       }
     }
 
-  ObserveEffects(viewModel.effects) { effect ->
+  ObserveEffects(presenter.effects) { effect ->
     when (effect) {
       AddBookmark -> navigator.goTo(Route.AddBookmark.New)
       is EditBookmark -> navigator.goTo(Route.AddBookmark.Edit(effect.bookmark.id))

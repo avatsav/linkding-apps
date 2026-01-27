@@ -3,8 +3,7 @@ package dev.avatsav.linkding.navigation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.mutableStateMapOf
-import androidx.compose.runtime.saveable.Saver
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.retain.retain
 import androidx.compose.runtime.snapshots.SnapshotStateMap
 
 /** Internal handler for routing results between routes. Used by [rememberResultNavigator]. */
@@ -51,18 +50,8 @@ internal constructor(
   }
 }
 
-/** Internal: Create and remember a [NavigationResultHandler]. */
+/** Create and retain a [NavigationResultHandler]. */
 @Composable
-internal fun rememberNavigationResultHandler(): NavigationResultHandler {
-  return rememberSaveable(saver = resultHandlerSaver()) { NavigationResultHandler() }
+fun retainNavigationResultHandler(): NavigationResultHandler {
+  return retain { NavigationResultHandler() }
 }
-
-private fun resultHandlerSaver(): Saver<NavigationResultHandler, Any> =
-  Saver(
-    save = {
-      // We don't persist results across process death - they're transient
-      // Just return empty state marker
-      true
-    },
-    restore = { NavigationResultHandler() },
-  )

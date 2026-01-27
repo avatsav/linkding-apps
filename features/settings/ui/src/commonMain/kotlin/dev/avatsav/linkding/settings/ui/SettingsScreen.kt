@@ -37,6 +37,10 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.avatsav.linkding.data.model.prefs.AppTheme
 import dev.avatsav.linkding.navigation.LocalNavigator
 import dev.avatsav.linkding.navigation.Route
+import dev.avatsav.linkding.presenter.ObserveEffects
+import dev.avatsav.linkding.settings.ui.SettingsUiEffect.NavigateUp
+import dev.avatsav.linkding.settings.ui.SettingsUiEffect.OpenUrl
+import dev.avatsav.linkding.settings.ui.SettingsUiEffect.ResetToAuth
 import dev.avatsav.linkding.settings.ui.SettingsUiEvent.Close
 import dev.avatsav.linkding.settings.ui.SettingsUiEvent.ResetApiConfig
 import dev.avatsav.linkding.settings.ui.SettingsUiEvent.SetAppTheme
@@ -49,16 +53,15 @@ import dev.avatsav.linkding.settings.ui.widgets.PreferenceSection
 import dev.avatsav.linkding.settings.ui.widgets.SwitchPreference
 import dev.avatsav.linkding.settings.ui.widgets.ThemePreference
 import dev.avatsav.linkding.ui.theme.Material3ShapeDefaults
-import dev.avatsav.linkding.viewmodel.ObserveEffects
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class, ExperimentalMaterial3Api::class)
 @Composable
-fun SettingsScreen(viewModel: SettingsViewModel, modifier: Modifier = Modifier) {
+fun SettingsScreen(presenter: SettingsPresenter, modifier: Modifier = Modifier) {
   val navigator = LocalNavigator.current
-  val state by viewModel.models.collectAsStateWithLifecycle()
-  val eventSink = viewModel::eventSink
+  val state by presenter.models.collectAsStateWithLifecycle()
+  val eventSink = presenter::eventSink
 
-  ObserveEffects(viewModel.effects) { effect ->
+  ObserveEffects(presenter.effects) { effect ->
     when (effect) {
       NavigateUp -> navigator.pop()
       is OpenUrl -> navigator.goTo(Route.Url(effect.url))
