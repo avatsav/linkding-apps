@@ -32,8 +32,8 @@ import dev.avatsav.linkding.bookmarks.ui.tags.TagsUiEffect.Dismiss
 import dev.avatsav.linkding.bookmarks.ui.tags.TagsUiEffect.TagsConfirmed
 import dev.avatsav.linkding.navigation.LocalNavigator
 import dev.avatsav.linkding.navigation.Route
-import dev.avatsav.linkding.ui.compose.none
 import dev.avatsav.linkding.presenter.ObserveEffects
+import dev.avatsav.linkding.ui.compose.none
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

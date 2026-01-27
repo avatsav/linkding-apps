@@ -5,6 +5,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import dev.avatsav.linkding.AppInfo
 import dev.avatsav.linkding.data.model.prefs.AppTheme
+import dev.avatsav.linkding.presenter.MoleculePresenter
 import dev.avatsav.linkding.settings.api.SettingsManager
 import dev.avatsav.linkding.settings.ui.SettingsUiEvent.Close
 import dev.avatsav.linkding.settings.ui.SettingsUiEvent.ResetApiConfig
@@ -12,7 +13,6 @@ import dev.avatsav.linkding.settings.ui.SettingsUiEvent.SetAppTheme
 import dev.avatsav.linkding.settings.ui.SettingsUiEvent.ShowLicenses
 import dev.avatsav.linkding.settings.ui.SettingsUiEvent.ShowSourceCode
 import dev.avatsav.linkding.settings.ui.SettingsUiEvent.ToggleUseDynamicColors
-import dev.avatsav.linkding.presenter.MoleculePresenter
 import dev.zacsweers.metro.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch

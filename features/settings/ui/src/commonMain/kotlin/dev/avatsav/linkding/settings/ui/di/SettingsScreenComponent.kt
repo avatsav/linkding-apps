@@ -3,9 +3,9 @@ package dev.avatsav.linkding.settings.ui.di
 import dev.avatsav.linkding.di.scope.UserScope
 import dev.avatsav.linkding.navigation.Route
 import dev.avatsav.linkding.navigation.RouteEntryProviderScope
+import dev.avatsav.linkding.presenter.retainedPresenter
 import dev.avatsav.linkding.settings.ui.SettingsPresenter
 import dev.avatsav.linkding.settings.ui.SettingsScreen
-import dev.avatsav.linkding.presenter.retainedPresenter
 import dev.zacsweers.metro.ContributesTo
 import dev.zacsweers.metro.IntoSet
 import dev.zacsweers.metro.Provider
