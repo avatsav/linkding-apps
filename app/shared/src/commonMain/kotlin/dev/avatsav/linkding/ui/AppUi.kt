@@ -34,6 +34,7 @@ import dev.avatsav.linkding.navigation.NavigatorCompositionLocals
 import dev.avatsav.linkding.navigation.Route
 import dev.avatsav.linkding.navigation.RouteEntryProviderScope
 import dev.avatsav.linkding.navigation.rememberNavigator
+import dev.avatsav.linkding.navigation.rememberRetainedValuesStoreNavEntryDecorator
 import dev.avatsav.linkding.navigation.rememberRouteBackStack
 import dev.avatsav.linkding.navigation.retainNavigationResultHandler
 import dev.avatsav.linkding.prefs.AppPreferences
@@ -79,7 +80,7 @@ class DefaultAppUi(
 
     val authState by authManager.state.collectAsState(initialAuthState)
 
-    val routeEntryScope = rememberRouteEntryProviderScope(authState, baseRouteEntryScope)
+    val userScopeRouteEntryScope = rememberUserScopeRouteEntryScope(authState)
 
     NavigatorCompositionLocals(navigator, resultHandler) {
       LinkdingTheme(
@@ -87,12 +88,21 @@ class DefaultAppUi(
         dynamicColors = preferences.shouldUseDynamicColors(),
       ) {
         NavDisplay(
-          entryDecorators = listOf(rememberSaveableStateHolderNavEntryDecorator()),
+          entryDecorators =
+            listOf(
+              rememberSaveableStateHolderNavEntryDecorator(),
+              rememberRetainedValuesStoreNavEntryDecorator(),
+            ),
           backStack = backStack,
           onBack = { navigator.pop() },
           sceneStrategy = bottomSheetSceneStrategy,
           entryProvider =
-            entryProvider(builder = { routeEntryScope.forEach { builder -> this.builder() } }),
+            entryProvider(
+              builder = {
+                baseRouteEntryScope.forEach { builder -> this.builder() }
+                userScopeRouteEntryScope.forEach { builder -> this.builder() }
+              }
+            ),
           predictivePopTransitionSpec = predictivePopTransitionSpec(),
         )
       }
@@ -112,26 +122,17 @@ private fun <T : Any> predictivePopTransitionSpec():
 }
 
 @Composable
-private fun rememberRouteEntryProviderScope(
-  authState: AuthState,
-  baseRouteEntryScope: Set<RouteEntryProviderScope>,
-): Set<RouteEntryProviderScope> {
+private fun rememberUserScopeRouteEntryScope(authState: AuthState): Set<RouteEntryProviderScope> {
   return when (authState) {
     is Loading,
-    is Unauthenticated -> baseRouteEntryScope
-
+    is Unauthenticated -> emptySet()
     is Authenticated -> {
-      val userGraphRouteEntryScope =
-        remember(authState.apiConfig) {
-            GraphHolder.graph<UserGraph.Factory>().create(authState.apiConfig).also { component ->
-              GraphHolder.updateGraph(component)
-            }
+      remember(authState.apiConfig) {
+          GraphHolder.graph<UserGraph.Factory>().create(authState.apiConfig).also { component ->
+            GraphHolder.updateGraph(component)
           }
-          .routeEntryScope
-      buildSet {
-        addAll(baseRouteEntryScope)
-        addAll(userGraphRouteEntryScope)
-      }
+        }
+        .routeEntryScope
     }
   }
 }

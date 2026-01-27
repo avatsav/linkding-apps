@@ -28,7 +28,7 @@ import dev.avatsav.linkding.data.model.Bookmark
 import dev.avatsav.linkding.data.model.BookmarkCategory
 import dev.avatsav.linkding.data.model.SearchHistory
 import dev.avatsav.linkding.data.model.Tag
-import dev.avatsav.linkding.viewmodel.MoleculePresenter
+import dev.avatsav.linkding.presenter.MoleculePresenter
 import dev.zacsweers.metro.Inject
 import kotlin.time.Clock
 import kotlinx.coroutines.flow.Flow

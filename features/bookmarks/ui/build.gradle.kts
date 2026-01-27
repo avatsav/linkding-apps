@@ -10,7 +10,7 @@ kotlin {
       implementation(projects.core.base)
       implementation(projects.core.di)
       implementation(projects.core.connectivity)
-      implementation(projects.core.viewmodel)
+      implementation(projects.core.presenter)
       implementation(projects.ui.compose)
       implementation(projects.ui.navigation)
       implementation(libs.paging.compose)

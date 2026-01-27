@@ -22,7 +22,7 @@ import dev.avatsav.linkding.data.model.CheckUrlResult
 import dev.avatsav.linkding.data.model.SaveBookmark
 import dev.avatsav.linkding.data.model.UpdateBookmark as UpdateBookmarkModel
 import dev.avatsav.linkding.navigation.Route
-import dev.avatsav.linkding.viewmodel.MoleculePresenter
+import dev.avatsav.linkding.presenter.MoleculePresenter
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.AssistedInject

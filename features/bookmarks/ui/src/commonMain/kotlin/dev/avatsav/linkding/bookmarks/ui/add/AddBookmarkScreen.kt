@@ -47,7 +47,7 @@ import dev.avatsav.linkding.ui.compose.widgets.OutlinedTagsTextField
 import dev.avatsav.linkding.ui.compose.widgets.PlaceholderVisualTransformation
 import dev.avatsav.linkding.ui.compose.widgets.SmallCircularProgressIndicator
 import dev.avatsav.linkding.ui.compose.widgets.TagsTextFieldValue
-import dev.avatsav.linkding.viewmodel.ObserveEffects
+import dev.avatsav.linkding.presenter.ObserveEffects
 import kotlinx.coroutines.delay
 
 private const val DebounceDelay = 500L

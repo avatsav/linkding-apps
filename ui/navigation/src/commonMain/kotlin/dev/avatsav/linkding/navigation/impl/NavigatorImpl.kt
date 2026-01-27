@@ -1,5 +1,6 @@
 package dev.avatsav.linkding.navigation.impl
 
+import co.touchlab.kermit.Logger
 import dev.avatsav.linkding.navigation.NavResult
 import dev.avatsav.linkding.navigation.NavigationResultHandler
 import dev.avatsav.linkding.navigation.Navigator
@@ -18,8 +19,10 @@ internal class NavigatorImpl(
 
   override fun goTo(route: Route): Boolean {
     if (route is Route.Url && onOpenUrl != null) {
+      Logger.d { "Opening URL: ${route.url}" }
       return onOpenUrl(route.url)
     }
+    Logger.d { "goTo: ${route.key}" }
     backStack.add(route)
     return true
   }
@@ -27,6 +30,7 @@ internal class NavigatorImpl(
   override fun pop(result: NavResult?): Route? {
     // When at root, invoke callback and return null (don't pop the root)
     if (backStack.size <= 1) {
+      Logger.d { "pop: root" }
       onRootPop()
       return null
     }
@@ -44,7 +48,7 @@ internal class NavigatorImpl(
     if (result != null && poppedRoute != null && returningToRoute != null) {
       routeResult(returningToRoute.key, result)
     }
-
+    Logger.d { "pop: $currentRoute" }
     return currentRoute
   }
 

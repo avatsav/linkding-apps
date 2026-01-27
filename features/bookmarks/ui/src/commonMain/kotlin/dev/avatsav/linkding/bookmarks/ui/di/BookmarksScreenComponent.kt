@@ -11,17 +11,20 @@ import dev.avatsav.linkding.di.scope.UserScope
 import dev.avatsav.linkding.navigation.BottomSheetSceneStrategy
 import dev.avatsav.linkding.navigation.Route
 import dev.avatsav.linkding.navigation.RouteEntryProviderScope
-import dev.avatsav.linkding.viewmodel.retainedPresenter
+import dev.avatsav.linkding.presenter.retainedPresenter
 import dev.zacsweers.metro.ContributesTo
 import dev.zacsweers.metro.IntoSet
+import dev.zacsweers.metro.Provider
 import dev.zacsweers.metro.Provides
 
 @ContributesTo(UserScope::class)
 interface BookmarksScreenComponent {
   @IntoSet
   @Provides
-  fun provideBookmarksEntryProviderScope(presenter: BookmarksPresenter): RouteEntryProviderScope = {
-    entry<Route.BookmarksFeed> { BookmarksScreen(retainedPresenter(presenter)) }
+  fun provideBookmarksEntryProviderScope(
+    presenter: Provider<BookmarksPresenter>
+  ): RouteEntryProviderScope = {
+    entry<Route.BookmarksFeed> { BookmarksScreen(retainedPresenter(presenter())) }
   }
 
   @IntoSet

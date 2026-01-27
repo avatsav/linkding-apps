@@ -16,7 +16,7 @@ import dev.avatsav.linkding.bookmarks.ui.tags.TagsUiEvent.Confirm
 import dev.avatsav.linkding.bookmarks.ui.tags.TagsUiEvent.ToggleTag
 import dev.avatsav.linkding.bookmarks.ui.util.loadedList
 import dev.avatsav.linkding.data.model.Tag
-import dev.avatsav.linkding.viewmodel.MoleculePresenter
+import dev.avatsav.linkding.presenter.MoleculePresenter
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.AssistedInject

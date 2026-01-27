@@ -38,7 +38,7 @@ import dev.avatsav.linkding.auth.ui.AuthUiEvent.SaveCredentials
 import dev.avatsav.linkding.navigation.LocalNavigator
 import dev.avatsav.linkding.navigation.Route
 import dev.avatsav.linkding.ui.compose.widgets.SmallCircularProgressIndicator
-import dev.avatsav.linkding.viewmodel.ObserveEffects
+import dev.avatsav.linkding.presenter.ObserveEffects
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable

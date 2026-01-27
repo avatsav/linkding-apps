@@ -63,7 +63,7 @@ kotlin {
   sourceSets {
     commonMain.dependencies {
       implementation(projects.features.{feature}.api)
-      implementation(projects.core.viewmodel)
+      implementation(projects.core.presenter)
       implementation(projects.core.di)
       implementation(projects.ui.navigation)
       implementation(projects.ui.compose)

@@ -9,6 +9,8 @@ plugins {
 kotlin {
   sourceSets {
     commonMain.dependencies {
+      implementation(projects.thirdparty.retainNav3)
+
       // Core infrastructure - needed by apps
       api(projects.core.base)
       api(projects.core.di)

@@ -12,7 +12,7 @@ import dev.avatsav.linkding.auth.ui.usecase.Authenticate
 import dev.avatsav.linkding.data.model.AuthError.InvalidApiKey
 import dev.avatsav.linkding.data.model.AuthError.InvalidHostname
 import dev.avatsav.linkding.data.model.AuthError.Other
-import dev.avatsav.linkding.viewmodel.MoleculePresenter
+import dev.avatsav.linkding.presenter.MoleculePresenter
 import dev.zacsweers.metro.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch

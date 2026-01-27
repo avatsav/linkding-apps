@@ -85,7 +85,8 @@ import dev.avatsav.linkding.ui.compose.appearFromBottom
 import dev.avatsav.linkding.ui.compose.disappearToBottom
 import dev.avatsav.linkding.ui.compose.widgets.AnimatedVisibilityWithElevation
 import dev.avatsav.linkding.ui.theme.Material3ShapeDefaults
-import dev.avatsav.linkding.viewmodel.ObserveEffects
+import dev.avatsav.linkding.presenter.ObserveEffects
+import dev.avatsav.linkding.presenter.retainedPresenter
 import kotlinx.coroutines.launch
 
 @OptIn(

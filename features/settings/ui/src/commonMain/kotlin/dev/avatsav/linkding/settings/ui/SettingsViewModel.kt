@@ -12,7 +12,7 @@ import dev.avatsav.linkding.settings.ui.SettingsUiEvent.SetAppTheme
 import dev.avatsav.linkding.settings.ui.SettingsUiEvent.ShowLicenses
 import dev.avatsav.linkding.settings.ui.SettingsUiEvent.ShowSourceCode
 import dev.avatsav.linkding.settings.ui.SettingsUiEvent.ToggleUseDynamicColors
-import dev.avatsav.linkding.viewmodel.MoleculePresenter
+import dev.avatsav.linkding.presenter.MoleculePresenter
 import dev.zacsweers.metro.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
