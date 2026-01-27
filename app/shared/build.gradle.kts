@@ -9,6 +9,8 @@ plugins {
 kotlin {
   sourceSets {
     commonMain.dependencies {
+      implementation(projects.thirdparty.retainNav3)
+
       // Core infrastructure - needed by apps
       api(projects.core.base)
       api(projects.core.di)
@@ -33,9 +35,6 @@ kotlin {
       api(projects.features.settings.api)
       api(projects.features.settings.impl)
       api(projects.features.settings.ui)
-
-      api(libs.compose.viewmodel.navigation3)
-      api(libs.metro.viewmodel.compose)
     }
 
     targets.withType<KotlinNativeTarget>().configureEach {

@@ -80,7 +80,7 @@ include(
   ":core:preferences",
   ":core:connectivity",
   ":core:di",
-  ":core:viewmodel",
+  ":core:presenter",
   ":data:models",
   ":data:database",
   ":data:database-sqldelight",
@@ -99,4 +99,5 @@ include(
   ":features:settings:impl",
   ":codegen:annotations",
   ":codegen:compiler",
+  ":thirdparty:retain-nav3"
 )

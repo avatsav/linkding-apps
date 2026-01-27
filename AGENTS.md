@@ -33,12 +33,14 @@ Kotlin Multiplatform and Compose Multiplatform.
 
 ## Do
 
-- Use **MoleculeViewModel** pattern for all screens (
+- Use **MoleculePresenter** with **retain** pattern for all screens (
   see [docs/presentation.md](docs/presentation.md))
 - Follow **3-layer feature structure**: `api/` → `impl/` → `ui/`
 - UI modules depend only on API modules, never impl
-- Register screens via `@IntoSet` providers in `ScreenComponent`
+- Register screens via `@IntoSet` providers with `Provider<Presenter>` injection
+- Use `retainedPresenter()` to retain presenters across recomposition
 - Use `ObserveEffects` for navigation and side effects
+- Use `rememberSaveable` for state that should survive process death
 - Use appropriate DI scopes: `AppScope`, `UiScope`, `UserScope`
 - Package names: `dev.avatsav.linkding.{feature}.{layer}.*`
 
@@ -52,7 +54,7 @@ Kotlin Multiplatform and Compose Multiplatform.
 ## Documentation
 
 - [Architecture](docs/architecture.md) - Module organization, DI scopes
-- [Presentation](docs/presentation.md) - MoleculeViewModel pattern
+- [Presentation](docs/presentation.md) - MoleculePresenter pattern
 - [Navigation](docs/navigation.md) - Navigation 3 setup
 - [Screen Results](docs/screen-results.md) - Passing results between screens
 - [Creating Features](docs/creating-features.md) - Step-by-step guide

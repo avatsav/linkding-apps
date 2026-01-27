@@ -9,6 +9,7 @@ kotlin {
       implementation(projects.data.models)
       implementation(libs.kotlin.serialization.json)
       implementation(libs.compose.m3expressive)
+      implementation(libs.kermit)
       api(libs.compose.navigation3)
       api(libs.compose.navigationEvent)
     }

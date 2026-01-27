@@ -6,7 +6,7 @@ package dev.avatsav.linkding.navigation
  * Returned by [rememberResultNavigator]. Supports both `goTo()` and invoke operator syntax.
  */
 interface RouteNavigator<in R : Route> {
-  fun goTo(route: R): Boolean
+  @IgnorableReturnValue fun goTo(route: R): Boolean
 
-  operator fun invoke(route: R): Boolean = goTo(route)
+  @IgnorableReturnValue operator fun invoke(route: R): Boolean = goTo(route)
 }

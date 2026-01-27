@@ -69,10 +69,10 @@ class NoOpNavigator : Navigator {
 @Composable
 fun rememberNavigator(
   backStack: RouteBackStack,
+  resultHandler: NavigationResultHandler,
   onOpenUrl: ((String) -> Boolean)? = null,
   onRootPop: () -> Unit = {},
 ): Navigator {
-  val resultHandler = rememberNavigationResultHandler()
   return remember(resultHandler) { NavigatorImpl(backStack, resultHandler, onOpenUrl, onRootPop) }
 }
 
@@ -86,8 +86,11 @@ fun rememberNavigator(
  * ```
  */
 @Composable
-fun NavigatorCompositionLocals(navigator: Navigator, content: @Composable () -> Unit) {
-  val resultHandler = (navigator as NavigatorImpl).resultHandler
+fun NavigatorCompositionLocals(
+  navigator: Navigator,
+  resultHandler: NavigationResultHandler,
+  content: @Composable () -> Unit,
+) {
   CompositionLocalProvider(
     LocalNavigator provides navigator,
     LocalNavigationResultHandler provides resultHandler,

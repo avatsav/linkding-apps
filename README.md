@@ -15,7 +15,7 @@ This project owes its multiplatform foundation to the excellent [Tivi](https://g
 
 - Kotlin + Compose Multiplatform
 - [Navigation 3](https://developer.android.com/develop/ui/compose/navigation): Type-safe Compose navigation
-- [Molecule](https://github.com/cashapp/molecule): Composable-based reactive state management
+- [Molecule](https://github.com/cashapp/molecule): Composable-based Presenters
 - [Metro](https://github.com/ZacSweers/metro): Dependency Injection
 - Icons generated with [Icon Kitchen](https://icon.kitchen)
 
