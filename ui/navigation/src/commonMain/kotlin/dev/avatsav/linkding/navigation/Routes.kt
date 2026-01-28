@@ -59,7 +59,7 @@ sealed interface Route {
 }
 
 @ContributesTo(AppScope::class)
-interface NavigationComponent {
+interface NavigationProviders {
 
   @Provides
   @SingleIn(AppScope::class)

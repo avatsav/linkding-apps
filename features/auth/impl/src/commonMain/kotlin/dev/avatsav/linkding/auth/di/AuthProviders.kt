@@ -10,7 +10,7 @@ import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logger
 
 @ContributesTo(AppScope::class)
-interface AuthComponent {
+interface AuthProviders {
 
   @Provides
   @SingleIn(AppScope::class)

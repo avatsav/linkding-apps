@@ -8,7 +8,7 @@ import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Provides
 import dev.zacsweers.metro.SingleIn
 
-actual interface SqlDelightPlatformComponent {
+actual interface SqlDelightPlatformProviders {
 
   @Provides
   @SingleIn(AppScope::class)

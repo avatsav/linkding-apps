@@ -14,7 +14,7 @@ import dev.zacsweers.metro.SingleIn
 import io.ktor.client.plugins.logging.LogLevel
 
 @ContributesTo(UserScope::class)
-interface LinkdingComponent {
+interface LinkdingProviders {
 
   @Provides
   @SingleIn(UserScope::class)

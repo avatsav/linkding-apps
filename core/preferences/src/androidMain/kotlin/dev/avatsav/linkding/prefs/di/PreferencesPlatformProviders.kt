@@ -9,7 +9,7 @@ import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Provides
 import dev.zacsweers.metro.SingleIn
 
-actual interface PreferencesPlatformComponent {
+actual interface PreferencesPlatformProviders {
   @Provides
   @SingleIn(AppScope::class)
   fun provideSettings(sharedPrefs: SharedPreferences): ObservableSettings =
