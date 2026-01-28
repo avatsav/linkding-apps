@@ -75,16 +75,16 @@ class FakeNavigator(vararg initialRoutes: Route) : Navigator {
   // ===== Assertion methods =====
 
   /** Await and return the next goTo event. */
-  suspend fun awaitGoTo(): GoToEvent = goToEvents.awaitItem()
+  @IgnorableReturnValue suspend fun awaitGoTo(): GoToEvent = goToEvents.awaitItem()
 
   /** Await and return the next route navigated to. */
-  suspend fun awaitNextRoute(): Route = goToEvents.awaitItem().route
+  @IgnorableReturnValue suspend fun awaitNextRoute(): Route = goToEvents.awaitItem().route
 
   /** Await and return the next pop event. */
-  suspend fun awaitPop(): PopEvent = popEvents.awaitItem()
+  @IgnorableReturnValue suspend fun awaitPop(): PopEvent = popEvents.awaitItem()
 
   /** Await and return the next resetRoot event. */
-  suspend fun awaitResetRoot(): ResetRootEvent = resetRootEvents.awaitItem()
+  @IgnorableReturnValue suspend fun awaitResetRoot(): ResetRootEvent = resetRootEvents.awaitItem()
 
   /** Assert that no goTo events are pending. */
   fun assertGoToIsEmpty() {
