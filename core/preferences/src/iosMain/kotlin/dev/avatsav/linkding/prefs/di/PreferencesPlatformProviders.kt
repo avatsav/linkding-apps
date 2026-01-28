@@ -7,7 +7,7 @@ import dev.zacsweers.metro.Provides
 import dev.zacsweers.metro.SingleIn
 import platform.Foundation.NSUserDefaults
 
-actual interface PreferencesPlatformComponent {
+actual interface PreferencesPlatformProviders {
   @Provides
   @SingleIn(AppScope::class)
   fun provideSettings(delegate: NSUserDefaults): ObservableSettings =

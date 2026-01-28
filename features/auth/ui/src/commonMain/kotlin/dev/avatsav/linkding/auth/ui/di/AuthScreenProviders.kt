@@ -12,7 +12,7 @@ import dev.zacsweers.metro.Provider
 import dev.zacsweers.metro.Provides
 
 @ContributesTo(UiScope::class)
-interface AuthScreenComponent {
+interface AuthScreenProviders {
   @IntoSet
   @Provides
   fun provideAuthEntryProviderScope(

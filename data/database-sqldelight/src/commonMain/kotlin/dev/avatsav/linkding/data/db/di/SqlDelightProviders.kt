@@ -7,10 +7,10 @@ import dev.zacsweers.metro.ContributesTo
 import dev.zacsweers.metro.Provides
 import dev.zacsweers.metro.SingleIn
 
-expect interface SqlDelightPlatformComponent
+expect interface SqlDelightPlatformProviders
 
 @ContributesTo(AppScope::class)
-interface SqlDelightComponent : SqlDelightPlatformComponent {
+interface SqlDelightProviders : SqlDelightPlatformProviders {
   @SingleIn(AppScope::class)
   @Provides
   fun provideSqlDelightDatabase(factory: DatabaseFactory): Database = factory.createDatabase()

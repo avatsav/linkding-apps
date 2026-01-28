@@ -12,7 +12,7 @@ import dev.zacsweers.metro.Provider
 import dev.zacsweers.metro.Provides
 
 @ContributesTo(UserScope::class)
-interface SettingsScreenComponent {
+interface SettingsScreenProviders {
   @IntoSet
   @Provides
   fun provideSettingsEntryProviderScope(

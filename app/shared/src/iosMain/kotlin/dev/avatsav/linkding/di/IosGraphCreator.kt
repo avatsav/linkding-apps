@@ -6,5 +6,5 @@ object IosGraphCreator {
   fun createAppGraph(): IosAppGraph = createGraph<IosAppGraph>()
 
   fun createUiGraph(appGraph: IosAppGraph): IosUiGraph =
-    (appGraph as IosUiGraph.Factory).createUiComponent()
+    (appGraph as IosUiGraph.Factory).createUiGraph()
 }

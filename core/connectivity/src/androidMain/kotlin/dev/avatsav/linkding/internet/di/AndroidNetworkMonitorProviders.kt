@@ -16,7 +16,7 @@ import dev.zacsweers.metro.Provides
 import dev.zacsweers.metro.SingleIn
 
 @ContributesTo(AppScope::class)
-interface AndroidNetworkMonitorComponent {
+interface AndroidNetworkMonitorProviders {
 
   @Provides
   @SingleIn(AppScope::class)

@@ -18,7 +18,7 @@ import dev.zacsweers.metro.Provider
 import dev.zacsweers.metro.Provides
 
 @ContributesTo(UserScope::class)
-interface BookmarksScreenComponent {
+interface BookmarksScreenProviders {
   @IntoSet
   @Provides
   fun provideBookmarksEntryProviderScope(

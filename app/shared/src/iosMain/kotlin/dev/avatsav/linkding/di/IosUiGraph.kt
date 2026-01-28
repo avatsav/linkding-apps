@@ -14,6 +14,6 @@ interface IosUiGraph {
   @ContributesTo(AppScope::class)
   @GraphExtension.Factory
   interface Factory {
-    fun createUiComponent(): IosUiGraph
+    fun createUiGraph(): IosUiGraph
   }
 }

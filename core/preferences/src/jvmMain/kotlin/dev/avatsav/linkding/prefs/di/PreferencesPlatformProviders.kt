@@ -7,7 +7,7 @@ import dev.zacsweers.metro.Provides
 import dev.zacsweers.metro.SingleIn
 import java.util.prefs.Preferences
 
-actual interface PreferencesPlatformComponent {
+actual interface PreferencesPlatformProviders {
   @Provides
   @SingleIn(AppScope::class)
   fun provideSettings(delegate: Preferences): ObservableSettings = PreferencesSettings(delegate)
