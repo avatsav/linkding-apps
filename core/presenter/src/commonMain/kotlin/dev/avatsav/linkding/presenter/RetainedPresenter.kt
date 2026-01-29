@@ -6,18 +6,22 @@ import androidx.compose.runtime.retain.retain
 
 /** Retains a presenter and closes it when retired */
 @Composable
-fun <P : MoleculePresenter<*, *, *>> retainedPresenter(presenter: P): P {
-  return retain { RetainedPresenterObserver(presenter) }.value
+inline fun <reified P : MoleculePresenter<*, *, *>> retainPresenter(
+  noinline calculation: () -> P
+): P {
+  return retain { RetainedPresenterObserver(calculation()) }.value
 }
 
 /** Retains a presenter and closes it when retired */
 @Composable
-fun <P : MoleculePresenter<*, *, *>> retainedPresenter(vararg keys: Any?, presenter: P): P {
-  return retain(keys = keys) { RetainedPresenterObserver(presenter) }.value
+inline fun <reified P : MoleculePresenter<*, *, *>> retainPresenter(
+  vararg keys: Any?,
+  noinline calculation: () -> P,
+): P {
+  return retain(keys = keys) { RetainedPresenterObserver(calculation()) }.value
 }
 
-private class RetainedPresenterObserver<P : MoleculePresenter<*, *, *>>(val value: P) :
-  RetainObserver {
+class RetainedPresenterObserver<P : MoleculePresenter<*, *, *>>(val value: P) : RetainObserver {
   override fun onRetained() {}
 
   override fun onEnteredComposition() {}
