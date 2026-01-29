@@ -11,7 +11,7 @@ import dev.avatsav.linkding.di.scope.UserScope
 import dev.avatsav.linkding.navigation.BottomSheetSceneStrategy
 import dev.avatsav.linkding.navigation.Route
 import dev.avatsav.linkding.navigation.RouteEntryProviderScope
-import dev.avatsav.linkding.presenter.retainedPresenter
+import dev.avatsav.linkding.presenter.retainPresenter
 import dev.zacsweers.metro.ContributesTo
 import dev.zacsweers.metro.IntoSet
 import dev.zacsweers.metro.Provider
@@ -24,7 +24,7 @@ interface BookmarksScreenProviders {
   fun provideBookmarksEntryProviderScope(
     presenter: Provider<BookmarksPresenter>
   ): RouteEntryProviderScope = {
-    entry<Route.BookmarksFeed> { BookmarksScreen(retainedPresenter(presenter())) }
+    entry<Route.BookmarksFeed> { BookmarksScreen(retainPresenter { presenter() }) }
   }
 
   @IntoSet
@@ -32,7 +32,7 @@ interface BookmarksScreenProviders {
   fun provideNewBookmarkEntryProviderScope(
     factory: AddBookmarkPresenter.Factory
   ): RouteEntryProviderScope = {
-    entry<Route.AddBookmark.New> { AddBookmarkScreen(retainedPresenter(factory.create(it))) }
+    entry<Route.AddBookmark.New> { AddBookmarkScreen(retainPresenter { factory.create(it) }) }
   }
 
   @IntoSet
@@ -40,7 +40,7 @@ interface BookmarksScreenProviders {
   fun provideSharedBookmarkEntryProviderScope(
     factory: AddBookmarkPresenter.Factory
   ): RouteEntryProviderScope = {
-    entry<Route.AddBookmark.Shared> { AddBookmarkScreen(retainedPresenter(factory.create(it))) }
+    entry<Route.AddBookmark.Shared> { AddBookmarkScreen(retainPresenter { factory.create(it) }) }
   }
 
   @IntoSet
@@ -48,7 +48,7 @@ interface BookmarksScreenProviders {
   fun provideEditBookmarkEntryProviderScope(
     factory: AddBookmarkPresenter.Factory
   ): RouteEntryProviderScope = {
-    entry<Route.AddBookmark.Edit> { AddBookmarkScreen(retainedPresenter(factory.create(it))) }
+    entry<Route.AddBookmark.Edit> { AddBookmarkScreen(retainPresenter { factory.create(it) }) }
   }
 
   @OptIn(ExperimentalMaterial3Api::class)
@@ -56,7 +56,7 @@ interface BookmarksScreenProviders {
   @Provides
   fun provideTagsEntryProviderScope(factory: TagsPresenter.Factory): RouteEntryProviderScope = {
     entry<Route.Tags>(metadata = BottomSheetSceneStrategy.bottomSheetExpanded()) {
-      TagsScreen(retainedPresenter(factory.create(it.selectedTagIds)))
+      TagsScreen(retainPresenter { factory.create(it.selectedTagIds) })
     }
   }
 }
