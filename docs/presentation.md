@@ -85,19 +85,22 @@ fun MyScreen(presenter: MyPresenter, modifier: Modifier = Modifier) {
 
 ### 4. Route Registration
 
-Register routes with presenter retention in `di/{Feature}ScreenComponent.kt`:
+Register routes with presenter retention in `di/{Feature}ScreenProviders.kt`:
 
 ```kotlin
 @ContributesTo(UserScope::class)
-interface MyScreenComponent {
-  @IntoSet @Provides
-  fun provideEntry(presenter: Provider<MyPresenter>): RouteEntryProviderScope = {
-    entry<Route.MyRoute> { MyScreen(retainedPresenter(presenter())) }
+interface MyScreenProviders {
+  @IntoSet
+  @Provides
+  fun provideMyEntryProviderScope(
+    presenter: Provider<MyPresenter>
+  ): RouteEntryProviderScope = {
+    entry<Route.MyRoute> { MyScreen(retainPresenter { presenter() }) }
   }
 }
 ```
 
-The `retainedPresenter()` function uses Compose's `retain()` API to:
+The `retainPresenter { }` function uses Compose's `retain()` API to:
 - Survive recomposition and configuration changes
 - Automatically clean up (call `presenter.close()`) when retired
 - Work seamlessly with navigation state restoration via `retain-nav3`
@@ -131,11 +134,14 @@ class AddBookmarkPresenter(
 
 ```kotlin
 @ContributesTo(UserScope::class)
-interface BookmarksScreenComponent {
-  @IntoSet @Provides
-  fun provideEntry(factory: AddBookmarkPresenter.Factory): RouteEntryProviderScope = {
+interface BookmarksScreenProviders {
+  @IntoSet
+  @Provides
+  fun provideAddBookmarkEntryProviderScope(
+    factory: AddBookmarkPresenter.Factory
+  ): RouteEntryProviderScope = {
     entry<Route.AddBookmark> { route ->
-      AddBookmarkScreen(retainedPresenter(factory.create(route)))
+      AddBookmarkScreen(retainPresenter { factory.create(route) })
     }
   }
 }
@@ -145,8 +151,8 @@ interface BookmarksScreenComponent {
 - `@Assisted` parameters come from route data
 - Regular parameters are injected by DI
 - Create an `@AssistedFactory` interface with a `create()` method
-- Inject the factory (not `Provider<Presenter>`) in the screen component
-- Call `factory.create(route)` or `factory.create(param)` with the route data
+- Inject the factory (not `Provider<Presenter>`) in the screen providers
+- Call `factory.create(route)` inside the `retainPresenter { }` lambda with the route from the entry scope
 
 ## Key APIs
 
@@ -158,5 +164,5 @@ interface BookmarksScreenComponent {
 | `ObserveEvents { }` | Handle events in presenter |
 | `emitEffect(effect)` | Emit side effects |
 | `presenterScope` | Coroutine scope for async work |
-| `retainedPresenter(presenter)` | Retain presenter across recomposition |
+| `retainPresenter { }` | Retain presenter across recomposition |
 | `rememberSaveable` | Persist state across process death |
