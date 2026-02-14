@@ -24,7 +24,7 @@ stately = "2.1.0"
 kotlinPoet = "2.2.0"
 kotest = "6.1.2"
 uuid = "0.8.4"
-metro = "0.10.2" # https://github.com/ZacSweers/metro/releases
+metro = "0.10.4" # https://github.com/ZacSweers/metro/releases
 molecule = "2.2.0"
 gradleVersions = "0.53.0"
 
