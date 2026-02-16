@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="auth_login">Accedi</string>
+    <string name="auth_logout">Esci</string>
+    <string name="auth_welcome">Benvenuto, {name}!</string>
+    <string name="common_cancel">Annulla</string>
+    <string name="common_delete">Elimina</string>
+    <string name="common_edit">Modifica</string>
+    <string name="common_ok">OK</string>
+    <string name="common_save">Salva</string>
+    <string name="errors_generic">Qualcosa è andato storto. Riprova.</string>
+    <string name="errors_not_found">Pagina non trovata</string>
+    <string name="form_email">E-mail</string>
+    <string name="form_password">Password</string>
+    <string name="form_submit">Invia</string>
+    <string name="nav_home">Home</string>
+    <string name="nav_profile">Profilo</string>
+    <string name="nav_settings">Impostazioni</string>
+    <string name="settings_language">Lingua</string>
+    <string name="settings_notifications">Notifiche</string>
+    <string name="settings_theme">Tema</string>
+    <plurals name="days_remaining">
+        <item quantity="one">%d giorno rimanente</item>
+        <item quantity="other">%d giorni rimanenti</item>
+    </plurals>
+    <plurals name="items_count">
+        <item quantity="one">%d elemento</item>
+        <item quantity="other">%d elementi</item>
+    </plurals>
+    <plurals name="notifications_count">
+        <item quantity="one">%d notifica</item>
+        <item quantity="other">%d notifiche</item>
+    </plurals>
+</resources>

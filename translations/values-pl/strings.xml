@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="auth_login">Zaloguj się</string>
+    <string name="auth_logout">Wyloguj się</string>
+    <string name="auth_welcome">Witaj, {name}!</string>
+    <string name="common_cancel">Anuluj</string>
+    <string name="common_delete">Usuń</string>
+    <string name="common_edit">Edytuj</string>
+    <string name="common_ok">OK</string>
+    <string name="common_save">Zapisz</string>
+    <string name="errors_not_found">Nie znaleziono strony</string>
+    <string name="form_email">E-mail</string>
+    <string name="form_password">Hasło</string>
+    <string name="form_submit">Wyślij</string>
+    <string name="nav_home">Strona główna</string>
+    <string name="nav_profile">Profil</string>
+    <string name="nav_settings">Ustawienia</string>
+    <string name="settings_language">Język</string>
+    <string name="settings_notifications">Powiadomienia</string>
+    <string name="settings_theme">Motyw</string>
+    <plurals name="days_remaining">
+        <item quantity="one">%d dzień pozostały</item>
+        <item quantity="few">%d dni pozostałe</item>
+        <item quantity="many">%d dni pozostałych</item>
+        <item quantity="other">%d dni pozostałych</item>
+    </plurals>
+    <plurals name="notifications_count">
+        <item quantity="one">%d powiadomienie</item>
+        <item quantity="few">%d powiadomienia</item>
+        <item quantity="many">%d powiadomień</item>
+        <item quantity="other">%d powiadomień</item>
+    </plurals>
+</resources>

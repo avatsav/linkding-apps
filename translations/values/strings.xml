@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="auth_login">Log in</string>
+    <string name="auth_logout">Log out</string>
+    <string name="auth_welcome">Welcome, {name}!</string>
+    <string name="common_cancel">Cancel</string>
+    <string name="common_delete">Delete</string>
+    <string name="common_edit">Edit</string>
+    <string name="common_ok">OK</string>
+    <string name="common_save">Save</string>
+    <string name="errors_generic">Something went wrong. Please try again.</string>
+    <string name="errors_not_found">Page not found</string>
+    <string name="form_email">Email</string>
+    <string name="form_password">Password</string>
+    <string name="form_submit">Submit</string>
+    <string name="nav_home">Home</string>
+    <string name="nav_profile">Profile</string>
+    <string name="nav_settings">Settings</string>
+    <string name="settings_language">Language</string>
+    <string name="settings_notifications">Notifications</string>
+    <string name="settings_theme">Theme</string>
+    <plurals name="comments_count">
+        <item quantity="one">%d comment</item>
+        <item quantity="other">%d comments</item>
+    </plurals>
+    <plurals name="days_remaining">
+        <item quantity="one">%d day remaining</item>
+        <item quantity="other">%d days remaining</item>
+    </plurals>
+    <plurals name="files_selected">
+        <item quantity="one">%d file selected</item>
+        <item quantity="other">%d files selected</item>
+    </plurals>
+    <plurals name="items_count">
+        <item quantity="one">%d item</item>
+        <item quantity="other">%d items</item>
+    </plurals>
+    <plurals name="messages_unread">
+        <item quantity="one">%d unread message</item>
+        <item quantity="other">%d unread messages</item>
+    </plurals>
+    <plurals name="notifications_count">
+        <item quantity="one">%d notification</item>
+        <item quantity="other">%d notifications</item>
+    </plurals>
+</resources>
