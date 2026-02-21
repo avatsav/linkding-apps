@@ -53,6 +53,27 @@ import dev.avatsav.linkding.settings.ui.widgets.PreferenceSection
 import dev.avatsav.linkding.settings.ui.widgets.SwitchPreference
 import dev.avatsav.linkding.settings.ui.widgets.ThemePreference
 import dev.avatsav.linkding.ui.theme.Material3ShapeDefaults
+import linkding_apps.features.settings.ui.generated.resources.Res
+import linkding_apps.features.settings.ui.generated.resources.settings_about
+import linkding_apps.features.settings.ui.generated.resources.settings_api_key
+import linkding_apps.features.settings.ui.generated.resources.settings_appearance
+import linkding_apps.features.settings.ui.generated.resources.settings_confirm_reset_message
+import linkding_apps.features.settings.ui.generated.resources.settings_confirm_reset_title
+import linkding_apps.features.settings.ui.generated.resources.settings_dynamic_colours
+import linkding_apps.features.settings.ui.generated.resources.settings_dynamic_colours_description
+import linkding_apps.features.settings.ui.generated.resources.settings_host_url
+import linkding_apps.features.settings.ui.generated.resources.settings_licenses
+import linkding_apps.features.settings.ui.generated.resources.settings_linkding
+import linkding_apps.features.settings.ui.generated.resources.settings_made_in_munich
+import linkding_apps.features.settings.ui.generated.resources.settings_navigate_back
+import linkding_apps.features.settings.ui.generated.resources.settings_no
+import linkding_apps.features.settings.ui.generated.resources.settings_privacy_policy
+import linkding_apps.features.settings.ui.generated.resources.settings_reset
+import linkding_apps.features.settings.ui.generated.resources.settings_source_code
+import linkding_apps.features.settings.ui.generated.resources.settings_title
+import linkding_apps.features.settings.ui.generated.resources.settings_version
+import linkding_apps.features.settings.ui.generated.resources.settings_yes
+import org.jetbrains.compose.resources.stringResource
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class, ExperimentalMaterial3Api::class)
 @Composable
@@ -86,13 +107,13 @@ private fun SettingsScreen(
     modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
     topBar = {
       LargeFlexibleTopAppBar(
-        title = { Text(text = "Settings") },
+        title = { Text(text = stringResource(Res.string.settings_title)) },
         scrollBehavior = scrollBehavior,
         navigationIcon = {
           IconButton(onClick = { eventSink(Close) }) {
             Icon(
               imageVector = Icons.AutoMirrored.Default.ArrowBack,
-              contentDescription = "Navigate Back",
+              contentDescription = stringResource(Res.string.settings_navigate_back),
             )
           }
         },
@@ -144,20 +165,23 @@ private const val LinkdingSettingsCount = 3
 @Composable
 @Suppress("MagicNumber")
 private fun LinkdingSettings(state: SettingsUiState, onResetClick: () -> Unit) {
-  PreferenceSection("Linkding", modifier = Modifier.padding(vertical = 8.dp)) {
+  PreferenceSection(
+    stringResource(Res.string.settings_linkding),
+    modifier = Modifier.padding(vertical = 8.dp),
+  ) {
     Preference(
       shape = Material3ShapeDefaults.itemShape(0, LinkdingSettingsCount),
-      title = "Host Url",
+      title = stringResource(Res.string.settings_host_url),
       description = state.apiConfig?.hostUrl,
     )
     Preference(
       shape = Material3ShapeDefaults.itemShape(1, LinkdingSettingsCount),
-      title = "API Key",
+      title = stringResource(Res.string.settings_api_key),
       description = state.apiConfig?.apiKey,
     )
     Preference(
       shape = Material3ShapeDefaults.itemShape(2, LinkdingSettingsCount),
-      title = "Reset",
+      title = stringResource(Res.string.settings_reset),
       clickable = true,
       onClick = onResetClick,
     )
@@ -174,7 +198,10 @@ private fun AppearanceSettings(
   onDynamicThemeToggle: () -> Unit,
 ) {
 
-  PreferenceSection("Appearance", modifier = Modifier.padding(vertical = 8.dp)) {
+  PreferenceSection(
+    stringResource(Res.string.settings_appearance),
+    modifier = Modifier.padding(vertical = 8.dp),
+  ) {
     ThemePreference(
       shape = Material3ShapeDefaults.itemShape(0, AppearanceSettingsCount),
       selected = state.appTheme,
@@ -182,8 +209,8 @@ private fun AppearanceSettings(
     )
     SwitchPreference(
       shape = Material3ShapeDefaults.itemShape(1, AppearanceSettingsCount),
-      title = "Dynamic colours",
-      description = "Colors adapt to your wallpaper",
+      title = stringResource(Res.string.settings_dynamic_colours),
+      description = stringResource(Res.string.settings_dynamic_colours_description),
       checked = state.useDynamicColors,
       onCheckedChange = onDynamicThemeToggle,
     )
@@ -200,27 +227,30 @@ private fun AboutSettings(
   onLicensesClick: () -> Unit,
   onPrivacyPolicyClick: () -> Unit,
 ) {
-  PreferenceSection("About", modifier = Modifier.padding(vertical = 8.dp)) {
+  PreferenceSection(
+    stringResource(Res.string.settings_about),
+    modifier = Modifier.padding(vertical = 8.dp),
+  ) {
     Preference(
       shape = Material3ShapeDefaults.itemShape(0, AboutSettingsCount),
-      title = "Version",
+      title = stringResource(Res.string.settings_version),
       description = state.appInfo.version,
     )
     Preference(
       shape = Material3ShapeDefaults.itemShape(1, AboutSettingsCount),
-      title = "Source code",
+      title = stringResource(Res.string.settings_source_code),
       clickable = true,
       onClick = onSourceCodeClick,
     )
     Preference(
       shape = Material3ShapeDefaults.itemShape(2, AboutSettingsCount),
-      title = "Open Source licenses",
+      title = stringResource(Res.string.settings_licenses),
       clickable = true,
       onClick = onLicensesClick,
     )
     Preference(
       shape = Material3ShapeDefaults.itemShape(3, AboutSettingsCount),
-      title = "Privacy policy",
+      title = stringResource(Res.string.settings_privacy_policy),
       clickable = true,
       onClick = onPrivacyPolicyClick,
     )
@@ -230,7 +260,7 @@ private fun AboutSettings(
 @Composable
 private fun MadeInMunich() {
   Text(
-    text = "Made with \uD83E\uDD68 in München",
+    text = stringResource(Res.string.settings_made_in_munich),
     style = MaterialTheme.typography.bodyMedium,
     modifier = Modifier.fillMaxWidth().padding(vertical = 16.dp).navigationBarsPadding(),
     textAlign = TextAlign.Center,
@@ -241,10 +271,14 @@ private fun MadeInMunich() {
 fun ResetConfirmationDialog(onConfirm: () -> Unit, onDismiss: () -> Unit) {
   AlertDialog(
     icon = { Icon(imageVector = Icons.AutoMirrored.Filled.Logout, "") },
-    title = { Text("Confirm Reset") },
-    text = { Text("Are you sure you want to reset the api configuration?") },
+    title = { Text(stringResource(Res.string.settings_confirm_reset_title)) },
+    text = { Text(stringResource(Res.string.settings_confirm_reset_message)) },
     onDismissRequest = onDismiss,
-    confirmButton = { Button(onClick = onConfirm) { Text("Yes") } },
-    dismissButton = { OutlinedButton(onClick = onDismiss) { Text("No") } },
+    confirmButton = {
+      Button(onClick = onConfirm) { Text(stringResource(Res.string.settings_yes)) }
+    },
+    dismissButton = {
+      OutlinedButton(onClick = onDismiss) { Text(stringResource(Res.string.settings_no)) }
+    },
   )
 }

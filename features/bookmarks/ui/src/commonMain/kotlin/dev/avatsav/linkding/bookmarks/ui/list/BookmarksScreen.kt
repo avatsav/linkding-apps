@@ -41,7 +41,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.SearchBarState
 import androidx.compose.material3.SearchBarValue
-import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
@@ -51,7 +50,6 @@ import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.material3.rememberSearchBarState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -82,11 +80,23 @@ import dev.avatsav.linkding.navigation.Route
 import dev.avatsav.linkding.navigation.RouteNavigator
 import dev.avatsav.linkding.navigation.rememberResultNavigator
 import dev.avatsav.linkding.presenter.ObserveEffects
+import dev.avatsav.linkding.ui.compose.ObserveSnackbar
 import dev.avatsav.linkding.ui.compose.appearFromBottom
 import dev.avatsav.linkding.ui.compose.disappearToBottom
 import dev.avatsav.linkding.ui.compose.widgets.AnimatedVisibilityWithElevation
 import dev.avatsav.linkding.ui.theme.Material3ShapeDefaults
 import kotlinx.coroutines.launch
+import linkding_apps.features.bookmarks.ui.generated.resources.Res
+import linkding_apps.features.bookmarks.ui.generated.resources.bookmarks_add
+import linkding_apps.features.bookmarks.ui.generated.resources.bookmarks_archive
+import linkding_apps.features.bookmarks.ui.generated.resources.bookmarks_back
+import linkding_apps.features.bookmarks.ui.generated.resources.bookmarks_clear
+import linkding_apps.features.bookmarks.ui.generated.resources.bookmarks_delete
+import linkding_apps.features.bookmarks.ui.generated.resources.bookmarks_edit
+import linkding_apps.features.bookmarks.ui.generated.resources.bookmarks_search
+import linkding_apps.features.bookmarks.ui.generated.resources.bookmarks_settings
+import linkding_apps.features.bookmarks.ui.generated.resources.bookmarks_unarchive
+import org.jetbrains.compose.resources.stringResource
 
 @OptIn(
   ExperimentalMaterial3Api::class,
@@ -149,22 +159,11 @@ private fun BookmarksScreen(
     onBackCompleted = { actionableBookmark.value = null },
   )
 
-  // Handle snackbar messages
-  LaunchedEffect(state.snackbarMessage) {
-    state.snackbarMessage?.let { message ->
-      val result =
-        snackbarHostState.showSnackbar(
-          message = message.message,
-          actionLabel = message.actionLabel,
-          duration = SnackbarDuration.Short,
-        )
-
-      when (result) {
-        ActionPerformed -> message.onAction?.invoke()
-        Dismissed -> currentEventSink(BookmarksUiEvent.DismissSnackbar)
-      }
-    }
-  }
+  ObserveSnackbar(
+    snackbarMessage = state.snackbarMessage,
+    snackbarHostState = snackbarHostState,
+    onDismiss = { currentEventSink(BookmarksUiEvent.DismissSnackbar) },
+  )
 
   val searchInputField =
     @Composable {
@@ -177,7 +176,7 @@ private fun BookmarksScreen(
         },
         placeholder = {
           if (searchTextFieldState.text.isEmpty()) {
-            Text("Search")
+            Text(stringResource(Res.string.bookmarks_search))
           } else {
             Text("${searchTextFieldState.text}")
           }
@@ -185,7 +184,10 @@ private fun BookmarksScreen(
         leadingIcon = {
           if (searchBarState.isExpanded()) {
             IconButton(onClick = { scope.launch { searchBarState.animateToCollapsed() } }) {
-              Icon(Icons.AutoMirrored.Default.ArrowBack, contentDescription = "Back")
+              Icon(
+                Icons.AutoMirrored.Default.ArrowBack,
+                contentDescription = stringResource(Res.string.bookmarks_back),
+              )
             }
           } else {
             Icon(Icons.Default.Search, contentDescription = null)
@@ -199,7 +201,10 @@ private fun BookmarksScreen(
                 currentEventSink(BookmarksUiEvent.ClearSearch)
               }
             ) {
-              Icon(imageVector = Icons.Default.Close, contentDescription = "Clear")
+              Icon(
+                imageVector = Icons.Default.Close,
+                contentDescription = stringResource(Res.string.bookmarks_clear),
+              )
             }
           }
         },
@@ -215,7 +220,10 @@ private fun BookmarksScreen(
         inputField = searchInputField,
         actions = {
           IconButton(onClick = { currentEventSink(BookmarksUiEvent.ShowSettings) }) {
-            Icon(imageVector = Icons.Default.Settings, contentDescription = "Settings")
+            Icon(
+              imageVector = Icons.Default.Settings,
+              contentDescription = stringResource(Res.string.bookmarks_settings),
+            )
           }
         },
         scrollBehavior = scrollBehavior,
@@ -254,7 +262,10 @@ private fun BookmarksScreen(
           onClick = { currentEventSink(BookmarksUiEvent.AddBookmark) },
           elevation = FloatingActionButtonDefaults.elevation(defaultElevation = elevation),
         ) {
-          Icon(imageVector = Icons.Filled.Add, contentDescription = "Add bookmark")
+          Icon(
+            imageVector = Icons.Filled.Add,
+            contentDescription = stringResource(Res.string.bookmarks_add),
+          )
         }
       }
     },
@@ -373,9 +384,15 @@ internal fun ActionableBookmarkToolbar(
         ) {
           val bookmark = actionableBookmark ?: return@IconButton
           if (bookmark.archived) {
-            Icon(Icons.Filled.Unarchive, contentDescription = "Unarchive bookmark")
+            Icon(
+              Icons.Filled.Unarchive,
+              contentDescription = stringResource(Res.string.bookmarks_unarchive),
+            )
           } else {
-            Icon(Icons.Filled.Archive, contentDescription = "Archive bookmark")
+            Icon(
+              Icons.Filled.Archive,
+              contentDescription = stringResource(Res.string.bookmarks_archive),
+            )
           }
         }
         IconButton(
@@ -385,7 +402,10 @@ internal fun ActionableBookmarkToolbar(
             deleteBookmark(bookmark)
           }
         ) {
-          Icon(Icons.Filled.Delete, contentDescription = "Delete bookmark")
+          Icon(
+            Icons.Filled.Delete,
+            contentDescription = stringResource(Res.string.bookmarks_delete),
+          )
         }
         IconButton(
           onClick = {
@@ -394,7 +414,7 @@ internal fun ActionableBookmarkToolbar(
             editBookmark(bookmark)
           }
         ) {
-          Icon(Icons.Filled.Edit, contentDescription = "Edit bookmark")
+          Icon(Icons.Filled.Edit, contentDescription = stringResource(Res.string.bookmarks_edit))
         }
       },
     )

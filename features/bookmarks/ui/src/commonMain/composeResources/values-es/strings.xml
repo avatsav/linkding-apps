@@ -1,0 +1,51 @@
+<resources>
+    <!-- BookmarksScreen -->
+    <string name="bookmarks_search">Buscar</string>
+    <string name="bookmarks_back">Atrás</string>
+    <string name="bookmarks_clear">Borrar</string>
+    <string name="bookmarks_settings">Ajustes</string>
+    <string name="bookmarks_add">Añadir marcador</string>
+    <string name="bookmarks_unarchive">Desarchivar marcador</string>
+    <string name="bookmarks_archive">Archivar marcador</string>
+    <string name="bookmarks_delete">Eliminar marcador</string>
+    <string name="bookmarks_edit">Editar marcador</string>
+
+    <!-- AddBookmarkScreen -->
+    <string name="add_bookmark_title">Añadir marcador</string>
+    <string name="edit_bookmark_title">Editar marcador</string>
+    <string name="add_bookmark_close">Cerrar</string>
+    <string name="add_bookmark_save">Guardar</string>
+    <string name="add_bookmark_tags">Etiquetas</string>
+    <string name="add_bookmark_notes">Notas</string>
+    <string name="add_bookmark_url">URL</string>
+    <string name="add_bookmark_url_readonly">La URL no se puede cambiar al editar.</string>
+    <string name="add_bookmark_url_exists">Esta URL ya está guardada. Al guardar se actualizará el marcador existente.</string>
+    <string name="add_bookmark_field_title">Título</string>
+    <string name="add_bookmark_field_description">Descripción</string>
+    <string name="add_bookmark_existing_found">Este marcador ya existe. Se cambió al modo de edición.</string>
+
+    <!-- TagsScreen -->
+    <string name="tags_title">Seleccionar etiquetas</string>
+    <string name="tags_close">Cerrar</string>
+    <string name="tags_confirm">Confirmar</string>
+    <string name="tags_selected_count">%1$d seleccionados</string>
+    <string name="tags_selected">Seleccionados</string>
+
+    <!-- Search -->
+    <string name="search_empty_title">Sin búsquedas recientes</string>
+    <string name="search_empty_description">Busca marcadores por título, URL o etiquetas</string>
+    <string name="search_recent">Búsquedas recientes</string>
+    <string name="search_history">Historial de búsqueda</string>
+    <string name="search_clear_history">Borrar historial</string>
+
+    <!-- FiltersBar -->
+    <string name="filters_tags">Etiquetas</string>
+
+    <!-- Bookmark Actions -->
+    <string name="action_failed">Acción fallida: %1$s</string>
+    <string name="action_retry">Reintentar</string>
+    <string name="action_bookmark_deleted">Marcador eliminado</string>
+    <string name="action_bookmark_archived">Marcador archivado</string>
+    <string name="action_bookmark_unarchived">Marcador desarchivado</string>
+    <string name="action_undo">Deshacer</string>
+</resources>

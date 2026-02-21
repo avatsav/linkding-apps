@@ -1,0 +1,51 @@
+<resources>
+    <!-- BookmarksScreen -->
+    <string name="bookmarks_search">Hledat</string>
+    <string name="bookmarks_back">Zpět</string>
+    <string name="bookmarks_clear">Vymazat</string>
+    <string name="bookmarks_settings">Nastavení</string>
+    <string name="bookmarks_add">Přidat záložku</string>
+    <string name="bookmarks_unarchive">Obnovit záložku</string>
+    <string name="bookmarks_archive">Archivovat záložku</string>
+    <string name="bookmarks_delete">Smazat záložku</string>
+    <string name="bookmarks_edit">Upravit záložku</string>
+
+    <!-- AddBookmarkScreen -->
+    <string name="add_bookmark_title">Přidat záložku</string>
+    <string name="edit_bookmark_title">Upravit záložku</string>
+    <string name="add_bookmark_close">Zavřít</string>
+    <string name="add_bookmark_save">Uložit</string>
+    <string name="add_bookmark_tags">Štítky</string>
+    <string name="add_bookmark_notes">Poznámky</string>
+    <string name="add_bookmark_url">URL</string>
+    <string name="add_bookmark_url_readonly">URL nelze změnit při úpravách.</string>
+    <string name="add_bookmark_url_exists">Tato URL je již uložena. Uložením se aktualizuje stávající záložka.</string>
+    <string name="add_bookmark_field_title">Název</string>
+    <string name="add_bookmark_field_description">Popis</string>
+    <string name="add_bookmark_existing_found">Tato záložka již existuje. Přepnuto do režimu úprav.</string>
+
+    <!-- TagsScreen -->
+    <string name="tags_title">Vybrat štítky</string>
+    <string name="tags_close">Zavřít</string>
+    <string name="tags_confirm">Potvrdit</string>
+    <string name="tags_selected_count">%1$d vybráno</string>
+    <string name="tags_selected">Vybrané</string>
+
+    <!-- Search -->
+    <string name="search_empty_title">Žádná nedávná hledání</string>
+    <string name="search_empty_description">Hledejte záložky podle názvu, URL nebo štítků</string>
+    <string name="search_recent">Nedávná hledání</string>
+    <string name="search_history">Historie hledání</string>
+    <string name="search_clear_history">Vymazat historii</string>
+
+    <!-- FiltersBar -->
+    <string name="filters_tags">Štítky</string>
+
+    <!-- Bookmark Actions -->
+    <string name="action_failed">Akce se nezdařila: %1$s</string>
+    <string name="action_retry">Zkusit znovu</string>
+    <string name="action_bookmark_deleted">Záložka smazána</string>
+    <string name="action_bookmark_archived">Záložka archivována</string>
+    <string name="action_bookmark_unarchived">Záložka obnovena</string>
+    <string name="action_undo">Zpět</string>
+</resources>

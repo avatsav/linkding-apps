@@ -1,0 +1,9 @@
+<resources>
+    <string name="auth_title">Nastavit Linkding</string>
+    <string name="auth_description">Nakonfigurujte nastavení, aby aplikace mohla komunikovat s vaší instalací Linkding.</string>
+    <string name="auth_host_url">URL hostitele</string>
+    <string name="auth_api_key">API klíč</string>
+    <string name="auth_save">Uložit</string>
+    <string name="auth_error_invalid_api_key">Neplatný API klíč</string>
+    <string name="auth_error_invalid_host">Nelze se spojit s hostitelem</string>
+</resources>

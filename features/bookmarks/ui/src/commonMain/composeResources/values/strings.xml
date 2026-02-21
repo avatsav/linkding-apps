@@ -1,0 +1,51 @@
+<resources>
+    <!-- BookmarksScreen -->
+    <string name="bookmarks_search">Search</string>
+    <string name="bookmarks_back">Back</string>
+    <string name="bookmarks_clear">Clear</string>
+    <string name="bookmarks_settings">Settings</string>
+    <string name="bookmarks_add">Add bookmark</string>
+    <string name="bookmarks_unarchive">Unarchive bookmark</string>
+    <string name="bookmarks_archive">Archive bookmark</string>
+    <string name="bookmarks_delete">Delete bookmark</string>
+    <string name="bookmarks_edit">Edit bookmark</string>
+
+    <!-- AddBookmarkScreen -->
+    <string name="add_bookmark_title">Add Bookmark</string>
+    <string name="edit_bookmark_title">Edit Bookmark</string>
+    <string name="add_bookmark_close">Close</string>
+    <string name="add_bookmark_save">Save</string>
+    <string name="add_bookmark_tags">Tags</string>
+    <string name="add_bookmark_notes">Notes</string>
+    <string name="add_bookmark_url">URL</string>
+    <string name="add_bookmark_url_readonly">URL cannot be changed when editing.</string>
+    <string name="add_bookmark_url_exists">This URL is already bookmarked. Saving will update the existing bookmark.</string>
+    <string name="add_bookmark_field_title">Title</string>
+    <string name="add_bookmark_field_description">Description</string>
+    <string name="add_bookmark_existing_found">This bookmark already exists. Switched to edit mode.</string>
+
+    <!-- TagsScreen -->
+    <string name="tags_title">Select Tags</string>
+    <string name="tags_close">Close</string>
+    <string name="tags_confirm">Confirm</string>
+    <string name="tags_selected_count">%1$d selected</string>
+    <string name="tags_selected">Selected</string>
+
+    <!-- Search -->
+    <string name="search_empty_title">No recent searches</string>
+    <string name="search_empty_description">Search for bookmarks by title, URL, or tags</string>
+    <string name="search_recent">Recent Searches</string>
+    <string name="search_history">Search History</string>
+    <string name="search_clear_history">Clear History</string>
+
+    <!-- FiltersBar -->
+    <string name="filters_tags">Tags</string>
+
+    <!-- Bookmark Actions -->
+    <string name="action_failed">Action failed: %1$s</string>
+    <string name="action_retry">Retry</string>
+    <string name="action_bookmark_deleted">Bookmark deleted</string>
+    <string name="action_bookmark_archived">Bookmark archived</string>
+    <string name="action_bookmark_unarchived">Bookmark unarchived</string>
+    <string name="action_undo">Undo</string>
+</resources>

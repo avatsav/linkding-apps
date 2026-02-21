@@ -9,6 +9,9 @@ import androidx.compose.material3.InputChip
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import linkding_apps.ui.compose.generated.resources.Res
+import linkding_apps.ui.compose.generated.resources.remove_tag
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun TagInputChip(
@@ -23,7 +26,10 @@ fun TagInputChip(
     label = label,
     trailingIcon = {
       IconButton(modifier = Modifier.size(12.dp), onClick = { onClick() }) {
-        Icon(imageVector = Icons.Default.Close, contentDescription = "Remove tag")
+        Icon(
+          imageVector = Icons.Default.Close,
+          contentDescription = stringResource(Res.string.remove_tag),
+        )
       }
     },
   )

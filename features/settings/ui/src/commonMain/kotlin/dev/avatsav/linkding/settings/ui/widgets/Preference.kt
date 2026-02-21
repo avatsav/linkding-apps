@@ -48,6 +48,12 @@ import dev.avatsav.linkding.data.model.prefs.AppTheme.Dark
 import dev.avatsav.linkding.data.model.prefs.AppTheme.Light
 import dev.avatsav.linkding.data.model.prefs.AppTheme.System
 import dev.avatsav.linkding.ui.compose.onCondition
+import linkding_apps.features.settings.ui.generated.resources.Res
+import linkding_apps.features.settings.ui.generated.resources.settings_theme
+import linkding_apps.features.settings.ui.generated.resources.settings_theme_dark
+import linkding_apps.features.settings.ui.generated.resources.settings_theme_light
+import linkding_apps.features.settings.ui.generated.resources.settings_theme_system
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun PreferenceColumnScope.SwitchPreference(
@@ -95,9 +101,14 @@ fun PreferenceColumnScope.ThemePreference(
   modifier: Modifier = Modifier,
 ) {
   val options = AppTheme.entries
-  Preference(title = "Theme", shape = shape, modifier = modifier) {
+  Preference(
+    title = stringResource(Res.string.settings_theme),
+    shape = shape,
+    modifier = modifier,
+  ) {
     Row(horizontalArrangement = Arrangement.spacedBy(ButtonGroupDefaults.ConnectedSpaceBetween)) {
       options.forEachIndexed { index, theme ->
+        val themeLabel = theme.label()
         ToggleButton(
           checked = theme == selected,
           onCheckedChange = { onSelect(theme) },
@@ -109,10 +120,10 @@ fun PreferenceColumnScope.ThemePreference(
               else -> ButtonGroupDefaults.connectedMiddleButtonShapes()
             },
         ) {
-          Icon(imageVector = theme.icon(), contentDescription = theme.name)
+          Icon(imageVector = theme.icon(), contentDescription = themeLabel)
           if (theme == selected) {
             Spacer(Modifier.size(ToggleButtonDefaults.IconSpacing))
-            Text(theme.name)
+            Text(themeLabel)
           }
         }
       }
@@ -203,4 +214,12 @@ private fun AppTheme.icon() =
     System -> Icons.Default.AutoMode
     Light -> Icons.Default.LightMode
     Dark -> Icons.Default.DarkMode
+  }
+
+@Composable
+private fun AppTheme.label(): String =
+  when (this) {
+    System -> stringResource(Res.string.settings_theme_system)
+    Light -> stringResource(Res.string.settings_theme_light)
+    Dark -> stringResource(Res.string.settings_theme_dark)
   }

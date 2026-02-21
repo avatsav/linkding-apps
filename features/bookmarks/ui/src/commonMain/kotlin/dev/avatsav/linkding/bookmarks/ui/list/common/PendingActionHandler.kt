@@ -11,7 +11,9 @@ import com.github.michaelbull.result.onSuccess
 import dev.avatsav.linkding.bookmarks.api.interactors.ArchiveBookmark
 import dev.avatsav.linkding.bookmarks.api.interactors.DeleteBookmark
 import dev.avatsav.linkding.bookmarks.api.interactors.UnarchiveBookmark
+import dev.avatsav.linkding.bookmarks.ui.list.BookmarkSnackbar
 import dev.avatsav.linkding.data.model.Bookmark
+import dev.avatsav.linkding.ui.compose.SnackbarMessage
 import kotlin.time.Clock
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -88,9 +90,8 @@ internal fun rememberPendingBookmarkActionHandler(
         pendingIds.remove(action.bookmarkId)
 
         snackbarMessage =
-          SnackbarMessage(
-            message = "Action failed: ${error.message}",
-            actionLabel = "Retry",
+          BookmarkSnackbar.Failed(
+            errorMessage = error.message,
             onAction = { scheduleAction(action) },
           )
 
@@ -126,16 +127,11 @@ internal fun rememberPendingBookmarkActionHandler(
     currentPendingAction = PendingActionState(action, job)
 
     snackbarMessage =
-      SnackbarMessage(
-        message =
-          when (action) {
-            is Delete -> "Bookmark deleted"
-            is Archive -> "Bookmark archived"
-            is Unarchive -> "Bookmark unarchived"
-          },
-        actionLabel = "Undo",
-        onAction = undoCurrentAction,
-      )
+      when (action) {
+        is Delete -> BookmarkSnackbar.Deleted(onAction = undoCurrentAction)
+        is Archive -> BookmarkSnackbar.Archived(onAction = undoCurrentAction)
+        is Unarchive -> BookmarkSnackbar.Unarchived(onAction = undoCurrentAction)
+      }
   }
 
   return PendingActionHandlerState(

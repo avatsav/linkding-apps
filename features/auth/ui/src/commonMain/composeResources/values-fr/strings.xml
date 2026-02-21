@@ -1,0 +1,9 @@
+<resources>
+    <string name="auth_title">Configurer Linkding</string>
+    <string name="auth_description">Configurez les paramètres pour que l\'application puisse communiquer avec votre installation Linkding.</string>
+    <string name="auth_host_url">URL de l\'hôte</string>
+    <string name="auth_api_key">Clé API</string>
+    <string name="auth_save">Enregistrer</string>
+    <string name="auth_error_invalid_api_key">Clé API invalide</string>
+    <string name="auth_error_invalid_host">Impossible de joindre l\'hôte</string>
+</resources>

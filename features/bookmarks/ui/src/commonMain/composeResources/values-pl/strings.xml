@@ -1,0 +1,51 @@
+<resources>
+    <!-- BookmarksScreen -->
+    <string name="bookmarks_search">Szukaj</string>
+    <string name="bookmarks_back">Wstecz</string>
+    <string name="bookmarks_clear">Wyczyść</string>
+    <string name="bookmarks_settings">Ustawienia</string>
+    <string name="bookmarks_add">Dodaj zakładkę</string>
+    <string name="bookmarks_unarchive">Przywróć zakładkę</string>
+    <string name="bookmarks_archive">Zarchiwizuj zakładkę</string>
+    <string name="bookmarks_delete">Usuń zakładkę</string>
+    <string name="bookmarks_edit">Edytuj zakładkę</string>
+
+    <!-- AddBookmarkScreen -->
+    <string name="add_bookmark_title">Dodaj zakładkę</string>
+    <string name="edit_bookmark_title">Edytuj zakładkę</string>
+    <string name="add_bookmark_close">Zamknij</string>
+    <string name="add_bookmark_save">Zapisz</string>
+    <string name="add_bookmark_tags">Tagi</string>
+    <string name="add_bookmark_notes">Notatki</string>
+    <string name="add_bookmark_url">URL</string>
+    <string name="add_bookmark_url_readonly">Adres URL nie może być zmieniony podczas edycji.</string>
+    <string name="add_bookmark_url_exists">Ten adres URL jest już zapisany. Zapisanie zaktualizuje istniejącą zakładkę.</string>
+    <string name="add_bookmark_field_title">Tytuł</string>
+    <string name="add_bookmark_field_description">Opis</string>
+    <string name="add_bookmark_existing_found">Ta zakładka już istnieje. Przełączono do trybu edycji.</string>
+
+    <!-- TagsScreen -->
+    <string name="tags_title">Wybierz tagi</string>
+    <string name="tags_close">Zamknij</string>
+    <string name="tags_confirm">Potwierdź</string>
+    <string name="tags_selected_count">Wybrano: %1$d</string>
+    <string name="tags_selected">Wybrane</string>
+
+    <!-- Search -->
+    <string name="search_empty_title">Brak ostatnich wyszukiwań</string>
+    <string name="search_empty_description">Szukaj zakładek po tytule, adresie URL lub tagach</string>
+    <string name="search_recent">Ostatnie wyszukiwania</string>
+    <string name="search_history">Historia wyszukiwania</string>
+    <string name="search_clear_history">Wyczyść historię</string>
+
+    <!-- FiltersBar -->
+    <string name="filters_tags">Tagi</string>
+
+    <!-- Bookmark Actions -->
+    <string name="action_failed">Działanie nie powiodło się: %1$s</string>
+    <string name="action_retry">Ponów</string>
+    <string name="action_bookmark_deleted">Zakładka usunięta</string>
+    <string name="action_bookmark_archived">Zakładka zarchiwizowana</string>
+    <string name="action_bookmark_unarchived">Zakładka przywrócona</string>
+    <string name="action_undo">Cofnij</string>
+</resources>

@@ -1,0 +1,24 @@
+<resources>
+    <string name="settings_title">Nastavení</string>
+    <string name="settings_navigate_back">Přejít zpět</string>
+    <string name="settings_linkding">Linkding</string>
+    <string name="settings_host_url">URL hostitele</string>
+    <string name="settings_api_key">API klíč</string>
+    <string name="settings_reset">Obnovit</string>
+    <string name="settings_appearance">Vzhled</string>
+    <string name="settings_theme">Motiv</string>
+    <string name="settings_theme_system">Systémový</string>
+    <string name="settings_theme_light">Světlý</string>
+    <string name="settings_theme_dark">Tmavý</string>
+    <string name="settings_dynamic_colours">Dynamické barvy</string>
+    <string name="settings_dynamic_colours_description">Barvy se přizpůsobí vaší tapetě</string>
+    <string name="settings_about">O aplikaci</string>
+    <string name="settings_version">Verze</string>
+    <string name="settings_source_code">Zdrojový kód</string>
+    <string name="settings_licenses">Open source licence</string>
+    <string name="settings_privacy_policy">Zásady ochrany osobních údajů</string>
+    <string name="settings_confirm_reset_title">Potvrdit obnovení</string>
+    <string name="settings_confirm_reset_message">Opravdu chcete obnovit konfiguraci API?</string>
+    <string name="settings_yes">Ano</string>
+    <string name="settings_no">Ne</string>
+</resources>

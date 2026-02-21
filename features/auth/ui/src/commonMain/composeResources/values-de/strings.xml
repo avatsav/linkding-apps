@@ -1,0 +1,9 @@
+<resources>
+    <string name="auth_title">Linkding einrichten</string>
+    <string name="auth_description">Konfiguriere die Einstellungen, damit die App mit deiner Linkding-Installation kommunizieren kann.</string>
+    <string name="auth_host_url">Host-URL</string>
+    <string name="auth_api_key">API-Schlüssel</string>
+    <string name="auth_save">Speichern</string>
+    <string name="auth_error_invalid_api_key">Ungültiger API-Schlüssel</string>
+    <string name="auth_error_invalid_host">Host nicht erreichbar</string>
+</resources>

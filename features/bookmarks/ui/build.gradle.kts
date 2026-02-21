@@ -15,6 +15,7 @@ kotlin {
       implementation(projects.ui.navigation)
       implementation(libs.paging.compose)
       implementation(libs.kotlin.datetime)
+      implementation(libs.compose.components.resources)
     }
   }
 }
