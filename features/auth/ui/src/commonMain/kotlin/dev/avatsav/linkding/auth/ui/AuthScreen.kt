@@ -39,6 +39,15 @@ import dev.avatsav.linkding.navigation.LocalNavigator
 import dev.avatsav.linkding.navigation.Route
 import dev.avatsav.linkding.presenter.ObserveEffects
 import dev.avatsav.linkding.ui.compose.widgets.SmallCircularProgressIndicator
+import linkding_apps.features.auth.ui.generated.resources.Res
+import linkding_apps.features.auth.ui.generated.resources.auth_api_key
+import linkding_apps.features.auth.ui.generated.resources.auth_description
+import linkding_apps.features.auth.ui.generated.resources.auth_error_invalid_api_key
+import linkding_apps.features.auth.ui.generated.resources.auth_error_invalid_host
+import linkding_apps.features.auth.ui.generated.resources.auth_host_url
+import linkding_apps.features.auth.ui.generated.resources.auth_save
+import linkding_apps.features.auth.ui.generated.resources.auth_title
+import org.jetbrains.compose.resources.stringResource
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -74,9 +83,9 @@ private fun AuthScreen(
 
   val errorMessage =
     if (state.invalidApiKey) {
-      "Invalid API Key"
+      stringResource(Res.string.auth_error_invalid_api_key)
     } else if (state.invalidHostUrl) {
-      "Unable to reach host"
+      stringResource(Res.string.auth_error_invalid_host)
     } else {
       ""
     }
@@ -85,7 +94,7 @@ private fun AuthScreen(
     modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
     topBar = {
       LargeFlexibleTopAppBar(
-        title = { Text(text = "Setup Linkding") },
+        title = { Text(text = stringResource(Res.string.auth_title)) },
         scrollBehavior = scrollBehavior,
       )
     },
@@ -98,7 +107,8 @@ private fun AuthScreen(
             enabled = allFieldsFilledOut && !state.loading,
             onClick = { eventSink(SaveCredentials(hostUrl, apiKey)) },
           ) {
-            if (state.loading) SmallCircularProgressIndicator() else Text("Save")
+            if (state.loading) SmallCircularProgressIndicator()
+            else Text(stringResource(Res.string.auth_save))
           }
         },
         actions = {},
@@ -114,16 +124,13 @@ private fun AuthScreen(
           .verticalScroll(rememberScrollState()),
       verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
-      Text(
-        text =
-          "Configure settings, so that the app can communicate with your linkding installation."
-      )
+      Text(text = stringResource(Res.string.auth_description))
       OutlinedTextField(
         modifier = Modifier.fillMaxWidth(),
         value = hostUrl,
         enabled = !state.loading,
         singleLine = true,
-        label = { Text(text = "Host URL") },
+        label = { Text(text = stringResource(Res.string.auth_host_url)) },
         isError = state.invalidHostUrl,
         supportingText = {
           if (errorMessage.isNotBlank() && state.invalidHostUrl) {
@@ -147,7 +154,7 @@ private fun AuthScreen(
         value = apiKey,
         enabled = !state.loading,
         singleLine = true,
-        label = { Text(text = "API Key") },
+        label = { Text(text = stringResource(Res.string.auth_api_key)) },
         isError = state.invalidApiKey,
         supportingText = {
           if (errorMessage.isNotBlank() && state.invalidApiKey) {

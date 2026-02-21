@@ -49,6 +49,20 @@ import dev.avatsav.linkding.ui.compose.widgets.PlaceholderVisualTransformation
 import dev.avatsav.linkding.ui.compose.widgets.SmallCircularProgressIndicator
 import dev.avatsav.linkding.ui.compose.widgets.TagsTextFieldValue
 import kotlinx.coroutines.delay
+import linkding_apps.features.bookmarks.ui.generated.resources.Res
+import linkding_apps.features.bookmarks.ui.generated.resources.add_bookmark_close
+import linkding_apps.features.bookmarks.ui.generated.resources.add_bookmark_existing_found
+import linkding_apps.features.bookmarks.ui.generated.resources.add_bookmark_field_description
+import linkding_apps.features.bookmarks.ui.generated.resources.add_bookmark_field_title
+import linkding_apps.features.bookmarks.ui.generated.resources.add_bookmark_notes
+import linkding_apps.features.bookmarks.ui.generated.resources.add_bookmark_save
+import linkding_apps.features.bookmarks.ui.generated.resources.add_bookmark_tags
+import linkding_apps.features.bookmarks.ui.generated.resources.add_bookmark_title
+import linkding_apps.features.bookmarks.ui.generated.resources.add_bookmark_url
+import linkding_apps.features.bookmarks.ui.generated.resources.add_bookmark_url_exists
+import linkding_apps.features.bookmarks.ui.generated.resources.add_bookmark_url_readonly
+import linkding_apps.features.bookmarks.ui.generated.resources.edit_bookmark_title
+import org.jetbrains.compose.resources.stringResource
 
 private const val DebounceDelay = 500L
 
@@ -60,12 +74,13 @@ fun AddBookmarkScreen(presenter: AddBookmarkPresenter, modifier: Modifier = Modi
   val eventSink = presenter::eventSink
   val snackbarHostState = remember { SnackbarHostState() }
 
+  val existingBookmarkMessage = stringResource(Res.string.add_bookmark_existing_found)
+
   ObserveEffects(presenter.effects) { effect ->
     when (effect) {
       BookmarkSaved,
       NavigateUp -> navigator.pop()
-      ExistingBookmarkFound ->
-        snackbarHostState.showSnackbar("This bookmark already exists. Switched to edit mode.")
+      ExistingBookmarkFound -> snackbarHostState.showSnackbar(existingBookmarkMessage)
     }
   }
 
@@ -108,7 +123,9 @@ private fun AddBookmark(
   }
 
   val saveEnabled = url.isNotBlank() && !state.saving && !state.loading
-  val screenTitle = if (state.isEditMode) "Edit Bookmark" else "Add Bookmark"
+  val screenTitle =
+    if (state.isEditMode) stringResource(Res.string.edit_bookmark_title)
+    else stringResource(Res.string.add_bookmark_title)
 
   Scaffold(
     modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
@@ -119,7 +136,10 @@ private fun AddBookmark(
         scrollBehavior = scrollBehavior,
         navigationIcon = {
           IconButton(onClick = { eventSink(Close) }) {
-            Icon(imageVector = Icons.Default.Close, contentDescription = "Close")
+            Icon(
+              imageVector = Icons.Default.Close,
+              contentDescription = stringResource(Res.string.add_bookmark_close),
+            )
           }
         },
       )
@@ -153,7 +173,7 @@ private fun AddBookmark(
         OutlinedTagsTextField(
           modifier = Modifier.fillMaxWidth(),
           value = tagsValue,
-          label = { Text(text = "Tags") },
+          label = { Text(text = stringResource(Res.string.add_bookmark_tags)) },
         )
       }
       item("title") {
@@ -178,7 +198,7 @@ private fun AddBookmark(
         OutlinedTextField(
           modifier = Modifier.fillMaxWidth(),
           value = notes,
-          label = { Text(text = "Notes") },
+          label = { Text(text = stringResource(Res.string.add_bookmark_notes)) },
           minLines = 2,
           onValueChange = { notes = it },
         )
@@ -202,7 +222,8 @@ private fun AddBookmarkBottomBar(
         enabled = saveEnabled,
         onClick = onSave,
       ) {
-        if (saving) SmallCircularProgressIndicator() else Text("Save")
+        if (saving) SmallCircularProgressIndicator()
+        else Text(stringResource(Res.string.add_bookmark_save))
       }
     },
     actions = {
@@ -228,7 +249,7 @@ private fun UrlTextField(
   OutlinedTextField(
     modifier = Modifier.fillMaxWidth(),
     value = url,
-    label = { Text(text = "URL") },
+    label = { Text(text = stringResource(Res.string.add_bookmark_url)) },
     enabled = !isEditMode,
     readOnly = isEditMode,
     keyboardOptions =
@@ -239,11 +260,9 @@ private fun UrlTextField(
       ),
     supportingText =
       if (isEditMode) {
-        @Composable { Text(text = "URL cannot be changed when editing.") }
+        @Composable { Text(text = stringResource(Res.string.add_bookmark_url_readonly)) }
       } else if (alreadyBookmarked) {
-        @Composable {
-          Text(text = "This URL is already bookmarked. Saving will update the existing bookmark.")
-        }
+        @Composable { Text(text = stringResource(Res.string.add_bookmark_url_exists)) }
       } else null,
     onValueChange = onUrlChange,
   )
@@ -270,7 +289,7 @@ private fun TitleTextField(
   OutlinedTextField(
     modifier = Modifier.fillMaxWidth(),
     value = title,
-    label = { Text(text = "Title") },
+    label = { Text(text = stringResource(Res.string.add_bookmark_field_title)) },
     visualTransformation = visualTransformation,
     trailingIcon = { if (checkingUrl) SmallCircularProgressIndicator() },
     onValueChange = onTitleChange,
@@ -298,7 +317,7 @@ private fun DescriptionTextField(
   OutlinedTextField(
     modifier = Modifier.fillMaxWidth(),
     value = description,
-    label = { Text(text = "Description") },
+    label = { Text(text = stringResource(Res.string.add_bookmark_field_description)) },
     trailingIcon = { if (checkingUrl) SmallCircularProgressIndicator() },
     visualTransformation = visualTransformation,
     minLines = 2,

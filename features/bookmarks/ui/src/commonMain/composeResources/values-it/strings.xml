@@ -1,0 +1,51 @@
+<resources>
+    <!-- BookmarksScreen -->
+    <string name="bookmarks_search">Cerca</string>
+    <string name="bookmarks_back">Indietro</string>
+    <string name="bookmarks_clear">Cancella</string>
+    <string name="bookmarks_settings">Impostazioni</string>
+    <string name="bookmarks_add">Aggiungi segnalibro</string>
+    <string name="bookmarks_unarchive">Ripristina segnalibro</string>
+    <string name="bookmarks_archive">Archivia segnalibro</string>
+    <string name="bookmarks_delete">Elimina segnalibro</string>
+    <string name="bookmarks_edit">Modifica segnalibro</string>
+
+    <!-- AddBookmarkScreen -->
+    <string name="add_bookmark_title">Aggiungi segnalibro</string>
+    <string name="edit_bookmark_title">Modifica segnalibro</string>
+    <string name="add_bookmark_close">Chiudi</string>
+    <string name="add_bookmark_save">Salva</string>
+    <string name="add_bookmark_tags">Tag</string>
+    <string name="add_bookmark_notes">Note</string>
+    <string name="add_bookmark_url">URL</string>
+    <string name="add_bookmark_url_readonly">L\'URL non può essere modificato durante la modifica.</string>
+    <string name="add_bookmark_url_exists">Questo URL è già salvato. Il salvataggio aggiornerà il segnalibro esistente.</string>
+    <string name="add_bookmark_field_title">Titolo</string>
+    <string name="add_bookmark_field_description">Descrizione</string>
+    <string name="add_bookmark_existing_found">Questo segnalibro esiste già. Passaggio alla modalità di modifica.</string>
+
+    <!-- TagsScreen -->
+    <string name="tags_title">Seleziona tag</string>
+    <string name="tags_close">Chiudi</string>
+    <string name="tags_confirm">Conferma</string>
+    <string name="tags_selected_count">%1$d selezionati</string>
+    <string name="tags_selected">Selezionati</string>
+
+    <!-- Search -->
+    <string name="search_empty_title">Nessuna ricerca recente</string>
+    <string name="search_empty_description">Cerca segnalibri per titolo, URL o tag</string>
+    <string name="search_recent">Ricerche recenti</string>
+    <string name="search_history">Cronologia ricerche</string>
+    <string name="search_clear_history">Cancella cronologia</string>
+
+    <!-- FiltersBar -->
+    <string name="filters_tags">Tag</string>
+
+    <!-- Bookmark Actions -->
+    <string name="action_failed">Azione non riuscita: %1$s</string>
+    <string name="action_retry">Riprova</string>
+    <string name="action_bookmark_deleted">Segnalibro eliminato</string>
+    <string name="action_bookmark_archived">Segnalibro archiviato</string>
+    <string name="action_bookmark_unarchived">Segnalibro ripristinato</string>
+    <string name="action_undo">Annulla</string>
+</resources>

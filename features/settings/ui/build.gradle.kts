@@ -13,6 +13,7 @@ kotlin {
       implementation(projects.core.presenter)
       implementation(projects.ui.compose)
       implementation(projects.ui.navigation)
+      implementation(libs.compose.components.resources)
     }
   }
 }

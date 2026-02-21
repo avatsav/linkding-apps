@@ -1,0 +1,24 @@
+<resources>
+    <string name="settings_title">Nastavitve</string>
+    <string name="settings_navigate_back">Pojdi nazaj</string>
+    <string name="settings_linkding">Linkding</string>
+    <string name="settings_host_url">URL gostitelja</string>
+    <string name="settings_api_key">API ključ</string>
+    <string name="settings_reset">Ponastavi</string>
+    <string name="settings_appearance">Videz</string>
+    <string name="settings_theme">Tema</string>
+    <string name="settings_theme_system">Sistemska</string>
+    <string name="settings_theme_light">Svetla</string>
+    <string name="settings_theme_dark">Temna</string>
+    <string name="settings_dynamic_colours">Dinamične barve</string>
+    <string name="settings_dynamic_colours_description">Barve se prilagodijo vaši ozadnji sliki</string>
+    <string name="settings_about">O aplikaciji</string>
+    <string name="settings_version">Različica</string>
+    <string name="settings_source_code">Izvorna koda</string>
+    <string name="settings_licenses">Odprtokodne licence</string>
+    <string name="settings_privacy_policy">Politika zasebnosti</string>
+    <string name="settings_confirm_reset_title">Potrdi ponastavitev</string>
+    <string name="settings_confirm_reset_message">Ali ste prepričani, da želite ponastaviti konfiguracijo API?</string>
+    <string name="settings_yes">Da</string>
+    <string name="settings_no">Ne</string>
+</resources>

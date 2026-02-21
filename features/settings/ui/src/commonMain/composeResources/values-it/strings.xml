@@ -1,0 +1,24 @@
+<resources>
+    <string name="settings_title">Impostazioni</string>
+    <string name="settings_navigate_back">Torna indietro</string>
+    <string name="settings_linkding">Linkding</string>
+    <string name="settings_host_url">URL dell\'host</string>
+    <string name="settings_api_key">Chiave API</string>
+    <string name="settings_reset">Ripristina</string>
+    <string name="settings_appearance">Aspetto</string>
+    <string name="settings_theme">Tema</string>
+    <string name="settings_theme_system">Sistema</string>
+    <string name="settings_theme_light">Chiaro</string>
+    <string name="settings_theme_dark">Scuro</string>
+    <string name="settings_dynamic_colours">Colori dinamici</string>
+    <string name="settings_dynamic_colours_description">I colori si adattano al tuo sfondo</string>
+    <string name="settings_about">Informazioni</string>
+    <string name="settings_version">Versione</string>
+    <string name="settings_source_code">Codice sorgente</string>
+    <string name="settings_licenses">Licenze open source</string>
+    <string name="settings_privacy_policy">Informativa sulla privacy</string>
+    <string name="settings_confirm_reset_title">Conferma ripristino</string>
+    <string name="settings_confirm_reset_message">Sei sicuro di voler ripristinare la configurazione API?</string>
+    <string name="settings_yes">Sì</string>
+    <string name="settings_no">No</string>
+</resources>

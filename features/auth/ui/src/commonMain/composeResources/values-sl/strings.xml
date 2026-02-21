@@ -1,0 +1,9 @@
+<resources>
+    <string name="auth_title">Nastavi Linkding</string>
+    <string name="auth_description">Konfigurirajte nastavitve, da bo aplikacija lahko komunicirala z vašo namestitvijo Linkding.</string>
+    <string name="auth_host_url">URL gostitelja</string>
+    <string name="auth_api_key">API ključ</string>
+    <string name="auth_save">Shrani</string>
+    <string name="auth_error_invalid_api_key">Neveljaven API ključ</string>
+    <string name="auth_error_invalid_host">Gostitelja ni mogoče doseči</string>
+</resources>

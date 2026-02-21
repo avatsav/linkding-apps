@@ -1,0 +1,51 @@
+<resources>
+    <!-- BookmarksScreen -->
+    <string name="bookmarks_search">Iskanje</string>
+    <string name="bookmarks_back">Nazaj</string>
+    <string name="bookmarks_clear">Počisti</string>
+    <string name="bookmarks_settings">Nastavitve</string>
+    <string name="bookmarks_add">Dodaj zaznamek</string>
+    <string name="bookmarks_unarchive">Obnovi zaznamek</string>
+    <string name="bookmarks_archive">Arhiviraj zaznamek</string>
+    <string name="bookmarks_delete">Izbriši zaznamek</string>
+    <string name="bookmarks_edit">Uredi zaznamek</string>
+
+    <!-- AddBookmarkScreen -->
+    <string name="add_bookmark_title">Dodaj zaznamek</string>
+    <string name="edit_bookmark_title">Uredi zaznamek</string>
+    <string name="add_bookmark_close">Zapri</string>
+    <string name="add_bookmark_save">Shrani</string>
+    <string name="add_bookmark_tags">Oznake</string>
+    <string name="add_bookmark_notes">Opombe</string>
+    <string name="add_bookmark_url">URL</string>
+    <string name="add_bookmark_url_readonly">URL-ja ni mogoče spremeniti med urejanjem.</string>
+    <string name="add_bookmark_url_exists">Ta URL je že shranjen. S shranjevanjem boste posodobili obstoječi zaznamek.</string>
+    <string name="add_bookmark_field_title">Naslov</string>
+    <string name="add_bookmark_field_description">Opis</string>
+    <string name="add_bookmark_existing_found">Ta zaznamek že obstaja. Preklopljeno v način urejanja.</string>
+
+    <!-- TagsScreen -->
+    <string name="tags_title">Izberi oznake</string>
+    <string name="tags_close">Zapri</string>
+    <string name="tags_confirm">Potrdi</string>
+    <string name="tags_selected_count">%1$d izbranih</string>
+    <string name="tags_selected">Izbrano</string>
+
+    <!-- Search -->
+    <string name="search_empty_title">Ni nedavnih iskanj</string>
+    <string name="search_empty_description">Iščite zaznamke po naslovu, URL-ju ali oznakah</string>
+    <string name="search_recent">Nedavna iskanja</string>
+    <string name="search_history">Zgodovina iskanja</string>
+    <string name="search_clear_history">Počisti zgodovino</string>
+
+    <!-- FiltersBar -->
+    <string name="filters_tags">Oznake</string>
+
+    <!-- Bookmark Actions -->
+    <string name="action_failed">Dejanje ni uspelo: %1$s</string>
+    <string name="action_retry">Ponovi</string>
+    <string name="action_bookmark_deleted">Zaznamek izbrisan</string>
+    <string name="action_bookmark_archived">Zaznamek arhiviran</string>
+    <string name="action_bookmark_unarchived">Zaznamek obnovljen</string>
+    <string name="action_undo">Razveljavi</string>
+</resources>

@@ -8,6 +8,7 @@ kotlin {
     commonMain.dependencies {
       implementation(projects.core.base)
       api(projects.ui.theme)
+      implementation(libs.compose.components.resources)
     }
   }
 }

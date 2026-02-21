@@ -1,0 +1,51 @@
+<resources>
+    <!-- BookmarksScreen -->
+    <string name="bookmarks_search">Suchen</string>
+    <string name="bookmarks_back">Zurück</string>
+    <string name="bookmarks_clear">Löschen</string>
+    <string name="bookmarks_settings">Einstellungen</string>
+    <string name="bookmarks_add">Lesezeichen hinzufügen</string>
+    <string name="bookmarks_unarchive">Lesezeichen wiederherstellen</string>
+    <string name="bookmarks_archive">Lesezeichen archivieren</string>
+    <string name="bookmarks_delete">Lesezeichen löschen</string>
+    <string name="bookmarks_edit">Lesezeichen bearbeiten</string>
+
+    <!-- AddBookmarkScreen -->
+    <string name="add_bookmark_title">Lesezeichen hinzufügen</string>
+    <string name="edit_bookmark_title">Lesezeichen bearbeiten</string>
+    <string name="add_bookmark_close">Schließen</string>
+    <string name="add_bookmark_save">Speichern</string>
+    <string name="add_bookmark_tags">Tags</string>
+    <string name="add_bookmark_notes">Notizen</string>
+    <string name="add_bookmark_url">URL</string>
+    <string name="add_bookmark_url_readonly">URL kann beim Bearbeiten nicht geändert werden.</string>
+    <string name="add_bookmark_url_exists">Diese URL ist bereits als Lesezeichen gespeichert. Beim Speichern wird das bestehende Lesezeichen aktualisiert.</string>
+    <string name="add_bookmark_field_title">Titel</string>
+    <string name="add_bookmark_field_description">Beschreibung</string>
+    <string name="add_bookmark_existing_found">Dieses Lesezeichen existiert bereits. Zum Bearbeitungsmodus gewechselt.</string>
+
+    <!-- TagsScreen -->
+    <string name="tags_title">Tags auswählen</string>
+    <string name="tags_close">Schließen</string>
+    <string name="tags_confirm">Bestätigen</string>
+    <string name="tags_selected_count">%1$d ausgewählt</string>
+    <string name="tags_selected">Ausgewählt</string>
+
+    <!-- Search -->
+    <string name="search_empty_title">Keine letzten Suchen</string>
+    <string name="search_empty_description">Suche nach Lesezeichen über Titel, URL oder Tags</string>
+    <string name="search_recent">Letzte Suchen</string>
+    <string name="search_history">Suchverlauf</string>
+    <string name="search_clear_history">Verlauf löschen</string>
+
+    <!-- FiltersBar -->
+    <string name="filters_tags">Tags</string>
+
+    <!-- Bookmark Actions -->
+    <string name="action_failed">Aktion fehlgeschlagen: %1$s</string>
+    <string name="action_retry">Wiederholen</string>
+    <string name="action_bookmark_deleted">Lesezeichen gelöscht</string>
+    <string name="action_bookmark_archived">Lesezeichen archiviert</string>
+    <string name="action_bookmark_unarchived">Lesezeichen wiederhergestellt</string>
+    <string name="action_undo">Rückgängig</string>
+</resources>
