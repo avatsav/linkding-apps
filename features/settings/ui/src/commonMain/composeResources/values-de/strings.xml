@@ -1,0 +1,24 @@
+<resources>
+    <string name="settings_title">Einstellungen</string>
+    <string name="settings_navigate_back">Zurück navigieren</string>
+    <string name="settings_linkding">Linkding</string>
+    <string name="settings_host_url">Host-URL</string>
+    <string name="settings_api_key">API-Schlüssel</string>
+    <string name="settings_reset">Zurücksetzen</string>
+    <string name="settings_appearance">Erscheinungsbild</string>
+    <string name="settings_theme">Design</string>
+    <string name="settings_theme_system">System</string>
+    <string name="settings_theme_light">Hell</string>
+    <string name="settings_theme_dark">Dunkel</string>
+    <string name="settings_dynamic_colours">Dynamische Farben</string>
+    <string name="settings_dynamic_colours_description">Farben passen sich deinem Hintergrundbild an</string>
+    <string name="settings_about">Über</string>
+    <string name="settings_version">Version</string>
+    <string name="settings_source_code">Quellcode</string>
+    <string name="settings_licenses">Open-Source-Lizenzen</string>
+    <string name="settings_privacy_policy">Datenschutzerklärung</string>
+    <string name="settings_confirm_reset_title">Zurücksetzen bestätigen</string>
+    <string name="settings_confirm_reset_message">Bist du sicher, dass du die API-Konfiguration zurücksetzen möchtest?</string>
+    <string name="settings_yes">Ja</string>
+    <string name="settings_no">Nein</string>
+</resources>

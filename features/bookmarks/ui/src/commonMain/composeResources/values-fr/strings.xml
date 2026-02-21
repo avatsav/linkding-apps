@@ -1,0 +1,51 @@
+<resources>
+    <!-- BookmarksScreen -->
+    <string name="bookmarks_search">Rechercher</string>
+    <string name="bookmarks_back">Retour</string>
+    <string name="bookmarks_clear">Effacer</string>
+    <string name="bookmarks_settings">Paramètres</string>
+    <string name="bookmarks_add">Ajouter un marque-page</string>
+    <string name="bookmarks_unarchive">Désarchiver le marque-page</string>
+    <string name="bookmarks_archive">Archiver le marque-page</string>
+    <string name="bookmarks_delete">Supprimer le marque-page</string>
+    <string name="bookmarks_edit">Modifier le marque-page</string>
+
+    <!-- AddBookmarkScreen -->
+    <string name="add_bookmark_title">Ajouter un marque-page</string>
+    <string name="edit_bookmark_title">Modifier le marque-page</string>
+    <string name="add_bookmark_close">Fermer</string>
+    <string name="add_bookmark_save">Enregistrer</string>
+    <string name="add_bookmark_tags">Tags</string>
+    <string name="add_bookmark_notes">Notes</string>
+    <string name="add_bookmark_url">URL</string>
+    <string name="add_bookmark_url_readonly">L\'URL ne peut pas être modifiée lors de l\'édition.</string>
+    <string name="add_bookmark_url_exists">Cette URL est déjà enregistrée. L\'enregistrement mettra à jour le marque-page existant.</string>
+    <string name="add_bookmark_field_title">Titre</string>
+    <string name="add_bookmark_field_description">Description</string>
+    <string name="add_bookmark_existing_found">Ce marque-page existe déjà. Passage en mode édition.</string>
+
+    <!-- TagsScreen -->
+    <string name="tags_title">Sélectionner les tags</string>
+    <string name="tags_close">Fermer</string>
+    <string name="tags_confirm">Confirmer</string>
+    <string name="tags_selected_count">%1$d sélectionné(s)</string>
+    <string name="tags_selected">Sélectionnés</string>
+
+    <!-- Search -->
+    <string name="search_empty_title">Aucune recherche récente</string>
+    <string name="search_empty_description">Rechercher des marque-pages par titre, URL ou tags</string>
+    <string name="search_recent">Recherches récentes</string>
+    <string name="search_history">Historique de recherche</string>
+    <string name="search_clear_history">Effacer l\'historique</string>
+
+    <!-- FiltersBar -->
+    <string name="filters_tags">Tags</string>
+
+    <!-- Bookmark Actions -->
+    <string name="action_failed">Action échouée : %1$s</string>
+    <string name="action_retry">Réessayer</string>
+    <string name="action_bookmark_deleted">Marque-page supprimé</string>
+    <string name="action_bookmark_archived">Marque-page archivé</string>
+    <string name="action_bookmark_unarchived">Marque-page désarchivé</string>
+    <string name="action_undo">Annuler</string>
+</resources>
