@@ -24,6 +24,13 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import dev.avatsav.linkding.data.model.SearchHistory
+import linkding_apps.features.bookmarks.ui.generated.resources.Res
+import linkding_apps.features.bookmarks.ui.generated.resources.search_clear_history
+import linkding_apps.features.bookmarks.ui.generated.resources.search_empty_description
+import linkding_apps.features.bookmarks.ui.generated.resources.search_empty_title
+import linkding_apps.features.bookmarks.ui.generated.resources.search_history
+import linkding_apps.features.bookmarks.ui.generated.resources.search_recent
+import org.jetbrains.compose.resources.stringResource
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -50,7 +57,10 @@ fun SearchHistoryItem(
         )
       },
       leadingContent = {
-        Icon(imageVector = Icons.Default.History, contentDescription = "Search History")
+        Icon(
+          imageVector = Icons.Default.History,
+          contentDescription = stringResource(Res.string.search_history),
+        )
       },
     )
   }
@@ -62,9 +72,12 @@ fun EmptySearchResults(modifier: Modifier = Modifier) {
     modifier = modifier.fillMaxWidth().padding(vertical = 32.dp, horizontal = 16.dp),
     verticalArrangement = Arrangement.spacedBy(8.dp),
   ) {
-    Text(text = "No recent searches", style = MaterialTheme.typography.titleMedium)
     Text(
-      text = "Search for bookmarks by title, URL, or tags",
+      text = stringResource(Res.string.search_empty_title),
+      style = MaterialTheme.typography.titleMedium,
+    )
+    Text(
+      text = stringResource(Res.string.search_empty_description),
       style = MaterialTheme.typography.bodyMedium,
       color = MaterialTheme.colorScheme.onSurfaceVariant,
     )
@@ -79,14 +92,17 @@ fun SearchHistoryHeader(onClearHistory: () -> Unit, modifier: Modifier = Modifie
     verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
   ) {
     Text(
-      text = "Recent Searches",
+      text = stringResource(Res.string.search_recent),
       style = MaterialTheme.typography.titleSmall,
       color = MaterialTheme.colorScheme.primary,
     )
     Spacer(modifier = Modifier.weight(1f))
     IconButton(
       content = {
-        Icon(imageVector = Icons.Default.ClearAll, contentDescription = "Clear History")
+        Icon(
+          imageVector = Icons.Default.ClearAll,
+          contentDescription = stringResource(Res.string.search_clear_history),
+        )
       },
       onClick = onClearHistory,
       enabled = true,

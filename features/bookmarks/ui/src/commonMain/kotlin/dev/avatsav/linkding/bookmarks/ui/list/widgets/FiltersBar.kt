@@ -25,6 +25,9 @@ import androidx.compose.ui.unit.dp
 import dev.avatsav.linkding.data.model.BookmarkCategory
 import dev.avatsav.linkding.data.model.Tag
 import dev.avatsav.linkding.ui.compose.widgets.TagInputChip
+import linkding_apps.features.bookmarks.ui.generated.resources.Res
+import linkding_apps.features.bookmarks.ui.generated.resources.filters_tags
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun FiltersBar(
@@ -52,7 +55,7 @@ fun FiltersBar(
       AssistChip(
         modifier = Modifier.animateItem(),
         onClick = onOpenTagSelector,
-        label = { Text("Tags") },
+        label = { Text(stringResource(Res.string.filters_tags)) },
         colors =
           if (!hasTags) AssistChipDefaults.assistChipColors()
           else AssistChipDefaults.elevatedAssistChipColors(),

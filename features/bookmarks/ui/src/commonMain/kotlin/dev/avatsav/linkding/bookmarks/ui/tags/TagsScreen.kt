@@ -34,6 +34,13 @@ import dev.avatsav.linkding.navigation.LocalNavigator
 import dev.avatsav.linkding.navigation.Route
 import dev.avatsav.linkding.presenter.ObserveEffects
 import dev.avatsav.linkding.ui.compose.none
+import linkding_apps.features.bookmarks.ui.generated.resources.Res
+import linkding_apps.features.bookmarks.ui.generated.resources.tags_close
+import linkding_apps.features.bookmarks.ui.generated.resources.tags_confirm
+import linkding_apps.features.bookmarks.ui.generated.resources.tags_selected
+import linkding_apps.features.bookmarks.ui.generated.resources.tags_selected_count
+import linkding_apps.features.bookmarks.ui.generated.resources.tags_title
+import org.jetbrains.compose.resources.stringResource
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -67,10 +74,13 @@ private fun TagsContent(
     topBar = {
       TopAppBar(
         windowInsets = WindowInsets.none,
-        title = { Text("Select Tags") },
+        title = { Text(stringResource(Res.string.tags_title)) },
         navigationIcon = {
           IconButton(onClick = { eventSink(TagsUiEvent.Close) }) {
-            Icon(imageVector = Icons.Filled.Close, contentDescription = "Close")
+            Icon(
+              imageVector = Icons.Filled.Close,
+              contentDescription = stringResource(Res.string.tags_close),
+            )
           }
         },
         colors =
@@ -87,14 +97,14 @@ private fun TagsContent(
             modifier = Modifier.defaultMinSize(minWidth = 56.dp, minHeight = 48.dp),
             onClick = { eventSink(TagsUiEvent.Confirm) },
           ) {
-            Text("Confirm")
+            Text(stringResource(Res.string.tags_confirm))
           }
         },
         actions = {
           if (state.selectedTagIds.isNotEmpty()) {
             Text(
               modifier = Modifier.padding(horizontal = 16.dp),
-              text = "${state.selectedTagIds.size} selected",
+              text = stringResource(Res.string.tags_selected_count, state.selectedTagIds.size),
               style = MaterialTheme.typography.bodyMedium,
             )
           }
@@ -115,7 +125,7 @@ private fun TagsContent(
               if (isSelected) {
                 Icon(
                   imageVector = Icons.Default.Check,
-                  contentDescription = "Selected",
+                  contentDescription = stringResource(Res.string.tags_selected),
                   tint = MaterialTheme.colorScheme.primary,
                 )
               }

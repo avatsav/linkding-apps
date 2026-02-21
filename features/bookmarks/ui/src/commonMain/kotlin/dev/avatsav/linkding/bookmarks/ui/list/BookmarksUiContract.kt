@@ -1,11 +1,20 @@
 package dev.avatsav.linkding.bookmarks.ui.list
 
+import androidx.compose.runtime.Composable
 import androidx.paging.compose.LazyPagingItems
-import dev.avatsav.linkding.bookmarks.ui.list.common.SnackbarMessage
 import dev.avatsav.linkding.data.model.Bookmark
 import dev.avatsav.linkding.data.model.BookmarkCategory
 import dev.avatsav.linkding.data.model.SearchHistory
 import dev.avatsav.linkding.data.model.Tag
+import dev.avatsav.linkding.ui.compose.SnackbarMessage
+import linkding_apps.features.bookmarks.ui.generated.resources.Res
+import linkding_apps.features.bookmarks.ui.generated.resources.action_bookmark_archived
+import linkding_apps.features.bookmarks.ui.generated.resources.action_bookmark_deleted
+import linkding_apps.features.bookmarks.ui.generated.resources.action_bookmark_unarchived
+import linkding_apps.features.bookmarks.ui.generated.resources.action_failed
+import linkding_apps.features.bookmarks.ui.generated.resources.action_retry
+import linkding_apps.features.bookmarks.ui.generated.resources.action_undo
+import org.jetbrains.compose.resources.stringResource
 
 data class BookmarksUiState(
   val bookmarks: LazyPagingItems<Bookmark>,
@@ -70,4 +79,33 @@ sealed interface BookmarkUiEffect {
   data object AddBookmark : BookmarkUiEffect
 
   data object NavigateToSettings : BookmarkUiEffect
+}
+
+sealed interface BookmarkSnackbar : SnackbarMessage {
+
+  data class Deleted(override val onAction: (() -> Unit)?) : BookmarkSnackbar {
+    @Composable override fun message() = stringResource(Res.string.action_bookmark_deleted)
+
+    @Composable override fun actionLabel() = stringResource(Res.string.action_undo)
+  }
+
+  data class Archived(override val onAction: (() -> Unit)?) : BookmarkSnackbar {
+    @Composable override fun message() = stringResource(Res.string.action_bookmark_archived)
+
+    @Composable override fun actionLabel() = stringResource(Res.string.action_undo)
+  }
+
+  data class Unarchived(override val onAction: (() -> Unit)?) : BookmarkSnackbar {
+    @Composable override fun message() = stringResource(Res.string.action_bookmark_unarchived)
+
+    @Composable override fun actionLabel() = stringResource(Res.string.action_undo)
+  }
+
+  data class Failed(val errorMessage: String?, override val onAction: (() -> Unit)?) :
+    BookmarkSnackbar {
+    @Composable
+    override fun message() = stringResource(Res.string.action_failed, errorMessage.orEmpty())
+
+    @Composable override fun actionLabel() = stringResource(Res.string.action_retry)
+  }
 }
