@@ -8,7 +8,6 @@ internal object CompilerOptions {
       "-Xexpect-actual-classes",
       "-Xreturn-value-checker=full",
       "-Xexplicit-backing-fields",
-      "-Xdata-flow-based-exhaustiveness",
       "-Xcontext-sensitive-resolution",
     )
 
