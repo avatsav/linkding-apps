@@ -1,15 +1,7 @@
 package dev.avatsav.linkding.navigation
 
-import androidx.savedstate.serialization.SavedStateConfiguration
 import dev.avatsav.linkding.data.model.Tag
-import dev.zacsweers.metro.AppScope
-import dev.zacsweers.metro.ContributesTo
-import dev.zacsweers.metro.Provides
-import dev.zacsweers.metro.SingleIn
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.modules.SerializersModule
-import kotlinx.serialization.modules.polymorphic
-import kotlinx.serialization.modules.subclass
 
 /**
  * Sealed interface representing all navigable routes in the app.
@@ -54,27 +46,6 @@ sealed interface Route {
       @Serializable data class Confirmed(val selectedTags: List<Tag>) : Result
 
       @Serializable data object Dismissed : Result
-    }
-  }
-}
-
-@ContributesTo(AppScope::class)
-interface NavigationProviders {
-
-  @Provides
-  @SingleIn(AppScope::class)
-  fun provideSavedStateConfiguration(): SavedStateConfiguration = SavedStateConfiguration {
-    serializersModule = SerializersModule {
-      polymorphic(Route::class) {
-        subclass(Route.Auth::class)
-        subclass(Route.BookmarksFeed::class)
-        subclass(Route.AddBookmark.New::class)
-        subclass(Route.AddBookmark.Shared::class)
-        subclass(Route.AddBookmark.Edit::class)
-        subclass(Route.Url::class)
-        subclass(Route.Settings::class)
-        subclass(Route.Tags::class)
-      }
     }
   }
 }
