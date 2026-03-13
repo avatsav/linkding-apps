@@ -95,7 +95,7 @@ class DefaultAppUi(
             ),
           backStack = backStack,
           onBack = { navigator.pop() },
-          sceneStrategy = bottomSheetSceneStrategy,
+          sceneStrategies = listOf(bottomSheetSceneStrategy),
           entryProvider =
             entryProvider(
               builder = {
@@ -112,7 +112,7 @@ class DefaultAppUi(
 
 @OptIn(ExperimentalAnimationApi::class)
 private fun <T : Any> predictivePopTransitionSpec():
-  AnimatedContentTransitionScope<Scene<T>>.(@SwipeEdge Int) -> ContentTransform = { edge ->
+  AnimatedContentTransitionScope<Scene<T>>.(@SwipeEdge Int) -> ContentTransform = {
   val towards = SlideDirection.Right
   ContentTransform(
     targetContentEnter =
