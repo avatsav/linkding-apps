@@ -12,31 +12,19 @@ import dev.zacsweers.metro.SingleIn
 @ContributesBinding(AppScope::class)
 class SqlDelightBookmarksDao(private val db: Database) : BookmarksDao {
 
-  override fun insert(bookmark: Bookmark) {
-    val _ =
-      db.bookmarksQueries.insert(
-        linkding_id = bookmark.id,
-        url = bookmark.url,
-        urlHost = bookmark.urlHost,
-        title = bookmark.title,
-        description = bookmark.description,
-        archived = bookmark.archived,
-        unread = bookmark.unread,
-        tags = bookmark.tags,
-        added = bookmark.added,
-        modified = bookmark.modified,
-      )
+  override suspend fun insert(bookmark: Bookmark) {
+    insertBlocking(bookmark)
   }
 
-  override fun insert(bookmarks: List<Bookmark>) {
+  override suspend fun insert(bookmarks: List<Bookmark>) {
     db.transaction {
       for (entity in bookmarks) {
-        insert(entity)
+        insertBlocking(entity)
       }
     }
   }
 
-  override fun update(bookmark: Bookmark) {
+  override suspend fun update(bookmark: Bookmark) {
     val _ =
       db.bookmarksQueries.update(
         linkding_id = bookmark.id,
@@ -52,9 +40,29 @@ class SqlDelightBookmarksDao(private val db: Database) : BookmarksDao {
       )
   }
 
-  override fun upsert(bookmark: Bookmark) {
+  override suspend fun upsert(bookmark: Bookmark) {
+    upsertBlocking(bookmark)
+  }
+
+  override suspend fun upsert(bookmarks: List<Bookmark>) {
+    db.bookmarksQueries.transaction {
+      for (entity in bookmarks) {
+        upsertBlocking(entity)
+      }
+    }
+  }
+
+  override suspend fun delete(id: Long) {
+    val _ = db.bookmarksQueries.delete(id)
+  }
+
+  override suspend fun deleteAll() {
+    val _ = db.bookmarksQueries.deleteAll()
+  }
+
+  private fun insertBlocking(bookmark: Bookmark) {
     val _ =
-      db.bookmarksQueries.upsert(
+      db.bookmarksQueries.insert(
         linkding_id = bookmark.id,
         url = bookmark.url,
         urlHost = bookmark.urlHost,
@@ -68,19 +76,19 @@ class SqlDelightBookmarksDao(private val db: Database) : BookmarksDao {
       )
   }
 
-  override fun upsert(bookmarks: List<Bookmark>) {
-    db.bookmarksQueries.transaction {
-      for (entity in bookmarks) {
-        upsert(entity)
-      }
-    }
-  }
-
-  override fun delete(id: Long) {
-    val _ = db.bookmarksQueries.delete(id)
-  }
-
-  override fun deleteAll() {
-    val _ = db.bookmarksQueries.deleteAll()
+  private fun upsertBlocking(bookmark: Bookmark) {
+    val _ =
+      db.bookmarksQueries.upsert(
+        linkding_id = bookmark.id,
+        url = bookmark.url,
+        urlHost = bookmark.urlHost,
+        title = bookmark.title,
+        description = bookmark.description,
+        archived = bookmark.archived,
+        unread = bookmark.unread,
+        tags = bookmark.tags,
+        added = bookmark.added,
+        modified = bookmark.modified,
+      )
   }
 }

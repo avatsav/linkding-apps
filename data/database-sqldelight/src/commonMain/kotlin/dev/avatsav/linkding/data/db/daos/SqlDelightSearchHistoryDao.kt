@@ -11,6 +11,7 @@ import dev.zacsweers.metro.Inject
 import dev.zacsweers.metro.SingleIn
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.withContext
 
 @Inject
 @SingleIn(AppScope::class)
@@ -20,13 +21,11 @@ class SqlDelightSearchHistoryDao(
   private val dispatchers: AppCoroutineDispatchers,
 ) : SearchHistoryDao {
 
-  override fun upsert(history: SearchHistory) {
-    val _ = db.search_historyQueries.upsert(query = history.query, modified = history.modified)
-  }
+  override suspend fun upsert(history: SearchHistory) =
+    withContext(dispatchers.io) { upsertBlocking(history) }
 
-  override fun insertAll(histories: List<SearchHistory>) {
-    db.transaction { histories.forEach { upsert(it) } }
-  }
+  override suspend fun insertAll(histories: List<SearchHistory>) =
+    withContext(dispatchers.io) { db.transaction { histories.forEach(::upsertBlocking) } }
 
   override fun observeRecent(limit: Long): Flow<List<SearchHistory>> {
     return db.search_historyQueries.selectRecent(limit).asFlow().mapToList(dispatchers.io).map {
@@ -35,11 +34,17 @@ class SqlDelightSearchHistoryDao(
     }
   }
 
-  override fun deleteAll() {
-    val _ = db.search_historyQueries.deleteAll()
-  }
+  override suspend fun deleteAll() =
+    withContext(dispatchers.io) {
+      val _ = db.search_historyQueries.deleteAll()
+    }
 
-  override fun pruneToLimit(limit: Long) {
-    val _ = db.search_historyQueries.pruneBeyond(limit)
+  override suspend fun pruneToLimit(limit: Long) =
+    withContext(dispatchers.io) {
+      val _ = db.search_historyQueries.pruneBeyond(limit)
+    }
+
+  private fun upsertBlocking(history: SearchHistory) {
+    val _ = db.search_historyQueries.upsert(query = history.query, modified = history.modified)
   }
 }

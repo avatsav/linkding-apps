@@ -3,17 +3,17 @@ package dev.avatsav.linkding.data.db.daos
 import dev.avatsav.linkding.data.model.Bookmark
 
 interface BookmarksDao {
-  fun insert(bookmark: Bookmark)
+  suspend fun insert(bookmark: Bookmark)
 
-  fun insert(bookmarks: List<Bookmark>)
+  suspend fun insert(bookmarks: List<Bookmark>)
 
-  fun update(bookmark: Bookmark)
+  suspend fun update(bookmark: Bookmark)
 
-  fun upsert(bookmark: Bookmark)
+  suspend fun upsert(bookmark: Bookmark)
 
-  fun upsert(bookmarks: List<Bookmark>)
+  suspend fun upsert(bookmarks: List<Bookmark>)
 
-  fun delete(id: Long)
+  suspend fun delete(id: Long)
 
-  fun deleteAll()
+  suspend fun deleteAll()
 }

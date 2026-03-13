@@ -4,13 +4,13 @@ import dev.avatsav.linkding.data.model.SearchHistory
 import kotlinx.coroutines.flow.Flow
 
 interface SearchHistoryDao {
-  fun upsert(history: SearchHistory)
+  suspend fun upsert(history: SearchHistory)
 
-  fun insertAll(histories: List<SearchHistory>)
+  suspend fun insertAll(histories: List<SearchHistory>)
 
   fun observeRecent(limit: Long): Flow<List<SearchHistory>>
 
-  fun deleteAll()
+  suspend fun deleteAll()
 
-  fun pruneToLimit(limit: Long)
+  suspend fun pruneToLimit(limit: Long)
 }

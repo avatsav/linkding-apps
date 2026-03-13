@@ -29,16 +29,30 @@ class SqlDelightPagingBookmarksDao(
       queryProvider = ::queryBookmarks,
     )
 
-  override fun countBookmarks(): Long = db.bookmarksQueries.countBookmarks().executeAsOne()
+  override suspend fun countBookmarks(): Long = db.bookmarksQueries.countBookmarks().executeAsOne()
 
-  override fun refresh(bookmarks: List<Bookmark>) {
+  override suspend fun refresh(bookmarks: List<Bookmark>) {
     db.transaction {
-      bookmarksDao.deleteAll()
-      bookmarksDao.insert(bookmarks)
+      val _ = db.bookmarksQueries.deleteAll()
+      bookmarks.forEach { bookmark ->
+        val ignored =
+          db.bookmarksQueries.insert(
+            linkding_id = bookmark.id,
+            url = bookmark.url,
+            urlHost = bookmark.urlHost,
+            title = bookmark.title,
+            description = bookmark.description,
+            archived = bookmark.archived,
+            unread = bookmark.unread,
+            tags = bookmark.tags,
+            added = bookmark.added,
+            modified = bookmark.modified,
+          )
+      }
     }
   }
 
-  override fun append(bookmarks: List<Bookmark>) {
+  override suspend fun append(bookmarks: List<Bookmark>) {
     bookmarksDao.upsert(bookmarks)
   }
 
