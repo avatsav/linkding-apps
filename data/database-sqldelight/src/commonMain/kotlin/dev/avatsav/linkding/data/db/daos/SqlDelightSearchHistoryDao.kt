@@ -1,10 +1,9 @@
-package dev.avatsav.linkding.bookmarks.impl.daos
+package dev.avatsav.linkding.data.db.daos
 
 import app.cash.sqldelight.coroutines.asFlow
 import app.cash.sqldelight.coroutines.mapToList
 import dev.avatsav.linkding.AppCoroutineDispatchers
 import dev.avatsav.linkding.data.db.Database
-import dev.avatsav.linkding.data.db.daos.SearchHistoryDao
 import dev.avatsav.linkding.data.model.SearchHistory
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding

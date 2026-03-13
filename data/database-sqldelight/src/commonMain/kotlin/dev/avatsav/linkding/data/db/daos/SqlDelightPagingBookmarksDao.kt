@@ -1,11 +1,9 @@
-package dev.avatsav.linkding.bookmarks.impl.daos
+package dev.avatsav.linkding.data.db.daos
 
 import androidx.paging.PagingSource
 import app.cash.sqldelight.Query
 import dev.avatsav.linkding.AppCoroutineDispatchers
 import dev.avatsav.linkding.data.db.Database
-import dev.avatsav.linkding.data.db.daos.BookmarksDao
-import dev.avatsav.linkding.data.db.daos.PagingBookmarksDao
 import dev.avatsav.linkding.data.db.paging.QueryPagingSource
 import dev.avatsav.linkding.data.model.Bookmark
 import dev.zacsweers.metro.AppScope

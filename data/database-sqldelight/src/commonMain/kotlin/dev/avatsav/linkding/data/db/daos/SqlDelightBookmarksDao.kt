@@ -1,7 +1,6 @@
-package dev.avatsav.linkding.bookmarks.impl.daos
+package dev.avatsav.linkding.data.db.daos
 
 import dev.avatsav.linkding.data.db.Database
-import dev.avatsav.linkding.data.db.daos.BookmarksDao
 import dev.avatsav.linkding.data.model.Bookmark
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
