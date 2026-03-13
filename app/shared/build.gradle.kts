@@ -19,7 +19,7 @@ kotlin {
 
       api(projects.data.models)
       api(projects.data.linkdingApi)
-      api(projects.data.databaseSqldelight)
+      api(projects.data.databaseImpl)
 
       api(projects.ui.theme)
       api(projects.ui.navigation)
