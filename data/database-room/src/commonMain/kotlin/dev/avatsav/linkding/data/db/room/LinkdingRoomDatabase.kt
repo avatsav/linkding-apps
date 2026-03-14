@@ -9,7 +9,7 @@ import androidx.room3.TypeConverters
 @Database(
   entities = [BookmarkEntity::class, SearchHistoryEntity::class],
   version = 1,
-  exportSchema = false,
+  exportSchema = true,
 )
 @TypeConverters(LinkdingRoomConverters::class)
 @ConstructedBy(LinkdingRoomDatabaseConstructor::class)

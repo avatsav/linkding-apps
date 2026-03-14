@@ -15,6 +15,9 @@ abstract class RoomBookmarksQueries {
   @Query("SELECT * FROM bookmarks ORDER BY id ASC")
   abstract fun bookmarksPagingSource(): PagingSource<Int, BookmarkEntity>
 
+  @Query("SELECT * FROM bookmarks ORDER BY id ASC")
+  abstract suspend fun selectAll(): List<BookmarkEntity>
+
   @Query("SELECT count(*) FROM bookmarks")
   abstract suspend fun countBookmarks(): Long
 

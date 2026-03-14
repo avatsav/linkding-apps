@@ -19,6 +19,9 @@ abstract class RoomSearchHistoryQueries {
   @Query("SELECT * FROM search_history ORDER BY modified DESC LIMIT :limit")
   abstract fun observeRecent(limit: Long): Flow<List<SearchHistoryEntity>>
 
+  @Query("SELECT * FROM search_history ORDER BY modified DESC LIMIT :limit")
+  abstract suspend fun selectRecent(limit: Long): List<SearchHistoryEntity>
+
   @Query("DELETE FROM search_history")
   abstract suspend fun deleteAll()
 

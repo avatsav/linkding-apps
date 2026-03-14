@@ -18,12 +18,16 @@ actual interface RoomPlatformProviders {
   @SingleIn(AppScope::class)
   fun provideRoomDatabase(dispatchers: AppCoroutineDispatchers): LinkdingRoomDatabase {
     val appSupportPath = NSHomeDirectory() + "/Library/Application Support"
-    NSFileManager.defaultManager.createDirectoryAtPath(
-      path = appSupportPath,
-      withIntermediateDirectories = true,
-      attributes = null,
-      error = null,
-    )
+    check(
+      NSFileManager.defaultManager.createDirectoryAtPath(
+        path = appSupportPath,
+        withIntermediateDirectories = true,
+        attributes = null,
+        error = null,
+      )
+    ) {
+      "Failed to create Room database directory at $appSupportPath"
+    }
     val dbFilePath = appSupportPath + "/" + DatabaseName
     return Room
       .databaseBuilder<LinkdingRoomDatabase>(name = dbFilePath)
