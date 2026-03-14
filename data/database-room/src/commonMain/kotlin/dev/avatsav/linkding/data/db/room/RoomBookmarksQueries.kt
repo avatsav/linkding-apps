@@ -66,7 +66,7 @@ abstract class RoomBookmarksQueries {
   }
 
   @Transaction
-  open suspend fun upsert(bookmark: BookmarkEntity) {
+  open suspend fun update(bookmark: BookmarkEntity) {
     updateExisting(
       linkdingId = bookmark.linkdingId,
       url = bookmark.url,
@@ -79,6 +79,11 @@ abstract class RoomBookmarksQueries {
       added = bookmark.added,
       modified = bookmark.modified,
     )
+  }
+
+  @Transaction
+  open suspend fun upsert(bookmark: BookmarkEntity) {
+    update(bookmark)
     val _ = insertIgnore(bookmark)
   }
 

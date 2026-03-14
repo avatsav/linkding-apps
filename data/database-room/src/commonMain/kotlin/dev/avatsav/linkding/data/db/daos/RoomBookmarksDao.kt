@@ -20,7 +20,7 @@ class RoomBookmarksDao(private val db: LinkdingRoomDatabase) : BookmarksDao {
   }
 
   override suspend fun update(bookmark: dev.avatsav.linkding.data.model.Bookmark) {
-    db.bookmarksQueries().upsert(bookmark.toRoomEntity())
+    db.bookmarksQueries().update(bookmark.toRoomEntity())
   }
 
   override suspend fun upsert(bookmark: dev.avatsav.linkding.data.model.Bookmark) {

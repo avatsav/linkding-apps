@@ -7,10 +7,14 @@ class MappingPagingSource<Key : Any, Value : Any, Mapped : Any>(
   private val source: PagingSource<Key, Value>,
   private val mapper: (Value) -> Mapped,
 ) : PagingSource<Key, Mapped>() {
-  private val invalidatedCallback: () -> Unit = { invalidate() }
+  private val sourceInvalidatedCallback: () -> Unit = { invalidate() }
+  private val wrapperInvalidatedCallback: () -> Unit = {
+    source.unregisterInvalidatedCallback(sourceInvalidatedCallback)
+  }
 
   init {
-    source.registerInvalidatedCallback(invalidatedCallback)
+    source.registerInvalidatedCallback(sourceInvalidatedCallback)
+    registerInvalidatedCallback(wrapperInvalidatedCallback)
   }
 
   override suspend fun load(params: LoadParams<Key>): LoadResult<Key, Mapped> =
