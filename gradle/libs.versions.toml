@@ -55,7 +55,7 @@ androidx-activity-compose = { module = "androidx.activity:activity-compose", ver
 androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appcompat" }
 androidx-core = "androidx.core:core-ktx:1.18.0"
 androidx-splashscreen = "androidx.core:core-splashscreen:1.2.0"
-androidx-browser = "androidx.browser:browser:1.9.0"
+androidx-browser = "androidx.browser:browser:1.10.0"
 androidx-preference = "androidx.preference:preference-ktx:1.2.1"
 compose-foundation = { module = "org.jetbrains.compose.foundation:foundation", version.ref = "compose-multiplatform" }
 compose-runtime = { module = "org.jetbrains.compose.runtime:runtime", version.ref = "compose-multiplatform" }
