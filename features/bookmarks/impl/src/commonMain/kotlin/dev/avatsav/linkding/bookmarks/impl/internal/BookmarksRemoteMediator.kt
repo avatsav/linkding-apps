@@ -39,9 +39,7 @@ class BookmarksRemoteMediator(
           REFRESH -> 0
           PREPEND -> return@withContext MediatorResult.Success(endOfPaginationReached = true)
 
-          APPEND -> {
-            bookmarksDao.countBookmarks().toInt()
-          }
+          APPEND -> bookmarksDao.countBookmarks().toInt()
         }
 
       bookmarksApi
