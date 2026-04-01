@@ -84,7 +84,6 @@ include(
   ":data:models",
   ":data:database",
   ":data:database-room",
-  ":data:database-sqldelight",
   ":data:linkding-api",
   ":ui:theme",
   ":ui:compose",

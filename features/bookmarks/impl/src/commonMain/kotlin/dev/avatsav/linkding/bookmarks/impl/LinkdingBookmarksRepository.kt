@@ -69,26 +69,20 @@ class LinkdingBookmarksRepository(
     val request = bookmarkMapper.map(updateBookmark)
     val result =
       bookmarksApi
-      .updateBookmark(updateBookmark.id, request)
-      .mapEither(success = bookmarkMapper::map, failure = errorMapper::map)
+        .updateBookmark(updateBookmark.id, request)
+        .mapEither(success = bookmarkMapper::map, failure = errorMapper::map)
     result.onSuccess { bookmark -> bookmarksDao.upsert(bookmark) }
     return result
   }
 
   override suspend fun archiveBookmark(id: Long): Result<Unit, BookmarkError> {
-    val result =
-      bookmarksApi
-      .archiveBookmark(id)
-      .mapError(errorMapper::map)
+    val result = bookmarksApi.archiveBookmark(id).mapError(errorMapper::map)
     result.onSuccess { bookmarksDao.delete(id) }
     return result
   }
 
   override suspend fun unarchiveBookmark(id: Long): Result<Unit, BookmarkError> {
-    val result =
-      bookmarksApi
-      .unarchiveBookmark(id)
-      .mapError(errorMapper::map)
+    val result = bookmarksApi.unarchiveBookmark(id).mapError(errorMapper::map)
     result.onSuccess { bookmarksDao.delete(id) }
     return result
   }

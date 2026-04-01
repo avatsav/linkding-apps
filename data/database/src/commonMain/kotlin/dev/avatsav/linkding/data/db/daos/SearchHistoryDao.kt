@@ -4,7 +4,7 @@ import dev.avatsav.linkding.data.model.SearchHistory
 import kotlinx.coroutines.flow.Flow
 
 interface SearchHistoryDao {
-  suspend fun upsert(history: SearchHistory)
+  suspend fun upsert(history: SearchHistory): Long
 
   suspend fun insertAll(histories: List<SearchHistory>)
 

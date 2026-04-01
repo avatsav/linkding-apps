@@ -5,6 +5,7 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.rememberUpdatedState
 
 interface SnackbarMessage {
   @Composable fun message(): String
@@ -22,6 +23,8 @@ fun ObserveSnackbar(
 ) {
   val message = snackbarMessage?.message()
   val actionLabel = snackbarMessage?.actionLabel()
+  val currentOnDismiss = rememberUpdatedState(onDismiss)
+  val currentOnAction = rememberUpdatedState(snackbarMessage?.onAction)
 
   LaunchedEffect(snackbarMessage) {
     if (snackbarMessage == null || message == null) return@LaunchedEffect
@@ -34,8 +37,8 @@ fun ObserveSnackbar(
       )
 
     when (result) {
-      SnackbarResult.ActionPerformed -> snackbarMessage.onAction?.invoke()
-      SnackbarResult.Dismissed -> onDismiss()
+      SnackbarResult.ActionPerformed -> currentOnAction.value?.invoke()
+      SnackbarResult.Dismissed -> currentOnDismiss.value()
     }
   }
 }

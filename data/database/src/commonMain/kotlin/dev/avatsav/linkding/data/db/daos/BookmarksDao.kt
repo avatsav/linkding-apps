@@ -9,9 +9,9 @@ interface BookmarksDao {
 
   suspend fun update(bookmark: Bookmark)
 
-  suspend fun upsert(bookmark: Bookmark)
+  suspend fun upsert(bookmark: Bookmark): Long
 
-  suspend fun upsert(bookmarks: List<Bookmark>)
+  suspend fun upsert(bookmarks: List<Bookmark>): List<Long>
 
   suspend fun delete(id: Long)
 

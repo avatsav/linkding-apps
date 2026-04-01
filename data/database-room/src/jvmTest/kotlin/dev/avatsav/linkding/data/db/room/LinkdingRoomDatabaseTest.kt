@@ -6,6 +6,8 @@ import androidx.sqlite.driver.bundled.BundledSQLiteDriver
 import dev.avatsav.linkding.data.db.daos.RoomBookmarksDao
 import dev.avatsav.linkding.data.db.daos.RoomPagingBookmarksDao
 import dev.avatsav.linkding.data.db.daos.RoomSearchHistoryDao
+import dev.avatsav.linkding.data.db.room.entities.BookmarkEntity
+import dev.avatsav.linkding.data.db.room.entities.SearchHistoryEntity
 import dev.avatsav.linkding.data.model.Bookmark
 import dev.avatsav.linkding.data.model.SearchHistory
 import io.kotest.matchers.collections.shouldContainExactly
@@ -16,8 +18,10 @@ import kotlin.time.Instant
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.withContext
 
 @OptIn(ExperimentalCoroutinesApi::class)
+@Suppress("InjectDispatcher")
 class LinkdingRoomDatabaseTest {
 
   @Test
@@ -33,7 +37,8 @@ class LinkdingRoomDatabaseTest {
       bookmarksDao.update(bookmark(id = 1, title = "after"))
 
       pagingDao.countBookmarks() shouldBe 1
-      db.bookmarksQueries().selectAll().map(BookmarkEntity::title) shouldContainExactly listOf("after")
+      db.bookmarksQueries().selectAll().map(BookmarkEntity::title) shouldContainExactly
+        listOf("after")
     }
   }
 
@@ -43,11 +48,28 @@ class LinkdingRoomDatabaseTest {
       val pagingDao = RoomPagingBookmarksDao(db)
 
       pagingDao.refresh(listOf(bookmark(id = 1, title = "one"), bookmark(id = 2, title = "two")))
-      pagingDao.append(listOf(bookmark(id = 2, title = "two updated"), bookmark(id = 3, title = "three")))
+      pagingDao.append(
+        listOf(bookmark(id = 2, title = "two updated"), bookmark(id = 3, title = "three"))
+      )
 
       pagingDao.countBookmarks() shouldBe 3
       pagingDao.loadBookmarks().map(Bookmark::title) shouldContainExactly
         listOf("one", "two updated", "three")
+    }
+  }
+
+  @Test
+  fun `search history upsert updates timestamp for existing query`() = runTest {
+    withTestDatabase { db ->
+      val searchHistoryDao = RoomSearchHistoryDao(db)
+
+      searchHistoryDao.upsert(searchHistory(query = "kotlin", modified = "2026-03-14T10:00:00Z"))
+      searchHistoryDao.upsert(searchHistory(query = "kotlin", modified = "2026-03-14T12:00:00Z"))
+
+      val results = db.searchHistoryQueries().selectRecent(limit = 10)
+      results.size shouldBe 1
+      results.first().query shouldBe "kotlin"
+      results.first().modified shouldBe Instant.parse("2026-03-14T12:00:00Z")
     }
   }
 
@@ -59,13 +81,17 @@ class LinkdingRoomDatabaseTest {
       searchHistoryDao.upsert(searchHistory(query = "kotlin", modified = "2026-03-14T10:00:00Z"))
       searchHistoryDao.upsert(searchHistory(query = "room", modified = "2026-03-14T10:01:00Z"))
 
-      db.searchHistoryQueries().selectRecent(limit = 2).map(SearchHistoryEntity::query) shouldContainExactly
-        listOf("room", "kotlin")
+      db
+        .searchHistoryQueries()
+        .selectRecent(limit = 2)
+        .map(SearchHistoryEntity::query) shouldContainExactly listOf("room", "kotlin")
 
       searchHistoryDao.pruneToLimit(1)
 
-      db.searchHistoryQueries().selectRecent(limit = 2).map(SearchHistoryEntity::query) shouldContainExactly
-        listOf("room")
+      db
+        .searchHistoryQueries()
+        .selectRecent(limit = 2)
+        .map(SearchHistoryEntity::query) shouldContainExactly listOf("room")
     }
   }
 
@@ -84,10 +110,9 @@ class LinkdingRoomDatabaseTest {
   }
 
   private suspend fun withTestDatabase(block: suspend (LinkdingRoomDatabase) -> Unit) {
-    val dbFile = File.createTempFile("linkding-room-test", ".db")
+    val dbFile = withContext(Dispatchers.IO) { File.createTempFile("linkding-room-test", ".db") }
     val db =
-      Room
-        .databaseBuilder<LinkdingRoomDatabase>(name = dbFile.absolutePath)
+      Room.databaseBuilder<LinkdingRoomDatabase>(name = dbFile.absolutePath)
         .setDriver(BundledSQLiteDriver())
         .setQueryCoroutineContext(Dispatchers.IO)
         .build()

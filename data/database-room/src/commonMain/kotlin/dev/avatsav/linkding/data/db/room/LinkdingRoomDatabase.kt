@@ -5,6 +5,11 @@ import androidx.room3.Database
 import androidx.room3.RoomDatabase
 import androidx.room3.RoomDatabaseConstructor
 import androidx.room3.TypeConverters
+import dev.avatsav.linkding.data.db.room.converters.LinkdingRoomConverters
+import dev.avatsav.linkding.data.db.room.daos.RoomBookmarksDao
+import dev.avatsav.linkding.data.db.room.daos.RoomSearchHistoryDao
+import dev.avatsav.linkding.data.db.room.entities.BookmarkEntity
+import dev.avatsav.linkding.data.db.room.entities.SearchHistoryEntity
 
 @Database(
   entities = [BookmarkEntity::class, SearchHistoryEntity::class],
@@ -14,9 +19,10 @@ import androidx.room3.TypeConverters
 @TypeConverters(LinkdingRoomConverters::class)
 @ConstructedBy(LinkdingRoomDatabaseConstructor::class)
 abstract class LinkdingRoomDatabase : RoomDatabase() {
-  abstract fun bookmarksQueries(): RoomBookmarksQueries
 
-  abstract fun searchHistoryQueries(): RoomSearchHistoryQueries
+  abstract fun bookmarksQueries(): RoomBookmarksDao
+
+  abstract fun searchHistoryQueries(): RoomSearchHistoryDao
 }
 
 @Suppress("KotlinNoActualForExpect")
