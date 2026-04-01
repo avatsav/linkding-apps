@@ -10,7 +10,7 @@ Kotlin Multiplatform and Compose Multiplatform.
 - **Molecule** - Composable-based state management
 - **Metro DI** - Dependency injection
 - **Ktor** - HTTP client
-- **SQLDelight** - Database
+- **Room 3** - Database
 
 ## Commands
 
