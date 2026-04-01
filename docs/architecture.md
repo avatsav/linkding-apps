@@ -18,7 +18,7 @@
 |--------|---------|
 | `:data:models` | Domain models and data classes |
 | `:data:database` | Database abstraction layer |
-| `:data:database-sqldelight` | SQLDelight implementation |
+| `:data:database-room` | Room 3 implementation |
 | `:data:linkding-api` | Ktor-based HTTP client |
 
 ### UI Modules
