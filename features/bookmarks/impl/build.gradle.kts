@@ -13,7 +13,6 @@ kotlin {
       // Data layer dependencies
       implementation(projects.data.linkdingApi)
       implementation(projects.data.database)
-      implementation(projects.data.databaseSqldelight)
 
       // External dependencies (internal use only, not exposed)
       implementation(libs.multiplatform.settings)

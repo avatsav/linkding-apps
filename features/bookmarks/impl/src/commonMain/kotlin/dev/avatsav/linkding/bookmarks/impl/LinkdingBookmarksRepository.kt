@@ -67,24 +67,29 @@ class LinkdingBookmarksRepository(
     updateBookmark: UpdateBookmark
   ): Result<Bookmark, BookmarkError> {
     val request = bookmarkMapper.map(updateBookmark)
-    return bookmarksApi
-      .updateBookmark(updateBookmark.id, request)
-      .mapEither(success = bookmarkMapper::map, failure = errorMapper::map)
-      .onSuccess { bookmark -> bookmarksDao.upsert(bookmark) }
+    val result =
+      bookmarksApi
+        .updateBookmark(updateBookmark.id, request)
+        .mapEither(success = bookmarkMapper::map, failure = errorMapper::map)
+    result.onSuccess { bookmark -> bookmarksDao.upsert(bookmark) }
+    return result
   }
 
-  override suspend fun archiveBookmark(id: Long): Result<Unit, BookmarkError> =
-    bookmarksApi
-      .archiveBookmark(id)
-      .onSuccess { bookmarksDao.delete(id) }
-      .mapError(errorMapper::map)
+  override suspend fun archiveBookmark(id: Long): Result<Unit, BookmarkError> {
+    val result = bookmarksApi.archiveBookmark(id).mapError(errorMapper::map)
+    result.onSuccess { bookmarksDao.delete(id) }
+    return result
+  }
 
-  override suspend fun unarchiveBookmark(id: Long): Result<Unit, BookmarkError> =
-    bookmarksApi
-      .unarchiveBookmark(id)
-      .onSuccess { bookmarksDao.delete(id) }
-      .mapError(errorMapper::map)
+  override suspend fun unarchiveBookmark(id: Long): Result<Unit, BookmarkError> {
+    val result = bookmarksApi.unarchiveBookmark(id).mapError(errorMapper::map)
+    result.onSuccess { bookmarksDao.delete(id) }
+    return result
+  }
 
-  override suspend fun deleteBookmark(id: Long): Result<Unit, BookmarkError> =
-    bookmarksApi.deleteBookmark(id).onSuccess { bookmarksDao.delete(id) }.mapError(errorMapper::map)
+  override suspend fun deleteBookmark(id: Long): Result<Unit, BookmarkError> {
+    val result = bookmarksApi.deleteBookmark(id).mapError(errorMapper::map)
+    result.onSuccess { bookmarksDao.delete(id) }
+    return result
+  }
 }

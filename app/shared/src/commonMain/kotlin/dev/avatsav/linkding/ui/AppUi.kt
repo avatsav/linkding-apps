@@ -116,7 +116,7 @@ private fun <T : Any> predictivePopTransitionSpec():
   val towards = SlideDirection.Right
   ContentTransform(
     targetContentEnter =
-      slideIntoContainer(towards = towards, initialOffset = { it / 4 }) + unveilIn(),
+      slideIntoContainer(towards = towards, initialOffset = { offset -> offset / 4 }) + unveilIn(),
     initialContentExit = slideOutOfContainer(towards = towards),
   )
 }

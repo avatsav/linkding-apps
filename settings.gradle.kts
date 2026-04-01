@@ -83,7 +83,7 @@ include(
   ":core:presenter",
   ":data:models",
   ":data:database",
-  ":data:database-sqldelight",
+  ":data:database-room",
   ":data:linkding-api",
   ":ui:theme",
   ":ui:compose",
