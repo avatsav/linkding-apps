@@ -118,7 +118,7 @@ turbine = "app.cash.turbine:turbine:1.2.1"
 kotest-assertions = { module = "io.kotest:kotest-assertions-core", version.ref = "kotest" }
 
 molecule = { module = "app.cash.molecule:molecule-runtime", version.ref = "molecule" }
-detektComposeRules = "io.nlopez.compose.rules:detekt:0.5.6"
+detektComposeRules = "io.nlopez.compose.rules:detekt:0.5.9"
 
 metro-android = { module = "dev.zacsweers.metro:metrox-android", version.ref = "metro" }
 
