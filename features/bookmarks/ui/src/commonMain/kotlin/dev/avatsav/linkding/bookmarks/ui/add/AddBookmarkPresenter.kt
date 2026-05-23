@@ -8,8 +8,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import co.touchlab.kermit.Logger
-import com.github.michaelbull.result.onFailure
-import com.github.michaelbull.result.onSuccess
+import com.github.michaelbull.result.onErr
+import com.github.michaelbull.result.onOk
 import dev.avatsav.linkding.bookmarks.api.interactors.AddBookmark
 import dev.avatsav.linkding.bookmarks.api.interactors.CheckBookmarkUrl
 import dev.avatsav.linkding.bookmarks.api.interactors.GetBookmark
@@ -63,20 +63,20 @@ class AddBookmarkPresenter(
         }
         is Shared -> {
           checkBookmarkUrl(mode.url)
-            .onSuccess { result ->
+            .onOk { result ->
               checkUrlResult = result
               if (result.existingBookmark != null) {
                 existingBookmark = result.existingBookmark
                 emitEffect(AddBookmarkUiEffect.ExistingBookmarkFound)
               }
             }
-            .onFailure { Logger.e { "CheckError: $it" } }
+            .onErr { Logger.e { "CheckError: $it" } }
         }
         is Edit -> {
           loadingBookmark = true
           getBookmark(mode.bookmarkId)
-            .onSuccess { existingBookmark = it }
-            .onFailure {
+            .onOk { existingBookmark = it }
+            .onErr {
               Logger.e { "Failed to load bookmark: $it" }
               errorMessage = it.message
             }
@@ -100,8 +100,8 @@ class AddBookmarkPresenter(
                     tags = event.tags.toSet(),
                   )
                 )
-                .onSuccess { emitEffect(AddBookmarkUiEffect.BookmarkSaved) }
-                .onFailure { errorMessage = it.message }
+                .onOk { emitEffect(AddBookmarkUiEffect.BookmarkSaved) }
+                .onErr { errorMessage = it.message }
             } else {
               addBookmark(
                   SaveBookmark(
@@ -112,15 +112,15 @@ class AddBookmarkPresenter(
                     tags = event.tags.toSet(),
                   )
                 )
-                .onSuccess { emitEffect(AddBookmarkUiEffect.BookmarkSaved) }
-                .onFailure { errorMessage = it.message }
+                .onOk { emitEffect(AddBookmarkUiEffect.BookmarkSaved) }
+                .onErr { errorMessage = it.message }
             }
           }
 
         is CheckUrl ->
           presenterScope.launch {
             checkBookmarkUrl(event.url)
-              .onSuccess { result ->
+              .onOk { result ->
                 checkUrlResult = result
                 // If URL already exists, switch to edit mode automatically
                 if (result.existingBookmark != null && existingBookmark == null) {
@@ -128,7 +128,7 @@ class AddBookmarkPresenter(
                   emitEffect(AddBookmarkUiEffect.ExistingBookmarkFound)
                 }
               }
-              .onFailure { Logger.e { "CheckError: $it" } }
+              .onErr { Logger.e { "CheckError: $it" } }
           }
       }
     }

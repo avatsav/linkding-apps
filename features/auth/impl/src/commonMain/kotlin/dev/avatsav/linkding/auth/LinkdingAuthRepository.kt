@@ -2,7 +2,7 @@ package dev.avatsav.linkding.auth
 
 import com.github.michaelbull.result.Result
 import com.github.michaelbull.result.mapError
-import com.github.michaelbull.result.onSuccess
+import com.github.michaelbull.result.onOk
 import dev.avatsav.linkding.api.LinkdingAuthentication
 import dev.avatsav.linkding.auth.api.AuthRepository
 import dev.avatsav.linkding.auth.mappers.AuthErrorMapper
@@ -25,6 +25,6 @@ class LinkdingAuthRepository(
   override suspend fun authenticate(hostUrl: String, apiKey: String): Result<Unit, AuthError> =
     authentication
       .authenticate(hostUrl, apiKey)
-      .onSuccess { appPrefs.setApiConfig(ApiConfig(hostUrl, apiKey)) }
+      .onOk { appPrefs.setApiConfig(ApiConfig(hostUrl, apiKey)) }
       .mapError(errorMapper::map)
 }

@@ -6,8 +6,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.mutableStateSetOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import com.github.michaelbull.result.onFailure
-import com.github.michaelbull.result.onSuccess
+import com.github.michaelbull.result.onErr
+import com.github.michaelbull.result.onOk
 import dev.avatsav.linkding.bookmarks.api.interactors.ArchiveBookmark
 import dev.avatsav.linkding.bookmarks.api.interactors.DeleteBookmark
 import dev.avatsav.linkding.bookmarks.api.interactors.UnarchiveBookmark
@@ -80,13 +80,13 @@ internal fun rememberPendingBookmarkActionHandler(
       }
 
     result
-      .onSuccess {
+      .onOk {
         if (removePendingIdsOnSuccess()) {
           pendingIds.remove(action.bookmarkId)
         }
         onSuccess(action)
       }
-      .onFailure { error ->
+      .onErr { error ->
         pendingIds.remove(action.bookmarkId)
 
         snackbarMessage =
