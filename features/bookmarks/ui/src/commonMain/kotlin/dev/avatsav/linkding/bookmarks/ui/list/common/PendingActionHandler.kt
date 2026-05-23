@@ -15,6 +15,7 @@ import dev.avatsav.linkding.bookmarks.ui.list.BookmarkSnackbar
 import dev.avatsav.linkding.data.model.Bookmark
 import dev.avatsav.linkding.ui.compose.SnackbarMessage
 import kotlin.time.Clock
+import kotlin.time.Duration.Companion.milliseconds
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -118,7 +119,7 @@ internal fun rememberPendingBookmarkActionHandler(
     pendingIds.add(action.bookmarkId)
 
     val job = scope.launch {
-      delay(UndoActionDelayMillis)
+      delay(UndoActionDelay.milliseconds)
       executeActionInternal(action)
       currentPendingAction = null // Clear after execution
     }
@@ -145,4 +146,4 @@ internal fun rememberPendingBookmarkActionHandler(
 
 private data class PendingActionState(val action: PendingAction, val job: Job)
 
-private const val UndoActionDelayMillis = 4000L
+private const val UndoActionDelay = 4000L
