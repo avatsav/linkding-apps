@@ -37,7 +37,7 @@ Kotlin Multiplatform and Compose Multiplatform.
   see [docs/presentation.md](docs/presentation.md))
 - Follow **3-layer feature structure**: `api/` → `impl/` → `ui/`
 - UI modules depend only on API modules, never impl
-- Register screens via `@IntoSet` providers with `Provider<Presenter>` injection
+- Register screens via `@IntoSet` providers with `() -> Presenter` injection
 - Use `retainedPresenter()` to retain presenters across recomposition
 - Use `ObserveEffects` for navigation and side effects
 - Use `rememberSaveable` for state that should survive process death

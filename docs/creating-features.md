@@ -139,7 +139,7 @@ fun MyScreen(presenter: MyPresenter, modifier: Modifier = Modifier) {
 @ContributesTo(UserScope::class)
 interface MyScreenComponent {
   @IntoSet @Provides
-  fun provideEntry(presenter: Provider<MyPresenter>): RouteEntryProviderScope = {
+  fun provideEntry(presenter: () -> MyPresenter): RouteEntryProviderScope = {
     entry<Route.MyRoute> { MyScreen(retainedPresenter(presenter())) }
   }
 }
@@ -200,7 +200,7 @@ interface MyScreenComponent {
 - [ ] API module has only interfaces
 - [ ] UI depends only on API (not impl)
 - [ ] Presenter uses `@Inject` (or `@AssistedInject` for route parameters)
-- [ ] Route registered via `@IntoSet` with `Provider<Presenter>` or Factory injection
+- [ ] Route registered via `@IntoSet` with `() -> Presenter` or Factory injection
 - [ ] Screen uses `retainedPresenter()` to retain presenter
 - [ ] State uses `rememberSaveable` where persistence is needed
 - [ ] Package: `dev.avatsav.linkding.{feature}.{layer}.*`

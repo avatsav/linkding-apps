@@ -8,7 +8,6 @@ import dev.avatsav.linkding.settings.ui.SettingsPresenter
 import dev.avatsav.linkding.settings.ui.SettingsScreen
 import dev.zacsweers.metro.ContributesTo
 import dev.zacsweers.metro.IntoSet
-import dev.zacsweers.metro.Provider
 import dev.zacsweers.metro.Provides
 
 @ContributesTo(UserScope::class)
@@ -16,7 +15,7 @@ interface SettingsScreenProviders {
   @IntoSet
   @Provides
   fun provideSettingsEntryProviderScope(
-    presenter: Provider<SettingsPresenter>
+    presenter: () -> SettingsPresenter
   ): RouteEntryProviderScope = {
     entry<Route.Settings> { SettingsScreen(retainPresenter { presenter() }) }
   }
