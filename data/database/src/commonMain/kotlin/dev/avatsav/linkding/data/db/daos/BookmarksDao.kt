@@ -9,7 +9,7 @@ interface BookmarksDao {
 
   suspend fun update(bookmark: Bookmark)
 
-  suspend fun upsert(bookmark: Bookmark): Long
+  @IgnorableReturnValue suspend fun upsert(bookmark: Bookmark): Long
 
   suspend fun upsert(bookmarks: List<Bookmark>): List<Long>
 

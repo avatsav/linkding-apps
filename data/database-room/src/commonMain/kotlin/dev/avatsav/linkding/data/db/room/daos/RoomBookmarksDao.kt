@@ -69,6 +69,7 @@ abstract class RoomBookmarksDao {
     }
   }
 
+  @IgnorableReturnValue
   open suspend fun update(bookmark: BookmarkEntity): Int {
     return updateExisting(
       linkdingId = bookmark.linkdingId,
@@ -90,6 +91,7 @@ abstract class RoomBookmarksDao {
     return if (updated == 0) insertIgnore(bookmark) else updated.toLong()
   }
 
+  @IgnorableReturnValue
   @Transaction
   open suspend fun upsertAll(bookmarks: List<BookmarkEntity>): List<Long> {
     return bookmarks.map { upsert(it) }
