@@ -1,9 +1,9 @@
 [versions]
 agp = "9.2.1"
-kotlin = "2.4.0-RC" # https://github.com/JetBrains/kotlin/releases
+kotlin = "2.4.20-tethys-25" # https://github.com/JetBrains/kotlin/releases
 coroutines = "1.11.0" # https://github.com/Kotlin/kotlinx.coroutines/releases
 serialization = "1.11.0"
-datetime = "0.8.0"
+datetime = "0.8.0-0.6.x-compat"
 atomicfu = "0.32.1"
 ksp = "2.3.8" # https://github.com/google/ksp/releases
 ktmft = "0.26.0"
