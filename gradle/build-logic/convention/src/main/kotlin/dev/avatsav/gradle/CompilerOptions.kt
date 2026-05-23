@@ -7,7 +7,6 @@ internal object CompilerOptions {
       "-Xskip-prerelease-check",
       "-Xexpect-actual-classes",
       "-Xreturn-value-checker=full",
-      "-Xexplicit-backing-fields",
       "-Xcontext-sensitive-resolution",
     )
 

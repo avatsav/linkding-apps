@@ -117,12 +117,11 @@ internal fun rememberPendingBookmarkActionHandler(
 
     pendingIds.add(action.bookmarkId)
 
-    val job =
-      scope.launch {
-        delay(UndoActionDelayMillis)
-        executeActionInternal(action)
-        currentPendingAction = null // Clear after execution
-      }
+    val job = scope.launch {
+      delay(UndoActionDelayMillis)
+      executeActionInternal(action)
+      currentPendingAction = null // Clear after execution
+    }
 
     currentPendingAction = PendingActionState(action, job)
 
