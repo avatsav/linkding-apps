@@ -28,7 +28,7 @@ import dev.zacsweers.metrox.android.ActivityKey
 import kotlinx.coroutines.launch
 
 @ContributesIntoMap(AppScope::class, binding<Activity>())
-@ActivityKey(MainActivity::class)
+@ActivityKey
 @Inject
 class MainActivity : ComponentActivity() {
 
