@@ -5,6 +5,21 @@
   ],
   "packageRules": [
     {
+      "matchUpdateTypes": ["major"],
+      "groupName": "all major updates",
+      "groupSlug": "all-major"
+    },
+    {
+      "matchUpdateTypes": ["minor"],
+      "groupName": "all minor updates",
+      "groupSlug": "all-minor"
+    },
+    {
+      "matchUpdateTypes": ["patch"],
+      "groupName": "all patch updates",
+      "groupSlug": "all-patch"
+    },
+    {
       "groupName": "Kotlin, KSP and Compose",
       "groupSlug": "kotlin",
       "matchPackageNames": [
