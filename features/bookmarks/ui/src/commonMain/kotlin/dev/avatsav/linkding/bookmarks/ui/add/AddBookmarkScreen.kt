@@ -48,6 +48,7 @@ import dev.avatsav.linkding.ui.compose.widgets.OutlinedTagsTextField
 import dev.avatsav.linkding.ui.compose.widgets.PlaceholderVisualTransformation
 import dev.avatsav.linkding.ui.compose.widgets.SmallCircularProgressIndicator
 import dev.avatsav.linkding.ui.compose.widgets.TagsTextFieldValue
+import kotlin.time.Duration.Companion.milliseconds
 import kotlinx.coroutines.delay
 import linkding_apps.features.bookmarks.ui.generated.resources.Res
 import linkding_apps.features.bookmarks.ui.generated.resources.add_bookmark_close
@@ -118,7 +119,7 @@ private fun AddBookmark(
 
   LaunchedEffect(url) {
     if (state.isEditMode || url.isBlank()) return@LaunchedEffect
-    delay(DebounceDelay)
+    delay(DebounceDelay.milliseconds)
     currentEventSink(AddBookmarkUiEvent.CheckUrl(url))
   }
 
