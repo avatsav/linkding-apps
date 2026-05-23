@@ -8,7 +8,6 @@ import dev.avatsav.linkding.navigation.RouteEntryProviderScope
 import dev.avatsav.linkding.presenter.retainPresenter
 import dev.zacsweers.metro.ContributesTo
 import dev.zacsweers.metro.IntoSet
-import dev.zacsweers.metro.Provider
 import dev.zacsweers.metro.Provides
 
 @ContributesTo(UiScope::class)
@@ -16,7 +15,7 @@ interface AuthScreenProviders {
   @IntoSet
   @Provides
   fun provideAuthEntryProviderScope(
-    authPresenter: Provider<AuthPresenter>
+    authPresenter: () -> AuthPresenter
   ): RouteEntryProviderScope = {
     entry<Route.Auth> { AuthScreen(presenter = retainPresenter { authPresenter() }) }
   }

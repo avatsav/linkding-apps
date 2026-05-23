@@ -44,20 +44,20 @@ navigator.resetRoot(Route.Auth)     // clear and set new root
 
 ### Simple Routes (No Parameters)
 
-For routes without parameters, use `Provider<Presenter>`:
+For routes without parameters, use `() -> Presenter`:
 
 ```kotlin
 @ContributesTo(UserScope::class)
 interface MyScreenComponent {
   @IntoSet @Provides
-  fun provideEntry(presenter: Provider<MyPresenter>): RouteEntryProviderScope = {
+  fun provideEntry(presenter: () -> MyPresenter): RouteEntryProviderScope = {
     entry<Route.MyRoute> { MyScreen(retainedPresenter(presenter())) }
   }
 }
 ```
 
 **Key points:**
-- Inject `Provider<MyPresenter>` to get a factory for creating presenter instances
+- Inject `() -> MyPresenter` to get a factory for creating presenter instances
 - Call `presenter()` to create a new instance for each route entry
 - Wrap with `retainedPresenter()` to survive recomposition and configuration changes
 

@@ -93,7 +93,7 @@ interface MyScreenProviders {
   @IntoSet
   @Provides
   fun provideMyEntryProviderScope(
-    presenter: Provider<MyPresenter>
+    presenter: () -> MyPresenter
   ): RouteEntryProviderScope = {
     entry<Route.MyRoute> { MyScreen(retainPresenter { presenter() }) }
   }
@@ -151,7 +151,7 @@ interface BookmarksScreenProviders {
 - `@Assisted` parameters come from route data
 - Regular parameters are injected by DI
 - Create an `@AssistedFactory` interface with a `create()` method
-- Inject the factory (not `Provider<Presenter>`) in the screen providers
+- Inject the factory (not `() -> Presenter`) in the screen providers
 - Call `factory.create(route)` inside the `retainPresenter { }` lambda with the route from the entry scope
 
 ## Key APIs
