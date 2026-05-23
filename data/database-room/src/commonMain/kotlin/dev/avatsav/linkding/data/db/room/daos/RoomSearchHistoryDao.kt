@@ -30,6 +30,7 @@ abstract class RoomSearchHistoryDao {
   )
   abstract suspend fun pruneToLimit(limit: Long)
 
+  @IgnorableReturnValue
   @Transaction
   open suspend fun upsert(history: SearchHistoryEntity): Long {
     val updated = updateModified(query = history.query, modified = history.modified)
