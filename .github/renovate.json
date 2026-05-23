@@ -20,6 +20,15 @@
       "groupSlug": "all-patch"
     },
     {
+      "matchPackageNames": [
+        "com.google.devtools.ksp{/,}**",
+        "org.jetbrains.kotlin{/,}**",
+        "org.jetbrains.kotlinx{/,}**",
+        "org.jetbrains.compose{/,}**"
+      ],
+      "allowedVersions": "/^\\d+\\.\\d+\\.\\d+(-(rc|beta|alpha|m)\\d*)?$/i"
+    },
+    {
       "groupName": "Kotlin, KSP and Compose",
       "groupSlug": "kotlin",
       "matchPackageNames": [
