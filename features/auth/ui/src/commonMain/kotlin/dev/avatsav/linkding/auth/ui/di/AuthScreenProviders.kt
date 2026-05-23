@@ -14,9 +14,7 @@ import dev.zacsweers.metro.Provides
 interface AuthScreenProviders {
   @IntoSet
   @Provides
-  fun provideAuthEntryProviderScope(
-    authPresenter: () -> AuthPresenter
-  ): RouteEntryProviderScope = {
+  fun provideAuthEntryProviderScope(authPresenter: () -> AuthPresenter): RouteEntryProviderScope = {
     entry<Route.Auth> { AuthScreen(presenter = retainPresenter { authPresenter() }) }
   }
 }

@@ -2,7 +2,6 @@ package dev.avatsav.linkding.domain
 
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -13,7 +12,6 @@ import kotlinx.coroutines.flow.flatMapLatest
  * Inspired by:
  * https://github.com/chrisbanes/tivi/blob/fb1e59a6c0244e378543bbbc761b26fbb61d896d/domain/src/commonMain/kotlin/app/tivi/domain/Interactor.kt#L69
  */
-@OptIn(ExperimentalCoroutinesApi::class)
 abstract class Observer<P : Any, R> {
 
   private val paramState =

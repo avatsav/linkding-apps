@@ -16,11 +16,9 @@ import java.io.File
 import kotlin.test.Test
 import kotlin.time.Instant
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.withContext
 
-@OptIn(ExperimentalCoroutinesApi::class)
 @Suppress("InjectDispatcher")
 class LinkdingRoomDatabaseTest {
 
