@@ -1,36 +1,38 @@
 [versions]
-agp = "9.1.0"
-kotlin = "2.3.20"
-coroutines = "1.10.2"
-ksp = "2.3.5" # https://github.com/google/ksp/releases
+agp = "9.2.1"
+kotlin = "2.4.0-RC" # https://github.com/JetBrains/kotlin/releases
+coroutines = "1.11.0" # https://github.com/Kotlin/kotlinx.coroutines/releases
+serialization = "1.11.0"
+datetime = "0.8.0"
+atomicfu = "0.32.1"
+ksp = "2.3.8" # https://github.com/google/ksp/releases
 ktmft = "0.26.0"
-detekt = "2.0.0-alpha.2"
+detekt = "2.0.0-alpha.3"
 multiplatform-settings = "1.3.0"
-ktor = "3.4.2"
-datetime = "0.7.1-0.6.x-compat"
-compose-multiplatform = "1.11.0-beta01" # https://github.com/JetBrains/compose-multiplatform/releases
-compose-material3 = "1.11.0-alpha05"
-compose-lifecycle = "2.11.0-alpha02"
-compose-navigation3 = "1.1.0-beta01"
-compose-navigationEvent = "1.1.0-alpha01"
-compose-material3Adaptive = "1.3.0-alpha06"
+ktor = "3.5.0"
+compose-multiplatform = "1.12.0-alpha01" # https://github.com/JetBrains/compose-multiplatform/releases
+compose-material3 = "1.12.0-alpha01"
+compose-lifecycle = "2.11.0-beta01"
+compose-navigation3 = "1.1.1"
+compose-navigationEvent = "1.1.0"
+compose-material3Adaptive = "1.3.0-beta01"
 compose-materialIconsExtended = "1.7.3"
-paging = "3.4.2"
+paging = "3.5.0"
 kotlinResult = "2.3.1"
 appcompat = "1.7.1"
 androidxActivity = "1.13.0"
-room3 = "3.0.0-alpha02"
-sqlite = "2.7.0-alpha02"
+room3 = "3.0.0-alpha05"
+sqlite = "2.7.0-alpha05"
 stately = "2.1.0"
 kotlinPoet = "2.3.0"
-kotest = "6.1.10"
-metro = "0.12.1" # https://github.com/ZacSweers/metro/releases
+kotest = "6.1.11"
+metro = "1.1.1" # https://github.com/ZacSweers/metro/releases
 molecule = "2.2.0"
-gradleVersions = "0.53.0"
+gradleVersions = "0.54.0"
 
-compileSdk = "36"
+compileSdk = "37"
 minSdk = "30"
-targetSdk = "36"
+targetSdk = "37"
 jvmToolchain = "21"
 detektJvmTarget = "21"
 
@@ -78,9 +80,9 @@ kotlin-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines
 kotlin-coroutines-swing = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-swing", version.ref = "coroutines" }
 kotlin-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
 kotlin-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutines" }
-kotlin-serialization-json = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.10.0"
+kotlin-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "serialization" }
 kotlin-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "datetime" }
-kotlin-atomicfu = "org.jetbrains.kotlinx:atomicfu:0.32.1"
+kotlin-atomicfu = { module = "org.jetbrains.kotlinx:atomicfu", version.ref = "atomicfu" }
 
 ksp = { module = "com.google.devtools.ksp:symbol-processing-api", version.ref = "ksp" }
 kotlinPoet = { module = "com.squareup:kotlinpoet", version.ref = "kotlinPoet" }
@@ -118,7 +120,7 @@ turbine = "app.cash.turbine:turbine:1.2.1"
 kotest-assertions = { module = "io.kotest:kotest-assertions-core", version.ref = "kotest" }
 
 molecule = { module = "app.cash.molecule:molecule-runtime", version.ref = "molecule" }
-detektComposeRules = "io.nlopez.compose.rules:detekt:0.5.6"
+detektComposeRules = "io.nlopez.compose.rules:detekt:0.5.9"
 
 metro-android = { module = "dev.zacsweers.metro:metrox-android", version.ref = "metro" }
 
