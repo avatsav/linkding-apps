@@ -5,7 +5,7 @@ import androidx.paging.PagingData
 import com.github.michaelbull.result.Result
 import com.github.michaelbull.result.mapEither
 import com.github.michaelbull.result.mapError
-import com.github.michaelbull.result.onSuccess
+import com.github.michaelbull.result.onOk
 import dev.avatsav.linkding.api.LinkdingBookmarksApi
 import dev.avatsav.linkding.bookmarks.api.BookmarksRepository
 import dev.avatsav.linkding.bookmarks.impl.internal.BookmarksPagingDataFactory
@@ -71,25 +71,25 @@ class LinkdingBookmarksRepository(
       bookmarksApi
         .updateBookmark(updateBookmark.id, request)
         .mapEither(success = bookmarkMapper::map, failure = errorMapper::map)
-    result.onSuccess { bookmark -> bookmarksDao.upsert(bookmark) }
+    result.onOk { bookmark -> bookmarksDao.upsert(bookmark) }
     return result
   }
 
   override suspend fun archiveBookmark(id: Long): Result<Unit, BookmarkError> {
     val result = bookmarksApi.archiveBookmark(id).mapError(errorMapper::map)
-    result.onSuccess { bookmarksDao.delete(id) }
+    result.onOk { bookmarksDao.delete(id) }
     return result
   }
 
   override suspend fun unarchiveBookmark(id: Long): Result<Unit, BookmarkError> {
     val result = bookmarksApi.unarchiveBookmark(id).mapError(errorMapper::map)
-    result.onSuccess { bookmarksDao.delete(id) }
+    result.onOk { bookmarksDao.delete(id) }
     return result
   }
 
   override suspend fun deleteBookmark(id: Long): Result<Unit, BookmarkError> {
     val result = bookmarksApi.deleteBookmark(id).mapError(errorMapper::map)
-    result.onSuccess { bookmarksDao.delete(id) }
+    result.onOk { bookmarksDao.delete(id) }
     return result
   }
 }

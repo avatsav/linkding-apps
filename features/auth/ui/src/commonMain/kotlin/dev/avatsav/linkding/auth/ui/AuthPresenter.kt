@@ -6,8 +6,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import com.github.michaelbull.result.onFailure
-import com.github.michaelbull.result.onSuccess
+import com.github.michaelbull.result.onErr
+import com.github.michaelbull.result.onOk
 import dev.avatsav.linkding.auth.ui.usecase.Authenticate
 import dev.avatsav.linkding.data.model.AuthError.InvalidApiKey
 import dev.avatsav.linkding.data.model.AuthError.InvalidHostname
@@ -36,8 +36,8 @@ class AuthPresenter(private val authenticate: Authenticate) :
           errorMessage = ""
           presenterScope.launch {
             authenticate(Authenticate.Param(event.hostUrl, event.apiKey))
-              .onSuccess { emitEffect(AuthEffect.AuthenticationSuccess) }
-              .onFailure { error ->
+              .onOk { emitEffect(AuthEffect.AuthenticationSuccess) }
+              .onErr { error ->
                 when (error) {
                   is InvalidApiKey -> invalidApiKey = true
                   is InvalidHostname -> invalidHostUrl = true
