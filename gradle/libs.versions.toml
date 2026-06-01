@@ -1,6 +1,6 @@
 [versions]
 agp = "9.2.1"
-kotlin = "2.4.0-RC2" # https://github.com/JetBrains/kotlin/releases
+kotlin = "2.4.0" # https://github.com/JetBrains/kotlin/releases
 coroutines = "1.11.0" # https://github.com/Kotlin/kotlinx.coroutines/releases
 serialization = "1.11.0"
 datetime = "0.8.0"
