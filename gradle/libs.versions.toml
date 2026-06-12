@@ -26,7 +26,7 @@ sqlite = "2.7.0-alpha06"
 stately = "2.1.0"
 kotlinPoet = "2.3.0"
 kotest = "6.1.11"
-metro = "1.1.1" # https://github.com/ZacSweers/metro/releases
+metro = "1.2.1" # https://github.com/ZacSweers/metro/releases
 molecule = "2.2.0"
 gradleVersions = "0.54.0"
 
@@ -120,7 +120,7 @@ turbine = "app.cash.turbine:turbine:1.2.1"
 kotest-assertions = { module = "io.kotest:kotest-assertions-core", version.ref = "kotest" }
 
 molecule = { module = "app.cash.molecule:molecule-runtime", version.ref = "molecule" }
-detektComposeRules = "io.nlopez.compose.rules:detekt:0.5.9"
+detektComposeRules = "io.nlopez.compose.rules:detekt:0.6.0"
 
 metro-android = { module = "dev.zacsweers.metro:metrox-android", version.ref = "metro" }
 
