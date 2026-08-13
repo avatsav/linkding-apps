@@ -1,3 +1,5 @@
+
+
 # Linkding Apps
 
 Unofficial Android and iOS app for [Linkding](https://github.com/sissbruecker/linkding) self-hosted bookmarking service.
@@ -17,6 +19,7 @@ This project owes its multiplatform foundation to the excellent [Tivi](https://g
 - [Navigation 3](https://developer.android.com/develop/ui/compose/navigation): Type-safe Compose navigation
 - [Molecule](https://github.com/cashapp/molecule): Composable-based Presenters
 - [Metro](https://github.com/ZacSweers/metro): Dependency Injection
+- [Ktor](https://ktor.io/): HTTP client
 - Icons generated with [Icon Kitchen](https://icon.kitchen)
 
 ## License
