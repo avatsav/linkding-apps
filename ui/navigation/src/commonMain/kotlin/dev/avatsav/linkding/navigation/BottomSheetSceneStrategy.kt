@@ -4,7 +4,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.ModalBottomSheetProperties
 import androidx.compose.material3.SheetValue
-import androidx.compose.material3.rememberModalBottomSheetState
+import androidx.compose.material3.rememberBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.scene.OverlayScene
@@ -41,8 +41,14 @@ internal class BottomSheetScene<T : Any>(
 
   override val content: @Composable (() -> Unit) = {
     val sheetState =
-      rememberModalBottomSheetState(
-        skipPartiallyExpanded = config.skipPartiallyExpanded,
+      rememberBottomSheetState(
+        initialValue = SheetValue.Hidden,
+        enabledValues =
+          if (config.skipPartiallyExpanded) {
+            setOf(SheetValue.Hidden, SheetValue.Expanded)
+          } else {
+            setOf(SheetValue.Hidden, SheetValue.PartiallyExpanded, SheetValue.Expanded)
+          },
         confirmValueChange = { sheetValue ->
           if (config.skipHiddenState && sheetValue == SheetValue.Hidden) false else true
         },

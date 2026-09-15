@@ -72,7 +72,7 @@ fun OutlinedTagsTextField(
           label = label,
           supportingText = supportingText,
           colors = OutlinedTextFieldDefaults.colors(),
-          contentPadding = OutlinedTextFieldDefaults.contentPadding(),
+          contentPadding = OutlinedTextFieldDefaults.contentPaddingWithoutLabel(),
           container = {
             Container(
               enabled = true,

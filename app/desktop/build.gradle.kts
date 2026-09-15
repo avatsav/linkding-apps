@@ -9,7 +9,7 @@ plugins {
 
 kotlin {
   sourceSets {
-    val jvmMain by getting {
+    jvmMain {
       dependencies {
         implementation(projects.app.shared)
         implementation(libs.kotlin.coroutines.swing)
