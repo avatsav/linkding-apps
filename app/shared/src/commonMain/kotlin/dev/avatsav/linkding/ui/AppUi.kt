@@ -161,5 +161,6 @@ private fun AppPreferences.shouldUseDarkTheme(): Boolean {
 }
 
 @Composable
-private fun AppPreferences.shouldUseDynamicColors(): Boolean =
-  remember { observeUseDynamicColors() }.collectAsState(initial = true).value
+private fun AppPreferences.shouldUseDynamicColors(): Boolean {
+  return remember { observeUseDynamicColors() }.collectAsState(initial = true).value
+}

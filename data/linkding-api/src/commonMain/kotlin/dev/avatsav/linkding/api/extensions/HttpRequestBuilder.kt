@@ -27,17 +27,16 @@ internal fun HttpRequestBuilder.parameterQuery(
   category: LinkdingBookmarkCategory,
   tags: List<String>,
 ) {
-  val constructedQuery =
-    buildString {
-        append("$query ")
-        append(tags.joinToString(separator = " ") { "#$it" })
-        when (category) {
-          Unread -> append("!unread ")
-          Untagged -> append("!untagged ")
-          else -> {}
-        }
-      }
-      .trim()
+  val constructedQuery = buildString {
+    append("$query ")
+    append(tags.joinToString(separator = " ") { "#$it" })
+    when (category) {
+      Unread -> append("!unread ")
+      Untagged -> append("!untagged ")
+      else -> {}
+    }
+  }
+    .trim()
   if (constructedQuery.isNotBlank()) {
     parameter("q", constructedQuery)
   }

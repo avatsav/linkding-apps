@@ -12,7 +12,8 @@ class NavigationResultHandler
 internal constructor(
   private val pendingResults: SnapshotStateMap<Pair<String, String>, NavResult> =
     mutableStateMapOf(),
-  private val awaitingResults: SnapshotStateMap<Pair<String, String>, Boolean> = mutableStateMapOf(),
+  private val awaitingResults: SnapshotStateMap<Pair<String, String>, Boolean> =
+    mutableStateMapOf(),
 ) {
   /** Register that a route is expecting a result. */
   fun prepareForResult(callerKey: String, resultKey: String) {

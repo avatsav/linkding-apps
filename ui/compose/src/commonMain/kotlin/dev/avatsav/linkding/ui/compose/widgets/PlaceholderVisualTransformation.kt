@@ -9,7 +9,7 @@ import androidx.compose.ui.text.input.TransformedText
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.withStyle
 
-class PlaceholderVisualTransformation(private val text: String, private val color: Color) :
+class PlaceholderVisualTransformation(private val text: String, color: Color) :
   VisualTransformation {
 
   private val placeHolderTransformedText =

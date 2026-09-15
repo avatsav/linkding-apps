@@ -21,22 +21,21 @@ interface ConnectivityObserver {
 @SingleIn(AppScope::class)
 @ContributesBinding(AppScope::class)
 class DefaultConnectivityObserver(
-  private val networkMonitor: NetworkMonitor,
+  networkMonitor: NetworkMonitor,
   appCoroutineScope: AppCoroutineScope,
 ) : ConnectivityObserver {
 
-  override val observeIsOnline: StateFlow<Boolean> =
-    callbackFlow {
-        networkMonitor.setListener { isOnline ->
-          Logger.d { "Connectivity changed, isOnline=$isOnline" }
-          trySend(isOnline)
-        }
-        awaitClose { networkMonitor.close() }
-      }
-      .distinctUntilChanged()
-      .stateIn(
-        scope = appCoroutineScope,
-        started = SharingStarted.WhileSubscribed(),
-        initialValue = networkMonitor.isOnline,
-      )
+  override val observeIsOnline: StateFlow<Boolean> = callbackFlow {
+    networkMonitor.setListener { isOnline ->
+      Logger.d { "Connectivity changed, isOnline=$isOnline" }
+      trySend(isOnline)
+    }
+    awaitClose { networkMonitor.close() }
+  }
+    .distinctUntilChanged()
+    .stateIn(
+      scope = appCoroutineScope,
+      started = SharingStarted.WhileSubscribed(),
+      initialValue = networkMonitor.isOnline,
+    )
 }

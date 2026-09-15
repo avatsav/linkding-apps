@@ -31,7 +31,7 @@ import kotlinx.coroutines.launch
 
 @AssistedInject
 class AddBookmarkPresenter(
-  @Assisted private val route: Route.AddBookmark,
+  @Assisted route: Route.AddBookmark,
   private val addBookmark: AddBookmark,
   private val getBookmark: GetBookmark,
   private val updateBookmark: UpdateBookmark,

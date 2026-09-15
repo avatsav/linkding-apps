@@ -1,32 +1,32 @@
 [versions]
-agp = "9.2.1"
-kotlin = "2.4.0" # https://github.com/JetBrains/kotlin/releases
+agp = "9.4.0"
+kotlin = "2.4.20" # https://github.com/JetBrains/kotlin/releases
 coroutines = "1.11.0" # https://github.com/Kotlin/kotlinx.coroutines/releases
 serialization = "1.11.0"
 datetime = "0.8.0"
 atomicfu = "0.33.0"
-ksp = "2.3.9" # https://github.com/google/ksp/releases
-ktmft = "0.26.0"
-detekt = "2.0.0-alpha.3"
+ksp = "2.3.12" # https://github.com/google/ksp/releases
+ktmft = "0.27.0"
+detekt = "2.0.0-alpha.6"
 multiplatform-settings = "1.3.0"
-ktor = "3.5.0"
-compose-multiplatform = "1.12.0-alpha01" # https://github.com/JetBrains/compose-multiplatform/releases
-compose-material3 = "1.12.0-alpha01"
-compose-lifecycle = "2.11.0-beta01"
+ktor = "3.5.2"
+compose-multiplatform = "1.12.0" # https://github.com/JetBrains/compose-multiplatform/releases
+compose-material3 = "1.12.0-alpha03"
+compose-lifecycle = "2.11.0"
 compose-navigation3 = "1.1.1"
 compose-navigationEvent = "1.1.0"
-compose-material3Adaptive = "1.3.0-beta01"
+compose-material3Adaptive = "1.3.0-rc01"
 compose-materialIconsExtended = "1.7.3"
-paging = "3.5.0"
+paging = "3.5.1"
 kotlinResult = "2.3.1"
-appcompat = "1.7.1"
+appcompat = "1.8.0"
 androidxActivity = "1.13.0"
-room3 = "3.0.0-alpha06"
-sqlite = "2.7.0-alpha06"
+room3 = "3.0.3"
+sqlite = "2.7.1"
 stately = "2.1.0"
-kotlinPoet = "2.3.0"
-kotest = "6.1.11"
-metro = "1.1.1" # https://github.com/ZacSweers/metro/releases
+kotlinPoet = "2.4.0"
+kotest = "6.2.5"
+metro = "1.4.3" # https://github.com/ZacSweers/metro/releases
 molecule = "2.2.0"
 gradleVersions = "0.54.0"
 
@@ -101,7 +101,7 @@ ktor-client-contentNegotiation = { module = "io.ktor:ktor-client-content-negotia
 ktor-serialization-json = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor" }
 
 leakCanary = "com.squareup.leakcanary:leakcanary-android:2.14"
-kermit = "co.touchlab:kermit:2.1.0"
+kermit = "co.touchlab:kermit:2.2.0"
 
 multiplatform-settings = { module = "com.russhwolf:multiplatform-settings", version.ref = "multiplatform-settings" }
 multiplatform-settings-coroutines = { module = "com.russhwolf:multiplatform-settings-coroutines", version.ref = "multiplatform-settings" }
@@ -120,7 +120,7 @@ turbine = "app.cash.turbine:turbine:1.2.1"
 kotest-assertions = { module = "io.kotest:kotest-assertions-core", version.ref = "kotest" }
 
 molecule = { module = "app.cash.molecule:molecule-runtime", version.ref = "molecule" }
-detektComposeRules = "io.nlopez.compose.rules:detekt:0.5.9"
+detektComposeRules = "io.nlopez.compose.rules:detekt:0.6.6"
 
 metro-android = { module = "dev.zacsweers.metro:metrox-android", version.ref = "metro" }
 
