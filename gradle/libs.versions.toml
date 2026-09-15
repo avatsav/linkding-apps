@@ -28,7 +28,7 @@ kotlinPoet = "2.4.0"
 kotest = "6.2.5"
 metro = "1.4.3" # https://github.com/ZacSweers/metro/releases
 molecule = "2.2.0"
-gradleVersions = "0.54.0"
+gradleVersions = "0.63.1"
 
 compileSdk = "37"
 minSdk = "30"
