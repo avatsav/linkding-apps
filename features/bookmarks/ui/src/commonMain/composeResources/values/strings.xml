@@ -52,7 +52,7 @@
     <string name="pending_bookmark_cancel">Cancel</string>
     <string name="pending_bookmark_discard_title">Discard pending bookmark?</string>
     <string name="pending_bookmark_discard_message">This removes the local copy only. Any copy already uploaded to the server is kept.</string>
-    <string name="pending_bookmark_unavailable">This bookmark has been uploaded or discarded. Return to the bookmark list.</string>
+    <string name="pending_bookmark_unavailable">This bookmark is uploading or is no longer pending. Return to the bookmark list.</string>
     <string name="pending_bookmark_uncertain">Upload not confirmed. Retry checks the server before sending again.</string>
 
     <!-- Bookmark Actions -->

@@ -19,6 +19,7 @@ import kotlin.test.assertTrue
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitCancellation
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
@@ -29,9 +30,41 @@ import kotlinx.coroutines.test.runTest
 
 class PendingBookmarksTest {
   @Test
+  fun `save finishes locally without waiting for an unreachable backend`() = runTest {
+    val f = Fixture()
+    f.api.onCheck = { awaitCancellation() }
+    val save = async { f.queue.create(draft) }
+    runCurrent()
+    assertTrue(
+        save.isCompleted,
+        "Save must finish after the database write, not after a network timeout",
+    )
+    assertTrue(save.await().isOk)
+    assertEquals(draft, f.queue.observeFirst().bookmark)
+    assertTrue(f.api.checkedUrls.isEmpty(), "Create must leave all network work to the uploader")
+  }
+
+  @Test
+  fun `new local save does not wait behind an uploader checking the host`() = runTest {
+    val f = Fixture()
+    f.online.value = false
+    assertTrue(f.queue.create(draft).isOk)
+    f.api.onCheck = { awaitCancellation() }
+    backgroundScope.launch { f.queue.retry() }
+    runCurrent()
+    val another = draft.copy(url = "https://example.com/another")
+    val save = async { f.queue.create(another) }
+    runCurrent()
+    assertTrue(save.isCompleted, "An uploader network wait must not block a local save")
+    assertTrue(save.await().isOk)
+    assertEquals(another, f.queue.get(2)?.bookmark)
+  }
+
+  @Test
   fun `unreachable host queues without POST`() = runTest {
     val fixture = Fixture()
     assertTrue(fixture.queue.create(draft).isOk)
+    fixture.queue.retry()
     assertEquals(draft, fixture.store.rows.value.single().second.bookmark)
     assertEquals(PendingBookmark.State.Pending, fixture.store.rows.value.single().second.state)
     assertTrue(fixture.api.sent.isEmpty())
@@ -67,23 +100,30 @@ class PendingBookmarksTest {
   }
 
   @Test
-  fun `authentication and validation rejections stay in the form`() = runTest {
+  fun `authentication and validation rejections remain actionable on the pending item`() = runTest {
     for (error in listOf(LinkdingError.Unauthorized(), LinkdingError.Other("Invalid URL"))) {
       val f = Fixture()
       f.api.checkError = error
-      assertTrue(f.queue.create(draft).isErr)
-      assertTrue(f.store.rows.value.isEmpty())
+      assertTrue(f.queue.create(draft).isOk)
+      f.queue.retry()
+      val pending = f.queue.observeFirst()
+      assertEquals(draft, pending.bookmark)
+      assertEquals(PendingBookmark.State.Failed, pending.state)
+      assertEquals(error.message, pending.lastError)
       assertTrue(f.api.sent.isEmpty())
     }
   }
 
   @Test
-  fun `POST rejection is not reported as an offline save`() = runTest {
+  fun `POST rejection keeps the saved fields with an actionable failure`() = runTest {
     val f = Fixture()
     f.api.online = true
     f.api.saveError = LinkdingError.Other("Invalid fields")
-    assertTrue(f.queue.create(draft).isErr)
-    assertTrue(f.store.rows.value.isEmpty())
+    assertTrue(f.queue.create(draft).isOk)
+    f.queue.retry()
+    assertEquals(draft, f.queue.observeFirst().bookmark)
+    assertEquals(PendingBookmark.State.Failed, f.queue.observeFirst().state)
+    assertEquals("Invalid fields", f.queue.observeFirst().lastError)
   }
 
   @Test
@@ -92,6 +132,7 @@ class PendingBookmarksTest {
     f.api.online = true
     f.api.saveError = LinkdingError.Connectivity("Timed out")
     assertTrue(f.queue.create(draft).isOk)
+    f.queue.retry()
     assertEquals(PendingBookmark.State.Uncertain, f.queue.observeFirst().state)
     f.api.existing = remote
     f.queue.retry()
@@ -105,17 +146,19 @@ class PendingBookmarksTest {
     f.api.online = true
     f.api.saveError = LinkdingError.Other("Invalid response", requestMayHaveSucceeded = true)
     assertTrue(f.queue.create(draft).isOk)
+    f.queue.retry()
     assertEquals(PendingBookmark.State.Uncertain, f.queue.observeFirst().state)
   }
 
   @Test
-  fun `cancellation propagates and leaves a durable in-flight record`() = runTest {
+  fun `uploader cancellation propagates and leaves a durable in-flight record`() = runTest {
     val f = Fixture()
     f.api.online = true
     f.api.onSave = { throw CancellationException("Stopped") }
+    assertTrue(f.queue.create(draft).isOk)
     try {
-      val unexpected = f.queue.create(draft)
-      error("Cancellation should propagate, got $unexpected")
+      f.queue.retry()
+      error("Cancellation should propagate")
     } catch (_: CancellationException) {
       assertEquals(PendingBookmark.State.Uncertain, f.queue.observeFirst().state)
     }
@@ -163,7 +206,7 @@ class PendingBookmarksTest {
   }
 
   @Test
-  fun `overlapping retry and edit cannot lose a newer local save`() = runTest {
+  fun `editing an active POST is rejected immediately instead of blocking`() = runTest {
     val f = Fixture()
     assertTrue(f.queue.create(draft).isOk)
     val id = f.queue.observeFirst().id
@@ -178,10 +221,10 @@ class PendingBookmarksTest {
     started.await()
     val edit = async { f.queue.edit(id, draft.copy(title = "Too late")) }
     runCurrent()
-    assertFalse(edit.isCompleted)
+    assertTrue(edit.isCompleted, "An active POST must reject the edit without a network wait")
+    assertFalse(edit.await())
     release.complete(Unit)
     retry.join()
-    assertFalse(edit.await())
     assertTrue(f.store.rows.value.isEmpty())
   }
 
@@ -201,6 +244,128 @@ class PendingBookmarksTest {
         otherQueue.retry()
         assertTrue(f.api.sent.isEmpty())
       }
+
+  @Test
+  fun `edit during preflight returns immediately and POST uses the latest fields`() = runTest {
+    val f = Fixture()
+    assertTrue(f.queue.create(draft).isOk)
+    f.api.online = true
+    val release = CompletableDeferred<Unit>()
+    f.api.onCheck = { release.await() }
+    val retry = backgroundScope.launch { f.queue.retry() }
+    runCurrent()
+    val changed = draft.copy(title = "Latest", notes = "New notes", tags = setOf("edited"))
+    val edit = async { f.queue.edit(1, changed) }
+    runCurrent()
+    assertTrue(edit.isCompleted, "An in-flight URL check must not block a local edit")
+    assertTrue(edit.await())
+    assertEquals(changed, f.queue.observeFirst().bookmark)
+    release.complete(Unit)
+    retry.join()
+    assertEquals("Latest", f.api.sent.single().title)
+    assertEquals("New notes", f.api.sent.single().notes)
+    assertEquals(setOf("edited"), f.api.sent.single().tagNames)
+    assertTrue(f.store.rows.value.isEmpty())
+  }
+
+  @Test
+  fun `URL changed during preflight must be checked again before POST`() = runTest {
+    val f = Fixture()
+    assertTrue(f.queue.create(draft).isOk)
+    f.api.online = true
+    val release = CompletableDeferred<Unit>()
+    f.api.onCheck = { release.await() }
+    val retry = backgroundScope.launch { f.queue.retry() }
+    runCurrent()
+    val changed = draft.copy(url = "https://example.com/changed")
+    assertTrue(f.queue.edit(1, changed))
+    release.complete(Unit)
+    retry.join()
+    assertTrue(f.api.sent.isEmpty(), "The old URL check cannot authorize sending the new URL")
+    assertEquals(changed, f.queue.observeFirst().bookmark)
+    f.queue.retry()
+    assertEquals(listOf(draft.url, changed.url), f.api.checkedUrls)
+    assertEquals(changed.url, f.api.sent.single().url)
+  }
+
+  @Test
+  fun `discard during preflight returns immediately and prevents POST`() = runTest {
+    val f = Fixture()
+    assertTrue(f.queue.create(draft).isOk)
+    f.api.online = true
+    val release = CompletableDeferred<Unit>()
+    f.api.onCheck = { release.await() }
+    val retry = backgroundScope.launch { f.queue.retry() }
+    runCurrent()
+    val discard = async { f.queue.discard(1) }
+    runCurrent()
+    assertTrue(discard.isCompleted, "Discard must not wait for a URL check")
+    discard.await()
+    release.complete(Unit)
+    retry.join()
+    assertTrue(f.store.rows.value.isEmpty())
+    assertTrue(f.api.sent.isEmpty())
+  }
+
+  @Test
+  fun `stale preflight failure cannot overwrite a newer local edit`() = runTest {
+    val f = Fixture()
+    assertTrue(f.queue.create(draft).isOk)
+    f.api.checkError = LinkdingError.Other("Rejected old fields")
+    val release = CompletableDeferred<Unit>()
+    f.api.onCheck = { release.await() }
+    val retry = backgroundScope.launch { f.queue.retry() }
+    runCurrent()
+    val changed = draft.copy(title = "Corrected")
+    assertTrue(f.queue.edit(1, changed))
+    release.complete(Unit)
+    retry.join()
+    assertEquals(changed, f.queue.observeFirst().bookmark)
+    assertEquals(PendingBookmark.State.Pending, f.queue.observeFirst().state)
+    assertEquals(null, f.queue.observeFirst().lastError)
+  }
+
+  @Test
+  fun `a stalled POST cannot block local operations on another row`() = runTest {
+    val f = Fixture()
+    assertTrue(f.queue.create(draft).isOk)
+    f.api.online = true
+    f.api.onSave = { awaitCancellation() }
+    backgroundScope.launch { f.queue.retry(1) }
+    runCurrent()
+    assertEquals(PendingBookmark.State.Uploading, f.queue.observeFirst().state)
+    val save = async { f.queue.create(draft.copy(url = "https://example.com/second")) }
+    runCurrent()
+    assertTrue(save.isCompleted)
+    assertTrue(save.await().isOk)
+    val edit = async { f.queue.edit(2, draft.copy(title = "Second")) }
+    runCurrent()
+    assertTrue(edit.isCompleted)
+    assertTrue(edit.await())
+    val discard = async { f.queue.discard(2) }
+    runCurrent()
+    assertTrue(discard.isCompleted)
+    discard.await()
+    assertEquals(null, f.queue.get(2))
+  }
+
+  @Test
+  fun `overlapping drains still send a pending creation only once`() = runTest {
+    val f = Fixture()
+    assertTrue(f.queue.create(draft).isOk)
+    f.api.online = true
+    val release = CompletableDeferred<Unit>()
+    f.api.onSave = { release.await() }
+    val first = backgroundScope.launch { f.queue.retry() }
+    val second = backgroundScope.launch { f.queue.retry() }
+    runCurrent()
+    assertEquals(1, f.api.sent.size)
+    release.complete(Unit)
+    first.join()
+    second.join()
+    assertEquals(1, f.api.sent.size)
+    assertTrue(f.store.rows.value.isEmpty())
+  }
 
   private suspend fun DefaultPendingBookmarks.observeFirst() = get(1) ?: error("No pending item")
 
@@ -318,10 +483,14 @@ class PendingBookmarksTest {
     var checkError: LinkdingError? = null
     var saveError: LinkdingError? = null
     var existing: LinkdingBookmark? = null
+    var onCheck: suspend () -> Unit = {}
     var onSave: suspend () -> Unit = {}
+    val checkedUrls = mutableListOf<String>()
     val sent = mutableListOf<LinkdingSaveBookmarkRequest>()
 
     override suspend fun checkUrl(url: String): Result<LinkdingCheckUrlResponse, LinkdingError> {
+      checkedUrls += url
+      onCheck()
       checkError?.let {
         return Err(it)
       }

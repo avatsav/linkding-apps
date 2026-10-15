@@ -1,0 +1,46 @@
+services:
+  linkding-init:
+    image: ${LINKDING_IMAGE:-sissbruecker/linkding:latest}
+    environment:
+      LD_SUPERUSER_NAME: ${LD_SUPERUSER_NAME:-admin}
+      LD_SUPERUSER_PASSWORD: ${LD_SUPERUSER_PASSWORD:?Set password in .env}
+      LINKDING_TEST_API_TOKEN: ${LINKDING_TEST_API_TOKEN:?Set token in .env}
+    volumes:
+      - linkding-data:/etc/linkding/data
+      - ./docker/linkding/init-dev-token.py:/etc/linkding/init-dev-token.py:ro
+    entrypoint: ["/bin/sh", "-ec"]
+    command:
+      - |
+        python manage.py generate_secret_key
+        python manage.py migrate --noinput --verbosity 0
+        python manage.py create_initial_superuser
+        python manage.py shell -v 0 -c \
+          "exec(open('/etc/linkding/init-dev-token.py').read())"
+
+  linkding:
+    image: ${LINKDING_IMAGE:-sissbruecker/linkding:latest}
+    depends_on:
+      linkding-init:
+        condition: service_completed_successfully
+    ports:
+      - "127.0.0.1:${LINKDING_PORT:-9090}:9090"
+    environment:
+      LD_SUPERUSER_NAME: ${LD_SUPERUSER_NAME:-admin}
+      LD_SUPERUSER_PASSWORD: ${LD_SUPERUSER_PASSWORD:?Set password in .env}
+    volumes:
+      - linkding-data:/etc/linkding/data
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - >-
+          import urllib.request;
+          urllib.request.urlopen('http://127.0.0.1:9090/', timeout=5).close()
+      interval: 5s
+      timeout: 10s
+      start_period: 30s
+      retries: 12
+
+volumes:
+  linkding-data:

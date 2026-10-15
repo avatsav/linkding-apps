@@ -13,11 +13,13 @@ interface PendingBookmarks {
 
   suspend fun get(id: Long): PendingBookmark?
 
+  /** Returns after durable local storage; the foreground uploader owns all network work. */
   suspend fun create(bookmark: SaveBookmark): Result<SaveResult, BookmarkError>
 
-  /** False if the item was uploaded or discarded while its editor was open. */
+  /** False if the item is being uploaded, or was uploaded/discarded while its editor was open. */
   suspend fun edit(id: Long, bookmark: SaveBookmark): Boolean
 
+  /** Does not wait for network requests. An item already being POSTed cannot be discarded. */
   suspend fun discard(id: Long)
 
   /** Explicit retries also check items requiring attention; automatic uploads skip them. */

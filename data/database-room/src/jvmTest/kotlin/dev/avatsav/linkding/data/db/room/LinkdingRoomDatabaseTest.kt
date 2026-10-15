@@ -14,10 +14,13 @@ import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.shouldBe
 import java.io.File
 import kotlin.test.Test
+import kotlin.time.Duration.Companion.seconds
 import kotlin.time.Instant
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.withTimeout
 
 @Suppress("InjectDispatcher")
 class LinkdingRoomDatabaseTest {
@@ -36,7 +39,7 @@ class LinkdingRoomDatabaseTest {
 
       pagingDao.countBookmarks() shouldBe 1
       db.bookmarksQueries().selectAll().map(BookmarkEntity::title) shouldContainExactly
-        listOf("after")
+          listOf("after")
     }
   }
 
@@ -47,14 +50,60 @@ class LinkdingRoomDatabaseTest {
 
       pagingDao.refresh(listOf(bookmark(id = 1, title = "one"), bookmark(id = 2, title = "two")))
       pagingDao.append(
-        listOf(bookmark(id = 2, title = "two updated"), bookmark(id = 3, title = "three"))
+          listOf(bookmark(id = 2, title = "two updated"), bookmark(id = 3, title = "three"))
       )
 
       pagingDao.countBookmarks() shouldBe 3
       pagingDao.loadBookmarks().map(Bookmark::title) shouldContainExactly
-        listOf("one", "two updated", "three")
+          listOf("three", "two updated", "one")
     }
   }
+
+  @Test
+  fun `uploaded bookmark invalidates the feed and enters its first page`() = runTest {
+    withTestDatabase { db ->
+      val pagingDao = RoomPagingBookmarksDao(db)
+      val bookmarksDao = RoomBookmarksDao(db)
+      pagingDao.refresh(
+          (40L downTo 1L).map { id ->
+            bookmark(id, "Cached $id").copy(added = Instant.fromEpochSeconds(1_700_000_000 + id))
+          }
+      )
+      val activeSource = pagingDao.bookmarksPagingSource()
+      val invalidated = CompletableDeferred<Unit>()
+      activeSource.registerInvalidatedCallback { invalidated.complete(Unit) }
+      activeSource.load(
+          PagingSource.LoadParams.Refresh(key = null, loadSize = 20, placeholdersEnabled = false)
+      )
+      val uploaded =
+          bookmark(41, "Just uploaded").copy(added = Instant.fromEpochSeconds(1_700_000_041))
+      bookmarksDao.upsert(uploaded)
+      // The existing feed must react to the local write, without a backend refresh.
+      withContext(Dispatchers.Default) { withTimeout(5.seconds) { invalidated.await() } }
+      pagingDao.loadBookmarks(loadSize = 20).first().id shouldBe uploaded.id
+      pagingDao.countBookmarks() shouldBe 41
+    }
+  }
+
+  @Test
+  fun `feed sorts server timestamps numerically with server id as a stable tie breaker`() =
+      runTest {
+        withTestDatabase { db ->
+          val pagingDao = RoomPagingBookmarksDao(db)
+          val wholeSecond = Instant.parse("2026-03-14T10:00:00Z")
+          val halfSecond = Instant.parse("2026-03-14T10:00:00.500Z")
+          pagingDao.refresh(
+              listOf(
+                  bookmark(300, "Whole second").copy(added = wholeSecond),
+                  bookmark(100, "Half second").copy(added = halfSecond),
+                  bookmark(500, "Older import").copy(added = Instant.parse("2026-03-13T10:00:00Z")),
+                  bookmark(101, "Same timestamp").copy(added = halfSecond),
+              )
+          )
+          pagingDao.loadBookmarks().map(Bookmark::id) shouldContainExactly
+              listOf(101L, 100L, 300L, 500L)
+        }
+      }
 
   @Test
   fun `search history upsert updates timestamp for existing query`() = runTest {
@@ -79,27 +128,29 @@ class LinkdingRoomDatabaseTest {
       searchHistoryDao.upsert(searchHistory(query = "kotlin", modified = "2026-03-14T10:00:00Z"))
       searchHistoryDao.upsert(searchHistory(query = "room", modified = "2026-03-14T10:01:00Z"))
 
-      db
-        .searchHistoryQueries()
-        .selectRecent(limit = 2)
-        .map(SearchHistoryEntity::query) shouldContainExactly listOf("room", "kotlin")
+      db.searchHistoryQueries()
+          .selectRecent(limit = 2)
+          .map(SearchHistoryEntity::query) shouldContainExactly listOf("room", "kotlin")
 
       searchHistoryDao.pruneToLimit(1)
 
-      db
-        .searchHistoryQueries()
-        .selectRecent(limit = 2)
-        .map(SearchHistoryEntity::query) shouldContainExactly listOf("room")
+      db.searchHistoryQueries()
+          .selectRecent(limit = 2)
+          .map(SearchHistoryEntity::query) shouldContainExactly listOf("room")
     }
   }
 
-  private suspend fun RoomPagingBookmarksDao.loadBookmarks(): List<Bookmark> {
+  private suspend fun RoomPagingBookmarksDao.loadBookmarks(loadSize: Int = 50): List<Bookmark> {
     val pagingSource = bookmarksPagingSource()
     return try {
       val result =
-        pagingSource.load(
-          PagingSource.LoadParams.Refresh(key = null, loadSize = 50, placeholdersEnabled = false)
-        )
+          pagingSource.load(
+              PagingSource.LoadParams.Refresh(
+                  key = null,
+                  loadSize = loadSize,
+                  placeholdersEnabled = false,
+              )
+          )
 
       (result as PagingSource.LoadResult.Page).data
     } finally {
@@ -110,10 +161,10 @@ class LinkdingRoomDatabaseTest {
   private suspend fun withTestDatabase(block: suspend (LinkdingRoomDatabase) -> Unit) {
     val dbFile = withContext(Dispatchers.IO) { File.createTempFile("linkding-room-test", ".db") }
     val db =
-      Room.databaseBuilder<LinkdingRoomDatabase>(name = dbFile.absolutePath)
-        .setDriver(BundledSQLiteDriver())
-        .setQueryCoroutineContext(Dispatchers.IO)
-        .build()
+        Room.databaseBuilder<LinkdingRoomDatabase>(name = dbFile.absolutePath)
+            .setDriver(BundledSQLiteDriver())
+            .setQueryCoroutineContext(Dispatchers.IO)
+            .build()
 
     try {
       block(db)
@@ -124,15 +175,15 @@ class LinkdingRoomDatabaseTest {
   }
 
   private fun bookmark(id: Long, title: String) =
-    Bookmark(
-      id = id,
-      url = "https://example.com/$id",
-      urlHost = "example.com",
-      title = title,
-      description = "bookmark-$id",
-      tags = setOf("tag-$id"),
-    )
+      Bookmark(
+          id = id,
+          url = "https://example.com/$id",
+          urlHost = "example.com",
+          title = title,
+          description = "bookmark-$id",
+          tags = setOf("tag-$id"),
+      )
 
   private fun searchHistory(query: String, modified: String) =
-    SearchHistory(query = query, modified = Instant.parse(modified))
+      SearchHistory(query = query, modified = Instant.parse(modified))
 }
