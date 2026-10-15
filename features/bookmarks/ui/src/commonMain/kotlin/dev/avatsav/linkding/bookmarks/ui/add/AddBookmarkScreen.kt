@@ -32,6 +32,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.saveable.listSaver
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -63,6 +65,8 @@ import linkding_apps.features.bookmarks.ui.generated.resources.add_bookmark_url
 import linkding_apps.features.bookmarks.ui.generated.resources.add_bookmark_url_exists
 import linkding_apps.features.bookmarks.ui.generated.resources.add_bookmark_url_readonly
 import linkding_apps.features.bookmarks.ui.generated.resources.edit_bookmark_title
+import linkding_apps.features.bookmarks.ui.generated.resources.pending_bookmark_unavailable
+import linkding_apps.features.bookmarks.ui.generated.resources.pending_bookmark_uncertain
 import org.jetbrains.compose.resources.stringResource
 
 private const val DebounceDelay = 500L
@@ -91,29 +95,52 @@ fun AddBookmarkScreen(presenter: AddBookmarkPresenter, modifier: Modifier = Modi
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 private fun AddBookmark(
-  state: AddBookmarkUiState,
-  snackbarHostState: SnackbarHostState,
-  modifier: Modifier = Modifier,
-  eventSink: (AddBookmarkUiEvent) -> Unit,
+    state: AddBookmarkUiState,
+    snackbarHostState: SnackbarHostState,
+    modifier: Modifier = Modifier,
+    eventSink: (AddBookmarkUiEvent) -> Unit,
 ) {
   val currentEventSink by rememberUpdatedState(eventSink)
   val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
 
   // Initialize URL from Shared mode or empty for New/Edit modes
-  var url by remember { mutableStateOf(state.initialUrl) }
-  val tagsValue = remember { TagsTextFieldValue() }
+  var url by rememberSaveable { mutableStateOf(state.initialUrl) }
+  val tagsValue =
+      rememberSaveable(
+          saver =
+              listSaver<TagsTextFieldValue, String>(
+                  save = { value -> value.tags.map { it.value } },
+                  restore = { names -> TagsTextFieldValue().apply { replaceAll(names) } },
+              )
+      ) {
+        TagsTextFieldValue()
+      }
 
-  var title by remember { mutableStateOf("") }
-  var description by remember { mutableStateOf("") }
-  var notes by remember { mutableStateOf("") }
+  var title by rememberSaveable { mutableStateOf("") }
+  var description by rememberSaveable { mutableStateOf("") }
+  var notes by rememberSaveable { mutableStateOf("") }
+  var initialized by rememberSaveable { mutableStateOf(false) }
+
+  LaunchedEffect(state.pendingBookmark) {
+    val draft = state.pendingBookmark?.bookmark
+    if (draft != null && !initialized) {
+      url = draft.url
+      title = draft.title.orEmpty()
+      description = draft.description.orEmpty()
+      notes = draft.notes.orEmpty()
+      tagsValue.replaceAll(draft.tags.toList())
+      initialized = true
+    }
+  }
 
   LaunchedEffect(state.existingBookmark) {
-    if (state.isEditMode && state.existingBookmark != null) {
+    if (state.isEditMode && state.existingBookmark != null && !initialized) {
       url = state.existingBookmark.url
       title = state.existingBookmark.title
       description = state.existingBookmark.description
       notes = state.existingBookmark.notes
       tagsValue.replaceAll(state.existingBookmark.tags.toList())
+      initialized = true
     }
   }
 
@@ -123,85 +150,97 @@ private fun AddBookmark(
     currentEventSink(AddBookmarkUiEvent.CheckUrl(url))
   }
 
-  val saveEnabled = url.isNotBlank() && !state.saving && !state.loading
+  val saveEnabled = url.isNotBlank() && !state.saving && !state.loading && !state.pendingUnavailable
   val screenTitle =
-    if (state.isEditMode) stringResource(Res.string.edit_bookmark_title)
-    else stringResource(Res.string.add_bookmark_title)
+      if (state.isEditMode) stringResource(Res.string.edit_bookmark_title)
+      else stringResource(Res.string.add_bookmark_title)
 
   Scaffold(
-    modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
-    snackbarHost = { SnackbarHost(snackbarHostState) },
-    topBar = {
-      LargeFlexibleTopAppBar(
-        title = { Text(text = screenTitle) },
-        scrollBehavior = scrollBehavior,
-        navigationIcon = {
-          IconButton(onClick = { eventSink(Close) }) {
-            Icon(
-              imageVector = Icons.Default.Close,
-              contentDescription = stringResource(Res.string.add_bookmark_close),
-            )
-          }
-        },
-      )
-    },
-    bottomBar = {
-      AddBookmarkBottomBar(
-        saving = state.saving,
-        saveEnabled = saveEnabled,
-        errorMessage = state.errorMessage,
-        onSave = {
-          eventSink(Save(url, title, description, notes, tagsValue.tags.map { it.value }.toList()))
-        },
-      )
-    },
-    contentWindowInsets = WindowInsets(),
+      modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+      snackbarHost = { SnackbarHost(snackbarHostState) },
+      topBar = {
+        LargeFlexibleTopAppBar(
+            title = { Text(text = screenTitle) },
+            scrollBehavior = scrollBehavior,
+            navigationIcon = {
+              IconButton(onClick = { eventSink(Close) }) {
+                Icon(
+                    imageVector = Icons.Default.Close,
+                    contentDescription = stringResource(Res.string.add_bookmark_close),
+                )
+              }
+            },
+        )
+      },
+      bottomBar = {
+        AddBookmarkBottomBar(
+            saving = state.saving,
+            saveEnabled = saveEnabled,
+            errorMessage =
+                when {
+                  state.pendingUnavailable ->
+                      stringResource(Res.string.pending_bookmark_unavailable)
+                  state.errorMessage != null -> state.errorMessage
+                  state.pendingBookmark?.lastError != null -> state.pendingBookmark.lastError
+                  state.pendingBookmark?.state ==
+                      dev.avatsav.linkding.data.model.PendingBookmark.State.Uncertain ->
+                      stringResource(Res.string.pending_bookmark_uncertain)
+                  else -> null
+                },
+            onSave = {
+              eventSink(
+                  Save(url, title, description, notes, tagsValue.tags.map { it.value }.toList())
+              )
+            },
+        )
+      },
+      contentWindowInsets = WindowInsets(),
   ) { padding ->
     LazyColumn(
-      contentPadding = PaddingValues(horizontal = 12.dp, vertical = 12.dp),
-      modifier = Modifier.padding(padding),
-      verticalArrangement = Arrangement.spacedBy(12.dp),
+        contentPadding = PaddingValues(horizontal = 12.dp, vertical = 12.dp),
+        modifier = Modifier.padding(padding),
+        verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
       item("url") {
         UrlTextField(
-          url = url,
-          onUrlChange = { url = it },
-          isEditMode = state.isEditMode,
-          alreadyBookmarked = state.checkUrlResult?.alreadyBookmarked == true,
+            url = url,
+            onUrlChange = { url = it },
+            isEditMode = state.isEditMode && state.mode !is BookmarkMode.Pending,
+            alreadyBookmarked = state.checkUrlResult?.alreadyBookmarked == true,
         )
       }
       item("tags") {
         OutlinedTagsTextField(
-          modifier = Modifier.fillMaxWidth(),
-          value = tagsValue,
-          label = { Text(text = stringResource(Res.string.add_bookmark_tags)) },
+            modifier = Modifier.fillMaxWidth(),
+            value = tagsValue,
+            label = { Text(text = stringResource(Res.string.add_bookmark_tags)) },
         )
       }
       item("title") {
         TitleTextField(
-          title = title,
-          onTitleChange = { title = it },
-          isEditMode = state.isEditMode,
-          checkingUrl = state.checkingUrl,
-          placeholderTitle = state.checkUrlResult?.title.orEmpty(),
+            title = title,
+            onTitleChange = { title = it },
+            isEditMode = state.isEditMode,
+            checkingUrl = state.checkingUrl,
+            placeholderTitle = state.checkUrlResult?.title.orEmpty(),
         )
       }
       item("description") {
         DescriptionTextField(
-          description = description,
-          onDescriptionChange = { description = it },
-          isEditMode = state.isEditMode,
-          checkingUrl = state.checkingUrl,
-          placeholderDescription = state.checkUrlResult?.description.orEmpty(),
+            description = description,
+            onDescriptionChange = { description = it },
+            isEditMode = state.isEditMode,
+            checkingUrl = state.checkingUrl,
+            placeholderDescription = state.checkUrlResult?.description.orEmpty(),
         )
       }
       item("notes") {
         OutlinedTextField(
-          modifier = Modifier.fillMaxWidth(),
-          value = notes,
-          label = { Text(text = stringResource(Res.string.add_bookmark_notes)) },
-          minLines = 2,
-          onValueChange = { notes = it },
+            modifier = Modifier.fillMaxWidth(),
+            value = notes,
+            label = { Text(text = stringResource(Res.string.add_bookmark_notes)) },
+            minLines = 2,
+            onValueChange = { notes = it },
         )
       }
     }
@@ -210,118 +249,118 @@ private fun AddBookmark(
 
 @Composable
 private fun AddBookmarkBottomBar(
-  saving: Boolean,
-  saveEnabled: Boolean,
-  errorMessage: String?,
-  onSave: () -> Unit,
+    saving: Boolean,
+    saveEnabled: Boolean,
+    errorMessage: String?,
+    onSave: () -> Unit,
 ) {
   BottomAppBar(
-    modifier = Modifier.imePadding(),
-    floatingActionButton = {
-      Button(
-        modifier = Modifier.defaultMinSize(minWidth = 56.dp, minHeight = 48.dp),
-        enabled = saveEnabled,
-        onClick = onSave,
-      ) {
-        if (saving) SmallCircularProgressIndicator()
-        else Text(stringResource(Res.string.add_bookmark_save))
-      }
-    },
-    actions = {
-      if (errorMessage != null) {
-        Text(
-          modifier = Modifier.padding(horizontal = 16.dp),
-          text = errorMessage,
-          style = MaterialTheme.typography.bodyMedium,
-          color = MaterialTheme.colorScheme.error,
-        )
-      }
-    },
+      modifier = Modifier.imePadding(),
+      floatingActionButton = {
+        Button(
+            modifier = Modifier.defaultMinSize(minWidth = 56.dp, minHeight = 48.dp),
+            enabled = saveEnabled,
+            onClick = onSave,
+        ) {
+          if (saving) SmallCircularProgressIndicator()
+          else Text(stringResource(Res.string.add_bookmark_save))
+        }
+      },
+      actions = {
+        if (errorMessage != null) {
+          Text(
+              modifier = Modifier.padding(horizontal = 16.dp),
+              text = errorMessage,
+              style = MaterialTheme.typography.bodyMedium,
+              color = MaterialTheme.colorScheme.error,
+          )
+        }
+      },
   )
 }
 
 @Composable
 private fun UrlTextField(
-  url: String,
-  onUrlChange: (String) -> Unit,
-  isEditMode: Boolean,
-  alreadyBookmarked: Boolean,
+    url: String,
+    onUrlChange: (String) -> Unit,
+    isEditMode: Boolean,
+    alreadyBookmarked: Boolean,
 ) {
   OutlinedTextField(
-    modifier = Modifier.fillMaxWidth(),
-    value = url,
-    label = { Text(text = stringResource(Res.string.add_bookmark_url)) },
-    enabled = !isEditMode,
-    readOnly = isEditMode,
-    keyboardOptions =
-      KeyboardOptions(
-        autoCorrectEnabled = false,
-        keyboardType = KeyboardType.Uri,
-        imeAction = ImeAction.Next,
-      ),
-    supportingText =
-      if (isEditMode) {
-        @Composable { Text(text = stringResource(Res.string.add_bookmark_url_readonly)) }
-      } else if (alreadyBookmarked) {
-        @Composable { Text(text = stringResource(Res.string.add_bookmark_url_exists)) }
-      } else null,
-    onValueChange = onUrlChange,
+      modifier = Modifier.fillMaxWidth(),
+      value = url,
+      label = { Text(text = stringResource(Res.string.add_bookmark_url)) },
+      enabled = !isEditMode,
+      readOnly = isEditMode,
+      keyboardOptions =
+          KeyboardOptions(
+              autoCorrectEnabled = false,
+              keyboardType = KeyboardType.Uri,
+              imeAction = ImeAction.Next,
+          ),
+      supportingText =
+          if (isEditMode) {
+            @Composable { Text(text = stringResource(Res.string.add_bookmark_url_readonly)) }
+          } else if (alreadyBookmarked) {
+            @Composable { Text(text = stringResource(Res.string.add_bookmark_url_exists)) }
+          } else null,
+      onValueChange = onUrlChange,
   )
 }
 
 @Composable
 private fun TitleTextField(
-  title: String,
-  onTitleChange: (String) -> Unit,
-  isEditMode: Boolean,
-  checkingUrl: Boolean,
-  placeholderTitle: String,
+    title: String,
+    onTitleChange: (String) -> Unit,
+    isEditMode: Boolean,
+    checkingUrl: Boolean,
+    placeholderTitle: String,
 ) {
   val visualTransformation =
-    if (!isEditMode && title.isEmpty()) {
-      PlaceholderVisualTransformation(
-        text = placeholderTitle,
-        color = MaterialTheme.colorScheme.onSurfaceVariant,
-      )
-    } else {
-      VisualTransformation.None
-    }
+      if (!isEditMode && title.isEmpty()) {
+        PlaceholderVisualTransformation(
+            text = placeholderTitle,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+      } else {
+        VisualTransformation.None
+      }
 
   OutlinedTextField(
-    modifier = Modifier.fillMaxWidth(),
-    value = title,
-    label = { Text(text = stringResource(Res.string.add_bookmark_field_title)) },
-    visualTransformation = visualTransformation,
-    trailingIcon = { if (checkingUrl) SmallCircularProgressIndicator() },
-    onValueChange = onTitleChange,
+      modifier = Modifier.fillMaxWidth(),
+      value = title,
+      label = { Text(text = stringResource(Res.string.add_bookmark_field_title)) },
+      visualTransformation = visualTransformation,
+      trailingIcon = { if (checkingUrl) SmallCircularProgressIndicator() },
+      onValueChange = onTitleChange,
   )
 }
 
 @Composable
 private fun DescriptionTextField(
-  description: String,
-  onDescriptionChange: (String) -> Unit,
-  isEditMode: Boolean,
-  checkingUrl: Boolean,
-  placeholderDescription: String,
+    description: String,
+    onDescriptionChange: (String) -> Unit,
+    isEditMode: Boolean,
+    checkingUrl: Boolean,
+    placeholderDescription: String,
 ) {
   val visualTransformation =
-    if (!isEditMode && description.isEmpty()) {
-      PlaceholderVisualTransformation(
-        text = placeholderDescription,
-        color = MaterialTheme.colorScheme.onSurfaceVariant,
-      )
-    } else {
-      VisualTransformation.None
-    }
+      if (!isEditMode && description.isEmpty()) {
+        PlaceholderVisualTransformation(
+            text = placeholderDescription,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+      } else {
+        VisualTransformation.None
+      }
 
   OutlinedTextField(
-    modifier = Modifier.fillMaxWidth(),
-    value = description,
-    label = { Text(text = stringResource(Res.string.add_bookmark_field_description)) },
-    trailingIcon = { if (checkingUrl) SmallCircularProgressIndicator() },
-    visualTransformation = visualTransformation,
-    minLines = 2,
-    onValueChange = onDescriptionChange,
+      modifier = Modifier.fillMaxWidth(),
+      value = description,
+      label = { Text(text = stringResource(Res.string.add_bookmark_field_description)) },
+      trailingIcon = { if (checkingUrl) SmallCircularProgressIndicator() },
+      visualTransformation = visualTransformation,
+      minLines = 2,
+      onValueChange = onDescriptionChange,
   )
 }

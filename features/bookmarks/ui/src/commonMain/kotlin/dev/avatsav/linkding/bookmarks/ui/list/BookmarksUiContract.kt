@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.paging.compose.LazyPagingItems
 import dev.avatsav.linkding.data.model.Bookmark
 import dev.avatsav.linkding.data.model.BookmarkCategory
+import dev.avatsav.linkding.data.model.PendingBookmark
 import dev.avatsav.linkding.data.model.SearchHistory
 import dev.avatsav.linkding.data.model.Tag
 import dev.avatsav.linkding.ui.compose.SnackbarMessage
@@ -17,20 +18,21 @@ import linkding_apps.features.bookmarks.ui.generated.resources.action_undo
 import org.jetbrains.compose.resources.stringResource
 
 data class BookmarksUiState(
-  val bookmarks: LazyPagingItems<Bookmark>,
-  val query: String = "",
-  val category: BookmarkCategory = BookmarkCategory.All,
-  val selectedTags: List<Tag> = emptyList(),
-  val searchHistory: List<SearchHistory> = emptyList(),
-  val snackbarMessage: SnackbarMessage? = null,
+    val bookmarks: LazyPagingItems<Bookmark>,
+    val pendingBookmarks: List<PendingBookmark> = emptyList(),
+    val query: String = "",
+    val category: BookmarkCategory = BookmarkCategory.All,
+    val selectedTags: List<Tag> = emptyList(),
+    val searchHistory: List<SearchHistory> = emptyList(),
+    val snackbarMessage: SnackbarMessage? = null,
 ) {
   val isSearchActive: Boolean
     get() = query.isNotBlank() || category != BookmarkCategory.All || selectedTags.isNotEmpty()
 
   val filteredHistory: List<SearchHistory>
     get() =
-      if (query.isBlank()) searchHistory
-      else searchHistory.filter { it.query.contains(query, ignoreCase = true) }
+        if (query.isBlank()) searchHistory
+        else searchHistory.filter { it.query.contains(query, ignoreCase = true) }
 }
 
 sealed interface BookmarksUiEvent {
@@ -63,6 +65,12 @@ sealed interface BookmarksUiEvent {
 
   data class Delete(val bookmark: Bookmark) : BookmarksUiEvent
 
+  data class EditPending(val id: Long) : BookmarksUiEvent
+
+  data class RetryPending(val id: Long? = null) : BookmarksUiEvent
+
+  data class DiscardPending(val id: Long) : BookmarksUiEvent
+
   // Refresh & Undo
   data object Refresh : BookmarksUiEvent
 
@@ -75,6 +83,8 @@ sealed interface BookmarkUiEffect {
   data class OpenBookmark(val bookmark: Bookmark) : BookmarkUiEffect
 
   data class EditBookmark(val bookmark: Bookmark) : BookmarkUiEffect
+
+  data class EditPending(val id: Long) : BookmarkUiEffect
 
   data object AddBookmark : BookmarkUiEffect
 
@@ -102,7 +112,7 @@ sealed interface BookmarkSnackbar : SnackbarMessage {
   }
 
   data class Failed(val errorMessage: String?, override val onAction: (() -> Unit)?) :
-    BookmarkSnackbar {
+      BookmarkSnackbar {
     @Composable
     override fun message() = stringResource(Res.string.action_failed, errorMessage.orEmpty())
 

@@ -3,6 +3,7 @@ package dev.avatsav.linkding.api
 import io.ktor.client.HttpClient
 import io.ktor.client.HttpClientConfig
 import io.ktor.client.engine.HttpClientEngineFactory
+import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.cache.HttpCache
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
@@ -18,11 +19,14 @@ import kotlinx.serialization.json.Json
 
 internal expect fun httpClientEngineFactory(): HttpClientEngineFactory<*>
 
+private const val ConnectTimeoutMillis = 5_000L
+private const val RequestTimeoutMillis = 15_000L
+
 internal object HttpClientFactory {
 
   fun buildHttpClient(
-    clientConfig: LinkdingClientConfig,
-    apiConfig: LinkdingApiConfig? = null,
+      clientConfig: LinkdingClientConfig,
+      apiConfig: LinkdingApiConfig? = null,
   ): HttpClient {
     val defaultHttpConfig: HttpClientConfig<*>.() -> Unit = {
       defaultRequest {
@@ -37,15 +41,20 @@ internal object HttpClientFactory {
 
       install(ContentNegotiation) {
         json(
-          Json {
-            isLenient = true
-            ignoreUnknownKeys = true
-            coerceInputValues = true
-            encodeDefaults = true
-            prettyPrint = false
-            explicitNulls = false
-          }
+            Json {
+              isLenient = true
+              ignoreUnknownKeys = true
+              coerceInputValues = true
+              encodeDefaults = true
+              prettyPrint = false
+              explicitNulls = false
+            }
         )
+      }
+
+      install(HttpTimeout) {
+        connectTimeoutMillis = ConnectTimeoutMillis
+        requestTimeoutMillis = RequestTimeoutMillis
       }
 
       install(HttpCache)

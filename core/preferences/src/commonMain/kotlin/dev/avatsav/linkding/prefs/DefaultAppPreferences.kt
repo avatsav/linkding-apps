@@ -12,12 +12,14 @@ import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
 import dev.zacsweers.metro.Inject
 import dev.zacsweers.metro.SingleIn
+import kotlin.uuid.Uuid
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 
 private const val HostUrlConfigurationKey = "linkding-hostUrl"
 private const val ApiKeyConfigurationKey = "linkding-apiKey"
+private const val AccountIdKey = "linkding-local-account-id"
 private const val UseDynamicColorsKey = "use-dynamic-colors"
 private const val AppThemeKey = "app-theme"
 
@@ -30,25 +32,28 @@ private const val DarkThemeValue = "dark"
 @SingleIn(AppScope::class)
 @ContributesBinding(AppScope::class)
 class DefaultAppPreferences(
-  private val settings: ObservableSettings,
-  dispatchers: AppCoroutineDispatchers,
+    private val settings: ObservableSettings,
+    dispatchers: AppCoroutineDispatchers,
 ) : AppPreferences {
 
   private val flowSettings by lazy { settings.toFlowSettings(dispatchers.io) }
 
   override fun observeApiConfig(): Flow<ApiConfig?> =
-    combine(
-      flowSettings.getStringOrNullFlow(HostUrlConfigurationKey),
-      flowSettings.getStringOrNullFlow(ApiKeyConfigurationKey),
-    ) { hostUrl: String?, apiKey: String? ->
-      if (hostUrl == null || apiKey == null) {
-        null
-      } else {
-        ApiConfig(hostUrl, apiKey)
+      combine(
+          flowSettings.getStringOrNullFlow(HostUrlConfigurationKey),
+          flowSettings.getStringOrNullFlow(ApiKeyConfigurationKey),
+      ) { hostUrl: String?, apiKey: String? ->
+        if (hostUrl == null || apiKey == null) {
+          null
+        } else {
+          ApiConfig(hostUrl, apiKey)
+        }
       }
-    }
 
   override suspend fun setApiConfig(apiConfig: ApiConfig?) {
+    if (apiConfig != getApiConfig()) {
+      settings[AccountIdKey] = Uuid.random().toString()
+    }
     if (apiConfig != null) {
       settings[HostUrlConfigurationKey] = apiConfig.hostUrl
       settings[ApiKeyConfigurationKey] = apiConfig.apiKey
@@ -68,15 +73,21 @@ class DefaultAppPreferences(
     }
   }
 
+  override fun getAccountId(): String {
+    val existing: String? = settings[AccountIdKey]
+    if (existing != null) return existing
+    return Uuid.random().toString().also { settings[AccountIdKey] = it }
+  }
+
   override fun observeAppTheme(): Flow<AppTheme> =
-    flowSettings.getStringFlow(AppThemeKey, SystemThemeValue).map { it.appTheme }
+      flowSettings.getStringFlow(AppThemeKey, SystemThemeValue).map { it.appTheme }
 
   override suspend fun setAppTheme(appTheme: AppTheme) {
     settings[AppThemeKey] = appTheme.storageValue
   }
 
   override fun observeUseDynamicColors(): Flow<Boolean> =
-    flowSettings.getBooleanFlow(UseDynamicColorsKey, false)
+      flowSettings.getBooleanFlow(UseDynamicColorsKey, false)
 
   override suspend fun toggleUseDynamicColors() {
     settings[UseDynamicColorsKey] = !settings.getBoolean(UseDynamicColorsKey, false)
@@ -85,16 +96,16 @@ class DefaultAppPreferences(
 
 private val AppTheme.storageValue: String
   get() =
-    when (this) {
-      AppTheme.System -> SystemThemeValue
-      AppTheme.Light -> LightThemeValue
-      AppTheme.Dark -> DarkThemeValue
-    }
+      when (this) {
+        AppTheme.System -> SystemThemeValue
+        AppTheme.Light -> LightThemeValue
+        AppTheme.Dark -> DarkThemeValue
+      }
 
 private val String?.appTheme: AppTheme
   get() =
-    when (this) {
-      LightThemeValue -> AppTheme.Light
-      DarkThemeValue -> AppTheme.Dark
-      else -> AppTheme.System
-    }
+      when (this) {
+        LightThemeValue -> AppTheme.Light
+        DarkThemeValue -> AppTheme.Dark
+        else -> AppTheme.System
+      }

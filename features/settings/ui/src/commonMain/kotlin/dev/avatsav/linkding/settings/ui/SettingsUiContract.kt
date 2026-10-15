@@ -7,10 +7,11 @@ import dev.avatsav.linkding.data.model.prefs.AppTheme
 
 @Immutable
 data class SettingsUiState(
-  val appInfo: AppInfo,
-  val apiConfig: ApiConfig?,
-  val appTheme: AppTheme,
-  val useDynamicColors: Boolean,
+    val appInfo: AppInfo,
+    val apiConfig: ApiConfig?,
+    val appTheme: AppTheme,
+    val useDynamicColors: Boolean,
+    val resetBlocked: Boolean = false,
 )
 
 sealed interface SettingsUiEvent {

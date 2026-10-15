@@ -8,6 +8,8 @@ kotlin {
     commonMain.dependencies {
       implementation(projects.core.base)
       implementation(projects.core.di)
+      implementation(projects.core.preferences)
+      implementation(projects.core.connectivity)
       api(projects.features.bookmarks.api)
 
       // Data layer dependencies
@@ -19,6 +21,10 @@ kotlin {
       implementation(libs.multiplatform.settings.coroutines)
       implementation(libs.kotlin.serialization.json)
       implementation(libs.kotlin.datetime)
+    }
+    commonTest.dependencies {
+      implementation(libs.kotlin.test)
+      implementation(libs.kotlin.coroutines.test)
     }
   }
 }

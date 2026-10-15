@@ -7,10 +7,14 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.unveilIn
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.scene.Scene
@@ -46,10 +50,10 @@ import dev.zacsweers.metro.SingleIn
 interface AppUi {
   @Composable
   fun Content(
-    launchMode: LaunchMode,
-    onOpenUrl: (String) -> Boolean,
-    onRootPop: () -> Unit,
-    modifier: Modifier,
+      launchMode: LaunchMode,
+      onOpenUrl: (String) -> Boolean,
+      onRootPop: () -> Unit,
+      modifier: Modifier,
   )
 }
 
@@ -57,18 +61,18 @@ interface AppUi {
 @SingleIn(UiScope::class)
 @Inject
 class DefaultAppUi(
-  private val baseRouteEntryScope: Set<RouteEntryProviderScope>,
-  private val preferences: AppPreferences,
-  private val authManager: AuthManager,
-  private val savedStateConfiguration: SavedStateConfiguration,
+    private val baseRouteEntryScope: Set<RouteEntryProviderScope>,
+    private val preferences: AppPreferences,
+    private val authManager: AuthManager,
+    private val savedStateConfiguration: SavedStateConfiguration,
 ) : AppUi {
 
   @Composable
   override fun Content(
-    launchMode: LaunchMode,
-    onOpenUrl: (String) -> Boolean,
-    onRootPop: () -> Unit,
-    modifier: Modifier,
+      launchMode: LaunchMode,
+      onOpenUrl: (String) -> Boolean,
+      onRootPop: () -> Unit,
+      modifier: Modifier,
   ) {
     val initialAuthState = remember { authManager.getCurrentState() }
     val startRoute = remember(launchMode) { initialAuthState.startRoute(launchMode) }
@@ -84,26 +88,26 @@ class DefaultAppUi(
 
     NavigatorCompositionLocals(navigator, resultHandler) {
       LinkdingTheme(
-        darkTheme = preferences.shouldUseDarkTheme(),
-        dynamicColors = preferences.shouldUseDynamicColors(),
+          darkTheme = preferences.shouldUseDarkTheme(),
+          dynamicColors = preferences.shouldUseDynamicColors(),
       ) {
         NavDisplay(
-          entryDecorators =
-            listOf(
-              rememberSaveableStateHolderNavEntryDecorator(),
-              rememberRetainedValuesStoreNavEntryDecorator(),
-            ),
-          backStack = backStack,
-          onBack = { navigator.pop() },
-          sceneStrategies = listOf(bottomSheetSceneStrategy),
-          entryProvider =
-            entryProvider(
-              builder = {
-                baseRouteEntryScope.forEach { builder -> this.builder() }
-                userScopeRouteEntryScope.forEach { builder -> this.builder() }
-              }
-            ),
-          predictivePopTransitionSpec = predictivePopTransitionSpec(),
+            entryDecorators =
+                listOf(
+                    rememberSaveableStateHolderNavEntryDecorator(),
+                    rememberRetainedValuesStoreNavEntryDecorator(),
+                ),
+            backStack = backStack,
+            onBack = { navigator.pop() },
+            sceneStrategies = listOf(bottomSheetSceneStrategy),
+            entryProvider =
+                entryProvider(
+                    builder = {
+                      baseRouteEntryScope.forEach { builder -> this.builder() }
+                      userScopeRouteEntryScope.forEach { builder -> this.builder() }
+                    }
+                ),
+            predictivePopTransitionSpec = predictivePopTransitionSpec(),
         )
       }
     }
@@ -112,12 +116,13 @@ class DefaultAppUi(
 
 @OptIn(ExperimentalAnimationApi::class)
 private fun <T : Any> predictivePopTransitionSpec():
-  AnimatedContentTransitionScope<Scene<T>>.(@SwipeEdge Int) -> ContentTransform = {
+    AnimatedContentTransitionScope<Scene<T>>.(@SwipeEdge Int) -> ContentTransform = {
   val towards = SlideDirection.Right
   ContentTransform(
-    targetContentEnter =
-      slideIntoContainer(towards = towards, initialOffset = { offset -> offset / 4 }) + unveilIn(),
-    initialContentExit = slideOutOfContainer(towards = towards),
+      targetContentEnter =
+          slideIntoContainer(towards = towards, initialOffset = { offset -> offset / 4 }) +
+              unveilIn(),
+      initialContentExit = slideOutOfContainer(towards = towards),
   )
 }
 
@@ -127,28 +132,35 @@ private fun rememberUserScopeRouteEntryScope(authState: AuthState): Set<RouteEnt
     is Loading,
     is Unauthenticated -> emptySet()
     is Authenticated -> {
-      remember(authState.apiConfig) {
-          GraphHolder.graph<UserGraph.Factory>().create(authState.apiConfig).also { component ->
-            GraphHolder.updateGraph(component)
+      val graph =
+          remember(authState.apiConfig) {
+            GraphHolder.graph<UserGraph.Factory>().create(authState.apiConfig).also { component ->
+              GraphHolder.updateGraph(component)
+            }
           }
+      val lifecycle = LocalLifecycleOwner.current.lifecycle
+      LaunchedEffect(graph, lifecycle) {
+        lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+          graph.pendingBookmarks.runUploader()
         }
-        .routeEntryScope
+      }
+      graph.routeEntryScope
     }
   }
 }
 
 private fun AuthState.startRoute(launchMode: LaunchMode): Route =
-  when (this) {
-    is Loading,
-    is Unauthenticated -> Route.Auth
-    is Authenticated -> launchMode.startRoute()
-  }
+    when (this) {
+      is Loading,
+      is Unauthenticated -> Route.Auth
+      is Authenticated -> launchMode.startRoute()
+    }
 
 private fun LaunchMode.startRoute(): Route =
-  when (this) {
-    Normal -> Route.BookmarksFeed
-    is SharedLink -> Route.AddBookmark.Shared(this.sharedLink)
-  }
+    when (this) {
+      Normal -> Route.BookmarksFeed
+      is SharedLink -> Route.AddBookmark.Shared(this.sharedLink)
+    }
 
 @Composable
 private fun AppPreferences.shouldUseDarkTheme(): Boolean {

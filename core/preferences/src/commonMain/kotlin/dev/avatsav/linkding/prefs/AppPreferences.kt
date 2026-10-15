@@ -11,6 +11,9 @@ interface AppPreferences {
 
   fun getApiConfig(): ApiConfig?
 
+  /** Local, non-secret identity tied to the current credentials. */
+  fun getAccountId(): String
+
   fun observeAppTheme(): Flow<AppTheme>
 
   suspend fun setAppTheme(appTheme: AppTheme)

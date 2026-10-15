@@ -8,6 +8,7 @@ import com.github.michaelbull.result.mapError
 import com.github.michaelbull.result.onOk
 import dev.avatsav.linkding.api.LinkdingBookmarksApi
 import dev.avatsav.linkding.bookmarks.api.BookmarksRepository
+import dev.avatsav.linkding.bookmarks.api.PendingBookmarks
 import dev.avatsav.linkding.bookmarks.impl.internal.BookmarksPagingDataFactory
 import dev.avatsav.linkding.bookmarks.impl.mappers.BookmarkErrorMapper
 import dev.avatsav.linkding.bookmarks.impl.mappers.BookmarkMapper
@@ -18,6 +19,7 @@ import dev.avatsav.linkding.data.model.BookmarkCategory
 import dev.avatsav.linkding.data.model.BookmarkError
 import dev.avatsav.linkding.data.model.CheckUrlResult
 import dev.avatsav.linkding.data.model.SaveBookmark
+import dev.avatsav.linkding.data.model.SaveResult
 import dev.avatsav.linkding.data.model.UpdateBookmark
 import dev.avatsav.linkding.di.scope.UserScope
 import dev.zacsweers.metro.ContributesBinding
@@ -27,50 +29,49 @@ import kotlinx.coroutines.flow.Flow
 @Inject
 @ContributesBinding(UserScope::class)
 class LinkdingBookmarksRepository(
-  private val bookmarksApi: LinkdingBookmarksApi,
-  private val bookmarksDao: BookmarksDao,
-  private val bookmarksPagingDataFactory: BookmarksPagingDataFactory,
-  private val bookmarkMapper: BookmarkMapper,
-  private val checkUrlMapper: CheckUrlResultMapper,
-  private val errorMapper: BookmarkErrorMapper,
+    private val bookmarksApi: LinkdingBookmarksApi,
+    private val bookmarksDao: BookmarksDao,
+    private val bookmarksPagingDataFactory: BookmarksPagingDataFactory,
+    private val bookmarkMapper: BookmarkMapper,
+    private val checkUrlMapper: CheckUrlResultMapper,
+    private val errorMapper: BookmarkErrorMapper,
+    private val pendingBookmarks: PendingBookmarks,
 ) : BookmarksRepository {
 
   override fun getBookmarksPaged(
-    cached: Boolean,
-    pagingConfig: PagingConfig,
-    query: String,
-    category: BookmarkCategory,
-    tags: List<String>,
+      cached: Boolean,
+      pagingConfig: PagingConfig,
+      query: String,
+      category: BookmarkCategory,
+      tags: List<String>,
   ): Flow<PagingData<Bookmark>> =
-    bookmarksPagingDataFactory.create(
-      cached = cached,
-      pagingConfig = pagingConfig,
-      param = BookmarksPagingDataFactory.Param(query, category, tags),
-    )
+      bookmarksPagingDataFactory.create(
+          cached = cached,
+          pagingConfig = pagingConfig,
+          param = BookmarksPagingDataFactory.Param(query, category, tags),
+      )
 
   override suspend fun checkUrl(url: String): Result<CheckUrlResult, BookmarkError> =
-    bookmarksApi.checkUrl(url).mapEither(success = checkUrlMapper::map, failure = errorMapper::map)
+      bookmarksApi
+          .checkUrl(url)
+          .mapEither(success = checkUrlMapper::map, failure = errorMapper::map)
 
   override suspend fun getBookmark(id: Long): Result<Bookmark, BookmarkError> =
-    bookmarksApi
-      .getBookmark(id)
-      .mapEither(success = bookmarkMapper::map, failure = errorMapper::map)
+      bookmarksApi
+          .getBookmark(id)
+          .mapEither(success = bookmarkMapper::map, failure = errorMapper::map)
 
-  override suspend fun saveBookmark(saveBookmark: SaveBookmark): Result<Bookmark, BookmarkError> {
-    val request = bookmarkMapper.map(saveBookmark)
-    return bookmarksApi
-      .saveBookmark(request)
-      .mapEither(success = bookmarkMapper::map, failure = errorMapper::map)
-  }
+  override suspend fun saveBookmark(saveBookmark: SaveBookmark): Result<SaveResult, BookmarkError> =
+      pendingBookmarks.create(saveBookmark)
 
   override suspend fun updateBookmark(
-    updateBookmark: UpdateBookmark
+      updateBookmark: UpdateBookmark
   ): Result<Bookmark, BookmarkError> {
     val request = bookmarkMapper.map(updateBookmark)
     val result =
-      bookmarksApi
-        .updateBookmark(updateBookmark.id, request)
-        .mapEither(success = bookmarkMapper::map, failure = errorMapper::map)
+        bookmarksApi
+            .updateBookmark(updateBookmark.id, request)
+            .mapEither(success = bookmarkMapper::map, failure = errorMapper::map)
     result.onOk { bookmark -> bookmarksDao.upsert(bookmark) }
     return result
   }

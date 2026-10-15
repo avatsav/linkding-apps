@@ -32,6 +32,8 @@ sealed interface Route {
     @Serializable data class Shared(val url: String) : AddBookmark
 
     @Serializable data class Edit(val bookmarkId: Long) : AddBookmark
+
+    @Serializable data class Pending(val pendingId: Long) : AddBookmark
   }
 
   @Serializable data class Url(val url: String) : Route
@@ -40,7 +42,7 @@ sealed interface Route {
 
   @Serializable
   data class Tags(val selectedTagIds: Set<Long> = emptySet()) :
-    Route, RouteWithResult<Tags.Result> {
+      Route, RouteWithResult<Tags.Result> {
 
     sealed interface Result : NavResult {
       @Serializable data class Confirmed(val selectedTags: List<Tag>) : Result

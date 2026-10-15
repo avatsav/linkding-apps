@@ -20,6 +20,7 @@
     <string name="settings_made_in_munich" translatable="false">Made with 🥨 in München</string>
     <string name="settings_confirm_reset_title">Confirm Reset</string>
     <string name="settings_confirm_reset_message">Are you sure you want to reset the api configuration?</string>
+    <string name="settings_pending_reset_blocked">Upload or discard your pending bookmarks before resetting this account.</string>
     <string name="settings_yes">Yes</string>
     <string name="settings_no">No</string>
 </resources>

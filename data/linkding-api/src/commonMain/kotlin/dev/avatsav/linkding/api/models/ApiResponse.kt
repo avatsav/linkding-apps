@@ -1,6 +1,5 @@
 package dev.avatsav.linkding.api.models
 
-import kotlinx.io.IOException
 import kotlinx.serialization.SerializationException
 
 internal sealed interface ApiResponse<out T, out E> {
@@ -13,9 +12,9 @@ internal sealed interface ApiResponse<out T, out E> {
   data class ServerError<E>(val code: Int, override val body: E?) : Error<E>(null, body)
 
   data class SerializationError(val exception: SerializationException) :
-    Error<Nothing>(exception.message, null)
+      Error<Nothing>(exception.message, null)
 
-  data class ConnectivityError(val exception: IOException) : Error<Nothing>(exception.message, null)
+  data class ConnectivityError(val exception: Throwable) : Error<Nothing>(exception.message, null)
 
   data class UnknownError(val throwable: Throwable) : Error<Nothing>(throwable.message, null)
 }
