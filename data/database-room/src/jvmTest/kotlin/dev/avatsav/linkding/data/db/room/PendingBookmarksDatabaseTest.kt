@@ -14,7 +14,10 @@ import kotlin.time.Instant
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
-import kotlinx.serialization.json.*
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.jsonArray
+import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
 
 @Suppress("InjectDispatcher")
 class PendingBookmarksDatabaseTest {
@@ -25,26 +28,26 @@ class PendingBookmarksDatabaseTest {
       var db = open(file)
       val dao = RoomPendingBookmarksDao(db)
       val original =
-          PendingBookmark(
-              bookmark =
-                  SaveBookmark(
-                      "https://example.com",
-                      "Title",
-                      "Description",
-                      "Notes",
-                      setOf("a", "b"),
-                      true,
-                      true,
-                      true,
-                  ),
-              createdAt = Instant.parse("2026-03-14T10:00:00Z"),
-          )
+        PendingBookmark(
+          bookmark =
+            SaveBookmark(
+              "https://example.com",
+              "Title",
+              "Description",
+              "Notes",
+              setOf("a", "b"),
+              true,
+              true,
+              true,
+            ),
+          createdAt = Instant.parse("2026-03-14T10:00:00Z"),
+        )
       val id = dao.insert("account-a", original)
       val edited =
-          original.copy(
-              id = id,
-              bookmark = original.bookmark.copy(title = "Edited", notes = "New notes"),
-          )
+        original.copy(
+          id = id,
+          bookmark = original.bookmark.copy(title = "Edited", notes = "New notes"),
+        )
       dao.update("account-a", edited)
       db.bookmarksQueries().replaceAll(emptyList())
       db.close()
@@ -73,21 +76,21 @@ class PendingBookmarksDatabaseTest {
       // Build the old database from its checked-in schema, not the current generated code.
       val schemaFile = File("schemas/dev.avatsav.linkding.data.db.room.LinkdingRoomDatabase/1.json")
       val schema =
-          Json.parseToJsonElement(schemaFile.readText()).jsonObject.getValue("database").jsonObject
+        Json.parseToJsonElement(schemaFile.readText()).jsonObject.getValue("database").jsonObject
       BundledSQLiteDriver().open(file.absolutePath).use { connection ->
         schema.getValue("entities").jsonArray.forEach { element ->
           val entity = element.jsonObject
           val name = entity.getValue("tableName").jsonPrimitive.content
           connection.execSQL(
-              entity.getValue("createSql").jsonPrimitive.content.replace("\${TABLE_NAME}", name)
+            entity.getValue("createSql").jsonPrimitive.content.replace("\${TABLE_NAME}", name)
           )
           entity.getValue("indices").jsonArray.forEach { index ->
             connection.execSQL(
-                index.jsonObject
-                    .getValue("createSql")
-                    .jsonPrimitive
-                    .content
-                    .replace("\${TABLE_NAME}", name)
+              index.jsonObject
+                .getValue("createSql")
+                .jsonPrimitive
+                .content
+                .replace("\${TABLE_NAME}", name)
             )
           }
         }
@@ -95,7 +98,7 @@ class PendingBookmarksDatabaseTest {
           connection.execSQL(it.jsonPrimitive.content)
         }
         connection.execSQL(
-            "INSERT INTO search_history (query, modified) VALUES ('retained', '2026-03-14T10:00:00Z')"
+          "INSERT INTO search_history (query, modified) VALUES ('retained', '2026-03-14T10:00:00Z')"
         )
         connection.execSQL("PRAGMA user_version = 1")
       }
@@ -104,13 +107,13 @@ class PendingBookmarksDatabaseTest {
         assertEquals("retained", db.searchHistoryQueries().selectRecent(1).single().query)
         val dao = RoomPendingBookmarksDao(db)
         val id =
-            dao.insert(
-                "account",
-                PendingBookmark(
-                    bookmark = SaveBookmark("https://example.com"),
-                    createdAt = Instant.parse("2026-03-14T10:00:00Z"),
-                ),
-            )
+          dao.insert(
+            "account",
+            PendingBookmark(
+              bookmark = SaveBookmark("https://example.com"),
+              createdAt = Instant.parse("2026-03-14T10:00:00Z"),
+            ),
+          )
         assertEquals(id, dao.getAll("account").single().id)
       } finally {
         db.close()
@@ -121,9 +124,9 @@ class PendingBookmarksDatabaseTest {
   }
 
   private fun open(file: File) =
-      Room.databaseBuilder<LinkdingRoomDatabase>(name = file.absolutePath)
-          .addMigrations(MIGRATION_1_2)
-          .setDriver(BundledSQLiteDriver())
-          .setQueryCoroutineContext(Dispatchers.IO)
-          .build()
+    Room.databaseBuilder<LinkdingRoomDatabase>(name = file.absolutePath)
+      .addMigrations(MIGRATION_1_2)
+      .setDriver(BundledSQLiteDriver())
+      .setQueryCoroutineContext(Dispatchers.IO)
+      .build()
 }
