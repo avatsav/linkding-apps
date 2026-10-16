@@ -18,8 +18,5 @@ data class PendingBookmark(
   }
 }
 
-sealed interface SaveResult {
-  data class Synced(val bookmark: Bookmark) : SaveResult
-
-  data class Queued(val id: Long) : SaveResult
-}
+/** A creation acknowledged after it has been durably queued, not uploaded. */
+data class SaveResult(val pendingId: Long)

@@ -14,9 +14,9 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import dev.avatsav.linkding.data.model.PendingBookmark
 import dev.avatsav.linkding.ui.compose.widgets.SmallCircularProgressIndicator
+import dev.avatsav.linkding.ui.theme.BookmarkListTokens
 import linkding_apps.features.bookmarks.ui.generated.resources.Res
 import linkding_apps.features.bookmarks.ui.generated.resources.pending_bookmark_attention
 import linkding_apps.features.bookmarks.ui.generated.resources.pending_bookmark_retry
@@ -32,7 +32,12 @@ fun PendingBookmarksHeader(
   modifier: Modifier = Modifier,
 ) {
   Row(
-    modifier.fillMaxWidth().padding(start = 16.dp, end = 8.dp),
+    modifier
+      .fillMaxWidth()
+      .padding(
+        start = BookmarkListTokens.sectionHeaderPadding,
+        end = BookmarkListTokens.sectionHeaderTrailingPadding,
+      ),
     verticalAlignment = Alignment.CenterVertically,
   ) {
     Text(
@@ -81,7 +86,7 @@ fun PendingBookmarkListItem(
           tint =
             if (needsAttention) MaterialTheme.colorScheme.error
             else MaterialTheme.colorScheme.onSurfaceVariant,
-          modifier = Modifier.size(16.dp),
+          modifier = Modifier.size(BookmarkListTokens.statusIconSize),
         )
     },
   )

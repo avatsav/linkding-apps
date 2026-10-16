@@ -22,7 +22,11 @@ interface PendingBookmarks {
   /** Does not wait for network requests. An item already being POSTed cannot be discarded. */
   suspend fun discard(id: Long)
 
-  /** Explicit retries also check items requiring attention; automatic uploads skip them. */
+  /**
+   * Requests a retry without network work. The next foreground uploader also checks requested items
+   * requiring attention; automatic uploads skip them. Requests wait in memory while no uploader is
+   * active, and are consumed before POST so uncertain uploads need a fresh retry.
+   */
   suspend fun retry(id: Long? = null)
 
   /** Runs until cancelled. The authenticated foreground lifecycle owns this call. */

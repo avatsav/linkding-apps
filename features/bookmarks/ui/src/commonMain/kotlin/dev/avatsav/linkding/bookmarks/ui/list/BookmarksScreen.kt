@@ -89,6 +89,7 @@ import dev.avatsav.linkding.ui.compose.ObserveSnackbar
 import dev.avatsav.linkding.ui.compose.appearFromBottom
 import dev.avatsav.linkding.ui.compose.disappearToBottom
 import dev.avatsav.linkding.ui.compose.widgets.AnimatedVisibilityWithElevation
+import dev.avatsav.linkding.ui.theme.BookmarkListTokens
 import dev.avatsav.linkding.ui.theme.Material3ShapeDefaults
 import kotlinx.coroutines.launch
 import linkding_apps.features.bookmarks.ui.generated.resources.Res
@@ -385,7 +386,7 @@ private fun BookmarksScreen(
               text = stringResource(Res.string.bookmarks_all),
               style = MaterialTheme.typography.titleSmall,
               color = MaterialTheme.colorScheme.onSurfaceVariant,
-              modifier = Modifier.padding(16.dp),
+              modifier = Modifier.padding(BookmarkListTokens.sectionHeaderPadding),
             )
           }
         }

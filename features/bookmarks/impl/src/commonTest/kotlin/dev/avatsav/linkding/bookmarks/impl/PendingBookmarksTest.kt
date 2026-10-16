@@ -17,27 +17,77 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
-import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitCancellation
+import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.advanceTimeBy
 import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 
 class PendingBookmarksTest {
   @Test
+  fun `retry requests wait for a foreground uploader`() = runTest {
+    val f = Fixture()
+    f.api.online = true
+    assertTrue(f.queue.create(draft).isOk)
+    val item = f.queue.observeFirst()
+    f.store.update("account", item.copy(state = PendingBookmark.State.Failed))
+    retry(f.queue, item.id)
+    assertTrue(f.api.checkedUrls.isEmpty(), "Retry must not own network work")
+    assertTrue(f.api.sent.isEmpty())
+    backgroundScope.launch { f.queue.runUploader() }
+    runCurrent()
+    assertEquals(1, f.api.sent.size)
+    assertTrue(f.store.rows.value.isEmpty())
+  }
+
+  @Test
+  fun `two queue instances share one foreground uploader`() = runTest {
+    val f = Fixture()
+    f.api.online = true
+    assertTrue(f.queue.create(draft).isOk)
+    val release = CompletableDeferred<Unit>()
+    f.api.onCheck = { release.await() }
+    f.api.onSave = { awaitCancellation() }
+    backgroundScope.launch { f.queue.runUploader() }
+    backgroundScope.launch { f.newQueue().runUploader() }
+    runCurrent()
+    release.complete(Unit)
+    runCurrent()
+    assertEquals(1, f.api.checkedUrls.size)
+    assertEquals(1, f.api.sent.size)
+    assertEquals(PendingBookmark.State.Uploading, f.queue.observeFirst().state)
+  }
+
+  @Test
+  fun `another foreground instance cannot recover a live POST as interrupted`() = runTest {
+    val f = Fixture()
+    f.api.online = true
+    assertTrue(f.queue.create(draft).isOk)
+    f.api.onSave = { awaitCancellation() }
+    backgroundScope.launch { f.queue.runUploader() }
+    runCurrent()
+    assertEquals(PendingBookmark.State.Uploading, f.queue.observeFirst().state)
+    backgroundScope.launch { f.newQueue().runUploader() }
+    runCurrent()
+    assertEquals(PendingBookmark.State.Uploading, f.queue.observeFirst().state)
+    assertEquals(1, f.api.sent.size)
+  }
+
+  @Test
   fun `missing local network permission keeps creations pending without contacting the API`() =
     runTest {
-      val f = Fixture()
+      val f = foregroundFixture()
       f.access.permissionGranted.value = false
       f.api.online = true
       assertTrue(f.queue.create(draft).isOk)
-      f.queue.retry()
+      retry(f.queue)
       assertTrue(f.api.checkedUrls.isEmpty())
       assertTrue(f.api.sent.isEmpty())
       assertEquals(PendingBookmark.State.Pending, f.queue.observeFirst().state)
@@ -60,10 +110,10 @@ class PendingBookmarksTest {
 
   @Test
   fun `local writes never wait for the uploader permission lookup`() = runTest {
-    val f = Fixture()
+    val f = foregroundFixture()
     assertTrue(f.queue.create(draft).isOk)
     f.access.onLookup = { awaitCancellation() }
-    backgroundScope.launch { f.queue.retry() }
+    retry(f.queue)
     runCurrent()
     val save = async { f.queue.create(draft.copy(url = "https://example.com/second")) }
     runCurrent()
@@ -88,11 +138,11 @@ class PendingBookmarksTest {
 
   @Test
   fun `new local save does not wait behind an uploader checking the host`() = runTest {
-    val f = Fixture()
+    val f = foregroundFixture()
     f.online.value = false
     assertTrue(f.queue.create(draft).isOk)
     f.api.onCheck = { awaitCancellation() }
-    backgroundScope.launch { f.queue.retry() }
+    retry(f.queue)
     runCurrent()
     val another = draft.copy(url = "https://example.com/another")
     val save = async { f.queue.create(another) }
@@ -104,9 +154,9 @@ class PendingBookmarksTest {
 
   @Test
   fun `unreachable host queues without POST`() = runTest {
-    val fixture = Fixture()
+    val fixture = foregroundFixture()
     assertTrue(fixture.queue.create(draft).isOk)
-    fixture.queue.retry()
+    retry(fixture.queue)
     assertEquals(draft, fixture.store.rows.value.single().second.bookmark)
     assertEquals(PendingBookmark.State.Pending, fixture.store.rows.value.single().second.state)
     assertTrue(fixture.api.sent.isEmpty())
@@ -122,7 +172,8 @@ class PendingBookmarksTest {
     // Reconstruct the queue to model a new authenticated session after process restart.
     val restarted = f.newQueue()
     f.api.online = true
-    restarted.retry()
+    backgroundScope.launch { restarted.runUploader() }
+    retry(restarted)
     assertEquals("Updated", f.api.sent.single().title)
     assertEquals("Offline notes", f.api.sent.single().notes)
     assertEquals(setOf("new"), f.api.sent.single().tagNames)
@@ -132,11 +183,11 @@ class PendingBookmarksTest {
 
   @Test
   fun `discard never calls the server`() = runTest {
-    val f = Fixture()
+    val f = foregroundFixture()
     assertTrue(f.queue.create(draft).isOk)
     f.queue.discard(f.queue.observeFirst().id)
     f.api.online = true
-    f.queue.retry()
+    retry(f.queue)
     assertTrue(f.store.rows.value.isEmpty())
     assertTrue(f.api.sent.isEmpty())
   }
@@ -144,10 +195,10 @@ class PendingBookmarksTest {
   @Test
   fun `authentication and validation rejections remain actionable on the pending item`() = runTest {
     for (error in listOf(LinkdingError.Unauthorized(), LinkdingError.Other("Invalid URL"))) {
-      val f = Fixture()
+      val f = foregroundFixture()
       f.api.checkError = error
       assertTrue(f.queue.create(draft).isOk)
-      f.queue.retry()
+      retry(f.queue)
       val pending = f.queue.observeFirst()
       assertEquals(draft, pending.bookmark)
       assertEquals(PendingBookmark.State.Failed, pending.state)
@@ -158,11 +209,11 @@ class PendingBookmarksTest {
 
   @Test
   fun `POST rejection keeps the saved fields with an actionable failure`() = runTest {
-    val f = Fixture()
+    val f = foregroundFixture()
     f.api.online = true
     f.api.saveError = LinkdingError.Other("Invalid fields")
     assertTrue(f.queue.create(draft).isOk)
-    f.queue.retry()
+    retry(f.queue)
     assertEquals(draft, f.queue.observeFirst().bookmark)
     assertEquals(PendingBookmark.State.Failed, f.queue.observeFirst().state)
     assertEquals("Invalid fields", f.queue.observeFirst().lastError)
@@ -170,25 +221,25 @@ class PendingBookmarksTest {
 
   @Test
   fun `ambiguous POST is retained and existing URL is not posted again`() = runTest {
-    val f = Fixture()
+    val f = foregroundFixture()
     f.api.online = true
     f.api.saveError = LinkdingError.Connectivity("Timed out")
     assertTrue(f.queue.create(draft).isOk)
-    f.queue.retry()
+    retry(f.queue)
     assertEquals(PendingBookmark.State.Uncertain, f.queue.observeFirst().state)
     f.api.existing = remote
-    f.queue.retry()
+    retry(f.queue)
     assertEquals(1, f.api.sent.size)
     assertEquals(PendingBookmark.State.Failed, f.queue.observeFirst().state)
   }
 
   @Test
   fun `invalid success response also preserves an uncertain creation`() = runTest {
-    val f = Fixture()
+    val f = foregroundFixture()
     f.api.online = true
     f.api.saveError = LinkdingError.Other("Invalid response", requestMayHaveSucceeded = true)
     assertTrue(f.queue.create(draft).isOk)
-    f.queue.retry()
+    retry(f.queue)
     assertEquals(PendingBookmark.State.Uncertain, f.queue.observeFirst().state)
   }
 
@@ -196,14 +247,14 @@ class PendingBookmarksTest {
   fun `uploader cancellation propagates and leaves a durable in-flight record`() = runTest {
     val f = Fixture()
     f.api.online = true
-    f.api.onSave = { throw CancellationException("Stopped") }
+    f.api.onSave = { awaitCancellation() }
     assertTrue(f.queue.create(draft).isOk)
-    try {
-      f.queue.retry()
-      error("Cancellation should propagate")
-    } catch (_: CancellationException) {
-      assertEquals(PendingBookmark.State.Uncertain, f.queue.observeFirst().state)
-    }
+    val uploader = backgroundScope.launch { f.queue.runUploader() }
+    retry(f.queue)
+    assertEquals(PendingBookmark.State.Uploading, f.queue.observeFirst().state)
+    uploader.cancelAndJoin()
+    assertTrue(uploader.isCancelled)
+    assertEquals(PendingBookmark.State.Uncertain, f.queue.observeFirst().state)
   }
 
   @Test
@@ -249,7 +300,7 @@ class PendingBookmarksTest {
 
   @Test
   fun `editing an active POST is rejected immediately instead of blocking`() = runTest {
-    val f = Fixture()
+    val f = foregroundFixture()
     assertTrue(f.queue.create(draft).isOk)
     val id = f.queue.observeFirst().id
     f.api.online = true
@@ -259,42 +310,43 @@ class PendingBookmarksTest {
       started.complete(Unit)
       release.await()
     }
-    val retry = launch { f.queue.retry() }
+    retry(f.queue)
     started.await()
     val edit = async { f.queue.edit(id, draft.copy(title = "Too late")) }
     runCurrent()
     assertTrue(edit.isCompleted, "An active POST must reject the edit without a network wait")
     assertFalse(edit.await())
     release.complete(Unit)
-    retry.join()
+    runCurrent()
     assertTrue(f.store.rows.value.isEmpty())
   }
 
   @Test
   fun `old session cannot upload after credentials change and new account cannot see drafts`() =
     runTest {
-      val f = Fixture()
+      val f = foregroundFixture()
       assertTrue(f.queue.create(draft).isOk)
       f.preferences.localAccountId = "other-account"
       f.preferences.config = ApiConfig("https://other.example", "other-key")
       f.api.online = true
-      f.queue.retry()
+      retry(f.queue)
       assertTrue(f.api.sent.isEmpty())
       assertEquals(1, f.store.rows.value.size)
       val otherQueue = f.newQueue(f.preferences.config!!)
       assertEquals(null, otherQueue.get(f.store.rows.value.single().second.id))
-      otherQueue.retry()
+      backgroundScope.launch { otherQueue.runUploader() }
+      retry(otherQueue)
       assertTrue(f.api.sent.isEmpty())
     }
 
   @Test
   fun `edit during preflight returns immediately and POST uses the latest fields`() = runTest {
-    val f = Fixture()
+    val f = foregroundFixture()
     assertTrue(f.queue.create(draft).isOk)
     f.api.online = true
     val release = CompletableDeferred<Unit>()
     f.api.onCheck = { release.await() }
-    val retry = backgroundScope.launch { f.queue.retry() }
+    retry(f.queue)
     runCurrent()
     val changed = draft.copy(title = "Latest", notes = "New notes", tags = setOf("edited"))
     val edit = async { f.queue.edit(1, changed) }
@@ -303,7 +355,7 @@ class PendingBookmarksTest {
     assertTrue(edit.await())
     assertEquals(changed, f.queue.observeFirst().bookmark)
     release.complete(Unit)
-    retry.join()
+    runCurrent()
     assertEquals("Latest", f.api.sent.single().title)
     assertEquals("New notes", f.api.sent.single().notes)
     assertEquals(setOf("edited"), f.api.sent.single().tagNames)
@@ -312,56 +364,61 @@ class PendingBookmarksTest {
 
   @Test
   fun `URL changed during preflight must be checked again before POST`() = runTest {
-    val f = Fixture()
+    val f = foregroundFixture()
     assertTrue(f.queue.create(draft).isOk)
     f.api.online = true
     val release = CompletableDeferred<Unit>()
     f.api.onCheck = { release.await() }
-    val retry = backgroundScope.launch { f.queue.retry() }
+    retry(f.queue)
     runCurrent()
     val changed = draft.copy(url = "https://example.com/changed")
     assertTrue(f.queue.edit(1, changed))
+    val secondCheck = CompletableDeferred<Unit>()
+    f.api.onCheck = { secondCheck.await() }
     release.complete(Unit)
-    retry.join()
+    runCurrent()
     assertTrue(f.api.sent.isEmpty(), "The old URL check cannot authorize sending the new URL")
     assertEquals(changed, f.queue.observeFirst().bookmark)
-    f.queue.retry()
     assertEquals(listOf(draft.url, changed.url), f.api.checkedUrls)
+    secondCheck.complete(Unit)
+    runCurrent()
     assertEquals(changed.url, f.api.sent.single().url)
   }
 
   @Test
   fun `discard during preflight returns immediately and prevents POST`() = runTest {
-    val f = Fixture()
+    val f = foregroundFixture()
     assertTrue(f.queue.create(draft).isOk)
     f.api.online = true
     val release = CompletableDeferred<Unit>()
     f.api.onCheck = { release.await() }
-    val retry = backgroundScope.launch { f.queue.retry() }
+    retry(f.queue)
     runCurrent()
     val discard = async { f.queue.discard(1) }
     runCurrent()
     assertTrue(discard.isCompleted, "Discard must not wait for a URL check")
     discard.await()
     release.complete(Unit)
-    retry.join()
+    runCurrent()
     assertTrue(f.store.rows.value.isEmpty())
     assertTrue(f.api.sent.isEmpty())
   }
 
   @Test
   fun `stale preflight failure cannot overwrite a newer local edit`() = runTest {
-    val f = Fixture()
+    val f = foregroundFixture()
     assertTrue(f.queue.create(draft).isOk)
     f.api.checkError = LinkdingError.Other("Rejected old fields")
     val release = CompletableDeferred<Unit>()
     f.api.onCheck = { release.await() }
-    val retry = backgroundScope.launch { f.queue.retry() }
+    retry(f.queue)
     runCurrent()
     val changed = draft.copy(title = "Corrected")
     assertTrue(f.queue.edit(1, changed))
+    // Hold the new automatic preflight so only the stale response can affect the assertion.
+    f.api.onCheck = { awaitCancellation() }
     release.complete(Unit)
-    retry.join()
+    runCurrent()
     assertEquals(changed, f.queue.observeFirst().bookmark)
     assertEquals(PendingBookmark.State.Pending, f.queue.observeFirst().state)
     assertEquals(null, f.queue.observeFirst().lastError)
@@ -369,22 +426,23 @@ class PendingBookmarksTest {
 
   @Test
   fun `a stalled POST cannot block local operations on another row`() = runTest {
-    val f = Fixture()
+    val f = foregroundFixture()
     assertTrue(f.queue.create(draft).isOk)
     f.api.online = true
     f.api.onSave = { awaitCancellation() }
-    backgroundScope.launch { f.queue.retry(1) }
+    retry(f.queue, 1)
     runCurrent()
     assertEquals(PendingBookmark.State.Uploading, f.queue.observeFirst().state)
-    val save = async { f.queue.create(draft.copy(url = "https://example.com/second")) }
+    val peer = f.newQueue()
+    val save = async { peer.create(draft.copy(url = "https://example.com/second")) }
     runCurrent()
     assertTrue(save.isCompleted)
     assertTrue(save.await().isOk)
-    val edit = async { f.queue.edit(2, draft.copy(title = "Second")) }
+    val edit = async { peer.edit(2, draft.copy(title = "Second")) }
     runCurrent()
     assertTrue(edit.isCompleted)
     assertTrue(edit.await())
-    val discard = async { f.queue.discard(2) }
+    val discard = async { peer.discard(2) }
     runCurrent()
     assertTrue(discard.isCompleted)
     discard.await()
@@ -393,20 +451,136 @@ class PendingBookmarksTest {
 
   @Test
   fun `overlapping drains still send a pending creation only once`() = runTest {
-    val f = Fixture()
+    val f = foregroundFixture()
     assertTrue(f.queue.create(draft).isOk)
     f.api.online = true
     val release = CompletableDeferred<Unit>()
     f.api.onSave = { release.await() }
-    val first = backgroundScope.launch { f.queue.retry() }
-    val second = backgroundScope.launch { f.queue.retry() }
+    f.queue.retry()
+    f.queue.retry()
     runCurrent()
     assertEquals(1, f.api.sent.size)
     release.complete(Unit)
-    first.join()
-    second.join()
+    runCurrent()
     assertEquals(1, f.api.sent.size)
     assertTrue(f.store.rows.value.isEmpty())
+  }
+
+  @Test
+  fun `backgrounding during manual preflight stops the batch until foreground resumes`() = runTest {
+    val f = Fixture()
+    f.api.online = true
+    assertTrue(f.queue.create(draft).isOk)
+    assertTrue(f.queue.create(draft.copy(url = "https://example.com/second")).isOk)
+    for (item in f.store.getAll("account")) {
+      f.store.update("account", item.copy(state = PendingBookmark.State.Failed))
+    }
+    val release = CompletableDeferred<Unit>()
+    f.api.onCheck = { release.await() }
+    val uploader = backgroundScope.launch { f.queue.runUploader() }
+    retry(f.queue)
+    assertEquals(listOf(draft.url), f.api.checkedUrls)
+    uploader.cancelAndJoin()
+    release.complete(Unit)
+    runCurrent()
+    assertTrue(f.api.sent.isEmpty())
+    assertEquals(1, f.api.checkedUrls.size, "No later preflight may start in the background")
+    backgroundScope.launch { f.newQueue().runUploader() }
+    runCurrent()
+    assertEquals(2, f.api.sent.size)
+    assertTrue(f.store.rows.value.isEmpty())
+  }
+
+  @Test
+  fun `foreground handoff never automatically retries an ambiguous POST`() = runTest {
+    val f = Fixture()
+    f.api.online = true
+    assertTrue(f.queue.create(draft).isOk)
+    f.api.onSave = { awaitCancellation() }
+    val first = backgroundScope.launch { f.queue.runUploader() }
+    runCurrent()
+    val peer = f.newQueue()
+    backgroundScope.launch { peer.runUploader() }
+    // Refresh during a POST must not authorize a retry of its still-unknown outcome.
+    retry(peer)
+    first.cancelAndJoin()
+    runCurrent()
+    assertEquals(1, f.api.sent.size)
+    assertEquals(PendingBookmark.State.Uncertain, peer.observeFirst().state)
+    f.api.onSave = {}
+    retry(peer, 1)
+    assertEquals(2, f.api.sent.size)
+    assertTrue(f.store.rows.value.isEmpty())
+  }
+
+  @Test
+  fun `retry from another graph reaches the active foreground owner`() = runTest {
+    val f = Fixture()
+    f.api.online = true
+    assertTrue(f.queue.create(draft).isOk)
+    val item = f.queue.observeFirst()
+    f.store.update("account", item.copy(state = PendingBookmark.State.Uncertain))
+    backgroundScope.launch { f.queue.runUploader() }
+    runCurrent()
+    assertTrue(f.api.sent.isEmpty())
+    retry(f.newQueue(), item.id)
+    assertEquals(1, f.api.sent.size)
+    assertTrue(f.store.rows.value.isEmpty())
+  }
+
+  @Test
+  fun `local creation in another graph wakes the active foreground owner`() = runTest {
+    val f = Fixture()
+    f.api.online = true
+    backgroundScope.launch { f.queue.runUploader() }
+    runCurrent()
+    assertEquals(Ok(SaveResult(pendingId = 1)), f.newQueue().create(draft))
+    assertTrue(f.api.sent.isEmpty(), "Create must still return before network work")
+    runCurrent()
+    assertEquals(1, f.api.sent.size)
+    assertTrue(f.store.rows.value.isEmpty())
+  }
+
+  @Test
+  fun `explicit retry survives missing local network permission`() = runTest {
+    val f = foregroundFixture()
+    f.api.online = true
+    f.access.permissionGranted.value = false
+    assertTrue(f.queue.create(draft).isOk)
+    val item = f.queue.observeFirst()
+    f.store.update("account", item.copy(state = PendingBookmark.State.Failed))
+    retry(f.queue, item.id)
+    assertTrue(f.api.checkedUrls.isEmpty())
+    f.access.permissionGranted.value = true
+    runCurrent()
+    assertEquals(1, f.api.sent.size)
+    assertTrue(f.store.rows.value.isEmpty())
+  }
+
+  @Test
+  fun `new account uploader does not wait for the old account foreground owner`() = runTest {
+    val f = foregroundFixture()
+    assertTrue(f.queue.create(draft).isOk)
+    runCurrent()
+    f.preferences.localAccountId = "other-account"
+    f.preferences.config = ApiConfig("https://other.example", "other-key")
+    val other = f.newQueue(f.preferences.config!!)
+    val otherDraft = draft.copy(url = "https://example.com/other")
+    assertTrue(other.create(otherDraft).isOk)
+    f.api.online = true
+    backgroundScope.launch { other.runUploader() }
+    runCurrent()
+    assertEquals(otherDraft.url, f.api.sent.single().url)
+    assertEquals(draft, f.store.getAll("account").single().bookmark)
+    assertTrue(f.store.getAll("other-account").isEmpty())
+  }
+
+  private fun TestScope.foregroundFixture(): Fixture =
+    Fixture().also { fixture -> backgroundScope.launch { fixture.queue.runUploader() } }
+
+  private suspend fun TestScope.retry(queue: DefaultPendingBookmarks, id: Long? = null) {
+    queue.retry(id)
+    runCurrent()
   }
 
   private suspend fun DefaultPendingBookmarks.observeFirst() = get(1) ?: error("No pending item")
@@ -418,6 +592,7 @@ class PendingBookmarksTest {
     val preferences = FakePreferences()
     val online = MutableStateFlow(true)
     val access = FakeLocalNetworkAccess()
+    private val coordinator = PendingBookmarksCoordinator()
     private val connectivity =
       object : ConnectivityObserver {
         override val observeIsOnline = online
@@ -433,6 +608,7 @@ class PendingBookmarksTest {
         config,
         connectivity,
         access,
+        coordinator,
       )
 
     val queue = newQueue()
