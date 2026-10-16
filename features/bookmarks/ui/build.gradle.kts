@@ -5,6 +5,11 @@ plugins {
 
 kotlin {
   sourceSets {
+    jvmTest.dependencies {
+      implementation(libs.kotlin.test)
+      implementation(compose.desktop.currentOs)
+      implementation(libs.compose.ui.test.junit4)
+    }
     commonMain.dependencies {
       api(projects.features.bookmarks.api)
       implementation(projects.core.base)

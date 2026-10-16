@@ -46,7 +46,6 @@
     <string name="pending_bookmarks_title">Pending · %1$d</string>
     <string name="pending_bookmark_upload">Pending upload</string>
     <string name="pending_bookmark_attention">Upload needs attention</string>
-    <string name="pending_bookmark_actions">Pending bookmark actions</string>
     <string name="pending_bookmark_retry">Retry</string>
     <string name="pending_bookmark_discard">Discard</string>
     <string name="pending_bookmark_cancel">Cancel</string>

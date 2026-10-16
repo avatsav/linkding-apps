@@ -160,7 +160,7 @@ class BookmarksPresenter(
           presenterScope.launch { clearSearchHistory(ClearSearchHistoryInteractor.Params) }
         }
 
-        is Open -> emitEffect(BookmarkUiEffect.OpenBookmark(event.bookmark))
+        is Open -> emitEffect(BookmarkUiEffect.OpenBookmark(event.url))
 
         is Edit -> {
           emitEffect(BookmarkUiEffect.EditBookmark(event.bookmark))

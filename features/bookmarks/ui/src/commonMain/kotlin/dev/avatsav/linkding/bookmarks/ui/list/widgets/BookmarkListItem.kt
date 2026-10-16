@@ -12,7 +12,6 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Link
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -25,7 +24,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import dev.avatsav.linkding.data.model.Bookmark
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BookmarkListItem(
   bookmark: Bookmark,
@@ -34,70 +32,87 @@ fun BookmarkListItem(
   toggleActions: (Bookmark) -> Unit,
   modifier: Modifier = Modifier,
 ) {
+  BookmarkRow(
+    title = bookmark.title,
+    urlHost = bookmark.urlHost,
+    description = bookmark.description,
+    tags = bookmark.tags,
+    selected = selected,
+    onClick = { openBookmark(bookmark) },
+    onLongClick = { toggleActions(bookmark) },
+    modifier = modifier,
+  )
+}
+
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
+@Composable
+internal fun BookmarkRow(
+  title: String,
+  urlHost: String,
+  description: String,
+  tags: Set<String>,
+  selected: Boolean,
+  onClick: () -> Unit,
+  onLongClick: () -> Unit,
+  modifier: Modifier = Modifier,
+  leadingIcon: (@Composable () -> Unit)? = null,
+) {
   Column(modifier) {
-    BookmarkItemContent(
+    Column(
       modifier =
         Modifier.background(
             if (selected) MaterialTheme.colorScheme.primaryContainer
             else MaterialTheme.colorScheme.surface
           )
-          .combinedClickable(
-            onClick = { openBookmark(bookmark) },
-            onLongClick = { toggleActions(bookmark) },
-          ),
-      bookmark = bookmark,
-    )
-    HorizontalDivider(thickness = 0.5.dp)
-  }
-}
-
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
-@Composable
-private fun BookmarkItemContent(bookmark: Bookmark, modifier: Modifier = Modifier) {
-  Column(
-    modifier = modifier.padding(16.dp).fillMaxWidth(),
-    verticalArrangement = Arrangement.spacedBy(8.dp),
-  ) {
-    Text(
-      text = bookmark.title,
-      color = MaterialTheme.colorScheme.primary,
-      maxLines = 2,
-      overflow = TextOverflow.Ellipsis,
-      style = MaterialTheme.typography.titleMedium,
-    )
-    Row(
-      verticalAlignment = Alignment.CenterVertically,
-      horizontalArrangement = Arrangement.spacedBy(4.dp),
+          .combinedClickable(onClick = onClick, onLongClick = onLongClick)
+          .padding(16.dp)
+          .fillMaxWidth(),
+      verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-      Icon(
-        imageVector = Icons.Default.Link,
-        contentDescription = null,
-        modifier = Modifier.size(12.dp),
-      )
       Text(
-        text = bookmark.urlHost,
-        style = MaterialTheme.typography.bodySmall,
-        color = MaterialTheme.colorScheme.onSurfaceVariant,
-        maxLines = 1,
+        text = title,
+        color = MaterialTheme.colorScheme.primary,
+        maxLines = 2,
         overflow = TextOverflow.Ellipsis,
+        style = MaterialTheme.typography.titleMedium,
       )
-    }
-    if (bookmark.description.isNotEmpty()) {
-      Text(
-        text = bookmark.description,
-        style = MaterialTheme.typography.bodyMedium,
-        maxLines = 3,
-        overflow = TextOverflow.Ellipsis,
-      )
-    }
-    LazyRow(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-      items(items = bookmark.tags.toTypedArray()) { tagName ->
+      Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(4.dp),
+      ) {
+        if (leadingIcon != null) leadingIcon()
+        else
+          Icon(
+            imageVector = Icons.Default.Link,
+            contentDescription = null,
+            modifier = Modifier.size(12.dp),
+          )
         Text(
-          text = "#$tagName",
-          color = MaterialTheme.colorScheme.tertiary,
-          style = MaterialTheme.typography.labelSmallEmphasized,
+          text = urlHost,
+          style = MaterialTheme.typography.bodySmall,
+          color = MaterialTheme.colorScheme.onSurfaceVariant,
+          maxLines = 1,
+          overflow = TextOverflow.Ellipsis,
         )
       }
+      if (description.isNotEmpty()) {
+        Text(
+          text = description,
+          style = MaterialTheme.typography.bodyMedium,
+          maxLines = 3,
+          overflow = TextOverflow.Ellipsis,
+        )
+      }
+      LazyRow(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+        items(items = tags.toTypedArray()) { tagName ->
+          Text(
+            text = "#$tagName",
+            color = MaterialTheme.colorScheme.tertiary,
+            style = MaterialTheme.typography.labelSmallEmphasized,
+          )
+        }
+      }
     }
+    HorizontalDivider(thickness = 0.5.dp)
   }
 }

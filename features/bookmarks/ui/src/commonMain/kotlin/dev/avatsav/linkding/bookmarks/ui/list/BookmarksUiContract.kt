@@ -57,7 +57,7 @@ sealed interface BookmarksUiEvent {
   data object ClearSearchHistory : BookmarksUiEvent
 
   // Bookmark actions
-  data class Open(val bookmark: Bookmark) : BookmarksUiEvent
+  data class Open(val url: String) : BookmarksUiEvent
 
   data class Edit(val bookmark: Bookmark) : BookmarksUiEvent
 
@@ -80,7 +80,7 @@ sealed interface BookmarksUiEvent {
 }
 
 sealed interface BookmarkUiEffect {
-  data class OpenBookmark(val bookmark: Bookmark) : BookmarkUiEffect
+  data class OpenBookmark(val url: String) : BookmarkUiEffect
 
   data class EditBookmark(val bookmark: Bookmark) : BookmarkUiEffect
 
