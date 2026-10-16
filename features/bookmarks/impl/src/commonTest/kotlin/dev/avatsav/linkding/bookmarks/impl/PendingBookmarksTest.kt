@@ -4,11 +4,21 @@ import com.github.michaelbull.result.Err
 import com.github.michaelbull.result.Ok
 import com.github.michaelbull.result.Result
 import dev.avatsav.linkding.api.LinkdingBookmarksApi
-import dev.avatsav.linkding.api.models.*
+import dev.avatsav.linkding.api.models.LinkdingBookmark
+import dev.avatsav.linkding.api.models.LinkdingBookmarkCategory
+import dev.avatsav.linkding.api.models.LinkdingBookmarksResponse
+import dev.avatsav.linkding.api.models.LinkdingCheckUrlResponse
+import dev.avatsav.linkding.api.models.LinkdingError
+import dev.avatsav.linkding.api.models.LinkdingSaveBookmarkRequest
+import dev.avatsav.linkding.api.models.LinkdingUpdateBookmarkRequest
 import dev.avatsav.linkding.bookmarks.impl.mappers.BookmarkMapper
 import dev.avatsav.linkding.data.db.daos.BookmarksDao
 import dev.avatsav.linkding.data.db.daos.PendingBookmarksDao
-import dev.avatsav.linkding.data.model.*
+import dev.avatsav.linkding.data.model.ApiConfig
+import dev.avatsav.linkding.data.model.Bookmark
+import dev.avatsav.linkding.data.model.PendingBookmark
+import dev.avatsav.linkding.data.model.SaveBookmark
+import dev.avatsav.linkding.data.model.SaveResult
 import dev.avatsav.linkding.data.model.prefs.AppTheme
 import dev.avatsav.linkding.internet.ConnectivityObserver
 import dev.avatsav.linkding.internet.LocalNetworkAccess
@@ -592,11 +602,12 @@ class PendingBookmarksTest {
     val preferences = FakePreferences()
     val online = MutableStateFlow(true)
     val access = FakeLocalNetworkAccess()
-    private val coordinator = PendingBookmarksCoordinator()
-    private val connectivity =
-      object : ConnectivityObserver {
-        override val observeIsOnline = online
-      }
+    private val coordinator =
+      PendingBookmarksCoordinator(
+        object : ConnectivityObserver {
+          override val observeIsOnline = online
+        }
+      )
 
     fun newQueue(config: ApiConfig = initialConfig) =
       DefaultPendingBookmarks(
@@ -606,7 +617,6 @@ class PendingBookmarksTest {
         BookmarkMapper(),
         preferences,
         config,
-        connectivity,
         access,
         coordinator,
       )
@@ -724,13 +734,18 @@ class PendingBookmarksTest {
     override suspend fun checkUrl(url: String): Result<LinkdingCheckUrlResponse, LinkdingError> {
       checkedUrls += url
       onCheck()
-      checkError?.let {
-        return Err(it)
+      val error = checkError
+      return when {
+        error != null -> Err(error)
+        !online -> Err(LinkdingError.Connectivity())
+        else ->
+          Ok(
+            LinkdingCheckUrlResponse(
+              existing,
+              LinkdingCheckUrlResponse.Metadata(url, null, null),
+            )
+          )
       }
-      if (!online) return Err(LinkdingError.Connectivity())
-      return Ok(
-        LinkdingCheckUrlResponse(existing, LinkdingCheckUrlResponse.Metadata(url, null, null))
-      )
     }
 
     override suspend fun saveBookmark(

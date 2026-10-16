@@ -21,8 +21,8 @@ Kotlin Multiplatform and Compose Multiplatform.
 # Format
 ./gradlew ktfmtFormat
 
-# Lint single module
-./gradlew :features:bookmarks:ui:detekt
+# Lint single module (includes KMP source-set checks)
+./gradlew :features:bookmarks:ui:detektAll
 
 # Lint all
 ./gradlew detektAll
@@ -33,6 +33,8 @@ Kotlin Multiplatform and Compose Multiplatform.
 
 ## Do
 
+- Use `detektAll` for lint validation, including module-scoped runs; plain `detekt` omits KMP
+  source-set checks.
 - Run repository-wide `./gradlew ktfmtFormat` before and after every commit. Commit formatter changes
   and repeat until the post-commit run makes no changes.
 - Use **MoleculePresenter** with **retain** pattern for all screens (

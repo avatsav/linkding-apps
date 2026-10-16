@@ -17,7 +17,6 @@ import dev.avatsav.linkding.data.model.PendingBookmark.State
 import dev.avatsav.linkding.data.model.SaveBookmark
 import dev.avatsav.linkding.data.model.SaveResult
 import dev.avatsav.linkding.di.scope.UserScope
-import dev.avatsav.linkding.internet.ConnectivityObserver
 import dev.avatsav.linkding.internet.LocalNetworkAccess
 import dev.avatsav.linkding.prefs.AppPreferences
 import dev.zacsweers.metro.ContributesBinding
@@ -47,73 +46,71 @@ class DefaultPendingBookmarks(
   private val mapper: BookmarkMapper,
   private val preferences: AppPreferences,
   private val config: ApiConfig,
-  private val connectivity: ConnectivityObserver,
   private val localNetworkAccess: LocalNetworkAccess,
   private val coordinator: PendingBookmarksCoordinator,
 ) : PendingBookmarks {
   private val accountId = preferences.getAccountId()
 
-  private suspend fun <T> locally(block: suspend PendingBookmarksCoordinator.Account.() -> T): T {
-    val account = coordinator.account(accountId)
-    return account.localMutex.withLock { account.block() }
-  }
-
   override fun observe(): Flow<List<PendingBookmark>> = dao.observeAll(accountId)
 
   override suspend fun get(id: Long): PendingBookmark? = dao.getAll(accountId).find { it.id == id }
 
-  override suspend fun create(bookmark: SaveBookmark): Result<SaveResult, BookmarkError> = locally {
-    if (!isCurrentAccount) return@locally Err(BookmarkError("Account changed"))
-    val draft = PendingBookmark(bookmark = bookmark, createdAt = Clock.System.now())
-    val id = dao.insert(accountId, draft)
-    wakeups.trySend(Unit)
-    Ok(SaveResult(pendingId = id))
-  }
-
-  override suspend fun edit(id: Long, bookmark: SaveBookmark): Boolean = locally {
-    if (!isCurrentAccount) return@locally false
-    val item = get(id) ?: return@locally false
-    // Once POST starts its payload cannot be changed. Reject promptly instead of waiting.
-    if (item.state == State.Uploading) return@locally false
-    val uncertain = item.state == State.Uncertain
-    dao.update(
-      accountId,
-      item.copy(
-        bookmark = bookmark,
-        state = if (uncertain) State.Uncertain else State.Pending,
-        lastError = if (uncertain) item.lastError else null,
-      ),
-    )
-    wakeups.trySend(Unit)
-    true
-  }
-
-  override suspend fun discard(id: Long) = locally {
-    if (get(id)?.state != State.Uploading) {
-      dao.delete(accountId, id)
-      retryIds.remove(id)
+  override suspend fun create(bookmark: SaveBookmark): Result<SaveResult, BookmarkError> =
+    coordinator.locally(accountId) {
+      if (!isCurrentAccount) return@locally Err(BookmarkError("Account changed"))
+      val draft = PendingBookmark(bookmark = bookmark, createdAt = Clock.System.now())
+      val id = dao.insert(accountId, draft)
+      wakeups.trySend(Unit)
+      Ok(SaveResult(pendingId = id))
     }
-    Unit
-  }
 
-  override suspend fun retry(id: Long?) = locally {
-    if (!isCurrentAccount) return@locally
-    // Snapshot the requested rows, not future creations or an already active POST.
-    retryIds +=
-      dao
-        .getAll(accountId)
-        .filter { (id == null || it.id == id) && it.state != State.Uploading }
-        .map { it.id }
-    wakeups.trySend(Unit)
-    Unit
-  }
+  override suspend fun edit(id: Long, bookmark: SaveBookmark): Boolean =
+    coordinator.locally(accountId) {
+      if (!isCurrentAccount) return@locally false
+      val item = get(id) ?: return@locally false
+      // Once POST starts its payload cannot be changed. Reject promptly instead of waiting.
+      if (item.state == State.Uploading) return@locally false
+      val uncertain = item.state == State.Uncertain
+      dao.update(
+        accountId,
+        item.copy(
+          bookmark = bookmark,
+          state = if (uncertain) State.Uncertain else State.Pending,
+          lastError = if (uncertain) item.lastError else null,
+        ),
+      )
+      wakeups.trySend(Unit)
+      true
+    }
+
+  override suspend fun discard(id: Long) =
+    coordinator.locally(accountId) {
+      if (get(id)?.state != State.Uploading) {
+        dao.delete(accountId, id)
+        retryIds.remove(id)
+      }
+      Unit
+    }
+
+  override suspend fun retry(id: Long?) =
+    coordinator.locally(accountId) {
+      if (!isCurrentAccount) return@locally
+      // Snapshot the requested rows, not future creations or an already active POST.
+      retryIds +=
+        dao
+          .getAll(accountId)
+          .filter { (id == null || it.id == id) && it.state != State.Uploading }
+          .map { it.id }
+      wakeups.trySend(Unit)
+      Unit
+    }
 
   override suspend fun runUploader() {
     val account = coordinator.account(accountId)
     // Hold ownership for the entire foreground lifetime, including recovery. Other activities
     // wait here and take over only after this owner has finished cancellation cleanup.
     account.uploaderMutex.withLock {
-      locally {
+      coordinator.locally(accountId) {
         for (item in dao.getAll(accountId).filter { it.state == State.Uploading }) {
           dao.update(accountId, item.copy(state = State.Uncertain))
         }
@@ -131,7 +128,7 @@ class DefaultPendingBookmarks(
           .map { Unit }
       merge(
           timer,
-          connectivity.observeIsOnline.filter { it }.map { Unit },
+          coordinator.connectivityWakeups,
           account.wakeups.receiveAsFlow(),
           accessGranted,
         )
@@ -140,19 +137,20 @@ class DefaultPendingBookmarks(
   }
 
   private suspend fun drain() {
-    val ids = locally {
-      dao.getAll(accountId).map { it.id }.also { retryIds.retainAll(it.toSet()) }
-    }
+    val ids =
+      coordinator.locally(accountId) {
+        dao.getAll(accountId).map { it.id }.also { retryIds.retainAll(it.toSet()) }
+      }
     if (
       ids.isEmpty() || localNetworkAccess.check(config.hostUrl) == LocalNetworkAccess.State.Required
     )
       return
     for (pendingId in ids) {
-      val explicitRetry = locally { pendingId in retryIds }
+      val explicitRetry = coordinator.locally(accountId) { pendingId in retryIds }
       upload(pendingId, onlyPending = !explicitRetry)
       // A cancelled preflight keeps its request for the next foreground owner. POST claims
       // consume it earlier, so an ambiguous POST can never become an automatic retry.
-      locally { retryIds -= pendingId }
+      coordinator.locally(accountId) { retryIds -= pendingId }
     }
   }
 
@@ -161,7 +159,7 @@ class DefaultPendingBookmarks(
 
   private suspend fun upload(id: Long, onlyPending: Boolean) {
     val item =
-      locally {
+      coordinator.locally(accountId) {
         get(id)?.takeIf {
           isCurrentAccount &&
             it.state != State.Uploading &&
@@ -191,7 +189,7 @@ class DefaultPendingBookmarks(
   private suspend fun send(checked: PendingBookmark) {
     if (localNetworkAccess.check(config.hostUrl) == LocalNetworkAccess.State.Required) return
     val item =
-      locally {
+      coordinator.locally(accountId) {
         val latest = get(checked.id)
         if (
           !isCurrentAccount ||
@@ -212,7 +210,7 @@ class DefaultPendingBookmarks(
         .saveBookmark(mapper.map(item.bookmark))
         .fold(
           success = { response ->
-            locally {
+            coordinator.locally(accountId) {
               if (get(item.id) == item) {
                 if (isCurrentAccount) bookmarksDao.upsert(mapper.map(response))
                 dao.delete(accountId, item.id)
@@ -237,8 +235,9 @@ class DefaultPendingBookmarks(
     item: PendingBookmark,
     state: State,
     error: String? = null,
-  ) = locally {
-    // A slow preflight failure must not overwrite fields saved or discarded in the meantime.
-    if (get(item.id) == item) dao.update(accountId, item.copy(state = state, lastError = error))
-  }
+  ) =
+    coordinator.locally(accountId) {
+      // A slow preflight failure must not overwrite fields saved or discarded in the meantime.
+      if (get(item.id) == item) dao.update(accountId, item.copy(state = state, lastError = error))
+    }
 }
