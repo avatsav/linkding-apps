@@ -20,13 +20,13 @@ android {
 
   packaging {
     resources.excludes +=
-      setOf(
-        "META-INF/proguard/*",
-        "/*.properties",
-        "META-INF/*.properties",
-        "LICENSE*",
-        "META-INF/**/previous-compilation-data.bin",
-      )
+        setOf(
+            "META-INF/proguard/*",
+            "/*.properties",
+            "META-INF/*.properties",
+            "LICENSE*",
+            "META-INF/**/previous-compilation-data.bin",
+        )
   }
 
   buildTypes {
@@ -45,6 +45,7 @@ android {
 
 dependencies {
   implementation(projects.app.shared)
+  implementation(projects.core.connectivity)
   implementation(libs.androidx.appcompat)
   implementation(libs.androidx.activity)
   implementation(libs.androidx.activity.compose)

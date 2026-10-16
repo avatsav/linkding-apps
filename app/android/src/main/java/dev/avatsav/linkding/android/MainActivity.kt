@@ -40,7 +40,7 @@ class MainActivity : ComponentActivity() {
 
     val appGraph: AndroidAppGraph = GraphHolder.graph()
     val uiGraph =
-      GraphHolder.graph<AndroidUiGraph.Factory>().create().also { GraphHolder.graphs += it }
+        GraphHolder.graph<AndroidUiGraph.Factory>().create().also { GraphHolder.graphs += it }
     lifecycleScope.launch {
       repeatOnLifecycle(Lifecycle.State.STARTED) {
         appGraph.appPreferences.observeAppTheme().collect(::enableEdgeToEdge)
@@ -50,12 +50,17 @@ class MainActivity : ComponentActivity() {
     // Pass the sharedLink to the appUi
     setContent {
       uiGraph.appUi.Content(
-        launchMode = launchMode,
-        onOpenUrl = { launchUrl(it) },
-        onRootPop = { finish() },
-        modifier = Modifier,
+          launchMode = launchMode,
+          onOpenUrl = { launchUrl(it) },
+          onRootPop = { finish() },
+          modifier = Modifier,
       )
     }
+  }
+
+  override fun onResume() {
+    super.onResume()
+    GraphHolder.graph<AndroidAppGraph>().localNetworkAccess.refresh()
   }
 
   private fun getLaunchMode(): LaunchMode {
@@ -64,22 +69,22 @@ class MainActivity : ComponentActivity() {
   }
 
   private fun getSharedLinkFromIntent(): String? =
-    intent
-      ?.takeIf { it.action == Intent.ACTION_SEND }
-      ?.getStringExtra(Intent.EXTRA_TEXT)
-      ?.trim()
-      ?.takeIf { it.isValidWebUrl() }
+      intent
+          ?.takeIf { it.action == Intent.ACTION_SEND }
+          ?.getStringExtra(Intent.EXTRA_TEXT)
+          ?.trim()
+          ?.takeIf { it.isValidWebUrl() }
 
   private fun String.isValidWebUrl(): Boolean =
-    startsWith("http://", ignoreCase = true) || startsWith("https://", ignoreCase = true)
+      startsWith("http://", ignoreCase = true) || startsWith("https://", ignoreCase = true)
 }
 
 private val customTabsIntent =
-  CustomTabsIntent.Builder()
-    .setShowTitle(true)
-    .setColorScheme(CustomTabsIntent.COLOR_SCHEME_SYSTEM)
-    .setShareState(CustomTabsIntent.SHARE_STATE_OFF)
-    .build()
+    CustomTabsIntent.Builder()
+        .setShowTitle(true)
+        .setColorScheme(CustomTabsIntent.COLOR_SCHEME_SYSTEM)
+        .setShareState(CustomTabsIntent.SHARE_STATE_OFF)
+        .build()
 
 private fun MainActivity.launchUrl(url: String): Boolean {
   customTabsIntent.launchUrl(this, url.toUri())
@@ -88,10 +93,10 @@ private fun MainActivity.launchUrl(url: String): Boolean {
 
 private fun ComponentActivity.enableEdgeToEdge(appTheme: AppTheme) {
   val style =
-    when (appTheme) {
-      AppTheme.System -> SystemBarStyle.auto(Color.TRANSPARENT, Color.TRANSPARENT)
-      AppTheme.Light -> SystemBarStyle.light(Color.TRANSPARENT, Color.TRANSPARENT)
-      AppTheme.Dark -> SystemBarStyle.dark(Color.TRANSPARENT)
-    }
+      when (appTheme) {
+        AppTheme.System -> SystemBarStyle.auto(Color.TRANSPARENT, Color.TRANSPARENT)
+        AppTheme.Light -> SystemBarStyle.light(Color.TRANSPARENT, Color.TRANSPARENT)
+        AppTheme.Dark -> SystemBarStyle.dark(Color.TRANSPARENT)
+      }
   enableEdgeToEdge(statusBarStyle = style, navigationBarStyle = style)
 }

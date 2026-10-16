@@ -18,6 +18,7 @@ import dev.avatsav.linkding.data.model.SaveBookmark
 import dev.avatsav.linkding.data.model.SaveResult
 import dev.avatsav.linkding.di.scope.UserScope
 import dev.avatsav.linkding.internet.ConnectivityObserver
+import dev.avatsav.linkding.internet.LocalNetworkAccess
 import dev.avatsav.linkding.prefs.AppPreferences
 import dev.zacsweers.metro.ContributesBinding
 import dev.zacsweers.metro.Inject
@@ -49,6 +50,7 @@ class DefaultPendingBookmarks(
     private val preferences: AppPreferences,
     private val config: ApiConfig,
     private val connectivity: ConnectivityObserver,
+    private val localNetworkAccess: LocalNetworkAccess,
 ) : PendingBookmarks {
   private val accountId = preferences.getAccountId()
   // Never hold the local-write lock across a network request. Drains have their own lock.
@@ -108,7 +110,17 @@ class DefaultPendingBookmarks(
         delay(60.seconds)
       }
     }
-    merge(timer, connectivity.observeIsOnline.filter { it }.map { Unit }, wakeups.receiveAsFlow())
+    val accessGranted =
+        localNetworkAccess
+            .observe(config.hostUrl)
+            .filter { it != LocalNetworkAccess.State.Required }
+            .map { Unit }
+    merge(
+            timer,
+            connectivity.observeIsOnline.filter { it }.map { Unit },
+            wakeups.receiveAsFlow(),
+            accessGranted,
+        )
         .collect { drain(onlyPending = true) }
   }
 
@@ -116,6 +128,11 @@ class DefaultPendingBookmarks(
     val ids = localMutex.withLock {
       dao.getAll(accountId).filter { id == null || it.id == id }.map { it.id }
     }
+    if (
+        ids.isEmpty() ||
+            localNetworkAccess.check(config.hostUrl) == LocalNetworkAccess.State.Required
+    )
+        return@withLock
     for (pendingId in ids) upload(pendingId, onlyPending)
   }
 
@@ -151,6 +168,7 @@ class DefaultPendingBookmarks(
   }
 
   private suspend fun send(checked: PendingBookmark) {
+    if (localNetworkAccess.check(config.hostUrl) == LocalNetworkAccess.State.Required) return
     val item =
         localMutex.withLock {
           val latest = get(checked.id)

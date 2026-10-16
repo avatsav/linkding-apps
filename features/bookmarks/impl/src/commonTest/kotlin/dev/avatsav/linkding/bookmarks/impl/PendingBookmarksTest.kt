@@ -11,6 +11,7 @@ import dev.avatsav.linkding.data.db.daos.PendingBookmarksDao
 import dev.avatsav.linkding.data.model.*
 import dev.avatsav.linkding.data.model.prefs.AppTheme
 import dev.avatsav.linkding.internet.ConnectivityObserver
+import dev.avatsav.linkding.internet.LocalNetworkAccess
 import dev.avatsav.linkding.prefs.AppPreferences
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -29,6 +30,47 @@ import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 
 class PendingBookmarksTest {
+  @Test
+  fun `missing local network permission keeps creations pending without contacting the API`() =
+      runTest {
+        val f = Fixture()
+        f.access.permissionGranted.value = false
+        f.api.online = true
+        assertTrue(f.queue.create(draft).isOk)
+        f.queue.retry()
+        assertTrue(f.api.checkedUrls.isEmpty())
+        assertTrue(f.api.sent.isEmpty())
+        assertEquals(PendingBookmark.State.Pending, f.queue.observeFirst().state)
+      }
+
+  @Test
+  fun `granting local network permission wakes the foreground uploader`() = runTest {
+    val f = Fixture()
+    f.access.permissionGranted.value = false
+    f.api.online = true
+    assertTrue(f.queue.create(draft).isOk)
+    backgroundScope.launch { f.queue.runUploader() }
+    runCurrent()
+    assertTrue(f.api.checkedUrls.isEmpty())
+    f.access.permissionGranted.value = true
+    runCurrent()
+    assertEquals(1, f.api.sent.size)
+    assertTrue(f.store.rows.value.isEmpty())
+  }
+
+  @Test
+  fun `local writes never wait for the uploader permission lookup`() = runTest {
+    val f = Fixture()
+    assertTrue(f.queue.create(draft).isOk)
+    f.access.onLookup = { awaitCancellation() }
+    backgroundScope.launch { f.queue.retry() }
+    runCurrent()
+    val save = async { f.queue.create(draft.copy(url = "https://example.com/second")) }
+    runCurrent()
+    assertTrue(save.isCompleted)
+    assertTrue(save.await().isOk)
+  }
+
   @Test
   fun `save finishes locally without waiting for an unreachable backend`() = runTest {
     val f = Fixture()
@@ -375,6 +417,7 @@ class PendingBookmarksTest {
     val api = FakeApi()
     val preferences = FakePreferences()
     val online = MutableStateFlow(true)
+    val access = FakeLocalNetworkAccess()
     private val connectivity =
         object : ConnectivityObserver {
           override val observeIsOnline = online
@@ -389,9 +432,23 @@ class PendingBookmarksTest {
             preferences,
             config,
             connectivity,
+            access,
         )
 
     val queue = newQueue()
+  }
+
+  private class FakeLocalNetworkAccess : LocalNetworkAccess() {
+    override val permissionRequired = true
+    public override val permissionGranted = MutableStateFlow(true)
+    var onLookup: suspend () -> Unit = {}
+
+    override suspend fun isLocalServer(hostUrl: String): Boolean {
+      onLookup()
+      return true
+    }
+
+    override fun refresh() = Unit
   }
 
   private class MemoryPendingDao : PendingBookmarksDao {

@@ -23,4 +23,8 @@
     <string name="settings_pending_reset_blocked">Upload or discard your pending bookmarks before resetting this account.</string>
     <string name="settings_yes">Yes</string>
     <string name="settings_no">No</string>
+    <string name="settings_local_network">Local network access</string>
+    <string name="settings_local_network_allowed">Allowed</string>
+    <string name="settings_local_network_allow">Allow access to connect to this server and upload pending bookmarks.</string>
+    <string name="settings_local_network_open_settings">Open app settings to allow access to this server. Pending bookmarks stay on this device until access is allowed.</string>
 </resources>

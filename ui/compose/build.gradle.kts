@@ -5,6 +5,10 @@ plugins {
 
 kotlin {
   sourceSets {
+    androidMain.dependencies {
+      implementation(libs.androidx.activity.compose)
+      implementation(libs.androidx.core)
+    }
     commonMain.dependencies {
       implementation(projects.core.base)
       api(projects.ui.theme)

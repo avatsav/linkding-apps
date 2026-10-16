@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.avatsav.linkding.data.model.prefs.AppTheme
+import dev.avatsav.linkding.internet.LocalNetworkAccess
 import dev.avatsav.linkding.navigation.LocalNavigator
 import dev.avatsav.linkding.navigation.Route
 import dev.avatsav.linkding.presenter.ObserveEffects
@@ -52,6 +53,7 @@ import dev.avatsav.linkding.settings.ui.widgets.Preference
 import dev.avatsav.linkding.settings.ui.widgets.PreferenceSection
 import dev.avatsav.linkding.settings.ui.widgets.SwitchPreference
 import dev.avatsav.linkding.settings.ui.widgets.ThemePreference
+import dev.avatsav.linkding.ui.compose.rememberLocalNetworkPermissionRequest
 import dev.avatsav.linkding.ui.theme.Material3ShapeDefaults
 import linkding_apps.features.settings.ui.generated.resources.Res
 import linkding_apps.features.settings.ui.generated.resources.settings_about
@@ -64,6 +66,10 @@ import linkding_apps.features.settings.ui.generated.resources.settings_dynamic_c
 import linkding_apps.features.settings.ui.generated.resources.settings_host_url
 import linkding_apps.features.settings.ui.generated.resources.settings_licenses
 import linkding_apps.features.settings.ui.generated.resources.settings_linkding
+import linkding_apps.features.settings.ui.generated.resources.settings_local_network
+import linkding_apps.features.settings.ui.generated.resources.settings_local_network_allow
+import linkding_apps.features.settings.ui.generated.resources.settings_local_network_allowed
+import linkding_apps.features.settings.ui.generated.resources.settings_local_network_open_settings
 import linkding_apps.features.settings.ui.generated.resources.settings_made_in_munich
 import linkding_apps.features.settings.ui.generated.resources.settings_navigate_back
 import linkding_apps.features.settings.ui.generated.resources.settings_no
@@ -82,16 +88,20 @@ fun SettingsScreen(presenter: SettingsPresenter, modifier: Modifier = Modifier) 
   val navigator = LocalNavigator.current
   val state by presenter.models.collectAsStateWithLifecycle()
   val eventSink = presenter::eventSink
+  val permissionRequest = rememberLocalNetworkPermissionRequest {
+    eventSink(SettingsUiEvent.RefreshLocalNetworkAccess)
+  }
 
   ObserveEffects(presenter.effects) { effect ->
     when (effect) {
       NavigateUp -> navigator.pop()
       is OpenUrl -> navigator.goTo(Route.Url(effect.url))
       ResetToAuth -> navigator.resetRoot(Route.Auth)
+      SettingsUiEffect.RequestLocalNetworkAccess -> permissionRequest.launch()
     }
   }
 
-  SettingsScreen(state, modifier, eventSink)
+  SettingsScreen(state, modifier, permissionRequest.opensSettings, eventSink)
 }
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class, ExperimentalMaterial3Api::class)
@@ -99,6 +109,7 @@ fun SettingsScreen(presenter: SettingsPresenter, modifier: Modifier = Modifier) 
 private fun SettingsScreen(
     state: SettingsUiState,
     modifier: Modifier = Modifier,
+    opensSettings: Boolean = false,
     eventSink: (SettingsUiEvent) -> Unit,
 ) {
   val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
@@ -133,7 +144,12 @@ private fun SettingsScreen(
                 .nestedScroll(scrollBehavior.nestedScrollConnection),
     ) {
       item {
-        LinkdingSettings(state = state, onResetClick = { showResetConfirmationDialog = true })
+        LinkdingSettings(
+            state = state,
+            opensSettings = opensSettings,
+            onLocalNetworkAccessClick = { eventSink(SettingsUiEvent.RequestLocalNetworkAccess) },
+            onResetClick = { showResetConfirmationDialog = true },
+        )
       }
       item {
         AppearanceSettings(
@@ -162,27 +178,49 @@ private fun SettingsScreen(
   }
 }
 
-private const val LinkdingSettingsCount = 3
-
 @Composable
 @Suppress("MagicNumber")
-private fun LinkdingSettings(state: SettingsUiState, onResetClick: () -> Unit) {
+private fun LinkdingSettings(
+    state: SettingsUiState,
+    opensSettings: Boolean,
+    onLocalNetworkAccessClick: () -> Unit,
+    onResetClick: () -> Unit,
+) {
+  val showLocalNetworkAccess = state.localNetworkAccess != LocalNetworkAccess.State.NotRequired
+  val count = if (showLocalNetworkAccess) 4 else 3
   PreferenceSection(
       stringResource(Res.string.settings_linkding),
       modifier = Modifier.padding(vertical = 8.dp),
   ) {
     Preference(
-        shape = Material3ShapeDefaults.itemShape(0, LinkdingSettingsCount),
+        shape = Material3ShapeDefaults.itemShape(0, count),
         title = stringResource(Res.string.settings_host_url),
         description = state.apiConfig?.hostUrl,
     )
     Preference(
-        shape = Material3ShapeDefaults.itemShape(1, LinkdingSettingsCount),
+        shape = Material3ShapeDefaults.itemShape(1, count),
         title = stringResource(Res.string.settings_api_key),
         description = state.apiConfig?.apiKey,
     )
+    if (showLocalNetworkAccess) {
+      Preference(
+          shape = Material3ShapeDefaults.itemShape(2, count),
+          title = stringResource(Res.string.settings_local_network),
+          description =
+              stringResource(
+                  when {
+                    state.localNetworkAccess == LocalNetworkAccess.State.Granted ->
+                        Res.string.settings_local_network_allowed
+                    opensSettings -> Res.string.settings_local_network_open_settings
+                    else -> Res.string.settings_local_network_allow
+                  }
+              ),
+          clickable = state.localNetworkAccess == LocalNetworkAccess.State.Required,
+          onClick = onLocalNetworkAccessClick,
+      )
+    }
     Preference(
-        shape = Material3ShapeDefaults.itemShape(2, LinkdingSettingsCount),
+        shape = Material3ShapeDefaults.itemShape(count - 1, count),
         title = stringResource(Res.string.settings_reset),
         clickable = true,
         onClick = onResetClick,

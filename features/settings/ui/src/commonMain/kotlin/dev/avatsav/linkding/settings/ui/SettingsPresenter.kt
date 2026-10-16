@@ -9,6 +9,7 @@ import androidx.compose.runtime.setValue
 import dev.avatsav.linkding.AppInfo
 import dev.avatsav.linkding.bookmarks.api.PendingBookmarks
 import dev.avatsav.linkding.data.model.prefs.AppTheme
+import dev.avatsav.linkding.internet.LocalNetworkAccess
 import dev.avatsav.linkding.presenter.MoleculePresenter
 import dev.avatsav.linkding.settings.api.SettingsManager
 import dev.avatsav.linkding.settings.ui.SettingsUiEvent.Close
@@ -20,6 +21,7 @@ import dev.avatsav.linkding.settings.ui.SettingsUiEvent.ToggleUseDynamicColors
 import dev.zacsweers.metro.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 
 @Inject
@@ -27,6 +29,7 @@ class SettingsPresenter(
     private val settingsManager: SettingsManager,
     private val appInfo: AppInfo,
     private val pendingBookmarks: PendingBookmarks,
+    private val localNetworkAccess: LocalNetworkAccess,
 ) : MoleculePresenter<SettingsUiEvent, SettingsUiState, SettingsUiEffect>() {
 
   @Composable
@@ -35,6 +38,13 @@ class SettingsPresenter(
         settingsManager.observeApiConfig().collectAsState(settingsManager.getApiConfig())
     val useDynamicColors by settingsManager.observeUseDynamicColors().collectAsState(false)
     val appTheme by settingsManager.observeAppTheme().collectAsState(AppTheme.System)
+
+    val access by
+        remember(apiConfig?.hostUrl) {
+              apiConfig?.let { localNetworkAccess.observe(it.hostUrl) }
+                  ?: flowOf(LocalNetworkAccess.State.NotRequired)
+            }
+            .collectAsState(LocalNetworkAccess.State.NotRequired)
 
     var resetBlocked by remember { mutableStateOf(false) }
 
@@ -58,6 +68,9 @@ class SettingsPresenter(
         ShowSourceCode ->
             emitEffect(SettingsUiEffect.OpenUrl("https://github.com/avatsav/linkding-apps"))
 
+        SettingsUiEvent.RequestLocalNetworkAccess ->
+            emitEffect(SettingsUiEffect.RequestLocalNetworkAccess)
+        SettingsUiEvent.RefreshLocalNetworkAccess -> localNetworkAccess.refresh()
         ShowLicenses -> {}
         SettingsUiEvent.ShowPrivacyPolicy -> {}
       }
@@ -69,6 +82,7 @@ class SettingsPresenter(
         appTheme = appTheme,
         useDynamicColors = useDynamicColors,
         resetBlocked = resetBlocked,
+        localNetworkAccess = access,
     )
   }
 }

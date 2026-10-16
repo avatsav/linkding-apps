@@ -13,43 +13,43 @@ import kotlinx.coroutines.flow.Flow
 @OptIn(ExperimentalPagingApi::class)
 @Inject
 class BookmarksPagingDataFactory(
-  private val bookmarksRemoteMediatorFactory: BookmarksRemoteMediator.Factory,
-  private val remoteBookmarksPagingSourceFactory: RemoteBookmarksPagingSource.Factory,
-  private val pagingBookmarksDao: PagingBookmarksDao,
+    private val bookmarksRemoteMediatorFactory: BookmarksRemoteMediator.Factory,
+    private val remoteBookmarksPagingSourceFactory: RemoteBookmarksPagingSource.Factory,
+    private val pagingBookmarksDao: PagingBookmarksDao,
 ) {
 
   fun create(
-    cached: Boolean,
-    pagingConfig: PagingConfig,
-    param: Param,
+      cached: Boolean,
+      pagingConfig: PagingConfig,
+      param: Param,
   ): Flow<PagingData<Bookmark>> =
-    if (cached) {
-      cachedBookmarksFlow(pagingConfig, param)
-    } else {
-      remoteBookmarksFlow(pagingConfig, param)
-    }
+      if (cached) {
+        cachedBookmarksFlow(pagingConfig, param)
+      } else {
+        remoteBookmarksFlow(pagingConfig, param)
+      }
 
   private fun remoteBookmarksFlow(pagingConfig: PagingConfig, param: Param) =
-    Pager(
-        config = pagingConfig,
-        pagingSourceFactory = {
-          remoteBookmarksPagingSourceFactory.create(param.query, param.category, param.tags)
-        },
-      )
-      .flow
+      Pager(
+              config = pagingConfig,
+              pagingSourceFactory = {
+                remoteBookmarksPagingSourceFactory.create(param.query, param.category, param.tags)
+              },
+          )
+          .flow
 
   private fun cachedBookmarksFlow(pagingConfig: PagingConfig, param: Param) =
-    Pager(
-        config = pagingConfig,
-        remoteMediator =
-          bookmarksRemoteMediatorFactory.create(param.query, param.category, param.tags),
-        pagingSourceFactory = { pagingBookmarksDao.bookmarksPagingSource() },
-      )
-      .flow
+      Pager(
+              config = pagingConfig,
+              remoteMediator =
+                  bookmarksRemoteMediatorFactory.create(param.query, param.category, param.tags),
+              pagingSourceFactory = { pagingBookmarksDao.bookmarksPagingSource() },
+          )
+          .flow
 
   data class Param(
-    val query: String = "",
-    val category: BookmarkCategory = BookmarkCategory.All,
-    val tags: List<String> = emptyList(),
+      val query: String = "",
+      val category: BookmarkCategory = BookmarkCategory.All,
+      val tags: List<String> = emptyList(),
   )
 }
