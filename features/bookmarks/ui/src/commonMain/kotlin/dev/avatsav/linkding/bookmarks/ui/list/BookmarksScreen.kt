@@ -102,9 +102,9 @@ import linkding_apps.features.bookmarks.ui.generated.resources.bookmarks_unarchi
 import org.jetbrains.compose.resources.stringResource
 
 @OptIn(
-    ExperimentalMaterial3Api::class,
-    ExperimentalMaterial3ExpressiveApi::class,
-    ExperimentalComposeUiApi::class,
+  ExperimentalMaterial3Api::class,
+  ExperimentalMaterial3ExpressiveApi::class,
+  ExperimentalComposeUiApi::class,
 )
 @Composable
 fun BookmarksScreen(presenter: BookmarksPresenter, modifier: Modifier = Modifier) {
@@ -113,16 +113,16 @@ fun BookmarksScreen(presenter: BookmarksPresenter, modifier: Modifier = Modifier
   val eventSink = presenter::eventSink
 
   val tagsNavigator =
-      rememberResultNavigator<Route.Tags, Route.Tags.Result> { result ->
-        when (result) {
-          is Confirmed -> {
-            presenter.eventSink(BookmarksUiEvent.SetTags(result.selectedTags))
-          }
-          Dismissed -> {
-            // No action needed on dismissal
-          }
+    rememberResultNavigator<Route.Tags, Route.Tags.Result> { result ->
+      when (result) {
+        is Confirmed -> {
+          presenter.eventSink(BookmarksUiEvent.SetTags(result.selectedTags))
+        }
+        Dismissed -> {
+          // No action needed on dismissal
         }
       }
+    }
 
   ObserveEffects(presenter.effects) { effect ->
     when (effect) {
@@ -138,16 +138,16 @@ fun BookmarksScreen(presenter: BookmarksPresenter, modifier: Modifier = Modifier
 }
 
 @OptIn(
-    ExperimentalMaterial3Api::class,
-    ExperimentalMaterial3ExpressiveApi::class,
-    ExperimentalComposeUiApi::class,
+  ExperimentalMaterial3Api::class,
+  ExperimentalMaterial3ExpressiveApi::class,
+  ExperimentalComposeUiApi::class,
 )
 @Composable
 private fun BookmarksScreen(
-    state: BookmarksUiState,
-    tagsNavigator: RouteNavigator<Route.Tags>,
-    modifier: Modifier = Modifier,
-    eventSink: (BookmarksUiEvent) -> Unit,
+  state: BookmarksUiState,
+  tagsNavigator: RouteNavigator<Route.Tags>,
+  modifier: Modifier = Modifier,
+  eventSink: (BookmarksUiEvent) -> Unit,
 ) {
   val scope = rememberCoroutineScope()
   val currentEventSink by rememberUpdatedState(eventSink)
@@ -158,219 +158,218 @@ private fun BookmarksScreen(
   val scrollBehavior = SearchBarDefaults.enterAlwaysSearchBarScrollBehavior()
 
   NavigationBackHandler(
-      state = rememberNavigationEventState(NavigationEventInfo.None),
-      isBackEnabled = actionableBookmark.value != null,
-      onBackCompleted = { actionableBookmark.value = null },
+    state = rememberNavigationEventState(NavigationEventInfo.None),
+    isBackEnabled = actionableBookmark.value != null,
+    onBackCompleted = { actionableBookmark.value = null },
   )
 
   ObserveSnackbar(
-      snackbarMessage = state.snackbarMessage,
-      snackbarHostState = snackbarHostState,
-      onDismiss = { currentEventSink(BookmarksUiEvent.DismissSnackbar) },
+    snackbarMessage = state.snackbarMessage,
+    snackbarHostState = snackbarHostState,
+    onDismiss = { currentEventSink(BookmarksUiEvent.DismissSnackbar) },
   )
 
   val searchInputField =
-      @Composable {
-        SearchBarDefaults.InputField(
-            searchBarState = searchBarState,
-            textFieldState = searchTextFieldState,
-            onSearch = {
-              scope.launch { searchBarState.animateToCollapsed() }
-              currentEventSink(BookmarksUiEvent.Search(searchTextFieldState.text.toString()))
-            },
-            placeholder = {
-              if (searchTextFieldState.text.isEmpty()) {
-                Text(stringResource(Res.string.bookmarks_search))
-              } else {
-                Text("${searchTextFieldState.text}")
+    @Composable {
+      SearchBarDefaults.InputField(
+        searchBarState = searchBarState,
+        textFieldState = searchTextFieldState,
+        onSearch = {
+          scope.launch { searchBarState.animateToCollapsed() }
+          currentEventSink(BookmarksUiEvent.Search(searchTextFieldState.text.toString()))
+        },
+        placeholder = {
+          if (searchTextFieldState.text.isEmpty()) {
+            Text(stringResource(Res.string.bookmarks_search))
+          } else {
+            Text("${searchTextFieldState.text}")
+          }
+        },
+        leadingIcon = {
+          if (searchBarState.isExpanded()) {
+            IconButton(onClick = { scope.launch { searchBarState.animateToCollapsed() } }) {
+              Icon(
+                Icons.AutoMirrored.Default.ArrowBack,
+                contentDescription = stringResource(Res.string.bookmarks_back),
+              )
+            }
+          } else {
+            Icon(Icons.Default.Search, contentDescription = null)
+          }
+        },
+        trailingIcon = {
+          if (searchTextFieldState.text.isNotEmpty()) {
+            IconButton(
+              onClick = {
+                searchTextFieldState.clearText()
+                currentEventSink(BookmarksUiEvent.ClearSearch)
               }
-            },
-            leadingIcon = {
-              if (searchBarState.isExpanded()) {
-                IconButton(onClick = { scope.launch { searchBarState.animateToCollapsed() } }) {
-                  Icon(
-                      Icons.AutoMirrored.Default.ArrowBack,
-                      contentDescription = stringResource(Res.string.bookmarks_back),
-                  )
-                }
-              } else {
-                Icon(Icons.Default.Search, contentDescription = null)
-              }
-            },
-            trailingIcon = {
-              if (searchTextFieldState.text.isNotEmpty()) {
-                IconButton(
-                    onClick = {
-                      searchTextFieldState.clearText()
-                      currentEventSink(BookmarksUiEvent.ClearSearch)
-                    }
-                ) {
-                  Icon(
-                      imageVector = Icons.Default.Close,
-                      contentDescription = stringResource(Res.string.bookmarks_clear),
-                  )
-                }
-              }
-            },
-        )
-      }
-
-  Scaffold(
-      modifier = modifier,
-      snackbarHost = { SnackbarHost(snackbarHostState) },
-      topBar = {
-        AppBarWithSearch(
-            state = searchBarState,
-            inputField = searchInputField,
-            actions = {
-              IconButton(onClick = { currentEventSink(BookmarksUiEvent.ShowSettings) }) {
-                Icon(
-                    imageVector = Icons.Default.Settings,
-                    contentDescription = stringResource(Res.string.bookmarks_settings),
-                )
-              }
-            },
-            scrollBehavior = scrollBehavior,
-            colors =
-                SearchBarDefaults.appBarWithSearchColors(
-                    scrolledAppBarContainerColor = MaterialTheme.colorScheme.surface,
-                    scrolledSearchBarContainerColor =
-                        MaterialTheme.colorScheme.surfaceContainerHigh,
-                ),
-        )
-
-        ExpandedFullScreenSearchBar(state = searchBarState, inputField = searchInputField) {
-          Surface(modifier = Modifier.fillMaxSize()) {
-            LazyColumn {
-              if (state.searchHistory.isNotEmpty())
-                  searchHistoryItems(
-                      items = state.searchHistory,
-                      onClearHistory = { currentEventSink(BookmarksUiEvent.ClearSearchHistory) },
-                      onSelectHistory = {
-                        scope.launch { searchBarState.animateToCollapsed() }
-                        searchTextFieldState.setTextAndPlaceCursorAtEnd(it.query)
-                        currentEventSink(BookmarksUiEvent.SelectSearchHistory(it))
-                      },
-                  )
-              else searchResultsEmpty()
+            ) {
+              Icon(
+                imageVector = Icons.Default.Close,
+                contentDescription = stringResource(Res.string.bookmarks_clear),
+              )
             }
           }
-        }
-      },
-      floatingActionButton = {
-        AnimatedVisibilityWithElevation(
-            visible = actionableBookmark.value == null,
-            enter = appearFromBottom(),
-            exit = disappearToBottom(),
-        ) { elevation ->
-          FloatingActionButton(
-              onClick = { currentEventSink(BookmarksUiEvent.AddBookmark) },
-              elevation = FloatingActionButtonDefaults.elevation(defaultElevation = elevation),
-          ) {
+        },
+      )
+    }
+
+  Scaffold(
+    modifier = modifier,
+    snackbarHost = { SnackbarHost(snackbarHostState) },
+    topBar = {
+      AppBarWithSearch(
+        state = searchBarState,
+        inputField = searchInputField,
+        actions = {
+          IconButton(onClick = { currentEventSink(BookmarksUiEvent.ShowSettings) }) {
             Icon(
-                imageVector = Icons.Filled.Add,
-                contentDescription = stringResource(Res.string.bookmarks_add),
+              imageVector = Icons.Default.Settings,
+              contentDescription = stringResource(Res.string.bookmarks_settings),
             )
           }
+        },
+        scrollBehavior = scrollBehavior,
+        colors =
+          SearchBarDefaults.appBarWithSearchColors(
+            scrolledAppBarContainerColor = MaterialTheme.colorScheme.surface,
+            scrolledSearchBarContainerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+          ),
+      )
+
+      ExpandedFullScreenSearchBar(state = searchBarState, inputField = searchInputField) {
+        Surface(modifier = Modifier.fillMaxSize()) {
+          LazyColumn {
+            if (state.searchHistory.isNotEmpty())
+              searchHistoryItems(
+                items = state.searchHistory,
+                onClearHistory = { currentEventSink(BookmarksUiEvent.ClearSearchHistory) },
+                onSelectHistory = {
+                  scope.launch { searchBarState.animateToCollapsed() }
+                  searchTextFieldState.setTextAndPlaceCursorAtEnd(it.query)
+                  currentEventSink(BookmarksUiEvent.SelectSearchHistory(it))
+                },
+              )
+            else searchResultsEmpty()
+          }
         }
-      },
+      }
+    },
+    floatingActionButton = {
+      AnimatedVisibilityWithElevation(
+        visible = actionableBookmark.value == null,
+        enter = appearFromBottom(),
+        exit = disappearToBottom(),
+      ) { elevation ->
+        FloatingActionButton(
+          onClick = { currentEventSink(BookmarksUiEvent.AddBookmark) },
+          elevation = FloatingActionButtonDefaults.elevation(defaultElevation = elevation),
+        ) {
+          Icon(
+            imageVector = Icons.Filled.Add,
+            contentDescription = stringResource(Res.string.bookmarks_add),
+          )
+        }
+      }
+    },
   ) { paddingValues ->
     val refreshing by rememberUpdatedState(state.bookmarks.loadState.refresh == LoadState.Loading)
     val pullToRefreshState = rememberPullToRefreshState()
     PullToRefreshBox(
-        modifier =
-            Modifier.fillMaxSize()
-                .padding(
-                    top = paddingValues.calculateTopPadding(),
-                    start = paddingValues.calculateStartPadding(LayoutDirection.Ltr),
-                    end = paddingValues.calculateEndPadding(LayoutDirection.Ltr),
-                ),
-        isRefreshing = refreshing,
-        onRefresh = { currentEventSink(BookmarksUiEvent.Refresh) },
-        state = pullToRefreshState,
-        indicator = {
-          PullToRefreshDefaults.LoadingIndicator(
-              modifier = Modifier.align(Alignment.TopCenter),
-              state = pullToRefreshState,
-              isRefreshing = refreshing,
-          )
-        },
+      modifier =
+        Modifier.fillMaxSize()
+          .padding(
+            top = paddingValues.calculateTopPadding(),
+            start = paddingValues.calculateStartPadding(LayoutDirection.Ltr),
+            end = paddingValues.calculateEndPadding(LayoutDirection.Ltr),
+          ),
+      isRefreshing = refreshing,
+      onRefresh = { currentEventSink(BookmarksUiEvent.Refresh) },
+      state = pullToRefreshState,
+      indicator = {
+        PullToRefreshDefaults.LoadingIndicator(
+          modifier = Modifier.align(Alignment.TopCenter),
+          state = pullToRefreshState,
+          isRefreshing = refreshing,
+        )
+      },
     ) {
       ActionableBookmarkToolbar(
-          actionableBookmark = actionableBookmark.value,
-          onDismiss = { actionableBookmark.value = null },
-          editBookmark = { currentEventSink(BookmarksUiEvent.Edit(it)) },
-          toggleArchive = { currentEventSink(BookmarksUiEvent.ToggleArchive(it)) },
-          deleteBookmark = { currentEventSink(BookmarksUiEvent.Delete(it)) },
-          modifier =
-              Modifier.align(Alignment.BottomCenter)
-                  .navigationBarsPadding()
-                  .offset(y = -ScreenOffset)
-                  .zIndex(1f),
+        actionableBookmark = actionableBookmark.value,
+        onDismiss = { actionableBookmark.value = null },
+        editBookmark = { currentEventSink(BookmarksUiEvent.Edit(it)) },
+        toggleArchive = { currentEventSink(BookmarksUiEvent.ToggleArchive(it)) },
+        deleteBookmark = { currentEventSink(BookmarksUiEvent.Delete(it)) },
+        modifier =
+          Modifier.align(Alignment.BottomCenter)
+            .navigationBarsPadding()
+            .offset(y = -ScreenOffset)
+            .zIndex(1f),
       )
 
       LazyColumn(
-          modifier =
-              Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
-                  .floatingToolbarVerticalNestedScroll(
-                      expanded = actionableBookmark.value != null,
-                      onExpand = { actionableBookmark.value = null },
-                      onCollapse = { actionableBookmark.value = null },
-                  ),
-          state = rememberLazyListState(),
-          contentPadding = PaddingValues(bottom = 108.dp),
+        modifier =
+          Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
+            .floatingToolbarVerticalNestedScroll(
+              expanded = actionableBookmark.value != null,
+              onExpand = { actionableBookmark.value = null },
+              onCollapse = { actionableBookmark.value = null },
+            ),
+        state = rememberLazyListState(),
+        contentPadding = PaddingValues(bottom = 108.dp),
       ) {
         // Filters bar as first item
         item(key = "filters_bar") {
           FiltersBar(
-              selectedCategory = state.category,
-              onSelectCategory = { currentEventSink(BookmarksUiEvent.SelectCategory(it)) },
-              selectedTags = state.selectedTags,
-              onOpenTagSelector = {
-                tagsNavigator(Route.Tags(state.selectedTags.map { it.id }.toSet()))
-              },
-              onRemoveTag = { currentEventSink(BookmarksUiEvent.RemoveTag(it)) },
-              modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp).animateItem(),
+            selectedCategory = state.category,
+            onSelectCategory = { currentEventSink(BookmarksUiEvent.SelectCategory(it)) },
+            selectedTags = state.selectedTags,
+            onOpenTagSelector = {
+              tagsNavigator(Route.Tags(state.selectedTags.map { it.id }.toSet()))
+            },
+            onRemoveTag = { currentEventSink(BookmarksUiEvent.RemoveTag(it)) },
+            modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp).animateItem(),
           )
         }
 
         if (!state.isSearchActive && state.pendingBookmarks.isNotEmpty()) {
           item(key = "pending_header") {
             PendingBookmarksHeader(
-                count = state.pendingBookmarks.size,
-                uploading =
-                    state.pendingBookmarks.any {
-                      it.state == dev.avatsav.linkding.data.model.PendingBookmark.State.Uploading
-                    },
-                onRetry = { currentEventSink(BookmarksUiEvent.RetryPending()) },
+              count = state.pendingBookmarks.size,
+              uploading =
+                state.pendingBookmarks.any {
+                  it.state == dev.avatsav.linkding.data.model.PendingBookmark.State.Uploading
+                },
+              onRetry = { currentEventSink(BookmarksUiEvent.RetryPending()) },
             )
           }
           items(
-              count = state.pendingBookmarks.size,
-              key = { "pending_${state.pendingBookmarks[it].id}" },
+            count = state.pendingBookmarks.size,
+            key = { "pending_${state.pendingBookmarks[it].id}" },
           ) { index ->
             val pending = state.pendingBookmarks[index]
             PendingBookmarkListItem(
-                pending = pending,
-                onEdit = { currentEventSink(BookmarksUiEvent.EditPending(pending.id)) },
-                onRetry = { currentEventSink(BookmarksUiEvent.RetryPending(pending.id)) },
-                onDiscard = { currentEventSink(BookmarksUiEvent.DiscardPending(pending.id)) },
-                modifier = Modifier.animateItem(),
+              pending = pending,
+              onEdit = { currentEventSink(BookmarksUiEvent.EditPending(pending.id)) },
+              onRetry = { currentEventSink(BookmarksUiEvent.RetryPending(pending.id)) },
+              onDiscard = { currentEventSink(BookmarksUiEvent.DiscardPending(pending.id)) },
+              modifier = Modifier.animateItem(),
             )
           }
         }
 
         if (
-            !state.isSearchActive &&
-                state.pendingBookmarks.isNotEmpty() &&
-                state.bookmarks.itemCount > 0
+          !state.isSearchActive &&
+            state.pendingBookmarks.isNotEmpty() &&
+            state.bookmarks.itemCount > 0
         ) {
           item(key = "server_bookmarks_header") {
             Text(
-                text = stringResource(Res.string.bookmarks_all),
-                style = MaterialTheme.typography.titleSmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.padding(16.dp),
+              text = stringResource(Res.string.bookmarks_all),
+              style = MaterialTheme.typography.titleSmall,
+              color = MaterialTheme.colorScheme.onSurfaceVariant,
+              modifier = Modifier.padding(16.dp),
             )
           }
         }
@@ -380,18 +379,18 @@ private fun BookmarksScreen(
           val bookmark = state.bookmarks[index]
           if (bookmark != null) {
             BookmarkListItem(
-                modifier = Modifier.animateItem(),
-                bookmark = bookmark,
-                selected = actionableBookmark.value == bookmark,
-                openBookmark = { toOpen ->
-                  if (actionableBookmark.value == toOpen) {
-                    actionableBookmark.value = null
-                  } else {
-                    actionableBookmark.value = null
-                    currentEventSink(BookmarksUiEvent.Open(toOpen))
-                  }
-                },
-                toggleActions = { bookmark -> actionableBookmark.value = bookmark },
+              modifier = Modifier.animateItem(),
+              bookmark = bookmark,
+              selected = actionableBookmark.value == bookmark,
+              openBookmark = { toOpen ->
+                if (actionableBookmark.value == toOpen) {
+                  actionableBookmark.value = null
+                } else {
+                  actionableBookmark.value = null
+                  currentEventSink(BookmarksUiEvent.Open(toOpen))
+                }
+              },
+              toggleActions = { bookmark -> actionableBookmark.value = bookmark },
             )
           }
         }
@@ -403,74 +402,74 @@ private fun BookmarksScreen(
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 internal fun ActionableBookmarkToolbar(
-    actionableBookmark: Bookmark?,
-    onDismiss: () -> Unit,
-    editBookmark: (Bookmark) -> Unit,
-    toggleArchive: (Bookmark) -> Unit,
-    deleteBookmark: (Bookmark) -> Unit,
-    modifier: Modifier = Modifier,
+  actionableBookmark: Bookmark?,
+  onDismiss: () -> Unit,
+  editBookmark: (Bookmark) -> Unit,
+  toggleArchive: (Bookmark) -> Unit,
+  deleteBookmark: (Bookmark) -> Unit,
+  modifier: Modifier = Modifier,
 ) {
   AnimatedVisibilityWithElevation(
-      visible = actionableBookmark != null,
-      modifier = modifier,
-      enter = appearFromBottom(),
-      exit = disappearToBottom(),
+    visible = actionableBookmark != null,
+    modifier = modifier,
+    enter = appearFromBottom(),
+    exit = disappearToBottom(),
   ) { elevation ->
     HorizontalFloatingToolbar(
-        expanded = true,
-        colors = FloatingToolbarDefaults.vibrantFloatingToolbarColors(),
-        expandedShadowElevation = elevation,
-        content = {
-          IconButton(
-              onClick = {
-                val bookmark = actionableBookmark ?: return@IconButton
-                onDismiss()
-                toggleArchive(bookmark)
-              }
-          ) {
+      expanded = true,
+      colors = FloatingToolbarDefaults.vibrantFloatingToolbarColors(),
+      expandedShadowElevation = elevation,
+      content = {
+        IconButton(
+          onClick = {
             val bookmark = actionableBookmark ?: return@IconButton
-            if (bookmark.archived) {
-              Icon(
-                  Icons.Filled.Unarchive,
-                  contentDescription = stringResource(Res.string.bookmarks_unarchive),
-              )
-            } else {
-              Icon(
-                  Icons.Filled.Archive,
-                  contentDescription = stringResource(Res.string.bookmarks_archive),
-              )
-            }
+            onDismiss()
+            toggleArchive(bookmark)
           }
-          IconButton(
-              onClick = {
-                val bookmark = actionableBookmark ?: return@IconButton
-                onDismiss()
-                deleteBookmark(bookmark)
-              }
-          ) {
+        ) {
+          val bookmark = actionableBookmark ?: return@IconButton
+          if (bookmark.archived) {
             Icon(
-                Icons.Filled.Delete,
-                contentDescription = stringResource(Res.string.bookmarks_delete),
+              Icons.Filled.Unarchive,
+              contentDescription = stringResource(Res.string.bookmarks_unarchive),
+            )
+          } else {
+            Icon(
+              Icons.Filled.Archive,
+              contentDescription = stringResource(Res.string.bookmarks_archive),
             )
           }
-          IconButton(
-              onClick = {
-                val bookmark = actionableBookmark ?: return@IconButton
-                onDismiss()
-                editBookmark(bookmark)
-              }
-          ) {
-            Icon(Icons.Filled.Edit, contentDescription = stringResource(Res.string.bookmarks_edit))
+        }
+        IconButton(
+          onClick = {
+            val bookmark = actionableBookmark ?: return@IconButton
+            onDismiss()
+            deleteBookmark(bookmark)
           }
-        },
+        ) {
+          Icon(
+            Icons.Filled.Delete,
+            contentDescription = stringResource(Res.string.bookmarks_delete),
+          )
+        }
+        IconButton(
+          onClick = {
+            val bookmark = actionableBookmark ?: return@IconButton
+            onDismiss()
+            editBookmark(bookmark)
+          }
+        ) {
+          Icon(Icons.Filled.Edit, contentDescription = stringResource(Res.string.bookmarks_edit))
+        }
+      },
     )
   }
 }
 
 private fun LazyListScope.searchHistoryItems(
-    items: List<SearchHistory>,
-    onClearHistory: () -> Unit = {},
-    onSelectHistory: (SearchHistory) -> Unit,
+  items: List<SearchHistory>,
+  onClearHistory: () -> Unit = {},
+  onSelectHistory: (SearchHistory) -> Unit,
 ) {
 
   item(key = "history_header") {
@@ -479,10 +478,10 @@ private fun LazyListScope.searchHistoryItems(
   items(count = items.size, key = { "history_${items[it].query}_${items[it].modified}" }) { index ->
     val historyItem = items[index]
     SearchHistoryItem(
-        searchHistory = historyItem,
-        onClick = { onSelectHistory(historyItem) },
-        modifier = Modifier.animateItem(),
-        shape = Material3ShapeDefaults.itemShape(index, items.size),
+      searchHistory = historyItem,
+      onClick = { onSelectHistory(historyItem) },
+      modifier = Modifier.animateItem(),
+      shape = Material3ShapeDefaults.itemShape(index, items.size),
     )
   }
 }

@@ -77,7 +77,11 @@ class LinkdingRoomDatabaseTest {
       activeSource.registerInvalidatedCallback { invalidated.complete(Unit) }
       val initialPage =
         activeSource.load(
-          PagingSource.LoadParams.Refresh(key = null, loadSize = 20, placeholdersEnabled = false)
+          PagingSource.LoadParams.Refresh(
+            key = null,
+            loadSize = 20,
+            placeholdersEnabled = false,
+          )
         ) as PagingSource.LoadResult.Page
       val uploaded =
         bookmark(41, "Just uploaded").copy(added = Instant.fromEpochSeconds(1_700_000_041))

@@ -33,6 +33,8 @@ Kotlin Multiplatform and Compose Multiplatform.
 
 ## Do
 
+- Run repository-wide `./gradlew ktfmtFormat` before and after every commit. Commit formatter changes
+  and repeat until the post-commit run makes no changes.
 - Use **MoleculePresenter** with **retain** pattern for all screens (
   see [docs/presentation.md](docs/presentation.md))
 - Follow **3-layer feature structure**: `api/` → `impl/` → `ui/`

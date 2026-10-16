@@ -26,25 +26,25 @@ import kotlinx.coroutines.launch
 
 @Inject
 class SettingsPresenter(
-    private val settingsManager: SettingsManager,
-    private val appInfo: AppInfo,
-    private val pendingBookmarks: PendingBookmarks,
-    private val localNetworkAccess: LocalNetworkAccess,
+  private val settingsManager: SettingsManager,
+  private val appInfo: AppInfo,
+  private val pendingBookmarks: PendingBookmarks,
+  private val localNetworkAccess: LocalNetworkAccess,
 ) : MoleculePresenter<SettingsUiEvent, SettingsUiState, SettingsUiEffect>() {
 
   @Composable
   override fun models(events: Flow<SettingsUiEvent>): SettingsUiState {
     val apiConfig by
-        settingsManager.observeApiConfig().collectAsState(settingsManager.getApiConfig())
+      settingsManager.observeApiConfig().collectAsState(settingsManager.getApiConfig())
     val useDynamicColors by settingsManager.observeUseDynamicColors().collectAsState(false)
     val appTheme by settingsManager.observeAppTheme().collectAsState(AppTheme.System)
 
     val access by
-        remember(apiConfig?.hostUrl) {
-              apiConfig?.let { localNetworkAccess.observe(it.hostUrl) }
-                  ?: flowOf(LocalNetworkAccess.State.NotRequired)
-            }
-            .collectAsState(LocalNetworkAccess.State.NotRequired)
+      remember(apiConfig?.hostUrl) {
+          apiConfig?.let { localNetworkAccess.observe(it.hostUrl) }
+            ?: flowOf(LocalNetworkAccess.State.NotRequired)
+        }
+        .collectAsState(LocalNetworkAccess.State.NotRequired)
 
     var resetBlocked by remember { mutableStateOf(false) }
 
@@ -56,20 +56,20 @@ class SettingsPresenter(
         ToggleUseDynamicColors -> presenterScope.launch { settingsManager.toggleUseDynamicColors() }
 
         ResetApiConfig ->
-            presenterScope.launch {
-              if (pendingBookmarks.observe().first().isNotEmpty()) {
-                resetBlocked = true
-              } else {
-                settingsManager.setApiConfig(null)
-                emitEffect(SettingsUiEffect.ResetToAuth)
-              }
+          presenterScope.launch {
+            if (pendingBookmarks.observe().first().isNotEmpty()) {
+              resetBlocked = true
+            } else {
+              settingsManager.setApiConfig(null)
+              emitEffect(SettingsUiEffect.ResetToAuth)
             }
+          }
 
         ShowSourceCode ->
-            emitEffect(SettingsUiEffect.OpenUrl("https://github.com/avatsav/linkding-apps"))
+          emitEffect(SettingsUiEffect.OpenUrl("https://github.com/avatsav/linkding-apps"))
 
         SettingsUiEvent.RequestLocalNetworkAccess ->
-            emitEffect(SettingsUiEffect.RequestLocalNetworkAccess)
+          emitEffect(SettingsUiEffect.RequestLocalNetworkAccess)
         SettingsUiEvent.RefreshLocalNetworkAccess -> localNetworkAccess.refresh()
         ShowLicenses -> {}
         SettingsUiEvent.ShowPrivacyPolicy -> {}
@@ -77,12 +77,12 @@ class SettingsPresenter(
     }
 
     return SettingsUiState(
-        appInfo = appInfo,
-        apiConfig = apiConfig,
-        appTheme = appTheme,
-        useDynamicColors = useDynamicColors,
-        resetBlocked = resetBlocked,
-        localNetworkAccess = access,
+      appInfo = appInfo,
+      apiConfig = apiConfig,
+      appTheme = appTheme,
+      useDynamicColors = useDynamicColors,
+      resetBlocked = resetBlocked,
+      localNetworkAccess = access,
     )
   }
 }

@@ -50,10 +50,10 @@ import dev.zacsweers.metro.SingleIn
 interface AppUi {
   @Composable
   fun Content(
-      launchMode: LaunchMode,
-      onOpenUrl: (String) -> Boolean,
-      onRootPop: () -> Unit,
-      modifier: Modifier,
+    launchMode: LaunchMode,
+    onOpenUrl: (String) -> Boolean,
+    onRootPop: () -> Unit,
+    modifier: Modifier,
   )
 }
 
@@ -61,18 +61,18 @@ interface AppUi {
 @SingleIn(UiScope::class)
 @Inject
 class DefaultAppUi(
-    private val baseRouteEntryScope: Set<RouteEntryProviderScope>,
-    private val preferences: AppPreferences,
-    private val authManager: AuthManager,
-    private val savedStateConfiguration: SavedStateConfiguration,
+  private val baseRouteEntryScope: Set<RouteEntryProviderScope>,
+  private val preferences: AppPreferences,
+  private val authManager: AuthManager,
+  private val savedStateConfiguration: SavedStateConfiguration,
 ) : AppUi {
 
   @Composable
   override fun Content(
-      launchMode: LaunchMode,
-      onOpenUrl: (String) -> Boolean,
-      onRootPop: () -> Unit,
-      modifier: Modifier,
+    launchMode: LaunchMode,
+    onOpenUrl: (String) -> Boolean,
+    onRootPop: () -> Unit,
+    modifier: Modifier,
   ) {
     val initialAuthState = remember { authManager.getCurrentState() }
     val startRoute = remember(launchMode) { initialAuthState.startRoute(launchMode) }
@@ -88,26 +88,26 @@ class DefaultAppUi(
 
     NavigatorCompositionLocals(navigator, resultHandler) {
       LinkdingTheme(
-          darkTheme = preferences.shouldUseDarkTheme(),
-          dynamicColors = preferences.shouldUseDynamicColors(),
+        darkTheme = preferences.shouldUseDarkTheme(),
+        dynamicColors = preferences.shouldUseDynamicColors(),
       ) {
         NavDisplay(
-            entryDecorators =
-                listOf(
-                    rememberSaveableStateHolderNavEntryDecorator(),
-                    rememberRetainedValuesStoreNavEntryDecorator(),
-                ),
-            backStack = backStack,
-            onBack = { navigator.pop() },
-            sceneStrategies = listOf(bottomSheetSceneStrategy),
-            entryProvider =
-                entryProvider(
-                    builder = {
-                      baseRouteEntryScope.forEach { builder -> this.builder() }
-                      userScopeRouteEntryScope.forEach { builder -> this.builder() }
-                    }
-                ),
-            predictivePopTransitionSpec = predictivePopTransitionSpec(),
+          entryDecorators =
+            listOf(
+              rememberSaveableStateHolderNavEntryDecorator(),
+              rememberRetainedValuesStoreNavEntryDecorator(),
+            ),
+          backStack = backStack,
+          onBack = { navigator.pop() },
+          sceneStrategies = listOf(bottomSheetSceneStrategy),
+          entryProvider =
+            entryProvider(
+              builder = {
+                baseRouteEntryScope.forEach { builder -> this.builder() }
+                userScopeRouteEntryScope.forEach { builder -> this.builder() }
+              }
+            ),
+          predictivePopTransitionSpec = predictivePopTransitionSpec(),
         )
       }
     }
@@ -116,13 +116,12 @@ class DefaultAppUi(
 
 @OptIn(ExperimentalAnimationApi::class)
 private fun <T : Any> predictivePopTransitionSpec():
-    AnimatedContentTransitionScope<Scene<T>>.(@SwipeEdge Int) -> ContentTransform = {
+  AnimatedContentTransitionScope<Scene<T>>.(@SwipeEdge Int) -> ContentTransform = {
   val towards = SlideDirection.Right
   ContentTransform(
-      targetContentEnter =
-          slideIntoContainer(towards = towards, initialOffset = { offset -> offset / 4 }) +
-              unveilIn(),
-      initialContentExit = slideOutOfContainer(towards = towards),
+    targetContentEnter =
+      slideIntoContainer(towards = towards, initialOffset = { offset -> offset / 4 }) + unveilIn(),
+    initialContentExit = slideOutOfContainer(towards = towards),
   )
 }
 
@@ -133,11 +132,11 @@ private fun rememberUserScopeRouteEntryScope(authState: AuthState): Set<RouteEnt
     is Unauthenticated -> emptySet()
     is Authenticated -> {
       val graph =
-          remember(authState.apiConfig) {
-            GraphHolder.graph<UserGraph.Factory>().create(authState.apiConfig).also { component ->
-              GraphHolder.updateGraph(component)
-            }
+        remember(authState.apiConfig) {
+          GraphHolder.graph<UserGraph.Factory>().create(authState.apiConfig).also { component ->
+            GraphHolder.updateGraph(component)
           }
+        }
       val lifecycle = LocalLifecycleOwner.current.lifecycle
       LaunchedEffect(graph, lifecycle) {
         lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -150,17 +149,17 @@ private fun rememberUserScopeRouteEntryScope(authState: AuthState): Set<RouteEnt
 }
 
 private fun AuthState.startRoute(launchMode: LaunchMode): Route =
-    when (this) {
-      is Loading,
-      is Unauthenticated -> Route.Auth
-      is Authenticated -> launchMode.startRoute()
-    }
+  when (this) {
+    is Loading,
+    is Unauthenticated -> Route.Auth
+    is Authenticated -> launchMode.startRoute()
+  }
 
 private fun LaunchMode.startRoute(): Route =
-    when (this) {
-      Normal -> Route.BookmarksFeed
-      is SharedLink -> Route.AddBookmark.Shared(this.sharedLink)
-    }
+  when (this) {
+    Normal -> Route.BookmarksFeed
+    is SharedLink -> Route.AddBookmark.Shared(this.sharedLink)
+  }
 
 @Composable
 private fun AppPreferences.shouldUseDarkTheme(): Boolean {

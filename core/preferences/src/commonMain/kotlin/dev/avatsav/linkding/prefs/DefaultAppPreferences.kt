@@ -32,23 +32,23 @@ private const val DarkThemeValue = "dark"
 @SingleIn(AppScope::class)
 @ContributesBinding(AppScope::class)
 class DefaultAppPreferences(
-    private val settings: ObservableSettings,
-    dispatchers: AppCoroutineDispatchers,
+  private val settings: ObservableSettings,
+  dispatchers: AppCoroutineDispatchers,
 ) : AppPreferences {
 
   private val flowSettings by lazy { settings.toFlowSettings(dispatchers.io) }
 
   override fun observeApiConfig(): Flow<ApiConfig?> =
-      combine(
-          flowSettings.getStringOrNullFlow(HostUrlConfigurationKey),
-          flowSettings.getStringOrNullFlow(ApiKeyConfigurationKey),
-      ) { hostUrl: String?, apiKey: String? ->
-        if (hostUrl == null || apiKey == null) {
-          null
-        } else {
-          ApiConfig(hostUrl, apiKey)
-        }
+    combine(
+      flowSettings.getStringOrNullFlow(HostUrlConfigurationKey),
+      flowSettings.getStringOrNullFlow(ApiKeyConfigurationKey),
+    ) { hostUrl: String?, apiKey: String? ->
+      if (hostUrl == null || apiKey == null) {
+        null
+      } else {
+        ApiConfig(hostUrl, apiKey)
       }
+    }
 
   override suspend fun setApiConfig(apiConfig: ApiConfig?) {
     if (apiConfig != getApiConfig()) {
@@ -80,14 +80,14 @@ class DefaultAppPreferences(
   }
 
   override fun observeAppTheme(): Flow<AppTheme> =
-      flowSettings.getStringFlow(AppThemeKey, SystemThemeValue).map { it.appTheme }
+    flowSettings.getStringFlow(AppThemeKey, SystemThemeValue).map { it.appTheme }
 
   override suspend fun setAppTheme(appTheme: AppTheme) {
     settings[AppThemeKey] = appTheme.storageValue
   }
 
   override fun observeUseDynamicColors(): Flow<Boolean> =
-      flowSettings.getBooleanFlow(UseDynamicColorsKey, false)
+    flowSettings.getBooleanFlow(UseDynamicColorsKey, false)
 
   override suspend fun toggleUseDynamicColors() {
     settings[UseDynamicColorsKey] = !settings.getBoolean(UseDynamicColorsKey, false)
@@ -96,16 +96,16 @@ class DefaultAppPreferences(
 
 private val AppTheme.storageValue: String
   get() =
-      when (this) {
-        AppTheme.System -> SystemThemeValue
-        AppTheme.Light -> LightThemeValue
-        AppTheme.Dark -> DarkThemeValue
-      }
+    when (this) {
+      AppTheme.System -> SystemThemeValue
+      AppTheme.Light -> LightThemeValue
+      AppTheme.Dark -> DarkThemeValue
+    }
 
 private val String?.appTheme: AppTheme
   get() =
-      when (this) {
-        LightThemeValue -> AppTheme.Light
-        DarkThemeValue -> AppTheme.Dark
-        else -> AppTheme.System
-      }
+    when (this) {
+      LightThemeValue -> AppTheme.Light
+      DarkThemeValue -> AppTheme.Dark
+      else -> AppTheme.System
+    }

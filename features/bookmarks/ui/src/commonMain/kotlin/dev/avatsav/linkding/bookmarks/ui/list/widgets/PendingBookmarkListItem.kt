@@ -46,20 +46,20 @@ import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun PendingBookmarksHeader(
-    count: Int,
-    uploading: Boolean,
-    onRetry: () -> Unit,
-    modifier: Modifier = Modifier,
+  count: Int,
+  uploading: Boolean,
+  onRetry: () -> Unit,
+  modifier: Modifier = Modifier,
 ) {
   Row(
-      modifier.fillMaxWidth().padding(start = 16.dp, end = 8.dp),
-      verticalAlignment = Alignment.CenterVertically,
+    modifier.fillMaxWidth().padding(start = 16.dp, end = 8.dp),
+    verticalAlignment = Alignment.CenterVertically,
   ) {
     Text(
-        stringResource(Res.string.pending_bookmarks_title, count),
-        style = MaterialTheme.typography.titleSmall,
-        color = MaterialTheme.colorScheme.onSurfaceVariant,
-        modifier = Modifier.weight(1f),
+      stringResource(Res.string.pending_bookmarks_title, count),
+      style = MaterialTheme.typography.titleSmall,
+      color = MaterialTheme.colorScheme.onSurfaceVariant,
+      modifier = Modifier.weight(1f),
     )
     TextButton(onClick = onRetry, enabled = !uploading) {
       Text(stringResource(Res.string.pending_bookmark_retry))
@@ -69,89 +69,89 @@ fun PendingBookmarksHeader(
 
 @Composable
 fun PendingBookmarkListItem(
-    pending: PendingBookmark,
-    onEdit: () -> Unit,
-    onRetry: () -> Unit,
-    onDiscard: () -> Unit,
-    modifier: Modifier = Modifier,
+  pending: PendingBookmark,
+  onEdit: () -> Unit,
+  onRetry: () -> Unit,
+  onDiscard: () -> Unit,
+  modifier: Modifier = Modifier,
 ) {
   var menuExpanded by rememberSaveable { mutableStateOf(false) }
   var confirmDiscard by rememberSaveable { mutableStateOf(false) }
   val uploading = pending.state == PendingBookmark.State.Uploading
   val needsAttention =
-      pending.state == PendingBookmark.State.Failed ||
-          pending.state == PendingBookmark.State.Uncertain
+    pending.state == PendingBookmark.State.Failed ||
+      pending.state == PendingBookmark.State.Uncertain
   Column(modifier) {
     Row(
-        Modifier.fillMaxWidth()
-            .clickable(enabled = !uploading, onClick = onEdit)
-            .padding(start = 16.dp, top = 12.dp, bottom = 12.dp, end = 4.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(12.dp),
+      Modifier.fillMaxWidth()
+        .clickable(enabled = !uploading, onClick = onEdit)
+        .padding(start = 16.dp, top = 12.dp, bottom = 12.dp, end = 4.dp),
+      verticalAlignment = Alignment.CenterVertically,
+      horizontalArrangement = Arrangement.spacedBy(12.dp),
     ) {
       Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(8.dp)) {
         Text(
-            pending.bookmark.title?.takeIf { it.isNotBlank() } ?: pending.bookmark.url,
-            style = MaterialTheme.typography.titleMedium,
-            color = MaterialTheme.colorScheme.primary,
-            maxLines = 2,
-            overflow = TextOverflow.Ellipsis,
+          pending.bookmark.title?.takeIf { it.isNotBlank() } ?: pending.bookmark.url,
+          style = MaterialTheme.typography.titleMedium,
+          color = MaterialTheme.colorScheme.primary,
+          maxLines = 2,
+          overflow = TextOverflow.Ellipsis,
         )
         Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(4.dp),
+          verticalAlignment = Alignment.CenterVertically,
+          horizontalArrangement = Arrangement.spacedBy(4.dp),
         ) {
           if (uploading) SmallCircularProgressIndicator()
           else
-              Icon(
-                  if (needsAttention) Icons.Outlined.ErrorOutline else Icons.Outlined.CloudUpload,
-                  contentDescription =
-                      stringResource(
-                          if (needsAttention) Res.string.pending_bookmark_attention
-                          else Res.string.pending_bookmark_upload
-                      ),
-                  tint =
-                      if (needsAttention) MaterialTheme.colorScheme.error
-                      else MaterialTheme.colorScheme.onSurfaceVariant,
-                  modifier = Modifier.size(16.dp),
-              )
+            Icon(
+              if (needsAttention) Icons.Outlined.ErrorOutline else Icons.Outlined.CloudUpload,
+              contentDescription =
+                stringResource(
+                  if (needsAttention) Res.string.pending_bookmark_attention
+                  else Res.string.pending_bookmark_upload
+                ),
+              tint =
+                if (needsAttention) MaterialTheme.colorScheme.error
+                else MaterialTheme.colorScheme.onSurfaceVariant,
+              modifier = Modifier.size(16.dp),
+            )
           Text(
-              pending.bookmark.url.substringAfter("://").substringBefore('/'),
-              style = MaterialTheme.typography.bodySmall,
-              color = MaterialTheme.colorScheme.onSurfaceVariant,
-              maxLines = 1,
-              overflow = TextOverflow.Ellipsis,
+            pending.bookmark.url.substringAfter("://").substringBefore('/'),
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
           )
         }
       }
       Column {
         IconButton(onClick = { menuExpanded = true }, enabled = !uploading) {
           Icon(
-              Icons.Default.MoreVert,
-              contentDescription = stringResource(Res.string.pending_bookmark_actions),
+            Icons.Default.MoreVert,
+            contentDescription = stringResource(Res.string.pending_bookmark_actions),
           )
         }
         DropdownMenu(expanded = menuExpanded, onDismissRequest = { menuExpanded = false }) {
           DropdownMenuItem(
-              text = { Text(stringResource(Res.string.bookmarks_edit)) },
-              onClick = {
-                menuExpanded = false
-                onEdit()
-              },
+            text = { Text(stringResource(Res.string.bookmarks_edit)) },
+            onClick = {
+              menuExpanded = false
+              onEdit()
+            },
           )
           DropdownMenuItem(
-              text = { Text(stringResource(Res.string.pending_bookmark_retry)) },
-              onClick = {
-                menuExpanded = false
-                onRetry()
-              },
+            text = { Text(stringResource(Res.string.pending_bookmark_retry)) },
+            onClick = {
+              menuExpanded = false
+              onRetry()
+            },
           )
           DropdownMenuItem(
-              text = { Text(stringResource(Res.string.pending_bookmark_discard)) },
-              onClick = {
-                menuExpanded = false
-                confirmDiscard = true
-              },
+            text = { Text(stringResource(Res.string.pending_bookmark_discard)) },
+            onClick = {
+              menuExpanded = false
+              confirmDiscard = true
+            },
           )
         }
       }
@@ -159,24 +159,24 @@ fun PendingBookmarkListItem(
     HorizontalDivider()
   }
   if (confirmDiscard)
-      AlertDialog(
-          onDismissRequest = { confirmDiscard = false },
-          title = { Text(stringResource(Res.string.pending_bookmark_discard_title)) },
-          text = { Text(stringResource(Res.string.pending_bookmark_discard_message)) },
-          confirmButton = {
-            TextButton(
-                onClick = {
-                  confirmDiscard = false
-                  onDiscard()
-                }
-            ) {
-              Text(stringResource(Res.string.pending_bookmark_discard))
-            }
-          },
-          dismissButton = {
-            TextButton(onClick = { confirmDiscard = false }) {
-              Text(stringResource(Res.string.pending_bookmark_cancel))
-            }
-          },
-      )
+    AlertDialog(
+      onDismissRequest = { confirmDiscard = false },
+      title = { Text(stringResource(Res.string.pending_bookmark_discard_title)) },
+      text = { Text(stringResource(Res.string.pending_bookmark_discard_message)) },
+      confirmButton = {
+        TextButton(
+          onClick = {
+            confirmDiscard = false
+            onDiscard()
+          }
+        ) {
+          Text(stringResource(Res.string.pending_bookmark_discard))
+        }
+      },
+      dismissButton = {
+        TextButton(onClick = { confirmDiscard = false }) {
+          Text(stringResource(Res.string.pending_bookmark_cancel))
+        }
+      },
+    )
 }

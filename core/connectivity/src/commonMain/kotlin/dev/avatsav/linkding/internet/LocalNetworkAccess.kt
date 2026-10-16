@@ -26,7 +26,7 @@ abstract class LocalNetworkAccess {
       emit(State.NotRequired)
     } else {
       emitAll(
-          permissionGranted.map { if (it) State.Granted else State.Required }.distinctUntilChanged()
+        permissionGranted.map { if (it) State.Granted else State.Required }.distinctUntilChanged()
       )
     }
   }
@@ -55,15 +55,15 @@ internal fun isLocalNetworkAddress(address: ByteArray): Boolean {
   val bytes = address.map { it.toInt() and 0xff }
   return when (bytes.size) {
     4 ->
-        bytes[0] == 10 ||
-            (bytes[0] == 172 && bytes[1] in 16..31) ||
-            (bytes[0] == 192 && bytes[1] == 168) ||
-            (bytes[0] == 169 && bytes[1] == 254) ||
-            bytes[0] in 224..239
+      bytes[0] == 10 ||
+        (bytes[0] == 172 && bytes[1] in 16..31) ||
+        (bytes[0] == 192 && bytes[1] == 168) ||
+        (bytes[0] == 169 && bytes[1] == 254) ||
+        bytes[0] in 224..239
     16 ->
-        (bytes[0] and 0xfe) == 0xfc ||
-            (bytes[0] == 0xfe && (bytes[1] and 0xc0) == 0x80) ||
-            bytes[0] == 0xff
+      (bytes[0] and 0xfe) == 0xfc ||
+        (bytes[0] == 0xfe && (bytes[1] and 0xc0) == 0x80) ||
+        bytes[0] == 0xff
     else -> false
   }
 }

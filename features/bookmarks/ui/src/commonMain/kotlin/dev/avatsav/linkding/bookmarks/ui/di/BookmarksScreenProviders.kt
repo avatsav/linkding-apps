@@ -21,7 +21,7 @@ interface BookmarksScreenProviders {
   @IntoSet
   @Provides
   fun provideBookmarksEntryProviderScope(
-      presenter: () -> BookmarksPresenter
+    presenter: () -> BookmarksPresenter
   ): RouteEntryProviderScope = {
     entry<Route.BookmarksFeed> { BookmarksScreen(retainPresenter { presenter() }) }
   }
@@ -29,7 +29,7 @@ interface BookmarksScreenProviders {
   @IntoSet
   @Provides
   fun provideNewBookmarkEntryProviderScope(
-      factory: AddBookmarkPresenter.Factory
+    factory: AddBookmarkPresenter.Factory
   ): RouteEntryProviderScope = {
     entry<Route.AddBookmark.New> { AddBookmarkScreen(retainPresenter { factory.create(it) }) }
   }
@@ -37,7 +37,7 @@ interface BookmarksScreenProviders {
   @IntoSet
   @Provides
   fun provideSharedBookmarkEntryProviderScope(
-      factory: AddBookmarkPresenter.Factory
+    factory: AddBookmarkPresenter.Factory
   ): RouteEntryProviderScope = {
     entry<Route.AddBookmark.Shared> { AddBookmarkScreen(retainPresenter { factory.create(it) }) }
   }
@@ -45,7 +45,7 @@ interface BookmarksScreenProviders {
   @IntoSet
   @Provides
   fun provideEditBookmarkEntryProviderScope(
-      factory: AddBookmarkPresenter.Factory
+    factory: AddBookmarkPresenter.Factory
   ): RouteEntryProviderScope = {
     entry<Route.AddBookmark.Edit> { AddBookmarkScreen(retainPresenter { factory.create(it) }) }
   }
@@ -53,7 +53,7 @@ interface BookmarksScreenProviders {
   @IntoSet
   @Provides
   fun providePendingBookmarkEntryProviderScope(
-      factory: AddBookmarkPresenter.Factory
+    factory: AddBookmarkPresenter.Factory
   ): RouteEntryProviderScope = {
     entry<Route.AddBookmark.Pending> { AddBookmarkScreen(retainPresenter { factory.create(it) }) }
   }

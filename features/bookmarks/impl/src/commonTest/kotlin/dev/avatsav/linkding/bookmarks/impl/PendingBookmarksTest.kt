@@ -32,16 +32,16 @@ import kotlinx.coroutines.test.runTest
 class PendingBookmarksTest {
   @Test
   fun `missing local network permission keeps creations pending without contacting the API`() =
-      runTest {
-        val f = Fixture()
-        f.access.permissionGranted.value = false
-        f.api.online = true
-        assertTrue(f.queue.create(draft).isOk)
-        f.queue.retry()
-        assertTrue(f.api.checkedUrls.isEmpty())
-        assertTrue(f.api.sent.isEmpty())
-        assertEquals(PendingBookmark.State.Pending, f.queue.observeFirst().state)
-      }
+    runTest {
+      val f = Fixture()
+      f.access.permissionGranted.value = false
+      f.api.online = true
+      assertTrue(f.queue.create(draft).isOk)
+      f.queue.retry()
+      assertTrue(f.api.checkedUrls.isEmpty())
+      assertTrue(f.api.sent.isEmpty())
+      assertEquals(PendingBookmark.State.Pending, f.queue.observeFirst().state)
+    }
 
   @Test
   fun `granting local network permission wakes the foreground uploader`() = runTest {
@@ -78,8 +78,8 @@ class PendingBookmarksTest {
     val save = async { f.queue.create(draft) }
     runCurrent()
     assertTrue(
-        save.isCompleted,
-        "Save must finish after the database write, not after a network timeout",
+      save.isCompleted,
+      "Save must finish after the database write, not after a network timeout",
     )
     assertTrue(save.await().isOk)
     assertEquals(draft, f.queue.observeFirst().bookmark)
@@ -272,20 +272,20 @@ class PendingBookmarksTest {
 
   @Test
   fun `old session cannot upload after credentials change and new account cannot see drafts`() =
-      runTest {
-        val f = Fixture()
-        assertTrue(f.queue.create(draft).isOk)
-        f.preferences.localAccountId = "other-account"
-        f.preferences.config = ApiConfig("https://other.example", "other-key")
-        f.api.online = true
-        f.queue.retry()
-        assertTrue(f.api.sent.isEmpty())
-        assertEquals(1, f.store.rows.value.size)
-        val otherQueue = f.newQueue(f.preferences.config!!)
-        assertEquals(null, otherQueue.get(f.store.rows.value.single().second.id))
-        otherQueue.retry()
-        assertTrue(f.api.sent.isEmpty())
-      }
+    runTest {
+      val f = Fixture()
+      assertTrue(f.queue.create(draft).isOk)
+      f.preferences.localAccountId = "other-account"
+      f.preferences.config = ApiConfig("https://other.example", "other-key")
+      f.api.online = true
+      f.queue.retry()
+      assertTrue(f.api.sent.isEmpty())
+      assertEquals(1, f.store.rows.value.size)
+      val otherQueue = f.newQueue(f.preferences.config!!)
+      assertEquals(null, otherQueue.get(f.store.rows.value.single().second.id))
+      otherQueue.retry()
+      assertTrue(f.api.sent.isEmpty())
+    }
 
   @Test
   fun `edit during preflight returns immediately and POST uses the latest fields`() = runTest {
@@ -419,21 +419,21 @@ class PendingBookmarksTest {
     val online = MutableStateFlow(true)
     val access = FakeLocalNetworkAccess()
     private val connectivity =
-        object : ConnectivityObserver {
-          override val observeIsOnline = online
-        }
+      object : ConnectivityObserver {
+        override val observeIsOnline = online
+      }
 
     fun newQueue(config: ApiConfig = initialConfig) =
-        DefaultPendingBookmarks(
-            store,
-            cache,
-            api,
-            BookmarkMapper(),
-            preferences,
-            config,
-            connectivity,
-            access,
-        )
+      DefaultPendingBookmarks(
+        store,
+        cache,
+        api,
+        BookmarkMapper(),
+        preferences,
+        config,
+        connectivity,
+        access,
+      )
 
     val queue = newQueue()
   }
@@ -460,7 +460,7 @@ class PendingBookmarksTest {
     }
 
     override suspend fun getAll(accountId: String) =
-        rows.value.filter { it.first == accountId }.map { it.second }
+      rows.value.filter { it.first == accountId }.map { it.second }
 
     override suspend fun insert(accountId: String, bookmark: PendingBookmark): Long {
       val id = nextId++
@@ -470,9 +470,9 @@ class PendingBookmarksTest {
 
     override suspend fun update(accountId: String, bookmark: PendingBookmark) {
       rows.value =
-          rows.value.map {
-            if (it.first == accountId && it.second.id == bookmark.id) accountId to bookmark else it
-          }
+        rows.value.map {
+          if (it.first == accountId && it.second.id == bookmark.id) accountId to bookmark else it
+        }
     }
 
     override suspend fun delete(accountId: String, id: Long) {
@@ -553,12 +553,12 @@ class PendingBookmarksTest {
       }
       if (!online) return Err(LinkdingError.Connectivity())
       return Ok(
-          LinkdingCheckUrlResponse(existing, LinkdingCheckUrlResponse.Metadata(url, null, null))
+        LinkdingCheckUrlResponse(existing, LinkdingCheckUrlResponse.Metadata(url, null, null))
       )
     }
 
     override suspend fun saveBookmark(
-        request: LinkdingSaveBookmarkRequest
+      request: LinkdingSaveBookmarkRequest
     ): Result<LinkdingBookmark, LinkdingError> {
       sent += request
       onSave()
@@ -566,38 +566,38 @@ class PendingBookmarksTest {
         return Err(it)
       }
       return Ok(
-          remote.copy(
-              title = request.title.orEmpty(),
-              notes = request.notes.orEmpty(),
-              tagNames = request.tagNames,
-          )
+        remote.copy(
+          title = request.title.orEmpty(),
+          notes = request.notes.orEmpty(),
+          tagNames = request.tagNames,
+        )
       )
     }
 
     override suspend fun getBookmarks(
-        offset: Int,
-        limit: Int,
-        query: String,
-        category: LinkdingBookmarkCategory,
-        tags: List<String>,
+      offset: Int,
+      limit: Int,
+      query: String,
+      category: LinkdingBookmarkCategory,
+      tags: List<String>,
     ): Result<LinkdingBookmarksResponse, LinkdingError> = error("Unexpected read")
 
     override suspend fun getBookmark(id: Long): Result<LinkdingBookmark, LinkdingError> =
-        error("Unexpected read")
+      error("Unexpected read")
 
     override suspend fun updateBookmark(
-        id: Long,
-        request: LinkdingUpdateBookmarkRequest,
+      id: Long,
+      request: LinkdingUpdateBookmarkRequest,
     ): Result<LinkdingBookmark, LinkdingError> = error("Must not edit server bookmarks")
 
     override suspend fun archiveBookmark(id: Long): Result<Unit, LinkdingError> =
-        error("Must not archive")
+      error("Must not archive")
 
     override suspend fun unarchiveBookmark(id: Long): Result<Unit, LinkdingError> =
-        error("Must not unarchive")
+      error("Must not unarchive")
 
     override suspend fun deleteBookmark(id: Long): Result<Unit, LinkdingError> =
-        error("Must not delete")
+      error("Must not delete")
   }
 
   companion object {

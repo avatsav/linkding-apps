@@ -8,12 +8,12 @@ import dev.avatsav.linkding.internet.LocalNetworkAccess
 
 @Immutable
 data class SettingsUiState(
-    val appInfo: AppInfo,
-    val apiConfig: ApiConfig?,
-    val appTheme: AppTheme,
-    val useDynamicColors: Boolean,
-    val resetBlocked: Boolean = false,
-    val localNetworkAccess: LocalNetworkAccess.State = LocalNetworkAccess.State.NotRequired,
+  val appInfo: AppInfo,
+  val apiConfig: ApiConfig?,
+  val appTheme: AppTheme,
+  val useDynamicColors: Boolean,
+  val resetBlocked: Boolean = false,
+  val localNetworkAccess: LocalNetworkAccess.State = LocalNetworkAccess.State.NotRequired,
 )
 
 sealed interface SettingsUiEvent {

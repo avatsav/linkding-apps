@@ -4,12 +4,12 @@ import androidx.compose.runtime.Immutable
 
 @Immutable
 data class AuthUiState(
-    val verifying: Boolean = false,
-    val saving: Boolean = false,
-    val invalidHostUrl: Boolean = false,
-    val invalidApiKey: Boolean = false,
-    val errorMessage: String? = null,
-    val localNetworkAccessRequired: Boolean = false,
+  val verifying: Boolean = false,
+  val saving: Boolean = false,
+  val invalidHostUrl: Boolean = false,
+  val invalidApiKey: Boolean = false,
+  val errorMessage: String? = null,
+  val localNetworkAccessRequired: Boolean = false,
 ) {
   val loading: Boolean
     get() = verifying || saving

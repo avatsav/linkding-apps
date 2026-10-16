@@ -43,14 +43,14 @@ import kotlinx.coroutines.withContext
 @SingleIn(UserScope::class)
 @ContributesBinding(UserScope::class)
 class DefaultPendingBookmarks(
-    private val dao: PendingBookmarksDao,
-    private val bookmarksDao: BookmarksDao,
-    private val api: LinkdingBookmarksApi,
-    private val mapper: BookmarkMapper,
-    private val preferences: AppPreferences,
-    private val config: ApiConfig,
-    private val connectivity: ConnectivityObserver,
-    private val localNetworkAccess: LocalNetworkAccess,
+  private val dao: PendingBookmarksDao,
+  private val bookmarksDao: BookmarksDao,
+  private val api: LinkdingBookmarksApi,
+  private val mapper: BookmarkMapper,
+  private val preferences: AppPreferences,
+  private val config: ApiConfig,
+  private val connectivity: ConnectivityObserver,
+  private val localNetworkAccess: LocalNetworkAccess,
 ) : PendingBookmarks {
   private val accountId = preferences.getAccountId()
   // Never hold the local-write lock across a network request. Drains have their own lock.
@@ -63,13 +63,13 @@ class DefaultPendingBookmarks(
   override suspend fun get(id: Long): PendingBookmark? = dao.getAll(accountId).find { it.id == id }
 
   override suspend fun create(bookmark: SaveBookmark): Result<SaveResult, BookmarkError> =
-      localMutex.withLock {
-        if (!isCurrentAccount) return@withLock Err(BookmarkError("Account changed"))
-        val draft = PendingBookmark(bookmark = bookmark, createdAt = Clock.System.now())
-        val id = dao.insert(accountId, draft)
-        wakeups.trySend(Unit)
-        Ok(SaveResult.Queued(id))
-      }
+    localMutex.withLock {
+      if (!isCurrentAccount) return@withLock Err(BookmarkError("Account changed"))
+      val draft = PendingBookmark(bookmark = bookmark, createdAt = Clock.System.now())
+      val id = dao.insert(accountId, draft)
+      wakeups.trySend(Unit)
+      Ok(SaveResult.Queued(id))
+    }
 
   override suspend fun edit(id: Long, bookmark: SaveBookmark): Boolean = localMutex.withLock {
     if (!isCurrentAccount) return@withLock false
@@ -78,12 +78,12 @@ class DefaultPendingBookmarks(
     if (item.state == State.Uploading) return@withLock false
     val uncertain = item.state == State.Uncertain
     dao.update(
-        accountId,
-        item.copy(
-            bookmark = bookmark,
-            state = if (uncertain) State.Uncertain else State.Pending,
-            lastError = if (uncertain) item.lastError else null,
-        ),
+      accountId,
+      item.copy(
+        bookmark = bookmark,
+        state = if (uncertain) State.Uncertain else State.Pending,
+        lastError = if (uncertain) item.lastError else null,
+      ),
     )
     wakeups.trySend(Unit)
     true
@@ -111,17 +111,17 @@ class DefaultPendingBookmarks(
       }
     }
     val accessGranted =
-        localNetworkAccess
-            .observe(config.hostUrl)
-            .filter { it != LocalNetworkAccess.State.Required }
-            .map { Unit }
+      localNetworkAccess
+        .observe(config.hostUrl)
+        .filter { it != LocalNetworkAccess.State.Required }
+        .map { Unit }
     merge(
-            timer,
-            connectivity.observeIsOnline.filter { it }.map { Unit },
-            wakeups.receiveAsFlow(),
-            accessGranted,
-        )
-        .collect { drain(onlyPending = true) }
+        timer,
+        connectivity.observeIsOnline.filter { it }.map { Unit },
+        wakeups.receiveAsFlow(),
+        accessGranted,
+      )
+      .collect { drain(onlyPending = true) }
   }
 
   private suspend fun drain(id: Long? = null, onlyPending: Boolean) = uploadMutex.withLock {
@@ -129,10 +129,9 @@ class DefaultPendingBookmarks(
       dao.getAll(accountId).filter { id == null || it.id == id }.map { it.id }
     }
     if (
-        ids.isEmpty() ||
-            localNetworkAccess.check(config.hostUrl) == LocalNetworkAccess.State.Required
+      ids.isEmpty() || localNetworkAccess.check(config.hostUrl) == LocalNetworkAccess.State.Required
     )
-        return@withLock
+      return@withLock
     for (pendingId in ids) upload(pendingId, onlyPending)
   }
 
@@ -141,66 +140,66 @@ class DefaultPendingBookmarks(
 
   private suspend fun upload(id: Long, onlyPending: Boolean) {
     val item =
-        localMutex.withLock {
-          get(id)?.takeIf {
-            isCurrentAccount &&
-                it.state != State.Uploading &&
-                (!onlyPending || it.state == State.Pending)
-          }
-        } ?: return
+      localMutex.withLock {
+        get(id)?.takeIf {
+          isCurrentAccount &&
+            it.state != State.Uploading &&
+            (!onlyPending || it.state == State.Pending)
+        }
+      } ?: return
     // Preflight is outside the local lock: editing and discarding remain available.
-    api.checkUrl(item.bookmark.url)
-        .fold(
-            success = { check ->
-              if (check.bookmark != null) {
-                updateIfUnchanged(
-                    item,
-                    State.Failed,
-                    "This URL is already on the server. Review it before discarding this pending bookmark.",
-                )
-              } else send(item)
-            },
-            failure = { error ->
-              if (error !is LinkdingError.Connectivity)
-                  updateIfUnchanged(item, State.Failed, error.message)
-            },
-        )
+    api
+      .checkUrl(item.bookmark.url)
+      .fold(
+        success = { check ->
+          if (check.bookmark != null) {
+            updateIfUnchanged(
+              item,
+              State.Failed,
+              "This URL is already on the server. Review it before discarding this pending bookmark.",
+            )
+          } else send(item)
+        },
+        failure = { error ->
+          if (error !is LinkdingError.Connectivity)
+            updateIfUnchanged(item, State.Failed, error.message)
+        },
+      )
   }
 
   private suspend fun send(checked: PendingBookmark) {
     if (localNetworkAccess.check(config.hostUrl) == LocalNetworkAccess.State.Required) return
     val item =
-        localMutex.withLock {
-          val latest = get(checked.id)
-          if (!isCurrentAccount || latest == null || latest.bookmark.url != checked.bookmark.url) {
-            // A changed URL needs its own preflight; a discarded row must not be recreated.
-            null
-          } else {
-            // Claim the latest fields, not the snapshot from before the URL check.
-            latest.copy(state = State.Uploading, lastError = null).also {
-              dao.update(accountId, it)
-            }
-          }
-        } ?: return
+      localMutex.withLock {
+        val latest = get(checked.id)
+        if (!isCurrentAccount || latest == null || latest.bookmark.url != checked.bookmark.url) {
+          // A changed URL needs its own preflight; a discarded row must not be recreated.
+          null
+        } else {
+          // Claim the latest fields, not the snapshot from before the URL check.
+          latest.copy(state = State.Uploading, lastError = null).also { dao.update(accountId, it) }
+        }
+      } ?: return
     try {
-      api.saveBookmark(mapper.map(item.bookmark))
-          .fold(
-              success = { response ->
-                localMutex.withLock {
-                  if (get(item.id) == item) {
-                    if (isCurrentAccount) bookmarksDao.upsert(mapper.map(response))
-                    dao.delete(accountId, item.id)
-                  }
-                }
-              },
-              failure = { error ->
-                val uncertain =
-                    error is LinkdingError.Connectivity ||
-                        (error is LinkdingError.Other && error.requestMayHaveSucceeded)
-                if (uncertain) updateIfUnchanged(item, State.Uncertain)
-                else updateIfUnchanged(item, State.Failed, error.message)
-              },
-          )
+      api
+        .saveBookmark(mapper.map(item.bookmark))
+        .fold(
+          success = { response ->
+            localMutex.withLock {
+              if (get(item.id) == item) {
+                if (isCurrentAccount) bookmarksDao.upsert(mapper.map(response))
+                dao.delete(accountId, item.id)
+              }
+            }
+          },
+          failure = { error ->
+            val uncertain =
+              error is LinkdingError.Connectivity ||
+                (error is LinkdingError.Other && error.requestMayHaveSucceeded)
+            if (uncertain) updateIfUnchanged(item, State.Uncertain)
+            else updateIfUnchanged(item, State.Failed, error.message)
+          },
+        )
     } catch (cancelled: CancellationException) {
       withContext(NonCancellable) { updateIfUnchanged(item, State.Uncertain) }
       throw cancelled
@@ -208,9 +207,9 @@ class DefaultPendingBookmarks(
   }
 
   private suspend fun updateIfUnchanged(
-      item: PendingBookmark,
-      state: State,
-      error: String? = null,
+    item: PendingBookmark,
+    state: State,
+    error: String? = null,
   ) = localMutex.withLock {
     // A slow preflight failure must not overwrite fields saved or discarded in the meantime.
     if (get(item.id) == item) dao.update(accountId, item.copy(state = state, lastError = error))

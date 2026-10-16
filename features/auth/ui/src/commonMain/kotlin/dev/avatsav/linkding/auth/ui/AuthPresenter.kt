@@ -21,8 +21,8 @@ import kotlinx.coroutines.launch
 
 @Inject
 class AuthPresenter(
-    private val authenticate: Authenticate,
-    private val localNetworkAccess: LocalNetworkAccess,
+  private val authenticate: Authenticate,
+  private val localNetworkAccess: LocalNetworkAccess,
 ) : MoleculePresenter<AuthUiEvent, AuthUiState, AuthEffect>() {
 
   @Composable
@@ -54,14 +54,14 @@ class AuthPresenter(
                   emitEffect(AuthEffect.RequestLocalNetworkAccess)
                 } else {
                   authenticate(Authenticate.Param(event.hostUrl, event.apiKey))
-                      .onOk { emitEffect(AuthEffect.AuthenticationSuccess) }
-                      .onErr { error ->
-                        when (error) {
-                          is InvalidApiKey -> invalidApiKey = true
-                          is InvalidHostname -> invalidHostUrl = true
-                          is Other -> errorMessage = error.message
-                        }
+                    .onOk { emitEffect(AuthEffect.AuthenticationSuccess) }
+                    .onErr { error ->
+                      when (error) {
+                        is InvalidApiKey -> invalidApiKey = true
+                        is InvalidHostname -> invalidHostUrl = true
+                        is Other -> errorMessage = error.message
                       }
+                    }
                   pendingCredentials = null
                 }
               } finally {
@@ -82,11 +82,11 @@ class AuthPresenter(
     }
 
     return AuthUiState(
-        verifying = verifying || checkingAccess || awaitingPermission,
-        invalidHostUrl = invalidHostUrl,
-        invalidApiKey = invalidApiKey,
-        errorMessage = errorMessage,
-        localNetworkAccessRequired = localNetworkAccessRequired,
+      verifying = verifying || checkingAccess || awaitingPermission,
+      invalidHostUrl = invalidHostUrl,
+      invalidApiKey = invalidApiKey,
+      errorMessage = errorMessage,
+      localNetworkAccessRequired = localNetworkAccessRequired,
     )
   }
 }

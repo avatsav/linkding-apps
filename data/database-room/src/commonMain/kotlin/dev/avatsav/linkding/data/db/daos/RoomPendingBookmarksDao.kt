@@ -14,13 +14,13 @@ import kotlinx.coroutines.flow.map
 @ContributesBinding(AppScope::class)
 class RoomPendingBookmarksDao(private val db: LinkdingRoomDatabase) : PendingBookmarksDao {
   override fun observeAll(accountId: String): Flow<List<PendingBookmark>> =
-      db.pendingBookmarksQueries().observeAll(accountId).map { rows -> rows.map { it.toModel() } }
+    db.pendingBookmarksQueries().observeAll(accountId).map { rows -> rows.map { it.toModel() } }
 
   override suspend fun getAll(accountId: String): List<PendingBookmark> =
-      db.pendingBookmarksQueries().selectAll(accountId).map { it.toModel() }
+    db.pendingBookmarksQueries().selectAll(accountId).map { it.toModel() }
 
   override suspend fun insert(accountId: String, bookmark: PendingBookmark): Long =
-      db.pendingBookmarksQueries().insert(bookmark.toRoomEntity(accountId))
+    db.pendingBookmarksQueries().insert(bookmark.toRoomEntity(accountId))
 
   override suspend fun update(accountId: String, bookmark: PendingBookmark) {
     // Do not allow an update to move a row between accounts.
@@ -30,5 +30,5 @@ class RoomPendingBookmarksDao(private val db: LinkdingRoomDatabase) : PendingBoo
   }
 
   override suspend fun delete(accountId: String, id: Long) =
-      db.pendingBookmarksQueries().delete(accountId, id)
+    db.pendingBookmarksQueries().delete(accountId, id)
 }

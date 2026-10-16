@@ -4,6 +4,6 @@ import androidx.compose.runtime.Composable
 
 @Composable
 actual fun rememberLocalNetworkPermissionRequest(
-    onResult: (Boolean) -> Unit
+  onResult: (Boolean) -> Unit
 ): LocalNetworkPermissionRequest =
-    LocalNetworkPermissionRequest(opensSettings = false, launch = { onResult(true) })
+  LocalNetworkPermissionRequest(opensSettings = false, launch = { onResult(true) })

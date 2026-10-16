@@ -17,15 +17,15 @@ sealed interface BookmarkMode {
 
 @Immutable
 data class AddBookmarkUiState(
-    val mode: BookmarkMode,
-    val existingBookmark: Bookmark? = null,
-    val pendingBookmark: PendingBookmark? = null,
-    val pendingUnavailable: Boolean = false,
-    val loading: Boolean = false,
-    val checkingUrl: Boolean = false,
-    val checkUrlResult: CheckUrlResult? = null,
-    val saving: Boolean = false,
-    val errorMessage: String? = null,
+  val mode: BookmarkMode,
+  val existingBookmark: Bookmark? = null,
+  val pendingBookmark: PendingBookmark? = null,
+  val pendingUnavailable: Boolean = false,
+  val loading: Boolean = false,
+  val checkingUrl: Boolean = false,
+  val checkUrlResult: CheckUrlResult? = null,
+  val saving: Boolean = false,
+  val errorMessage: String? = null,
 ) {
   val isEditMode: Boolean
     get() = mode is BookmarkMode.Edit || mode is BookmarkMode.Pending || existingBookmark != null
@@ -36,11 +36,11 @@ data class AddBookmarkUiState(
 
 sealed interface AddBookmarkUiEvent {
   data class Save(
-      val url: String,
-      val title: String?,
-      val description: String?,
-      val notes: String?,
-      val tags: List<String>,
+    val url: String,
+    val title: String?,
+    val description: String?,
+    val notes: String?,
+    val tags: List<String>,
   ) : AddBookmarkUiEvent
 
   data object Close : AddBookmarkUiEvent

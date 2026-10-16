@@ -21,24 +21,24 @@ class HttpFailureTest {
   fun `only 401 and 403 are authentication errors`() = runTest {
     for (code in listOf(400, 401, 403, 422, 500)) {
       val client =
-          HttpClient(MockEngine { respond("", HttpStatusCode.fromValue(code)) }) {
-            expectSuccess = true
-          }
+        HttpClient(MockEngine { respond("", HttpStatusCode.fromValue(code)) }) {
+          expectSuccess = true
+        }
       try {
         val result =
-            client
-                .get<String, LinkdingErrorResponse> { url("https://example.com") }
-                .toLinkdingResult()
+          client
+            .get<String, LinkdingErrorResponse> { url("https://example.com") }
+            .toLinkdingResult()
         result.fold(
-            success = { error("Expected HTTP failure") },
-            failure = { failure ->
-              if (code == 401 || code == 403) {
-                assertIs<LinkdingError.Unauthorized>(failure)
-              } else {
-                assertIs<LinkdingError.Other>(failure)
-              }
-              Unit
-            },
+          success = { error("Expected HTTP failure") },
+          failure = { failure ->
+            if (code == 401 || code == 403) {
+              assertIs<LinkdingError.Unauthorized>(failure)
+            } else {
+              assertIs<LinkdingError.Other>(failure)
+            }
+            Unit
+          },
         )
       } finally {
         client.close()
@@ -66,7 +66,7 @@ class HttpFailureTest {
     val client = HttpClient(MockEngine { request -> throw HttpRequestTimeoutException(request) })
     try {
       assertIs<ApiResponse.ConnectivityError>(
-          client.get<String, LinkdingErrorResponse> { url("https://example.com") }
+        client.get<String, LinkdingErrorResponse> { url("https://example.com") }
       )
     } finally {
       client.close()
@@ -76,12 +76,12 @@ class HttpFailureTest {
   @Test
   fun `unparseable response cannot prove a POST was rejected`() {
     ApiResponse.UnknownError(IllegalStateException("Response lost"))
-        .toLinkdingResult()
-        .fold(
-            success = { error("Expected failure") },
-            failure = { failure ->
-              assertTrue((failure as LinkdingError.Other).requestMayHaveSucceeded)
-            },
-        )
+      .toLinkdingResult()
+      .fold(
+        success = { error("Expected failure") },
+        failure = { failure ->
+          assertTrue((failure as LinkdingError.Other).requestMayHaveSucceeded)
+        },
+      )
   }
 }

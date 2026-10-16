@@ -31,7 +31,7 @@ abstract class RoomBookmarksDao {
   protected abstract suspend fun insertIgnore(bookmark: BookmarkEntity): Long
 
   @Query(
-      """
+    """
       UPDATE bookmarks SET
         url = :url,
         urlHost = :urlHost,
@@ -47,16 +47,16 @@ abstract class RoomBookmarksDao {
   )
   @Suppress("LongParameterList")
   protected abstract suspend fun updateExisting(
-      linkdingId: Long,
-      url: String,
-      urlHost: String,
-      title: String,
-      description: String,
-      archived: Boolean,
-      unread: Boolean,
-      tags: Set<String>,
-      added: kotlin.time.Instant?,
-      modified: kotlin.time.Instant?,
+    linkdingId: Long,
+    url: String,
+    urlHost: String,
+    title: String,
+    description: String,
+    archived: Boolean,
+    unread: Boolean,
+    tags: Set<String>,
+    added: kotlin.time.Instant?,
+    modified: kotlin.time.Instant?,
   ): Int
 
   @Query("DELETE FROM bookmarks WHERE linkding_id = :linkdingId")
@@ -74,16 +74,16 @@ abstract class RoomBookmarksDao {
   @IgnorableReturnValue
   open suspend fun update(bookmark: BookmarkEntity): Int {
     return updateExisting(
-        linkdingId = bookmark.linkdingId,
-        url = bookmark.url,
-        urlHost = bookmark.urlHost,
-        title = bookmark.title,
-        description = bookmark.description,
-        archived = bookmark.archived,
-        unread = bookmark.unread,
-        tags = bookmark.tags,
-        added = bookmark.added,
-        modified = bookmark.modified,
+      linkdingId = bookmark.linkdingId,
+      url = bookmark.url,
+      urlHost = bookmark.urlHost,
+      title = bookmark.title,
+      description = bookmark.description,
+      archived = bookmark.archived,
+      unread = bookmark.unread,
+      tags = bookmark.tags,
+      added = bookmark.added,
+      modified = bookmark.modified,
     )
   }
 

@@ -12,9 +12,9 @@ import kotlinx.coroutines.withContext
 
 @Inject
 class AddBookmark(
-    private val repository: BookmarksRepository,
-    private val dispatchers: AppCoroutineDispatchers,
+  private val repository: BookmarksRepository,
+  private val dispatchers: AppCoroutineDispatchers,
 ) : Interactor<SaveBookmark, SaveResult, BookmarkError>() {
   override suspend fun doWork(param: SaveBookmark): Result<SaveResult, BookmarkError> =
-      withContext(dispatchers.io) { repository.saveBookmark(param) }
+    withContext(dispatchers.io) { repository.saveBookmark(param) }
 }

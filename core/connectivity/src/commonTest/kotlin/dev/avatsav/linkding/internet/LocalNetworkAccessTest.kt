@@ -28,8 +28,8 @@ class LocalNetworkAccessTest {
     val access = FakeAccess()
     access.local = true
     assertEquals(
-        LocalNetworkAccess.State.Required,
-        access.check("https://linkding.internal.example"),
+      LocalNetworkAccess.State.Required,
+      access.check("https://linkding.internal.example"),
     )
     assertEquals("https://linkding.internal.example", access.lastHost)
   }
@@ -63,25 +63,25 @@ class LocalNetworkAccessTest {
   @Test
   fun `private and link local IPv4 addresses are classified as local`() {
     for (address in
-        listOf(
-            ip(192, 168, 178, 68),
-            ip(10, 0, 0, 1),
-            ip(172, 16, 0, 1),
-            ip(172, 31, 255, 254),
-            ip(169, 254, 1, 1),
-        )) assertTrue(isLocalNetworkAddress(address))
+      listOf(
+        ip(192, 168, 178, 68),
+        ip(10, 0, 0, 1),
+        ip(172, 16, 0, 1),
+        ip(172, 31, 255, 254),
+        ip(169, 254, 1, 1),
+      )) assertTrue(isLocalNetworkAddress(address))
   }
 
   @Test
   fun `public and loopback IPv4 addresses do not require LAN permission`() {
     for (address in
-        listOf(
-            ip(1, 1, 1, 1),
-            ip(172, 15, 0, 1),
-            ip(172, 32, 0, 1),
-            ip(127, 0, 0, 1),
-            ip(0, 0, 0, 0),
-        )) assertFalse(isLocalNetworkAddress(address))
+      listOf(
+        ip(1, 1, 1, 1),
+        ip(172, 15, 0, 1),
+        ip(172, 32, 0, 1),
+        ip(127, 0, 0, 1),
+        ip(0, 0, 0, 0),
+      )) assertFalse(isLocalNetworkAddress(address))
   }
 
   @Test

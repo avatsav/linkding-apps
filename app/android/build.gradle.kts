@@ -20,13 +20,13 @@ android {
 
   packaging {
     resources.excludes +=
-        setOf(
-            "META-INF/proguard/*",
-            "/*.properties",
-            "META-INF/*.properties",
-            "LICENSE*",
-            "META-INF/**/previous-compilation-data.bin",
-        )
+      setOf(
+        "META-INF/proguard/*",
+        "/*.properties",
+        "META-INF/*.properties",
+        "LICENSE*",
+        "META-INF/**/previous-compilation-data.bin",
+      )
   }
 
   buildTypes {

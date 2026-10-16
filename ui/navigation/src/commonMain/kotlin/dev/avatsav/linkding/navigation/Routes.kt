@@ -42,7 +42,7 @@ sealed interface Route {
 
   @Serializable
   data class Tags(val selectedTagIds: Set<Long> = emptySet()) :
-      Route, RouteWithResult<Tags.Result> {
+    Route, RouteWithResult<Tags.Result> {
 
     sealed interface Result : NavResult {
       @Serializable data class Confirmed(val selectedTags: List<Tag>) : Result

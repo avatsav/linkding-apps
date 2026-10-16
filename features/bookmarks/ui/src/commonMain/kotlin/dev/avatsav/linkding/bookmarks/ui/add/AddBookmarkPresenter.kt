@@ -37,12 +37,12 @@ import kotlinx.coroutines.launch
 
 @AssistedInject
 class AddBookmarkPresenter(
-    @Assisted route: Route.AddBookmark,
-    private val addBookmark: AddBookmark,
-    private val getBookmark: GetBookmark,
-    private val updateBookmark: UpdateBookmark,
-    private val checkBookmarkUrl: CheckBookmarkUrl,
-    private val pendingBookmarks: PendingBookmarks,
+  @Assisted route: Route.AddBookmark,
+  private val addBookmark: AddBookmark,
+  private val getBookmark: GetBookmark,
+  private val updateBookmark: UpdateBookmark,
+  private val checkBookmarkUrl: CheckBookmarkUrl,
+  private val pendingBookmarks: PendingBookmarks,
 ) : MoleculePresenter<AddBookmarkUiEvent, AddBookmarkUiState, AddBookmarkUiEffect>() {
 
   private val mode: BookmarkMode = route.toBookmarkMode()
@@ -68,14 +68,14 @@ class AddBookmarkPresenter(
         }
         is Shared -> {
           checkBookmarkUrl(mode.url)
-              .onOk { result ->
-                checkUrlResult = result
-                if (result.existingBookmark != null) {
-                  existingBookmark = result.existingBookmark
-                  emitEffect(AddBookmarkUiEffect.ExistingBookmarkFound)
-                }
+            .onOk { result ->
+              checkUrlResult = result
+              if (result.existingBookmark != null) {
+                existingBookmark = result.existingBookmark
+                emitEffect(AddBookmarkUiEffect.ExistingBookmarkFound)
               }
-              .onErr { Logger.e { "CheckError: $it" } }
+            }
+            .onErr { Logger.e { "CheckError: $it" } }
         }
         is BookmarkMode.Pending -> {
           pendingBookmark = pendingBookmarks.get(mode.pendingId)
@@ -85,11 +85,11 @@ class AddBookmarkPresenter(
         is Edit -> {
           loadingBookmark = true
           getBookmark(mode.bookmarkId)
-              .onOk { existingBookmark = it }
-              .onErr {
-                Logger.e { "Failed to load bookmark: $it" }
-                errorMessage = it.message
-              }
+            .onOk { existingBookmark = it }
+            .onErr {
+              Logger.e { "Failed to load bookmark: $it" }
+              errorMessage = it.message
+            }
           loadingBookmark = false
         }
       }
@@ -99,78 +99,78 @@ class AddBookmarkPresenter(
       when (event) {
         Close -> emitEffect(AddBookmarkUiEffect.NavigateUp)
         is Save ->
-            if (!saving) {
-              saving = true
-              presenterScope.launch {
-                try {
-                  save(event, effectiveBookmarkId, pendingBookmark)
-                      .onOk { saved ->
-                        if (saved) emitEffect(AddBookmarkUiEffect.BookmarkSaved)
-                        else pendingUnavailable = true
-                      }
-                      .onErr { errorMessage = it.message }
-                } finally {
-                  saving = false
-                }
+          if (!saving) {
+            saving = true
+            presenterScope.launch {
+              try {
+                save(event, effectiveBookmarkId, pendingBookmark)
+                  .onOk { saved ->
+                    if (saved) emitEffect(AddBookmarkUiEffect.BookmarkSaved)
+                    else pendingUnavailable = true
+                  }
+                  .onErr { errorMessage = it.message }
+              } finally {
+                saving = false
               }
             }
+          }
 
         is CheckUrl ->
-            presenterScope.launch {
-              if (mode is BookmarkMode.Pending) return@launch
-              checkBookmarkUrl(event.url)
-                  .onOk { result ->
-                    checkUrlResult = result
-                    // If URL already exists, switch to edit mode automatically
-                    if (result.existingBookmark != null && existingBookmark == null) {
-                      existingBookmark = result.existingBookmark
-                      emitEffect(AddBookmarkUiEffect.ExistingBookmarkFound)
-                    }
-                  }
-                  .onErr { Logger.e { "CheckError: $it" } }
-            }
+          presenterScope.launch {
+            if (mode is BookmarkMode.Pending) return@launch
+            checkBookmarkUrl(event.url)
+              .onOk { result ->
+                checkUrlResult = result
+                // If URL already exists, switch to edit mode automatically
+                if (result.existingBookmark != null && existingBookmark == null) {
+                  existingBookmark = result.existingBookmark
+                  emitEffect(AddBookmarkUiEffect.ExistingBookmarkFound)
+                }
+              }
+              .onErr { Logger.e { "CheckError: $it" } }
+          }
       }
     }
 
     return AddBookmarkUiState(
-        mode = mode,
-        existingBookmark = existingBookmark,
-        pendingBookmark = pendingBookmark,
-        pendingUnavailable = pendingUnavailable,
-        loading = loadingBookmark,
-        checkingUrl = checkingUrl,
-        checkUrlResult = checkUrlResult,
-        saving = saving,
-        errorMessage = errorMessage.ifBlank { null },
+      mode = mode,
+      existingBookmark = existingBookmark,
+      pendingBookmark = pendingBookmark,
+      pendingUnavailable = pendingUnavailable,
+      loading = loadingBookmark,
+      checkingUrl = checkingUrl,
+      checkUrlResult = checkUrlResult,
+      saving = saving,
+      errorMessage = errorMessage.ifBlank { null },
     )
   }
 
   private suspend fun save(
-      event: Save,
-      serverId: Long?,
-      pending: PendingBookmark?,
+    event: Save,
+    serverId: Long?,
+    pending: PendingBookmark?,
   ): Result<Boolean, BookmarkError> {
     val fields =
-        (pending?.bookmark ?: SaveBookmark(event.url)).copy(
-            url = event.url,
-            title = event.title,
-            description = event.description,
-            notes = event.notes,
-            tags = event.tags.toSet(),
-        )
+      (pending?.bookmark ?: SaveBookmark(event.url)).copy(
+        url = event.url,
+        title = event.title,
+        description = event.description,
+        notes = event.notes,
+        tags = event.tags.toSet(),
+      )
     return when {
       mode is BookmarkMode.Pending -> Ok(pendingBookmarks.edit(mode.pendingId, fields))
       serverId != null ->
-          updateBookmark(
-                  UpdateBookmarkModel(
-                      id = serverId,
-                      title = event.title,
-                      description = event.description,
-                      notes = event.notes,
-                      tags = event.tags.toSet(),
-                  )
-              )
-              .map { true }
+        updateBookmark(
+            UpdateBookmarkModel(
+              id = serverId,
+              title = event.title,
+              description = event.description,
+              notes = event.notes,
+              tags = event.tags.toSet(),
+            )
+          )
+          .map { true }
       else -> addBookmark(fields).map { true }
     }
   }
@@ -181,10 +181,10 @@ class AddBookmarkPresenter(
   }
 
   private fun Route.AddBookmark.toBookmarkMode(): BookmarkMode =
-      when (this) {
-        is New -> BookmarkMode.New
-        is Shared -> BookmarkMode.Shared(url)
-        is Edit -> BookmarkMode.Edit(bookmarkId)
-        is Pending -> BookmarkMode.Pending(pendingId)
-      }
+    when (this) {
+      is New -> BookmarkMode.New
+      is Shared -> BookmarkMode.Shared(url)
+      is Edit -> BookmarkMode.Edit(bookmarkId)
+      is Pending -> BookmarkMode.Pending(pendingId)
+    }
 }

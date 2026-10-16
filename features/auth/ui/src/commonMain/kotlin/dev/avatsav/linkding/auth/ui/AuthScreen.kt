@@ -90,10 +90,10 @@ fun AuthScreen(presenter: AuthPresenter, modifier: Modifier = Modifier) {
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 private fun AuthScreen(
-    state: AuthUiState,
-    modifier: Modifier = Modifier,
-    opensSettings: Boolean = false,
-    eventSink: (AuthUiEvent) -> Unit,
+  state: AuthUiState,
+  modifier: Modifier = Modifier,
+  opensSettings: Boolean = false,
+  eventSink: (AuthUiEvent) -> Unit,
 ) {
 
   var hostUrl by rememberSaveable { mutableStateOf("") }
@@ -106,122 +106,121 @@ private fun AuthScreen(
   val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
 
   val errorMessage =
-      if (state.invalidApiKey) {
-        stringResource(Res.string.auth_error_invalid_api_key)
-      } else if (state.invalidHostUrl) {
-        stringResource(Res.string.auth_error_invalid_host)
-      } else {
-        ""
-      }
+    if (state.invalidApiKey) {
+      stringResource(Res.string.auth_error_invalid_api_key)
+    } else if (state.invalidHostUrl) {
+      stringResource(Res.string.auth_error_invalid_host)
+    } else {
+      ""
+    }
 
   Scaffold(
-      modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
-      topBar = {
-        LargeFlexibleTopAppBar(
-            title = { Text(text = stringResource(Res.string.auth_title)) },
-            scrollBehavior = scrollBehavior,
-        )
-      },
-      bottomBar = {
-        BottomAppBar(
-            modifier = Modifier.imePadding(),
-            floatingActionButton = {
-              Button(
-                  modifier = Modifier.defaultMinSize(minWidth = 56.dp, minHeight = 48.dp),
-                  enabled = allFieldsFilledOut && !state.loading,
-                  onClick = { eventSink(SaveCredentials(hostUrl, apiKey)) },
-              ) {
-                if (state.loading) SmallCircularProgressIndicator()
-                else Text(stringResource(Res.string.auth_save))
-              }
-            },
-            actions = {},
-        )
-      },
-      contentWindowInsets = WindowInsets(0.dp),
+    modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+    topBar = {
+      LargeFlexibleTopAppBar(
+        title = { Text(text = stringResource(Res.string.auth_title)) },
+        scrollBehavior = scrollBehavior,
+      )
+    },
+    bottomBar = {
+      BottomAppBar(
+        modifier = Modifier.imePadding(),
+        floatingActionButton = {
+          Button(
+            modifier = Modifier.defaultMinSize(minWidth = 56.dp, minHeight = 48.dp),
+            enabled = allFieldsFilledOut && !state.loading,
+            onClick = { eventSink(SaveCredentials(hostUrl, apiKey)) },
+          ) {
+            if (state.loading) SmallCircularProgressIndicator()
+            else Text(stringResource(Res.string.auth_save))
+          }
+        },
+        actions = {},
+      )
+    },
+    contentWindowInsets = WindowInsets(0.dp),
   ) { padding ->
     Column(
-        modifier =
-            Modifier.fillMaxSize()
-                .padding(padding)
-                .padding(horizontal = 16.dp)
-                .verticalScroll(rememberScrollState()),
-        verticalArrangement = Arrangement.spacedBy(12.dp),
+      modifier =
+        Modifier.fillMaxSize()
+          .padding(padding)
+          .padding(horizontal = 16.dp)
+          .verticalScroll(rememberScrollState()),
+      verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
       Text(text = stringResource(Res.string.auth_description))
       if (state.localNetworkAccessRequired) {
         Text(text = stringResource(Res.string.auth_local_network_required))
         TextButton(
-            enabled = allFieldsFilledOut && !state.loading,
-            onClick = { eventSink(SaveCredentials(hostUrl, apiKey)) },
+          enabled = allFieldsFilledOut && !state.loading,
+          onClick = { eventSink(SaveCredentials(hostUrl, apiKey)) },
         ) {
           Text(
-              stringResource(
-                  if (opensSettings) Res.string.auth_open_app_settings
-                  else Res.string.auth_allow_access
-              )
+            stringResource(
+              if (opensSettings) Res.string.auth_open_app_settings else Res.string.auth_allow_access
+            )
           )
         }
       }
       state.errorMessage
-          ?.takeIf { it.isNotBlank() }
-          ?.let { message -> Text(text = message, color = MaterialTheme.colorScheme.error) }
+        ?.takeIf { it.isNotBlank() }
+        ?.let { message -> Text(text = message, color = MaterialTheme.colorScheme.error) }
       OutlinedTextField(
-          modifier = Modifier.fillMaxWidth(),
-          value = hostUrl,
-          enabled = !state.loading,
-          singleLine = true,
-          label = { Text(text = stringResource(Res.string.auth_host_url)) },
-          isError = state.invalidHostUrl,
-          supportingText = {
-            if (errorMessage.isNotBlank() && state.invalidHostUrl) {
-              Text(
-                  modifier = Modifier.fillMaxWidth(),
-                  text = errorMessage,
-                  color = MaterialTheme.colorScheme.error,
-              )
-            }
-          },
-          keyboardOptions =
-              KeyboardOptions(
-                  autoCorrectEnabled = false,
-                  keyboardType = KeyboardType.Uri,
-                  imeAction = ImeAction.Next,
-              ),
-          onValueChange = { hostUrl = it },
+        modifier = Modifier.fillMaxWidth(),
+        value = hostUrl,
+        enabled = !state.loading,
+        singleLine = true,
+        label = { Text(text = stringResource(Res.string.auth_host_url)) },
+        isError = state.invalidHostUrl,
+        supportingText = {
+          if (errorMessage.isNotBlank() && state.invalidHostUrl) {
+            Text(
+              modifier = Modifier.fillMaxWidth(),
+              text = errorMessage,
+              color = MaterialTheme.colorScheme.error,
+            )
+          }
+        },
+        keyboardOptions =
+          KeyboardOptions(
+            autoCorrectEnabled = false,
+            keyboardType = KeyboardType.Uri,
+            imeAction = ImeAction.Next,
+          ),
+        onValueChange = { hostUrl = it },
       )
       OutlinedTextField(
-          modifier = Modifier.fillMaxWidth().semantics { contentType = ContentType.Password },
-          value = apiKey,
-          enabled = !state.loading,
-          singleLine = true,
-          label = { Text(text = stringResource(Res.string.auth_api_key)) },
-          visualTransformation =
-              if (apiKeyVisible) VisualTransformation.None else PasswordVisualTransformation(),
-          keyboardOptions =
-              KeyboardOptions(
-                  autoCorrectEnabled = false,
-                  keyboardType = KeyboardType.Password,
-                  imeAction = ImeAction.Done,
-              ),
-          trailingIcon = {
-            ApiKeyVisibilityToggle(
-                visible = apiKeyVisible,
-                enabled = !state.loading,
-                onClick = { apiKeyVisible = !apiKeyVisible },
+        modifier = Modifier.fillMaxWidth().semantics { contentType = ContentType.Password },
+        value = apiKey,
+        enabled = !state.loading,
+        singleLine = true,
+        label = { Text(text = stringResource(Res.string.auth_api_key)) },
+        visualTransformation =
+          if (apiKeyVisible) VisualTransformation.None else PasswordVisualTransformation(),
+        keyboardOptions =
+          KeyboardOptions(
+            autoCorrectEnabled = false,
+            keyboardType = KeyboardType.Password,
+            imeAction = ImeAction.Done,
+          ),
+        trailingIcon = {
+          ApiKeyVisibilityToggle(
+            visible = apiKeyVisible,
+            enabled = !state.loading,
+            onClick = { apiKeyVisible = !apiKeyVisible },
+          )
+        },
+        isError = state.invalidApiKey,
+        supportingText = {
+          if (errorMessage.isNotBlank() && state.invalidApiKey) {
+            Text(
+              modifier = Modifier.fillMaxWidth(),
+              text = errorMessage,
+              color = MaterialTheme.colorScheme.error,
             )
-          },
-          isError = state.invalidApiKey,
-          supportingText = {
-            if (errorMessage.isNotBlank() && state.invalidApiKey) {
-              Text(
-                  modifier = Modifier.fillMaxWidth(),
-                  text = errorMessage,
-                  color = MaterialTheme.colorScheme.error,
-              )
-            }
-          },
-          onValueChange = { apiKey = it },
+          }
+        },
+        onValueChange = { apiKey = it },
       )
     }
   }
@@ -229,18 +228,16 @@ private fun AuthScreen(
 
 @Composable
 private fun ApiKeyVisibilityToggle(
-    visible: Boolean,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-    enabled: Boolean = true,
+  visible: Boolean,
+  onClick: () -> Unit,
+  modifier: Modifier = Modifier,
+  enabled: Boolean = true,
 ) {
   IconButton(onClick = onClick, modifier = modifier, enabled = enabled) {
     Icon(
-        imageVector = if (visible) Icons.Default.VisibilityOff else Icons.Default.Visibility,
-        contentDescription =
-            stringResource(
-                if (visible) Res.string.auth_hide_api_key else Res.string.auth_show_api_key
-            ),
+      imageVector = if (visible) Icons.Default.VisibilityOff else Icons.Default.Visibility,
+      contentDescription =
+        stringResource(if (visible) Res.string.auth_hide_api_key else Res.string.auth_show_api_key),
     )
   }
 }

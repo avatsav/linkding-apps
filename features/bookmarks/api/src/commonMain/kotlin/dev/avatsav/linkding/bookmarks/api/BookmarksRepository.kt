@@ -14,11 +14,11 @@ import kotlinx.coroutines.flow.Flow
 
 interface BookmarksRepository {
   fun getBookmarksPaged(
-      cached: Boolean,
-      pagingConfig: PagingConfig,
-      query: String,
-      category: BookmarkCategory,
-      tags: List<String>,
+    cached: Boolean,
+    pagingConfig: PagingConfig,
+    query: String,
+    category: BookmarkCategory,
+    tags: List<String>,
   ): Flow<PagingData<Bookmark>>
 
   suspend fun checkUrl(url: String): Result<CheckUrlResult, BookmarkError>

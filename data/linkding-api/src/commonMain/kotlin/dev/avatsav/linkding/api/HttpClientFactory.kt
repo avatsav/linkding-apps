@@ -25,8 +25,8 @@ private const val RequestTimeoutMillis = 15_000L
 internal object HttpClientFactory {
 
   fun buildHttpClient(
-      clientConfig: LinkdingClientConfig,
-      apiConfig: LinkdingApiConfig? = null,
+    clientConfig: LinkdingClientConfig,
+    apiConfig: LinkdingApiConfig? = null,
   ): HttpClient {
     val defaultHttpConfig: HttpClientConfig<*>.() -> Unit = {
       defaultRequest {
@@ -41,14 +41,14 @@ internal object HttpClientFactory {
 
       install(ContentNegotiation) {
         json(
-            Json {
-              isLenient = true
-              ignoreUnknownKeys = true
-              coerceInputValues = true
-              encodeDefaults = true
-              prettyPrint = false
-              explicitNulls = false
-            }
+          Json {
+            isLenient = true
+            ignoreUnknownKeys = true
+            coerceInputValues = true
+            encodeDefaults = true
+            prettyPrint = false
+            explicitNulls = false
+          }
         )
       }
 

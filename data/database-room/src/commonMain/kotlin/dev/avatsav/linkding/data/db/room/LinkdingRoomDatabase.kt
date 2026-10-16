@@ -14,9 +14,9 @@ import dev.avatsav.linkding.data.db.room.entities.PendingBookmarkEntity
 import dev.avatsav.linkding.data.db.room.entities.SearchHistoryEntity
 
 @Database(
-    entities = [BookmarkEntity::class, SearchHistoryEntity::class, PendingBookmarkEntity::class],
-    version = 2,
-    exportSchema = true,
+  entities = [BookmarkEntity::class, SearchHistoryEntity::class, PendingBookmarkEntity::class],
+  version = 2,
+  exportSchema = true,
 )
 @ColumnTypeConverters(LinkdingRoomConverters::class)
 @ConstructedBy(LinkdingRoomDatabaseConstructor::class)

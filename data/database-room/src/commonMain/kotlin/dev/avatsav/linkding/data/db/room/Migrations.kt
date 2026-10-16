@@ -5,10 +5,10 @@ import androidx.sqlite.SQLiteConnection
 import androidx.sqlite.execSQL
 
 val MIGRATION_1_2 =
-    object : Migration(1, 2) {
-      override suspend fun migrate(connection: SQLiteConnection) {
-        connection.execSQL(
-            """
+  object : Migration(1, 2) {
+    override suspend fun migrate(connection: SQLiteConnection) {
+      connection.execSQL(
+        """
       CREATE TABLE IF NOT EXISTS `pending_bookmarks` (
         `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
         `accountId` TEXT NOT NULL,
@@ -25,6 +25,6 @@ val MIGRATION_1_2 =
         `lastError` TEXT
       )
     """
-        )
-      }
+      )
     }
+  }

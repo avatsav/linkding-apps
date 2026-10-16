@@ -7,5 +7,5 @@ data class LocalNetworkPermissionRequest(val opensSettings: Boolean, val launch:
 
 @Composable
 expect fun rememberLocalNetworkPermissionRequest(
-    onResult: (Boolean) -> Unit
+  onResult: (Boolean) -> Unit
 ): LocalNetworkPermissionRequest

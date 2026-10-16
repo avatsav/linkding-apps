@@ -18,21 +18,21 @@ import linkding_apps.features.bookmarks.ui.generated.resources.action_undo
 import org.jetbrains.compose.resources.stringResource
 
 data class BookmarksUiState(
-    val bookmarks: LazyPagingItems<Bookmark>,
-    val pendingBookmarks: List<PendingBookmark> = emptyList(),
-    val query: String = "",
-    val category: BookmarkCategory = BookmarkCategory.All,
-    val selectedTags: List<Tag> = emptyList(),
-    val searchHistory: List<SearchHistory> = emptyList(),
-    val snackbarMessage: SnackbarMessage? = null,
+  val bookmarks: LazyPagingItems<Bookmark>,
+  val pendingBookmarks: List<PendingBookmark> = emptyList(),
+  val query: String = "",
+  val category: BookmarkCategory = BookmarkCategory.All,
+  val selectedTags: List<Tag> = emptyList(),
+  val searchHistory: List<SearchHistory> = emptyList(),
+  val snackbarMessage: SnackbarMessage? = null,
 ) {
   val isSearchActive: Boolean
     get() = query.isNotBlank() || category != BookmarkCategory.All || selectedTags.isNotEmpty()
 
   val filteredHistory: List<SearchHistory>
     get() =
-        if (query.isBlank()) searchHistory
-        else searchHistory.filter { it.query.contains(query, ignoreCase = true) }
+      if (query.isBlank()) searchHistory
+      else searchHistory.filter { it.query.contains(query, ignoreCase = true) }
 }
 
 sealed interface BookmarksUiEvent {
@@ -112,7 +112,7 @@ sealed interface BookmarkSnackbar : SnackbarMessage {
   }
 
   data class Failed(val errorMessage: String?, override val onAction: (() -> Unit)?) :
-      BookmarkSnackbar {
+    BookmarkSnackbar {
     @Composable
     override fun message() = stringResource(Res.string.action_failed, errorMessage.orEmpty())
 

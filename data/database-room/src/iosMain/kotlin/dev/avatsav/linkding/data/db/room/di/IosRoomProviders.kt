@@ -25,21 +25,21 @@ actual interface RoomPlatformProviders {
     val fileManager = NSFileManager.defaultManager
     if (!fileManager.fileExistsAtPath(appSupportPath)) {
       check(
-          fileManager.createDirectoryAtPath(
-              path = appSupportPath,
-              withIntermediateDirectories = true,
-              attributes = null,
-              error = null,
-          )
+        fileManager.createDirectoryAtPath(
+          path = appSupportPath,
+          withIntermediateDirectories = true,
+          attributes = null,
+          error = null,
+        )
       ) {
         "Failed to create Room database directory at $appSupportPath"
       }
     }
     val dbFilePath = "$appSupportPath/$DatabaseName"
     return Room.databaseBuilder<LinkdingRoomDatabase>(name = dbFilePath)
-        .addMigrations(MIGRATION_1_2)
-        .setDriver(BundledSQLiteDriver())
-        .setQueryCoroutineContext(dispatchers.io)
-        .build()
+      .addMigrations(MIGRATION_1_2)
+      .setDriver(BundledSQLiteDriver())
+      .setQueryCoroutineContext(dispatchers.io)
+      .build()
   }
 }

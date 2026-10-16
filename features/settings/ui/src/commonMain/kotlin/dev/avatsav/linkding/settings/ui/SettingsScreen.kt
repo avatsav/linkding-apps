@@ -107,63 +107,63 @@ fun SettingsScreen(presenter: SettingsPresenter, modifier: Modifier = Modifier) 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class, ExperimentalMaterial3Api::class)
 @Composable
 private fun SettingsScreen(
-    state: SettingsUiState,
-    modifier: Modifier = Modifier,
-    opensSettings: Boolean = false,
-    eventSink: (SettingsUiEvent) -> Unit,
+  state: SettingsUiState,
+  modifier: Modifier = Modifier,
+  opensSettings: Boolean = false,
+  eventSink: (SettingsUiEvent) -> Unit,
 ) {
   val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
   var showResetConfirmationDialog by remember { mutableStateOf(false) }
 
   Scaffold(
-      modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
-      topBar = {
-        LargeFlexibleTopAppBar(
-            title = { Text(text = stringResource(Res.string.settings_title)) },
-            scrollBehavior = scrollBehavior,
-            navigationIcon = {
-              IconButton(onClick = { eventSink(Close) }) {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Default.ArrowBack,
-                    contentDescription = stringResource(Res.string.settings_navigate_back),
-                )
-              }
-            },
-        )
-      },
+    modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+    topBar = {
+      LargeFlexibleTopAppBar(
+        title = { Text(text = stringResource(Res.string.settings_title)) },
+        scrollBehavior = scrollBehavior,
+        navigationIcon = {
+          IconButton(onClick = { eventSink(Close) }) {
+            Icon(
+              imageVector = Icons.AutoMirrored.Default.ArrowBack,
+              contentDescription = stringResource(Res.string.settings_navigate_back),
+            )
+          }
+        },
+      )
+    },
   ) { paddingValues ->
     LazyColumn(
-        contentPadding = PaddingValues(horizontal = 12.dp, vertical = 12.dp),
-        modifier =
-            Modifier.fillMaxWidth()
-                .padding(
-                    top = paddingValues.calculateTopPadding(),
-                    start = paddingValues.calculateStartPadding(LayoutDirection.Ltr),
-                    end = paddingValues.calculateEndPadding(LayoutDirection.Ltr),
-                )
-                .nestedScroll(scrollBehavior.nestedScrollConnection),
+      contentPadding = PaddingValues(horizontal = 12.dp, vertical = 12.dp),
+      modifier =
+        Modifier.fillMaxWidth()
+          .padding(
+            top = paddingValues.calculateTopPadding(),
+            start = paddingValues.calculateStartPadding(LayoutDirection.Ltr),
+            end = paddingValues.calculateEndPadding(LayoutDirection.Ltr),
+          )
+          .nestedScroll(scrollBehavior.nestedScrollConnection),
     ) {
       item {
         LinkdingSettings(
-            state = state,
-            opensSettings = opensSettings,
-            onLocalNetworkAccessClick = { eventSink(SettingsUiEvent.RequestLocalNetworkAccess) },
-            onResetClick = { showResetConfirmationDialog = true },
+          state = state,
+          opensSettings = opensSettings,
+          onLocalNetworkAccessClick = { eventSink(SettingsUiEvent.RequestLocalNetworkAccess) },
+          onResetClick = { showResetConfirmationDialog = true },
         )
       }
       item {
         AppearanceSettings(
-            state = state,
-            onAppThemeChange = { eventSink(SetAppTheme(it)) },
-            onDynamicThemeToggle = { eventSink(ToggleUseDynamicColors) },
+          state = state,
+          onAppThemeChange = { eventSink(SetAppTheme(it)) },
+          onDynamicThemeToggle = { eventSink(ToggleUseDynamicColors) },
         )
       }
       item {
         AboutSettings(
-            state = state,
-            onSourceCodeClick = { eventSink(ShowSourceCode) },
-            onLicensesClick = { eventSink(ShowLicenses) },
-            onPrivacyPolicyClick = { eventSink(ShowPrivacyPolicy) },
+          state = state,
+          onSourceCodeClick = { eventSink(ShowSourceCode) },
+          onLicensesClick = { eventSink(ShowLicenses) },
+          onPrivacyPolicyClick = { eventSink(ShowPrivacyPolicy) },
         )
       }
       item { MadeInMunich() }
@@ -171,9 +171,9 @@ private fun SettingsScreen(
   }
   if (showResetConfirmationDialog) {
     ResetConfirmationDialog(
-        blocked = state.resetBlocked,
-        onConfirm = { eventSink(ResetApiConfig) },
-        onDismiss = { showResetConfirmationDialog = false },
+      blocked = state.resetBlocked,
+      onConfirm = { eventSink(ResetApiConfig) },
+      onDismiss = { showResetConfirmationDialog = false },
     )
   }
 }
@@ -181,49 +181,49 @@ private fun SettingsScreen(
 @Composable
 @Suppress("MagicNumber")
 private fun LinkdingSettings(
-    state: SettingsUiState,
-    opensSettings: Boolean,
-    onLocalNetworkAccessClick: () -> Unit,
-    onResetClick: () -> Unit,
+  state: SettingsUiState,
+  opensSettings: Boolean,
+  onLocalNetworkAccessClick: () -> Unit,
+  onResetClick: () -> Unit,
 ) {
   val showLocalNetworkAccess = state.localNetworkAccess != LocalNetworkAccess.State.NotRequired
   val count = if (showLocalNetworkAccess) 4 else 3
   PreferenceSection(
-      stringResource(Res.string.settings_linkding),
-      modifier = Modifier.padding(vertical = 8.dp),
+    stringResource(Res.string.settings_linkding),
+    modifier = Modifier.padding(vertical = 8.dp),
   ) {
     Preference(
-        shape = Material3ShapeDefaults.itemShape(0, count),
-        title = stringResource(Res.string.settings_host_url),
-        description = state.apiConfig?.hostUrl,
+      shape = Material3ShapeDefaults.itemShape(0, count),
+      title = stringResource(Res.string.settings_host_url),
+      description = state.apiConfig?.hostUrl,
     )
     Preference(
-        shape = Material3ShapeDefaults.itemShape(1, count),
-        title = stringResource(Res.string.settings_api_key),
-        description = state.apiConfig?.apiKey,
+      shape = Material3ShapeDefaults.itemShape(1, count),
+      title = stringResource(Res.string.settings_api_key),
+      description = state.apiConfig?.apiKey,
     )
     if (showLocalNetworkAccess) {
       Preference(
-          shape = Material3ShapeDefaults.itemShape(2, count),
-          title = stringResource(Res.string.settings_local_network),
-          description =
-              stringResource(
-                  when {
-                    state.localNetworkAccess == LocalNetworkAccess.State.Granted ->
-                        Res.string.settings_local_network_allowed
-                    opensSettings -> Res.string.settings_local_network_open_settings
-                    else -> Res.string.settings_local_network_allow
-                  }
-              ),
-          clickable = state.localNetworkAccess == LocalNetworkAccess.State.Required,
-          onClick = onLocalNetworkAccessClick,
+        shape = Material3ShapeDefaults.itemShape(2, count),
+        title = stringResource(Res.string.settings_local_network),
+        description =
+          stringResource(
+            when {
+              state.localNetworkAccess == LocalNetworkAccess.State.Granted ->
+                Res.string.settings_local_network_allowed
+              opensSettings -> Res.string.settings_local_network_open_settings
+              else -> Res.string.settings_local_network_allow
+            }
+          ),
+        clickable = state.localNetworkAccess == LocalNetworkAccess.State.Required,
+        onClick = onLocalNetworkAccessClick,
       )
     }
     Preference(
-        shape = Material3ShapeDefaults.itemShape(count - 1, count),
-        title = stringResource(Res.string.settings_reset),
-        clickable = true,
-        onClick = onResetClick,
+      shape = Material3ShapeDefaults.itemShape(count - 1, count),
+      title = stringResource(Res.string.settings_reset),
+      clickable = true,
+      onClick = onResetClick,
     )
   }
 }
@@ -233,26 +233,26 @@ private const val AppearanceSettingsCount = 2
 @Composable
 @Suppress("MagicNumber")
 private fun AppearanceSettings(
-    state: SettingsUiState,
-    onAppThemeChange: (AppTheme) -> Unit,
-    onDynamicThemeToggle: () -> Unit,
+  state: SettingsUiState,
+  onAppThemeChange: (AppTheme) -> Unit,
+  onDynamicThemeToggle: () -> Unit,
 ) {
 
   PreferenceSection(
-      stringResource(Res.string.settings_appearance),
-      modifier = Modifier.padding(vertical = 8.dp),
+    stringResource(Res.string.settings_appearance),
+    modifier = Modifier.padding(vertical = 8.dp),
   ) {
     ThemePreference(
-        shape = Material3ShapeDefaults.itemShape(0, AppearanceSettingsCount),
-        selected = state.appTheme,
-        onSelect = onAppThemeChange,
+      shape = Material3ShapeDefaults.itemShape(0, AppearanceSettingsCount),
+      selected = state.appTheme,
+      onSelect = onAppThemeChange,
     )
     SwitchPreference(
-        shape = Material3ShapeDefaults.itemShape(1, AppearanceSettingsCount),
-        title = stringResource(Res.string.settings_dynamic_colours),
-        description = stringResource(Res.string.settings_dynamic_colours_description),
-        checked = state.useDynamicColors,
-        onCheckedChange = onDynamicThemeToggle,
+      shape = Material3ShapeDefaults.itemShape(1, AppearanceSettingsCount),
+      title = stringResource(Res.string.settings_dynamic_colours),
+      description = stringResource(Res.string.settings_dynamic_colours_description),
+      checked = state.useDynamicColors,
+      onCheckedChange = onDynamicThemeToggle,
     )
   }
 }
@@ -262,37 +262,37 @@ private const val AboutSettingsCount = 4
 @Composable
 @Suppress("MagicNumber")
 private fun AboutSettings(
-    state: SettingsUiState,
-    onSourceCodeClick: () -> Unit,
-    onLicensesClick: () -> Unit,
-    onPrivacyPolicyClick: () -> Unit,
+  state: SettingsUiState,
+  onSourceCodeClick: () -> Unit,
+  onLicensesClick: () -> Unit,
+  onPrivacyPolicyClick: () -> Unit,
 ) {
   PreferenceSection(
-      stringResource(Res.string.settings_about),
-      modifier = Modifier.padding(vertical = 8.dp),
+    stringResource(Res.string.settings_about),
+    modifier = Modifier.padding(vertical = 8.dp),
   ) {
     Preference(
-        shape = Material3ShapeDefaults.itemShape(0, AboutSettingsCount),
-        title = stringResource(Res.string.settings_version),
-        description = state.appInfo.version,
+      shape = Material3ShapeDefaults.itemShape(0, AboutSettingsCount),
+      title = stringResource(Res.string.settings_version),
+      description = state.appInfo.version,
     )
     Preference(
-        shape = Material3ShapeDefaults.itemShape(1, AboutSettingsCount),
-        title = stringResource(Res.string.settings_source_code),
-        clickable = true,
-        onClick = onSourceCodeClick,
+      shape = Material3ShapeDefaults.itemShape(1, AboutSettingsCount),
+      title = stringResource(Res.string.settings_source_code),
+      clickable = true,
+      onClick = onSourceCodeClick,
     )
     Preference(
-        shape = Material3ShapeDefaults.itemShape(2, AboutSettingsCount),
-        title = stringResource(Res.string.settings_licenses),
-        clickable = true,
-        onClick = onLicensesClick,
+      shape = Material3ShapeDefaults.itemShape(2, AboutSettingsCount),
+      title = stringResource(Res.string.settings_licenses),
+      clickable = true,
+      onClick = onLicensesClick,
     )
     Preference(
-        shape = Material3ShapeDefaults.itemShape(3, AboutSettingsCount),
-        title = stringResource(Res.string.settings_privacy_policy),
-        clickable = true,
-        onClick = onPrivacyPolicyClick,
+      shape = Material3ShapeDefaults.itemShape(3, AboutSettingsCount),
+      title = stringResource(Res.string.settings_privacy_policy),
+      clickable = true,
+      onClick = onPrivacyPolicyClick,
     )
   }
 }
@@ -300,38 +300,38 @@ private fun AboutSettings(
 @Composable
 private fun MadeInMunich() {
   Text(
-      text = stringResource(Res.string.settings_made_in_munich),
-      style = MaterialTheme.typography.bodyMedium,
-      modifier = Modifier.fillMaxWidth().padding(vertical = 16.dp).navigationBarsPadding(),
-      textAlign = TextAlign.Center,
+    text = stringResource(Res.string.settings_made_in_munich),
+    style = MaterialTheme.typography.bodyMedium,
+    modifier = Modifier.fillMaxWidth().padding(vertical = 16.dp).navigationBarsPadding(),
+    textAlign = TextAlign.Center,
   )
 }
 
 @Composable
 fun ResetConfirmationDialog(
-    onConfirm: () -> Unit,
-    onDismiss: () -> Unit,
-    blocked: Boolean = false,
+  onConfirm: () -> Unit,
+  onDismiss: () -> Unit,
+  blocked: Boolean = false,
 ) {
   AlertDialog(
-      icon = { Icon(imageVector = Icons.AutoMirrored.Filled.Logout, "") },
-      title = { Text(stringResource(Res.string.settings_confirm_reset_title)) },
-      text = {
-        Text(
-            stringResource(
-                if (blocked) Res.string.settings_pending_reset_blocked
-                else Res.string.settings_confirm_reset_message
-            )
+    icon = { Icon(imageVector = Icons.AutoMirrored.Filled.Logout, "") },
+    title = { Text(stringResource(Res.string.settings_confirm_reset_title)) },
+    text = {
+      Text(
+        stringResource(
+          if (blocked) Res.string.settings_pending_reset_blocked
+          else Res.string.settings_confirm_reset_message
         )
-      },
-      onDismissRequest = onDismiss,
-      confirmButton = {
-        Button(onClick = onConfirm, enabled = !blocked) {
-          Text(stringResource(Res.string.settings_yes))
-        }
-      },
-      dismissButton = {
-        OutlinedButton(onClick = onDismiss) { Text(stringResource(Res.string.settings_no)) }
-      },
+      )
+    },
+    onDismissRequest = onDismiss,
+    confirmButton = {
+      Button(onClick = onConfirm, enabled = !blocked) {
+        Text(stringResource(Res.string.settings_yes))
+      }
+    },
+    dismissButton = {
+      OutlinedButton(onClick = onDismiss) { Text(stringResource(Res.string.settings_no)) }
+    },
   )
 }

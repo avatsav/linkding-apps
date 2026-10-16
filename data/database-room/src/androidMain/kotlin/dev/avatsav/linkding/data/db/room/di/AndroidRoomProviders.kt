@@ -18,17 +18,17 @@ actual interface RoomPlatformProviders {
   @Provides
   @SingleIn(AppScope::class)
   fun provideRoomDatabase(
-      application: Application,
-      dispatchers: AppCoroutineDispatchers,
+    application: Application,
+    dispatchers: AppCoroutineDispatchers,
   ): LinkdingRoomDatabase {
     val dbFile = application.getDatabasePath(DatabaseName)
     return Room.databaseBuilder<LinkdingRoomDatabase>(
-            context = application,
-            name = dbFile.absolutePath,
-        )
-        .addMigrations(MIGRATION_1_2)
-        .setDriver(BundledSQLiteDriver())
-        .setQueryCoroutineContext(dispatchers.io)
-        .build()
+        context = application,
+        name = dbFile.absolutePath,
+      )
+      .addMigrations(MIGRATION_1_2)
+      .setDriver(BundledSQLiteDriver())
+      .setQueryCoroutineContext(dispatchers.io)
+      .build()
   }
 }

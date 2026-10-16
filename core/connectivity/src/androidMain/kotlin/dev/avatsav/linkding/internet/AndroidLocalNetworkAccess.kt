@@ -21,13 +21,13 @@ import kotlinx.coroutines.withContext
 @SingleIn(AppScope::class)
 @ContributesBinding(AppScope::class)
 class AndroidLocalNetworkAccess(
-    private val application: Application,
-    private val dispatchers: AppCoroutineDispatchers,
+  private val application: Application,
+  private val dispatchers: AppCoroutineDispatchers,
 ) : LocalNetworkAccess() {
   override val permissionRequired: Boolean
     get() =
-        Build.VERSION.SDK_INT >= Build.VERSION_CODES.CINNAMON_BUN &&
-            application.applicationInfo.targetSdkVersion >= Build.VERSION_CODES.CINNAMON_BUN
+      Build.VERSION.SDK_INT >= Build.VERSION_CODES.CINNAMON_BUN &&
+        application.applicationInfo.targetSdkVersion >= Build.VERSION_CODES.CINNAMON_BUN
 
   override val permissionGranted = MutableStateFlow(hasPermission())
 
@@ -36,27 +36,27 @@ class AndroidLocalNetworkAccess(
   }
 
   private fun hasPermission(): Boolean =
-      !permissionRequired ||
-          ContextCompat.checkSelfPermission(
-              application,
-              Manifest.permission.ACCESS_LOCAL_NETWORK,
-          ) == PackageManager.PERMISSION_GRANTED
+    !permissionRequired ||
+      ContextCompat.checkSelfPermission(
+        application,
+        Manifest.permission.ACCESS_LOCAL_NETWORK,
+      ) == PackageManager.PERMISSION_GRANTED
 
   override suspend fun isLocalServer(hostUrl: String): Boolean =
-      withContext(dispatchers.io) {
-        val host =
-            try {
-              URI(hostUrl).host
-            } catch (_: URISyntaxException) {
-              null
-            } ?: return@withContext false
-        // mDNS itself can require permission, so do not try resolving .local first.
-        if (host.endsWith(".local", ignoreCase = true)) return@withContext true
+    withContext(dispatchers.io) {
+      val host =
         try {
-          InetAddress.getAllByName(host).any { isLocalNetworkAddress(it.address) }
-        } catch (_: UnknownHostException) {
-          // Let the normal connection validation report DNS failures, not a permission error.
-          false
-        }
+          URI(hostUrl).host
+        } catch (_: URISyntaxException) {
+          null
+        } ?: return@withContext false
+      // mDNS itself can require permission, so do not try resolving .local first.
+      if (host.endsWith(".local", ignoreCase = true)) return@withContext true
+      try {
+        InetAddress.getAllByName(host).any { isLocalNetworkAddress(it.address) }
+      } catch (_: UnknownHostException) {
+        // Let the normal connection validation report DNS failures, not a permission error.
+        false
       }
+    }
 }
