@@ -12,6 +12,11 @@ kotlin {
       api(libs.ktor.client.logging) // Logging types in public API
       api(libs.kotlinResult) // Result types exposed in public API
     }
+    commonTest.dependencies {
+      implementation(libs.kotlin.test)
+      implementation(libs.kotlin.coroutines.test)
+      implementation(libs.ktor.client.mock)
+    }
     androidMain.dependencies { implementation(libs.ktor.client.okhttp) }
     jvmMain.dependencies { implementation(libs.ktor.client.okhttp) }
     iosMain.dependencies { implementation(libs.ktor.client.darwin) }

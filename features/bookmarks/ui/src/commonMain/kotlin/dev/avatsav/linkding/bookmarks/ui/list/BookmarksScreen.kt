@@ -1,6 +1,7 @@
 package dev.avatsav.linkding.bookmarks.ui.list
 
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
@@ -30,10 +31,8 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
-import androidx.compose.material3.FloatingToolbarDefaults
 import androidx.compose.material3.FloatingToolbarDefaults.ScreenOffset
 import androidx.compose.material3.FloatingToolbarDefaults.floatingToolbarVerticalNestedScroll
-import androidx.compose.material3.HorizontalFloatingToolbar
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -55,6 +54,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -68,12 +68,17 @@ import androidx.navigationevent.compose.NavigationBackHandler
 import androidx.navigationevent.compose.rememberNavigationEventState
 import androidx.paging.LoadState
 import androidx.paging.compose.itemKey
+import dev.avatsav.linkding.bookmarks.ui.list.widgets.BookmarkActionsToolbar
 import dev.avatsav.linkding.bookmarks.ui.list.widgets.BookmarkListItem
 import dev.avatsav.linkding.bookmarks.ui.list.widgets.EmptySearchResults
 import dev.avatsav.linkding.bookmarks.ui.list.widgets.FiltersBar
+import dev.avatsav.linkding.bookmarks.ui.list.widgets.PendingBookmarkActions
+import dev.avatsav.linkding.bookmarks.ui.list.widgets.PendingBookmarkListItem
+import dev.avatsav.linkding.bookmarks.ui.list.widgets.PendingBookmarksHeader
 import dev.avatsav.linkding.bookmarks.ui.list.widgets.SearchHistoryHeader
 import dev.avatsav.linkding.bookmarks.ui.list.widgets.SearchHistoryItem
 import dev.avatsav.linkding.data.model.Bookmark
+import dev.avatsav.linkding.data.model.PendingBookmark
 import dev.avatsav.linkding.data.model.SearchHistory
 import dev.avatsav.linkding.navigation.LocalNavigator
 import dev.avatsav.linkding.navigation.Route
@@ -84,10 +89,12 @@ import dev.avatsav.linkding.ui.compose.ObserveSnackbar
 import dev.avatsav.linkding.ui.compose.appearFromBottom
 import dev.avatsav.linkding.ui.compose.disappearToBottom
 import dev.avatsav.linkding.ui.compose.widgets.AnimatedVisibilityWithElevation
+import dev.avatsav.linkding.ui.theme.BookmarkListTokens
 import dev.avatsav.linkding.ui.theme.Material3ShapeDefaults
 import kotlinx.coroutines.launch
 import linkding_apps.features.bookmarks.ui.generated.resources.Res
 import linkding_apps.features.bookmarks.ui.generated.resources.bookmarks_add
+import linkding_apps.features.bookmarks.ui.generated.resources.bookmarks_all
 import linkding_apps.features.bookmarks.ui.generated.resources.bookmarks_archive
 import linkding_apps.features.bookmarks.ui.generated.resources.bookmarks_back
 import linkding_apps.features.bookmarks.ui.generated.resources.bookmarks_clear
@@ -125,8 +132,9 @@ fun BookmarksScreen(presenter: BookmarksPresenter, modifier: Modifier = Modifier
     when (effect) {
       AddBookmark -> navigator.goTo(Route.AddBookmark.New)
       is EditBookmark -> navigator.goTo(Route.AddBookmark.Edit(effect.bookmark.id))
+      is EditPending -> navigator.goTo(Route.AddBookmark.Pending(effect.id))
       NavigateToSettings -> navigator.goTo(Route.Settings)
-      is OpenBookmark -> navigator.goTo(Route.Url(effect.bookmark.url))
+      is OpenBookmark -> navigator.goTo(Route.Url(effect.url))
     }
   }
 
@@ -147,7 +155,13 @@ private fun BookmarksScreen(
 ) {
   val scope = rememberCoroutineScope()
   val currentEventSink by rememberUpdatedState(eventSink)
-  val actionableBookmark = remember { mutableStateOf<Bookmark?>(null) }
+  var selection by remember { mutableStateOf<BookmarkSelection?>(null) }
+  val actionableBookmark = (selection as? BookmarkSelection.Saved)?.bookmark
+  val actionablePending =
+    state.pendingBookmarks
+      .firstOrNull { it.id == (selection as? BookmarkSelection.Pending)?.id }
+      ?.takeUnless { state.isSearchActive }
+  val actionsVisible = actionableBookmark != null || actionablePending != null
   val snackbarHostState = remember { SnackbarHostState() }
   val searchBarState = rememberSearchBarState()
   val searchTextFieldState = rememberTextFieldState()
@@ -155,8 +169,8 @@ private fun BookmarksScreen(
 
   NavigationBackHandler(
     state = rememberNavigationEventState(NavigationEventInfo.None),
-    isBackEnabled = actionableBookmark.value != null,
-    onBackCompleted = { actionableBookmark.value = null },
+    isBackEnabled = actionsVisible,
+    onBackCompleted = { selection = null },
   )
 
   ObserveSnackbar(
@@ -254,7 +268,7 @@ private fun BookmarksScreen(
     },
     floatingActionButton = {
       AnimatedVisibilityWithElevation(
-        visible = actionableBookmark.value == null,
+        visible = !actionsVisible,
         enter = appearFromBottom(),
         exit = disappearToBottom(),
       ) { elevation ->
@@ -291,26 +305,29 @@ private fun BookmarksScreen(
         )
       },
     ) {
-      ActionableBookmarkToolbar(
-        actionableBookmark = actionableBookmark.value,
-        onDismiss = { actionableBookmark.value = null },
-        editBookmark = { currentEventSink(BookmarksUiEvent.Edit(it)) },
-        toggleArchive = { currentEventSink(BookmarksUiEvent.ToggleArchive(it)) },
-        deleteBookmark = { currentEventSink(BookmarksUiEvent.Delete(it)) },
+      BookmarkActionsToolbar(
+        visible = actionsVisible,
         modifier =
           Modifier.align(Alignment.BottomCenter)
             .navigationBarsPadding()
             .offset(y = -ScreenOffset)
             .zIndex(1f),
-      )
+      ) {
+        BookmarkActions(
+          bookmark = actionableBookmark,
+          pending = actionablePending,
+          onDismiss = { selection = null },
+          eventSink = currentEventSink,
+        )
+      }
 
       LazyColumn(
         modifier =
           Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
             .floatingToolbarVerticalNestedScroll(
-              expanded = actionableBookmark.value != null,
-              onExpand = { actionableBookmark.value = null },
-              onCollapse = { actionableBookmark.value = null },
+              expanded = actionsVisible,
+              onExpand = { selection = null },
+              onCollapse = { selection = null },
             ),
         state = rememberLazyListState(),
         contentPadding = PaddingValues(bottom = 108.dp),
@@ -329,6 +346,51 @@ private fun BookmarksScreen(
           )
         }
 
+        if (!state.isSearchActive && state.pendingBookmarks.isNotEmpty()) {
+          item(key = "pending_header") {
+            PendingBookmarksHeader(
+              count = state.pendingBookmarks.size,
+              uploading =
+                state.pendingBookmarks.any {
+                  it.state == dev.avatsav.linkding.data.model.PendingBookmark.State.Uploading
+                },
+              onRetry = { currentEventSink(BookmarksUiEvent.RetryPending()) },
+            )
+          }
+          items(
+            count = state.pendingBookmarks.size,
+            key = { "pending_${state.pendingBookmarks[it].id}" },
+          ) { index ->
+            val pending = state.pendingBookmarks[index]
+            PendingBookmarkListItem(
+              pending = pending,
+              selected = actionablePending?.id == pending.id,
+              openBookmark = { toOpen ->
+                val wasSelected = actionablePending?.id == toOpen.id
+                selection = null
+                if (!wasSelected) currentEventSink(BookmarksUiEvent.Open(toOpen.bookmark.url))
+              },
+              toggleActions = { selection = BookmarkSelection.Pending(it.id) },
+              modifier = Modifier.animateItem(),
+            )
+          }
+        }
+
+        if (
+          !state.isSearchActive &&
+            state.pendingBookmarks.isNotEmpty() &&
+            state.bookmarks.itemCount > 0
+        ) {
+          item(key = "server_bookmarks_header") {
+            Text(
+              text = stringResource(Res.string.bookmarks_all),
+              style = MaterialTheme.typography.titleSmall,
+              color = MaterialTheme.colorScheme.onSurfaceVariant,
+              modifier = Modifier.padding(BookmarkListTokens.sectionHeaderPadding),
+            )
+          }
+        }
+
         // Bookmark items
         items(count = state.bookmarks.itemCount, key = state.bookmarks.itemKey { it.id }) { index ->
           val bookmark = state.bookmarks[index]
@@ -336,16 +398,13 @@ private fun BookmarksScreen(
             BookmarkListItem(
               modifier = Modifier.animateItem(),
               bookmark = bookmark,
-              selected = actionableBookmark.value == bookmark,
+              selected = actionableBookmark?.id == bookmark.id,
               openBookmark = { toOpen ->
-                if (actionableBookmark.value == toOpen) {
-                  actionableBookmark.value = null
-                } else {
-                  actionableBookmark.value = null
-                  currentEventSink(BookmarksUiEvent.Open(toOpen))
-                }
+                val wasSelected = actionableBookmark?.id == toOpen.id
+                selection = null
+                if (!wasSelected) currentEventSink(BookmarksUiEvent.Open(toOpen.url))
               },
-              toggleActions = { bookmark -> actionableBookmark.value = bookmark },
+              toggleActions = { selection = BookmarkSelection.Saved(it) },
             )
           }
         }
@@ -354,71 +413,76 @@ private fun BookmarksScreen(
   }
 }
 
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-internal fun ActionableBookmarkToolbar(
-  actionableBookmark: Bookmark?,
+private fun RowScope.BookmarkActions(
+  bookmark: Bookmark?,
+  pending: PendingBookmark?,
+  onDismiss: () -> Unit,
+  eventSink: (BookmarksUiEvent) -> Unit,
+) {
+  if (pending != null) {
+    PendingBookmarkActions(
+      pending = pending,
+      onDismiss = onDismiss,
+      onEdit = { eventSink(BookmarksUiEvent.EditPending(it.id)) },
+      onRetry = { eventSink(BookmarksUiEvent.RetryPending(it.id)) },
+      onDiscard = { eventSink(BookmarksUiEvent.DiscardPending(it.id)) },
+    )
+  } else if (bookmark != null) {
+    SavedBookmarkActions(
+      bookmark = bookmark,
+      onDismiss = onDismiss,
+      editBookmark = { eventSink(BookmarksUiEvent.Edit(it)) },
+      toggleArchive = { eventSink(BookmarksUiEvent.ToggleArchive(it)) },
+      deleteBookmark = { eventSink(BookmarksUiEvent.Delete(it)) },
+    )
+  }
+}
+
+@Composable
+private fun RowScope.SavedBookmarkActions(
+  bookmark: Bookmark,
   onDismiss: () -> Unit,
   editBookmark: (Bookmark) -> Unit,
   toggleArchive: (Bookmark) -> Unit,
   deleteBookmark: (Bookmark) -> Unit,
-  modifier: Modifier = Modifier,
 ) {
-  AnimatedVisibilityWithElevation(
-    visible = actionableBookmark != null,
-    modifier = modifier,
-    enter = appearFromBottom(),
-    exit = disappearToBottom(),
-  ) { elevation ->
-    HorizontalFloatingToolbar(
-      expanded = true,
-      colors = FloatingToolbarDefaults.vibrantFloatingToolbarColors(),
-      expandedShadowElevation = elevation,
-      content = {
-        IconButton(
-          onClick = {
-            val bookmark = actionableBookmark ?: return@IconButton
-            onDismiss()
-            toggleArchive(bookmark)
-          }
-        ) {
-          val bookmark = actionableBookmark ?: return@IconButton
-          if (bookmark.archived) {
-            Icon(
-              Icons.Filled.Unarchive,
-              contentDescription = stringResource(Res.string.bookmarks_unarchive),
-            )
-          } else {
-            Icon(
-              Icons.Filled.Archive,
-              contentDescription = stringResource(Res.string.bookmarks_archive),
-            )
-          }
-        }
-        IconButton(
-          onClick = {
-            val bookmark = actionableBookmark ?: return@IconButton
-            onDismiss()
-            deleteBookmark(bookmark)
-          }
-        ) {
-          Icon(
-            Icons.Filled.Delete,
-            contentDescription = stringResource(Res.string.bookmarks_delete),
-          )
-        }
-        IconButton(
-          onClick = {
-            val bookmark = actionableBookmark ?: return@IconButton
-            onDismiss()
-            editBookmark(bookmark)
-          }
-        ) {
-          Icon(Icons.Filled.Edit, contentDescription = stringResource(Res.string.bookmarks_edit))
-        }
-      },
+  IconButton(
+    onClick = {
+      onDismiss()
+      toggleArchive(bookmark)
+    }
+  ) {
+    Icon(
+      if (bookmark.archived) Icons.Filled.Unarchive else Icons.Filled.Archive,
+      contentDescription =
+        stringResource(
+          if (bookmark.archived) Res.string.bookmarks_unarchive else Res.string.bookmarks_archive
+        ),
     )
   }
+  IconButton(
+    onClick = {
+      onDismiss()
+      deleteBookmark(bookmark)
+    }
+  ) {
+    Icon(Icons.Filled.Delete, contentDescription = stringResource(Res.string.bookmarks_delete))
+  }
+  IconButton(
+    onClick = {
+      onDismiss()
+      editBookmark(bookmark)
+    }
+  ) {
+    Icon(Icons.Filled.Edit, contentDescription = stringResource(Res.string.bookmarks_edit))
+  }
+}
+
+private sealed interface BookmarkSelection {
+  data class Saved(val bookmark: Bookmark) : BookmarkSelection
+
+  data class Pending(val id: Long) : BookmarkSelection
 }
 
 private fun LazyListScope.searchHistoryItems(

@@ -7,10 +7,14 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.unveilIn
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.scene.Scene
@@ -127,12 +131,19 @@ private fun rememberUserScopeRouteEntryScope(authState: AuthState): Set<RouteEnt
     is Loading,
     is Unauthenticated -> emptySet()
     is Authenticated -> {
-      remember(authState.apiConfig) {
+      val graph =
+        remember(authState.apiConfig) {
           GraphHolder.graph<UserGraph.Factory>().create(authState.apiConfig).also { component ->
             GraphHolder.updateGraph(component)
           }
         }
-        .routeEntryScope
+      val lifecycle = LocalLifecycleOwner.current.lifecycle
+      LaunchedEffect(graph, lifecycle) {
+        lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+          graph.pendingBookmarks.runUploader()
+        }
+      }
+      graph.routeEntryScope
     }
   }
 }

@@ -3,10 +3,11 @@ package dev.avatsav.linkding.data.db.room.paging
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 
-class MappingPagingSource<Key : Any, Value : Any, Mapped : Any>(
-  private val source: PagingSource<Key, Value>,
+/** Maps a Room offset-keyed source without changing its anchor-based refresh window. */
+class MappingPagingSource<Value : Any, Mapped : Any>(
+  private val source: PagingSource<Int, Value>,
   private val mapper: (Value) -> Mapped,
-) : PagingSource<Key, Mapped>() {
+) : PagingSource<Int, Mapped>() {
   private val sourceInvalidatedCallback: () -> Unit = { invalidate() }
   private val wrapperInvalidatedCallback: () -> Unit = {
     source.unregisterInvalidatedCallback(sourceInvalidatedCallback)
@@ -17,7 +18,7 @@ class MappingPagingSource<Key : Any, Value : Any, Mapped : Any>(
     registerInvalidatedCallback(wrapperInvalidatedCallback)
   }
 
-  override suspend fun load(params: LoadParams<Key>): LoadResult<Key, Mapped> =
+  override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Mapped> =
     when (val result = source.load(params)) {
       is LoadResult.Error -> LoadResult.Error(result.throwable)
       is LoadResult.Invalid -> LoadResult.Invalid()
@@ -31,9 +32,11 @@ class MappingPagingSource<Key : Any, Value : Any, Mapped : Any>(
         )
     }
 
-  override fun getRefreshKey(state: PagingState<Key, Mapped>): Key? {
-    return state.anchorPosition?.let { anchorPosition ->
-      state.closestPageToPosition(anchorPosition)?.let { page -> page.prevKey ?: page.nextKey }
+  override fun getRefreshKey(state: PagingState<Int, Mapped>): Int? {
+    // Match Room's offset policy: center the refresh window on the visible anchor.
+    // A page's next/previous key is a load boundary, not the user's refresh position.
+    return state.anchorPosition?.let { anchor ->
+      (anchor - state.config.initialLoadSize / 2).coerceAtLeast(0)
     }
   }
 

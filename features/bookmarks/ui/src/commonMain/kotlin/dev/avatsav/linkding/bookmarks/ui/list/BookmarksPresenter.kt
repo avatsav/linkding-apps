@@ -15,6 +15,7 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.filter
+import dev.avatsav.linkding.bookmarks.api.PendingBookmarks
 import dev.avatsav.linkding.bookmarks.api.interactors.ArchiveBookmark
 import dev.avatsav.linkding.bookmarks.api.interactors.ClearSearchHistoryInteractor
 import dev.avatsav.linkding.bookmarks.api.interactors.DeleteBookmark
@@ -39,6 +40,7 @@ import kotlinx.coroutines.launch
 @Inject
 class BookmarksPresenter(
   private val observeBookmarks: ObserveBookmarks,
+  private val pendingBookmarks: PendingBookmarks,
   private val observeSearchHistory: ObserveSearchHistory,
   private val saveSearchState: SaveSearchStateInteractor,
   private val clearSearchHistory: ClearSearchHistoryInteractor,
@@ -105,6 +107,7 @@ class BookmarksPresenter(
       }
 
     val searchHistory by searchHistoryFlow.collectAsState(emptyList())
+    val pending by remember { pendingBookmarks.observe() }.collectAsState(emptyList())
 
     ObserveEvents { event ->
       when (event) {
@@ -157,7 +160,7 @@ class BookmarksPresenter(
           presenterScope.launch { clearSearchHistory(ClearSearchHistoryInteractor.Params) }
         }
 
-        is Open -> emitEffect(BookmarkUiEffect.OpenBookmark(event.bookmark))
+        is Open -> emitEffect(BookmarkUiEffect.OpenBookmark(event.url))
 
         is Edit -> {
           emitEffect(BookmarkUiEffect.EditBookmark(event.bookmark))
@@ -179,7 +182,14 @@ class BookmarksPresenter(
           )
         }
 
-        Refresh -> presenterScope.launch { bookmarks.refresh() }
+        is EditPending -> emitEffect(BookmarkUiEffect.EditPending(event.id))
+        is RetryPending -> presenterScope.launch { pendingBookmarks.retry(event.id) }
+        is DiscardPending -> presenterScope.launch { pendingBookmarks.discard(event.id) }
+        Refresh ->
+          presenterScope.launch {
+            bookmarks.refresh()
+            pendingBookmarks.retry()
+          }
         UndoAction -> actionHandler.undoAction()
         DismissSnackbar -> actionHandler.dismissSnackbar()
       }
@@ -187,6 +197,7 @@ class BookmarksPresenter(
 
     return BookmarksUiState(
       bookmarks = bookmarks,
+      pendingBookmarks = pending,
       query = searchQuery,
       category = bookmarkCategory,
       selectedTags = selectedTags.toList(),

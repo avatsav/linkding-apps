@@ -4,6 +4,7 @@ import androidx.room3.Room
 import androidx.sqlite.driver.bundled.BundledSQLiteDriver
 import dev.avatsav.linkding.AppCoroutineDispatchers
 import dev.avatsav.linkding.data.db.room.LinkdingRoomDatabase
+import dev.avatsav.linkding.data.db.room.MIGRATION_1_2
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesTo
 import dev.zacsweers.metro.Provides
@@ -20,6 +21,7 @@ actual interface RoomPlatformProviders {
   fun provideRoomDatabase(dispatchers: AppCoroutineDispatchers): LinkdingRoomDatabase {
     val databaseFile = File(appSupportDirectory(), DatabaseName)
     return Room.databaseBuilder<LinkdingRoomDatabase>(name = databaseFile.absolutePath)
+      .addMigrations(MIGRATION_1_2)
       .setDriver(BundledSQLiteDriver())
       .setQueryCoroutineContext(dispatchers.io)
       .build()

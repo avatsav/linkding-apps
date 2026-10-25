@@ -4,11 +4,13 @@ import dev.avatsav.linkding.api.models.ApiResponse
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.plugins.ClientRequestException
+import io.ktor.client.plugins.HttpRequestTimeoutException
 import io.ktor.client.plugins.ResponseException
 import io.ktor.client.plugins.ServerResponseException
 import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.request
 import io.ktor.http.HttpMethod
+import kotlinx.coroutines.CancellationException
 import kotlinx.io.IOException
 import kotlinx.serialization.SerializationException
 
@@ -40,6 +42,10 @@ internal suspend inline fun <reified T, reified E> HttpClient.request(
         block()
       }
     ApiResponse.Success(response.body())
+  } catch (e: CancellationException) {
+    throw e
+  } catch (e: HttpRequestTimeoutException) {
+    ApiResponse.ConnectivityError(e)
   } catch (e: SerializationException) { // client-side serialization errors
     ApiResponse.SerializationError(e)
   } catch (e: ClientRequestException) { // 4xx errors
@@ -56,6 +62,8 @@ internal suspend inline fun <reified T, reified E> HttpClient.request(
 internal suspend inline fun <reified E> ResponseException.errorBody(): E? =
   try {
     response.body()
+  } catch (e: CancellationException) {
+    throw e
   } catch (e: Exception) {
     null
   }

@@ -41,6 +41,19 @@
     <!-- FiltersBar -->
     <string name="filters_tags">Tags</string>
 
+    <!-- Pending creations -->
+    <string name="bookmarks_all">All bookmarks</string>
+    <string name="pending_bookmarks_title">Pending · %1$d</string>
+    <string name="pending_bookmark_upload">Pending upload</string>
+    <string name="pending_bookmark_attention">Upload needs attention</string>
+    <string name="pending_bookmark_retry">Retry</string>
+    <string name="pending_bookmark_discard">Discard</string>
+    <string name="pending_bookmark_cancel">Cancel</string>
+    <string name="pending_bookmark_discard_title">Discard pending bookmark?</string>
+    <string name="pending_bookmark_discard_message">This removes the local copy only. Any copy already uploaded to the server is kept.</string>
+    <string name="pending_bookmark_unavailable">This bookmark is uploading or is no longer pending. Return to the bookmark list.</string>
+    <string name="pending_bookmark_uncertain">Upload not confirmed. Retry checks the server before sending again.</string>
+
     <!-- Bookmark Actions -->
     <string name="action_failed">Action failed: %1$s</string>
     <string name="action_retry">Retry</string>

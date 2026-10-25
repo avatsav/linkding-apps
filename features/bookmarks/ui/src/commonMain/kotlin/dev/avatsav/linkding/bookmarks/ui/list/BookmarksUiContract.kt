@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.paging.compose.LazyPagingItems
 import dev.avatsav.linkding.data.model.Bookmark
 import dev.avatsav.linkding.data.model.BookmarkCategory
+import dev.avatsav.linkding.data.model.PendingBookmark
 import dev.avatsav.linkding.data.model.SearchHistory
 import dev.avatsav.linkding.data.model.Tag
 import dev.avatsav.linkding.ui.compose.SnackbarMessage
@@ -18,6 +19,7 @@ import org.jetbrains.compose.resources.stringResource
 
 data class BookmarksUiState(
   val bookmarks: LazyPagingItems<Bookmark>,
+  val pendingBookmarks: List<PendingBookmark> = emptyList(),
   val query: String = "",
   val category: BookmarkCategory = BookmarkCategory.All,
   val selectedTags: List<Tag> = emptyList(),
@@ -55,13 +57,19 @@ sealed interface BookmarksUiEvent {
   data object ClearSearchHistory : BookmarksUiEvent
 
   // Bookmark actions
-  data class Open(val bookmark: Bookmark) : BookmarksUiEvent
+  data class Open(val url: String) : BookmarksUiEvent
 
   data class Edit(val bookmark: Bookmark) : BookmarksUiEvent
 
   data class ToggleArchive(val bookmark: Bookmark) : BookmarksUiEvent
 
   data class Delete(val bookmark: Bookmark) : BookmarksUiEvent
+
+  data class EditPending(val id: Long) : BookmarksUiEvent
+
+  data class RetryPending(val id: Long? = null) : BookmarksUiEvent
+
+  data class DiscardPending(val id: Long) : BookmarksUiEvent
 
   // Refresh & Undo
   data object Refresh : BookmarksUiEvent
@@ -72,9 +80,11 @@ sealed interface BookmarksUiEvent {
 }
 
 sealed interface BookmarkUiEffect {
-  data class OpenBookmark(val bookmark: Bookmark) : BookmarkUiEffect
+  data class OpenBookmark(val url: String) : BookmarkUiEffect
 
   data class EditBookmark(val bookmark: Bookmark) : BookmarkUiEffect
+
+  data class EditPending(val id: Long) : BookmarkUiEffect
 
   data object AddBookmark : BookmarkUiEffect
 

@@ -7,7 +7,9 @@ kotlin {
   sourceSets {
     commonMain.dependencies {
       api(projects.features.settings.api)
+      implementation(projects.features.bookmarks.api)
       implementation(projects.core.base)
+      implementation(projects.core.connectivity)
       implementation(projects.core.di)
       implementation(projects.core.preferences)
       implementation(projects.core.presenter)

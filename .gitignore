@@ -15,6 +15,9 @@ local.properties
 # Keep icon
 !/.idea/icon.png
 
+# Local Linkding development credentials
+/.env
+
 # General
 .DS_Store
 .externalNativeBuild

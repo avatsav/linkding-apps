@@ -12,12 +12,14 @@ import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
 import dev.zacsweers.metro.Inject
 import dev.zacsweers.metro.SingleIn
+import kotlin.uuid.Uuid
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 
 private const val HostUrlConfigurationKey = "linkding-hostUrl"
 private const val ApiKeyConfigurationKey = "linkding-apiKey"
+private const val AccountIdKey = "linkding-local-account-id"
 private const val UseDynamicColorsKey = "use-dynamic-colors"
 private const val AppThemeKey = "app-theme"
 
@@ -49,6 +51,9 @@ class DefaultAppPreferences(
     }
 
   override suspend fun setApiConfig(apiConfig: ApiConfig?) {
+    if (apiConfig != getApiConfig()) {
+      settings[AccountIdKey] = Uuid.random().toString()
+    }
     if (apiConfig != null) {
       settings[HostUrlConfigurationKey] = apiConfig.hostUrl
       settings[ApiKeyConfigurationKey] = apiConfig.apiKey
@@ -66,6 +71,12 @@ class DefaultAppPreferences(
     } else {
       ApiConfig(host, apiKey)
     }
+  }
+
+  override fun getAccountId(): String {
+    val existing: String? = settings[AccountIdKey]
+    if (existing != null) return existing
+    return Uuid.random().toString().also { settings[AccountIdKey] = it }
   }
 
   override fun observeAppTheme(): Flow<AppTheme> =

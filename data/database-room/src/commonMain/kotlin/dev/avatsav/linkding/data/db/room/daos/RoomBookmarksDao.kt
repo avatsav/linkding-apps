@@ -14,10 +14,12 @@ import dev.avatsav.linkding.data.db.room.entities.BookmarkEntity
 @DaoReturnTypeConverters(PagingSourceDaoReturnTypeConverter::class)
 @Suppress("TooManyFunctions")
 abstract class RoomBookmarksDao {
-  @Query("SELECT * FROM bookmarks ORDER BY id ASC")
+  // Uploads append local rows; insertion order is not the server's newest-first feed order.
+  // Parse timestamps numerically because ISO strings can have different fractional precision.
+  @Query("SELECT * FROM bookmarks ORDER BY julianday(added) DESC, linkding_id DESC")
   abstract fun bookmarksPagingSource(): PagingSource<Int, BookmarkEntity>
 
-  @Query("SELECT * FROM bookmarks ORDER BY id ASC")
+  @Query("SELECT * FROM bookmarks ORDER BY julianday(added) DESC, linkding_id DESC")
   abstract suspend fun selectAll(): List<BookmarkEntity>
 
   @Query("SELECT count(*) FROM bookmarks") abstract suspend fun countBookmarks(): Long

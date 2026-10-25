@@ -6,4 +6,9 @@
     <string name="auth_save">Save</string>
     <string name="auth_error_invalid_api_key">Invalid API Key</string>
     <string name="auth_error_invalid_host">Unable to reach host</string>
+    <string name="auth_local_network_required">Android needs local network access to connect to this server.</string>
+    <string name="auth_allow_access">Allow access</string>
+    <string name="auth_open_app_settings">Open app settings</string>
+    <string name="auth_show_api_key">Show API key</string>
+    <string name="auth_hide_api_key">Hide API key</string>
 </resources>

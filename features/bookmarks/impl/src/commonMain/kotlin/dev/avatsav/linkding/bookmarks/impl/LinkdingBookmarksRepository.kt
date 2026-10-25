@@ -8,6 +8,7 @@ import com.github.michaelbull.result.mapError
 import com.github.michaelbull.result.onOk
 import dev.avatsav.linkding.api.LinkdingBookmarksApi
 import dev.avatsav.linkding.bookmarks.api.BookmarksRepository
+import dev.avatsav.linkding.bookmarks.api.PendingBookmarks
 import dev.avatsav.linkding.bookmarks.impl.internal.BookmarksPagingDataFactory
 import dev.avatsav.linkding.bookmarks.impl.mappers.BookmarkErrorMapper
 import dev.avatsav.linkding.bookmarks.impl.mappers.BookmarkMapper
@@ -18,6 +19,7 @@ import dev.avatsav.linkding.data.model.BookmarkCategory
 import dev.avatsav.linkding.data.model.BookmarkError
 import dev.avatsav.linkding.data.model.CheckUrlResult
 import dev.avatsav.linkding.data.model.SaveBookmark
+import dev.avatsav.linkding.data.model.SaveResult
 import dev.avatsav.linkding.data.model.UpdateBookmark
 import dev.avatsav.linkding.di.scope.UserScope
 import dev.zacsweers.metro.ContributesBinding
@@ -33,6 +35,7 @@ class LinkdingBookmarksRepository(
   private val bookmarkMapper: BookmarkMapper,
   private val checkUrlMapper: CheckUrlResultMapper,
   private val errorMapper: BookmarkErrorMapper,
+  private val pendingBookmarks: PendingBookmarks,
 ) : BookmarksRepository {
 
   override fun getBookmarksPaged(
@@ -56,12 +59,8 @@ class LinkdingBookmarksRepository(
       .getBookmark(id)
       .mapEither(success = bookmarkMapper::map, failure = errorMapper::map)
 
-  override suspend fun saveBookmark(saveBookmark: SaveBookmark): Result<Bookmark, BookmarkError> {
-    val request = bookmarkMapper.map(saveBookmark)
-    return bookmarksApi
-      .saveBookmark(request)
-      .mapEither(success = bookmarkMapper::map, failure = errorMapper::map)
-  }
+  override suspend fun saveBookmark(saveBookmark: SaveBookmark): Result<SaveResult, BookmarkError> =
+    pendingBookmarks.create(saveBookmark)
 
   override suspend fun updateBookmark(
     updateBookmark: UpdateBookmark
