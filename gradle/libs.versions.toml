@@ -17,7 +17,7 @@ compose-navigation3 = "1.1.1"
 compose-navigationEvent = "1.1.0"
 compose-material3Adaptive = "1.3.0-rc01"
 compose-materialIconsExtended = "1.7.3"
-paging = "3.5.1"
+paging = "3.5.3"
 kotlinResult = "2.3.1"
 appcompat = "1.8.0"
 androidxActivity = "1.13.0"
@@ -25,7 +25,7 @@ room3 = "3.0.3"
 sqlite = "2.7.1"
 stately = "2.1.0"
 kotlinPoet = "2.4.0"
-kotest = "6.2.5"
+kotest = "6.2.6"
 metro = "1.4.3" # https://github.com/ZacSweers/metro/releases
 molecule = "2.2.0"
 gradleVersions = "0.63.1"
@@ -55,7 +55,7 @@ gradleVersions = { id = "com.github.ben-manes.versions", version.ref = "gradleVe
 androidx-activity = { module = "androidx.activity:activity", version.ref = "androidxActivity" }
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidxActivity" }
 androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appcompat" }
-androidx-core = "androidx.core:core-ktx:1.19.0"
+androidx-core = "androidx.core:core-ktx:1.19.1"
 androidx-splashscreen = "androidx.core:core-splashscreen:1.2.0"
 androidx-browser = "androidx.browser:browser:1.10.0"
 androidx-preference = "androidx.preference:preference-ktx:1.2.1"
@@ -120,7 +120,7 @@ turbine = "app.cash.turbine:turbine:1.2.1"
 kotest-assertions = { module = "io.kotest:kotest-assertions-core", version.ref = "kotest" }
 
 molecule = { module = "app.cash.molecule:molecule-runtime", version.ref = "molecule" }
-detektComposeRules = "io.nlopez.compose.rules:detekt:0.6.6"
+detektComposeRules = "io.nlopez.compose.rules:detekt:0.6.8"
 
 metro-android = { module = "dev.zacsweers.metro:metrox-android", version.ref = "metro" }
 
