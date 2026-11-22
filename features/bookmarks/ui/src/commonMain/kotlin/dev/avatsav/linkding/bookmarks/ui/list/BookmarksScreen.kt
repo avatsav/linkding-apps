@@ -306,16 +306,17 @@ private fun BookmarksScreen(
       },
     ) {
       BookmarkActionsToolbar(
-        visible = actionsVisible,
+        target = (actionableBookmark to actionablePending).takeIf { actionsVisible },
         modifier =
           Modifier.align(Alignment.BottomCenter)
             .navigationBarsPadding()
             .offset(y = -ScreenOffset)
             .zIndex(1f),
-      ) {
+      ) { (bookmark, pending), active ->
         BookmarkActions(
-          bookmark = actionableBookmark,
-          pending = actionablePending,
+          bookmark = bookmark,
+          pending = pending,
+          active = active,
           onDismiss = { selection = null },
           eventSink = currentEventSink,
         )
@@ -417,6 +418,7 @@ private fun BookmarksScreen(
 private fun RowScope.BookmarkActions(
   bookmark: Bookmark?,
   pending: PendingBookmark?,
+  active: Boolean,
   onDismiss: () -> Unit,
   eventSink: (BookmarksUiEvent) -> Unit,
 ) {
@@ -424,6 +426,7 @@ private fun RowScope.BookmarkActions(
     PendingBookmarkActions(
       pending = pending,
       onDismiss = onDismiss,
+      active = active,
       onEdit = { eventSink(BookmarksUiEvent.EditPending(it.id)) },
       onRetry = { eventSink(BookmarksUiEvent.RetryPending(it.id)) },
       onOverwrite = { eventSink(BookmarksUiEvent.OverwritePending(it.id)) },
@@ -432,6 +435,7 @@ private fun RowScope.BookmarkActions(
   } else if (bookmark != null) {
     SavedBookmarkActions(
       bookmark = bookmark,
+      active = active,
       onDismiss = onDismiss,
       editBookmark = { eventSink(BookmarksUiEvent.Edit(it)) },
       toggleArchive = { eventSink(BookmarksUiEvent.ToggleArchive(it)) },
@@ -443,16 +447,18 @@ private fun RowScope.BookmarkActions(
 @Composable
 private fun RowScope.SavedBookmarkActions(
   bookmark: Bookmark,
+  active: Boolean,
   onDismiss: () -> Unit,
   editBookmark: (Bookmark) -> Unit,
   toggleArchive: (Bookmark) -> Unit,
   deleteBookmark: (Bookmark) -> Unit,
 ) {
   IconButton(
+    enabled = active,
     onClick = {
       onDismiss()
       toggleArchive(bookmark)
-    }
+    },
   ) {
     Icon(
       if (bookmark.archived) Icons.Filled.Unarchive else Icons.Filled.Archive,
@@ -463,18 +469,20 @@ private fun RowScope.SavedBookmarkActions(
     )
   }
   IconButton(
+    enabled = active,
     onClick = {
       onDismiss()
       deleteBookmark(bookmark)
-    }
+    },
   ) {
     Icon(Icons.Filled.Delete, contentDescription = stringResource(Res.string.bookmarks_delete))
   }
   IconButton(
+    enabled = active,
     onClick = {
       onDismiss()
       editBookmark(bookmark)
-    }
+    },
   ) {
     Icon(Icons.Filled.Edit, contentDescription = stringResource(Res.string.bookmarks_edit))
   }

@@ -54,7 +54,7 @@ class PendingBookmarkInteractionsTest {
       onOpen = { actions += "open" },
       onActions = { actions += "actions:${it.id}" },
     )
-    compose.onNodeWithText("Already exists on Linkding").assertExists()
+    compose.onNodeWithText("Bookmark already exists").assertExists()
     compose.onNodeWithText("Pending example").performClick()
     assertEquals(listOf("actions:1"), actions)
   }

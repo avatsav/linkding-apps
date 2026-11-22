@@ -70,12 +70,26 @@ class PendingBookmarkActionsTest {
     )
     compose.onNodeWithContentDescription("Retry").assertDoesNotExist()
     compose.onNodeWithContentDescription("Edit bookmark").assertDoesNotExist()
-    compose.onNodeWithContentDescription("Discard").assertExists()
+    compose.onNodeWithText("Discard").assertExists()
     compose.onNodeWithText("Overwrite").performClick()
     compose.onNodeWithText("Overwrite existing bookmark?").assertExists()
     assertEquals(emptyList(), actions)
     compose.onNode(hasText("Overwrite") and hasAnyAncestor(isDialog())).performClick()
     assertEquals(listOf("dismiss", "overwrite:1"), actions)
+  }
+
+  @Test
+  fun `conflict discard still requires confirmation`() {
+    val actions = mutableListOf<String>()
+    setActions(
+      item = { pendingBookmark().copy(state = PendingBookmark.State.AlreadyExists) },
+      onDiscard = { actions += "discard:${it.id}" },
+    )
+    compose.onNodeWithText("Discard").performClick()
+    compose.onNodeWithText("Discard pending bookmark?").assertExists()
+    assertEquals(emptyList(), actions)
+    compose.onNode(hasText("Discard") and hasAnyAncestor(isDialog())).performClick()
+    assertEquals(listOf("discard:1"), actions)
   }
 
   @Test
@@ -104,8 +118,39 @@ class PendingBookmarkActionsTest {
     compose.onNodeWithText("Discard pending bookmark?").assertDoesNotExist()
   }
 
+  @Test
+  fun `clearing selection keeps actions in place until the exit finishes`() {
+    var pending by
+      mutableStateOf<PendingBookmark?>(
+        pendingBookmark().copy(state = PendingBookmark.State.AlreadyExists)
+      )
+    setActions(item = { pending })
+    val overwrite = compose.onNodeWithText("Overwrite")
+    val discard = compose.onNodeWithText("Discard")
+    val spacing =
+      discard.fetchSemanticsNode().boundsInRoot.left -
+        overwrite.fetchSemanticsNode().boundsInRoot.left
+
+    compose.mainClock.autoAdvance = false
+    compose.runOnIdle { pending = null }
+    compose.mainClock.advanceTimeByFrame()
+    compose.mainClock.advanceTimeByFrame()
+
+    overwrite.assertIsNotEnabled()
+    discard.assertIsNotEnabled()
+    assertEquals(
+      spacing,
+      discard.fetchSemanticsNode().boundsInRoot.left -
+        overwrite.fetchSemanticsNode().boundsInRoot.left,
+    )
+
+    compose.mainClock.autoAdvance = true
+    overwrite.assertDoesNotExist()
+    discard.assertDoesNotExist()
+  }
+
   private fun setActions(
-    item: () -> PendingBookmark = { pendingBookmark() },
+    item: () -> PendingBookmark? = { pendingBookmark() },
     onDismiss: () -> Unit = {},
     onEdit: (PendingBookmark) -> Unit = {},
     onRetry: (PendingBookmark) -> Unit = {},
@@ -114,10 +159,11 @@ class PendingBookmarkActionsTest {
   ) {
     compose.setContent {
       MaterialTheme {
-        BookmarkActionsToolbar(visible = true) {
+        BookmarkActionsToolbar(target = item()) { displayed, active ->
           PendingBookmarkActions(
-            pending = item(),
+            pending = displayed,
             onDismiss = onDismiss,
+            active = active,
             onEdit = onEdit,
             onRetry = onRetry,
             onOverwrite = onOverwrite,

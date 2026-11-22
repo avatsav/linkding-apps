@@ -47,7 +47,7 @@
     <string name="pending_bookmark_upload">Pending upload</string>
     <string name="pending_bookmark_attention">Upload needs attention</string>
     <string name="pending_bookmark_retry">Retry</string>
-    <string name="pending_bookmark_already_exists">Already exists on Linkding</string>
+    <string name="pending_bookmark_already_exists">Bookmark already exists</string>
     <string name="pending_bookmark_overwrite">Overwrite</string>
     <string name="pending_bookmark_overwrite_title">Overwrite existing bookmark?</string>
     <string name="pending_bookmark_overwrite_message">This saves the pending draft over the bookmark on Linkding.</string>

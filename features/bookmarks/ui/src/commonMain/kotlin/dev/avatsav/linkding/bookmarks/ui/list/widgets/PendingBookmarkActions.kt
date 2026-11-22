@@ -1,13 +1,20 @@
 package dev.avatsav.linkding.bookmarks.ui.list.widgets
 
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.filled.SwapVert
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -15,6 +22,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import dev.avatsav.linkding.data.model.PendingBookmark
 import linkding_apps.features.bookmarks.ui.generated.resources.Res
 import linkding_apps.features.bookmarks.ui.generated.resources.bookmarks_edit
@@ -33,17 +43,29 @@ import org.jetbrains.compose.resources.stringResource
 internal fun RowScope.PendingBookmarkActions(
   pending: PendingBookmark,
   onDismiss: () -> Unit,
+  active: Boolean,
   onEdit: (PendingBookmark) -> Unit,
   onRetry: (PendingBookmark) -> Unit,
   onOverwrite: (PendingBookmark) -> Unit,
   onDiscard: (PendingBookmark) -> Unit,
 ) {
-  var confirmation by rememberSaveable(pending.id) { mutableStateOf<Confirmation?>(null) }
-  val enabled = pending.state != PendingBookmark.State.Uploading
+  var confirmation by rememberSaveable(pending.id, active) { mutableStateOf<Confirmation?>(null) }
+  val enabled = active && pending.state != PendingBookmark.State.Uploading
   val alreadyExists = pending.state == PendingBookmark.State.AlreadyExists
   if (alreadyExists) {
-    TextButton(onClick = { confirmation = Confirmation.Overwrite }) {
-      Text(stringResource(Res.string.pending_bookmark_overwrite))
+    TextButton(enabled = enabled, onClick = { confirmation = Confirmation.Overwrite }) {
+      ConflictActionLabel(Icons.Default.SwapVert, Res.string.pending_bookmark_overwrite)
+    }
+    FilledTonalButton(
+      enabled = enabled,
+      onClick = { confirmation = Confirmation.Discard },
+      colors =
+        ButtonDefaults.filledTonalButtonColors(
+          containerColor = MaterialTheme.colorScheme.surfaceContainer,
+          contentColor = MaterialTheme.colorScheme.onSurface,
+        ),
+    ) {
+      ConflictActionLabel(Icons.Default.Delete, Res.string.pending_bookmark_discard)
     }
   } else {
     IconButton(
@@ -58,14 +80,12 @@ internal fun RowScope.PendingBookmarkActions(
         contentDescription = stringResource(Res.string.pending_bookmark_retry),
       )
     }
-  }
-  IconButton(enabled = enabled, onClick = { confirmation = Confirmation.Discard }) {
-    Icon(
-      Icons.Default.Delete,
-      contentDescription = stringResource(Res.string.pending_bookmark_discard),
-    )
-  }
-  if (!alreadyExists) {
+    IconButton(enabled = enabled, onClick = { confirmation = Confirmation.Discard }) {
+      Icon(
+        Icons.Default.Delete,
+        contentDescription = stringResource(Res.string.pending_bookmark_discard),
+      )
+    }
     IconButton(
       enabled = enabled,
       onClick = {
@@ -102,6 +122,17 @@ internal fun RowScope.PendingBookmarkActions(
         }
       },
     )
+  }
+}
+
+@Composable
+private fun ConflictActionLabel(icon: ImageVector, label: StringResource) {
+  Row(
+    horizontalArrangement = Arrangement.spacedBy(ButtonDefaults.IconSpacing),
+    verticalAlignment = Alignment.CenterVertically,
+  ) {
+    Icon(icon, contentDescription = null, modifier = Modifier.size(ButtonDefaults.IconSize))
+    Text(stringResource(label))
   }
 }
 
