@@ -6,6 +6,10 @@ import kotlinx.coroutines.flow.Flow
 interface PendingBookmarksDao {
   fun observeAll(accountId: String): Flow<List<PendingBookmark>>
 
+  fun observeById(accountId: String, id: Long): Flow<PendingBookmark?>
+
+  suspend fun getById(accountId: String, id: Long): PendingBookmark?
+
   suspend fun getAll(accountId: String): List<PendingBookmark>
 
   suspend fun insert(accountId: String, bookmark: PendingBookmark): Long

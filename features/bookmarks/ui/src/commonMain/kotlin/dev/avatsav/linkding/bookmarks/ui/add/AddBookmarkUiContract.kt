@@ -24,11 +24,15 @@ data class AddBookmarkUiState(
   val loading: Boolean = false,
   val checkingUrl: Boolean = false,
   val checkUrlResult: CheckUrlResult? = null,
+  val checkedUrl: String? = null,
   val saving: Boolean = false,
   val errorMessage: String? = null,
 ) {
   val isEditMode: Boolean
     get() = mode is BookmarkMode.Edit || mode is BookmarkMode.Pending || existingBookmark != null
+
+  val pendingEditBlocked: Boolean
+    get() = pendingUnavailable || pendingBookmark?.canEdit == false
 
   val initialUrl: String
     get() = (mode as? BookmarkMode.Shared)?.url.orEmpty()
@@ -45,7 +49,7 @@ sealed interface AddBookmarkUiEvent {
 
   data object Close : AddBookmarkUiEvent
 
-  data class CheckUrl(val url: String) : AddBookmarkUiEvent
+  data class UrlChanged(val url: String) : AddBookmarkUiEvent
 }
 
 sealed interface AddBookmarkUiEffect {

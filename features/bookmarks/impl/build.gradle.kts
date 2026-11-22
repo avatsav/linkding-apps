@@ -11,6 +11,7 @@ kotlin {
       implementation(projects.core.preferences)
       implementation(projects.core.connectivity)
       api(projects.features.bookmarks.api)
+      implementation(projects.features.auth.api)
 
       // Data layer dependencies
       implementation(projects.data.linkdingApi)

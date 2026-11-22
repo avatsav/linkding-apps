@@ -7,6 +7,7 @@ kotlin {
   sourceSets {
     jvmTest.dependencies {
       implementation(libs.kotlin.test)
+      implementation(libs.kotlin.coroutines.test)
       implementation(compose.desktop.currentOs)
       implementation(libs.compose.ui.test.junit4)
     }

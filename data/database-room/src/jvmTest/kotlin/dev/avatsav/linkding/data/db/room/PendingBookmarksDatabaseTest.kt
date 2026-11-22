@@ -56,11 +56,16 @@ class PendingBookmarksDatabaseTest {
         val reopened = RoomPendingBookmarksDao(db)
         assertEquals(listOf(edited), reopened.observeAll("account-a").first())
         assertTrue(reopened.getAll("account-b").isEmpty())
+        assertEquals(edited, reopened.getById("account-a", id))
+        assertEquals(edited, reopened.observeById("account-a", id).first())
+        assertEquals(null, reopened.getById("account-b", id))
+        assertEquals(null, reopened.observeById("account-b", id).first())
         reopened.update("account-b", edited.copy(lastError = "wrong account"))
         reopened.delete("account-b", id)
         assertEquals(listOf(edited), reopened.getAll("account-a"))
         reopened.delete("account-a", id)
         assertTrue(reopened.getAll("account-a").isEmpty())
+        assertEquals(null, reopened.observeById("account-a", id).first())
       } finally {
         db.close()
       }

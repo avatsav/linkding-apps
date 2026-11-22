@@ -57,7 +57,7 @@ class PendingBookmarksConcurrencyTest {
         releaseSnapshot.await()
       }
     }
-    val reset = async { f.queue.resetAccountIfEmpty() }
+    val reset = async { f.resetAccount() }
     runCurrent()
     assertTrue(snapshotRead.isCompleted)
     val save = async { f.newQueue().create(draft) }
@@ -108,7 +108,7 @@ class PendingBookmarksConcurrencyTest {
     val save = async { f.queue.create(draft) }
     runCurrent()
     assertTrue(insertStarted.isCompleted)
-    val reset = async { f.newQueue().resetAccountIfEmpty() }
+    val reset = async { f.newResetAccount()() }
     runCurrent()
     assertFalse(reset.isCompleted)
     releaseInsert.complete(Unit)
@@ -125,7 +125,7 @@ class PendingBookmarksConcurrencyTest {
       val f = PendingBookmarksFixture()
       assertTrue(f.queue.create(draft).isOk)
       f.store.update("account", f.queue.observeFirst().copy(state = state))
-      assertFalse(f.queue.resetAccountIfEmpty(), "$state must block reset")
+      assertFalse(f.resetAccount(), "$state must block reset")
       assertEquals(initialConfig, f.preferences.config)
       assertEquals("account", f.preferences.localAccountId)
     }
@@ -136,7 +136,7 @@ class PendingBookmarksConcurrencyTest {
     val f = PendingBookmarksFixture()
     f.preferences.localAccountId = "new-account"
     f.preferences.config = ApiConfig("https://other.example", "other-key")
-    assertFalse(f.queue.resetAccountIfEmpty())
+    assertFalse(f.resetAccount())
     assertEquals("new-account", f.preferences.localAccountId)
     assertEquals("https://other.example", f.preferences.config?.hostUrl)
   }
@@ -148,7 +148,7 @@ class PendingBookmarksConcurrencyTest {
       f.preferences.localAccountId = "replacement-account"
       f.preferences.config = ApiConfig("https://other.example", "other-key")
     }
-    assertFalse(f.queue.resetAccountIfEmpty())
+    assertFalse(f.resetAccount())
     assertEquals("https://other.example", f.preferences.config?.hostUrl)
   }
 }

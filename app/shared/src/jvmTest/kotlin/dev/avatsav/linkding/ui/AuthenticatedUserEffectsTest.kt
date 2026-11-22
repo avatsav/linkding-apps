@@ -56,6 +56,8 @@ class AuthenticatedUserEffectsTest {
 
     override fun observe() = emptyFlow<List<PendingBookmark>>()
 
+    override fun observe(id: Long) = error("Unexpected observation")
+
     override suspend fun get(id: Long) = error("Unexpected read")
 
     override suspend fun create(bookmark: SaveBookmark) = error("Unexpected creation")
@@ -67,8 +69,6 @@ class AuthenticatedUserEffectsTest {
     override suspend fun retry(id: Long?) = error("Unexpected retry")
 
     override suspend fun overwrite(id: Long) = error("Unexpected overwrite")
-
-    override suspend fun resetAccountIfEmpty() = error("Unexpected reset")
 
     override suspend fun runUploader() {
       starts.incrementAndGet()

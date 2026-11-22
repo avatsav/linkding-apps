@@ -10,6 +10,8 @@ import dev.avatsav.linkding.data.db.daos.PendingBookmarksDao
 import dev.avatsav.linkding.data.model.ApiConfig
 import dev.avatsav.linkding.data.model.PendingBookmark
 import dev.avatsav.linkding.data.model.PendingBookmark.State
+import dev.avatsav.linkding.data.model.SaveBookmark
+import dev.avatsav.linkding.data.model.UpdateBookmark
 import dev.avatsav.linkding.di.scope.UserScope
 import dev.avatsav.linkding.internet.LocalNetworkAccess
 import dev.avatsav.linkding.prefs.AppPreferences
@@ -91,7 +93,7 @@ class PendingBookmarksUploader(
   private val isCurrentAccount: Boolean
     get() = preferences.getApiConfig() == config && preferences.getAccountId() == accountId
 
-  private suspend fun get(id: Long): PendingBookmark? = dao.getAll(accountId).find { it.id == id }
+  private suspend fun get(id: Long): PendingBookmark? = dao.getById(accountId, id)
 
   private suspend fun upload(id: Long, request: Request?) {
     val item =
@@ -112,11 +114,17 @@ class PendingBookmarksUploader(
       .checkUrl(item.bookmark.url)
       .fold(
         success = { check ->
-          val exists = check.bookmark != null
-          if (exists && request?.overwrite != true) {
-            updateIfUnchanged(item, State.AlreadyExists)
-          } else {
-            send(item, cacheOnSuccess = !exists)
+          val existing = check.bookmark
+          val overwrite = request?.overwrite == true
+          when {
+            existing != null && !overwrite -> updateIfUnchanged(item, State.AlreadyExists)
+            existing == null && overwrite ->
+              updateIfUnchanged(
+                item,
+                State.Failed,
+                "The existing bookmark was not found. Retry to save the draft as new.",
+              )
+            else -> send(item, existingId = existing?.id)
           }
         },
         failure = { error ->
@@ -139,18 +147,37 @@ class PendingBookmarksUploader(
       latest.copy(state = State.Uploading, lastError = null).also { dao.update(accountId, it) }
     }
 
-  private suspend fun send(checked: PendingBookmark, cacheOnSuccess: Boolean) {
+  private suspend fun save(bookmark: SaveBookmark, existingId: Long?) =
+    if (existingId == null) {
+      api.saveBookmark(mapper.map(bookmark))
+    } else {
+      // PATCH only the fields in the draft editor, not the existing bookmark's flags.
+      val update =
+        UpdateBookmark(
+          id = existingId,
+          title = bookmark.title.orEmpty(),
+          description = bookmark.description.orEmpty(),
+          notes = bookmark.notes.orEmpty(),
+          tags = bookmark.tags,
+        )
+      api.updateBookmark(existingId, mapper.map(update))
+    }
+
+  private suspend fun send(checked: PendingBookmark, existingId: Long?) {
     if (localNetworkAccess.check(config.hostUrl) == LocalNetworkAccess.State.Required) return
     val item = claim(checked) ?: return
     try {
-      api
-        .saveBookmark(mapper.map(item.bookmark))
+      save(item.bookmark, existingId)
         .fold(
           success = { response ->
             coordinator.locally(accountId) {
               if (get(item.id) == item) {
-                // The feed handles existing rows; adding one here may skew its paging offset.
-                if (cacheOnSuccess && isCurrentAccount) bookmarksDao.upsert(mapper.map(response))
+                if (isCurrentAccount) {
+                  val bookmark = mapper.map(response)
+                  // Overwrites must not add rows the feed hasn't paged in yet.
+                  if (existingId == null) bookmarksDao.upsert(bookmark)
+                  else bookmarksDao.update(bookmark)
+                }
                 dao.delete(accountId, item.id)
               }
             }

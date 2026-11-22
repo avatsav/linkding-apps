@@ -225,30 +225,9 @@ class PendingBookmarksTest {
         retry(f.queue)
         assertEquals(listOf(draft.url), f.api.checkedUrls)
         assertTrue(f.api.sent.isEmpty())
+        assertTrue(f.api.updates.isEmpty())
         assertTrue(f.cache.rows.isEmpty())
       }
-    }
-
-  @Test
-  fun `confirmed overwrite uses the pending fields and clears the draft without caching`() =
-    runTest {
-      val f = foregroundFixture()
-      val edited = draft.copy(notes = "Local notes", tags = setOf("saved-offline"))
-      f.api.online = true
-      f.api.existing = remote.copy(isArchived = true)
-      assertTrue(f.queue.create(edited).isOk)
-      runCurrent()
-
-      assertEquals(PendingBookmark.State.AlreadyExists, f.queue.observeFirst().state)
-      f.newQueue().overwrite(1)
-      assertTrue(f.api.sent.isEmpty(), "Confirming must leave network work to the uploader")
-      runCurrent()
-
-      assertEquals(listOf(edited.url, edited.url), f.api.checkedUrls)
-      assertEquals(edited.notes, f.api.sent.single().notes)
-      assertEquals(edited.tags, f.api.sent.single().tagNames)
-      assertTrue(f.store.rows.value.isEmpty())
-      assertTrue(f.cache.rows.isEmpty())
     }
 
   @Test

@@ -8,6 +8,7 @@ import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
 import dev.zacsweers.metro.Inject
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 
 @Inject
@@ -15,6 +16,16 @@ import kotlinx.coroutines.flow.map
 class RoomPendingBookmarksDao(private val db: LinkdingRoomDatabase) : PendingBookmarksDao {
   override fun observeAll(accountId: String): Flow<List<PendingBookmark>> =
     db.pendingBookmarksQueries().observeAll(accountId).map { rows -> rows.map { it.toModel() } }
+
+  override fun observeById(accountId: String, id: Long): Flow<PendingBookmark?> =
+    db
+      .pendingBookmarksQueries()
+      .observeById(accountId, id)
+      .map { it?.toModel() }
+      .distinctUntilChanged()
+
+  override suspend fun getById(accountId: String, id: Long): PendingBookmark? =
+    db.pendingBookmarksQueries().selectById(accountId, id)?.toModel()
 
   override suspend fun getAll(accountId: String): List<PendingBookmark> =
     db.pendingBookmarksQueries().selectAll(accountId).map { it.toModel() }
@@ -24,7 +35,7 @@ class RoomPendingBookmarksDao(private val db: LinkdingRoomDatabase) : PendingBoo
 
   override suspend fun update(accountId: String, bookmark: PendingBookmark) {
     // Do not allow an update to move a row between accounts.
-    if (getAll(accountId).any { it.id == bookmark.id }) {
+    if (getById(accountId, bookmark.id) != null) {
       db.pendingBookmarksQueries().update(bookmark.toRoomEntity(accountId))
     }
   }

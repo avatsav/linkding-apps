@@ -7,7 +7,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import dev.avatsav.linkding.AppInfo
-import dev.avatsav.linkding.bookmarks.api.PendingBookmarks
+import dev.avatsav.linkding.auth.api.ResetAccount
 import dev.avatsav.linkding.data.model.prefs.AppTheme
 import dev.avatsav.linkding.internet.LocalNetworkAccess
 import dev.avatsav.linkding.presenter.MoleculePresenter
@@ -27,7 +27,7 @@ import kotlinx.coroutines.launch
 class SettingsPresenter(
   private val settingsManager: SettingsManager,
   private val appInfo: AppInfo,
-  private val pendingBookmarks: PendingBookmarks,
+  private val resetAccount: ResetAccount,
   private val localNetworkAccess: LocalNetworkAccess,
 ) : MoleculePresenter<SettingsUiEvent, SettingsUiState, SettingsUiEffect>() {
 
@@ -56,7 +56,7 @@ class SettingsPresenter(
 
         ResetApiConfig ->
           presenterScope.launch {
-            if (pendingBookmarks.resetAccountIfEmpty()) {
+            if (resetAccount()) {
               emitEffect(SettingsUiEffect.ResetToAuth)
             } else {
               resetBlocked = true

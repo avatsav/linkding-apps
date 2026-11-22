@@ -60,6 +60,10 @@ internal class PendingBookmarksFixture {
 
   val queue = newQueue()
 
+  fun newResetAccount() = PendingAwareAccountReset(store, preferences, initialConfig, coordinator)
+
+  val resetAccount = newResetAccount()
+
   class FakeLocalNetworkAccess : LocalNetworkAccess() {
     override val permissionRequired = true
     public override val permissionGranted = MutableStateFlow(true)
@@ -82,6 +86,17 @@ internal class PendingBookmarksFixture {
 
     override fun observeAll(accountId: String): Flow<List<PendingBookmark>> = rows.map { items ->
       items.filter { it.first == accountId }.map { it.second }
+    }
+
+    override fun observeById(accountId: String, id: Long): Flow<PendingBookmark?> =
+      rows.map { items ->
+        items.firstOrNull { it.first == accountId && it.second.id == id }?.second
+      }
+
+    override suspend fun getById(accountId: String, id: Long): PendingBookmark? {
+      val snapshot = rows.value.firstOrNull { it.first == accountId && it.second.id == id }?.second
+      onRead()
+      return snapshot
     }
 
     override suspend fun getAll(accountId: String): List<PendingBookmark> {
@@ -122,12 +137,12 @@ internal class PendingBookmarksFixture {
     }
 
     override suspend fun update(bookmark: Bookmark) {
-      rows.removeAll { it.id == bookmark.id }
-      rows.add(bookmark)
+      val index = rows.indexOfFirst { it.id == bookmark.id }
+      if (index >= 0) rows[index] = bookmark
     }
 
     override suspend fun upsert(bookmark: Bookmark): Long {
-      update(bookmark)
+      if (rows.any { it.id == bookmark.id }) update(bookmark) else insert(bookmark)
       return bookmark.id
     }
 
@@ -175,6 +190,7 @@ internal class PendingBookmarksFixture {
     var onSave: suspend () -> Unit = {}
     val checkedUrls = mutableListOf<String>()
     val sent = mutableListOf<LinkdingSaveBookmarkRequest>()
+    val updates = mutableListOf<Pair<Long, LinkdingUpdateBookmarkRequest>>()
 
     override suspend fun checkUrl(url: String): Result<LinkdingCheckUrlResponse, LinkdingError> {
       checkedUrls += url
@@ -224,7 +240,20 @@ internal class PendingBookmarksFixture {
     override suspend fun updateBookmark(
       id: Long,
       request: LinkdingUpdateBookmarkRequest,
-    ): Result<LinkdingBookmark, LinkdingError> = error("Must not edit server bookmarks")
+    ): Result<LinkdingBookmark, LinkdingError> {
+      updates += id to request
+      val bookmark = checkNotNull(existing).also { check(it.id == id) }
+      return Ok(
+        bookmark
+          .copy(
+            title = request.title ?: bookmark.title,
+            description = request.description ?: bookmark.description,
+            notes = request.notes ?: bookmark.notes,
+            tagNames = request.tagNames ?: bookmark.tagNames,
+          )
+          .also { existing = it }
+      )
+    }
 
     override suspend fun archiveBookmark(id: Long): Result<Unit, LinkdingError> =
       error("Must not archive")

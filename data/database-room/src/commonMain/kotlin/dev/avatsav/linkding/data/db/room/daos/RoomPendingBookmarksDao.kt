@@ -19,6 +19,12 @@ abstract class RoomPendingBookmarksDao {
   @Query("SELECT * FROM pending_bookmarks WHERE accountId = :accountId ORDER BY id ASC")
   abstract suspend fun selectAll(accountId: String): List<PendingBookmarkEntity>
 
+  @Query("SELECT * FROM pending_bookmarks WHERE accountId = :accountId AND id = :id")
+  abstract fun observeById(accountId: String, id: Long): Flow<PendingBookmarkEntity?>
+
+  @Query("SELECT * FROM pending_bookmarks WHERE accountId = :accountId AND id = :id")
+  abstract suspend fun selectById(accountId: String, id: Long): PendingBookmarkEntity?
+
   @Query("DELETE FROM pending_bookmarks WHERE accountId = :accountId AND id = :id")
   abstract suspend fun delete(accountId: String, id: Long)
 }

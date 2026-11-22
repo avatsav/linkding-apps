@@ -33,7 +33,9 @@ class DefaultPendingBookmarks(
 
   override fun observe(): Flow<List<PendingBookmark>> = dao.observeAll(accountId)
 
-  override suspend fun get(id: Long): PendingBookmark? = dao.getAll(accountId).find { it.id == id }
+  override fun observe(id: Long): Flow<PendingBookmark?> = dao.observeById(accountId, id)
+
+  override suspend fun get(id: Long): PendingBookmark? = dao.getById(accountId, id)
 
   override suspend fun create(bookmark: SaveBookmark): Result<SaveResult, BookmarkError> =
     coordinator.locally(accountId) {
@@ -49,7 +51,7 @@ class DefaultPendingBookmarks(
       if (!isCurrentAccount) return@locally false
       val item = get(id) ?: return@locally false
       // Do not change an in-flight payload or a draft awaiting a conflict decision.
-      if (item.state == State.Uploading || item.state == State.AlreadyExists) return@locally false
+      if (!item.canEdit) return@locally false
       val uncertain = item.state == State.Uncertain
       dao.update(
         accountId,
@@ -89,15 +91,6 @@ class DefaultPendingBookmarks(
   override suspend fun overwrite(id: Long) =
     coordinator.locally(accountId) {
       if (get(id)?.state == State.AlreadyExists && isCurrentAccount) request(id, overwrite = true)
-    }
-
-  override suspend fun resetAccountIfEmpty(): Boolean =
-    coordinator.locally(accountId) {
-      // Validate after the suspending read, before changing credentials. The same lock prevents
-      // another activity from acknowledging a creation between this check and account rotation.
-      if (dao.getAll(accountId).isNotEmpty() || !isCurrentAccount) return@locally false
-      preferences.setApiConfig(null)
-      true
     }
 
   override suspend fun runUploader() = uploader.run()

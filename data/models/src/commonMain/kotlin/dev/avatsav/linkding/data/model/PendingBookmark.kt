@@ -10,6 +10,9 @@ data class PendingBookmark(
   val state: State = State.Pending,
   val lastError: String? = null,
 ) {
+  val canEdit: Boolean
+    get() = state != State.Uploading && state != State.AlreadyExists
+
   enum class State {
     Pending,
     Uploading,

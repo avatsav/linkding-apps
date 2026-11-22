@@ -6,6 +6,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import co.touchlab.kermit.Logger
 import com.github.michaelbull.result.Ok
@@ -18,9 +19,9 @@ import dev.avatsav.linkding.bookmarks.api.interactors.AddBookmark
 import dev.avatsav.linkding.bookmarks.api.interactors.CheckBookmarkUrl
 import dev.avatsav.linkding.bookmarks.api.interactors.GetBookmark
 import dev.avatsav.linkding.bookmarks.api.interactors.UpdateBookmark
-import dev.avatsav.linkding.bookmarks.ui.add.AddBookmarkUiEvent.CheckUrl
 import dev.avatsav.linkding.bookmarks.ui.add.AddBookmarkUiEvent.Close
 import dev.avatsav.linkding.bookmarks.ui.add.AddBookmarkUiEvent.Save
+import dev.avatsav.linkding.bookmarks.ui.add.AddBookmarkUiEvent.UrlChanged
 import dev.avatsav.linkding.data.model.Bookmark
 import dev.avatsav.linkding.data.model.BookmarkError
 import dev.avatsav.linkding.data.model.CheckUrlResult
@@ -32,8 +33,12 @@ import dev.avatsav.linkding.presenter.MoleculePresenter
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.AssistedInject
+import kotlin.time.Duration.Companion.milliseconds
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
+
+private val UrlCheckDelay = 500.milliseconds
 
 @AssistedInject
 class AddBookmarkPresenter(
@@ -49,43 +54,34 @@ class AddBookmarkPresenter(
 
   @Composable
   override fun models(events: Flow<AddBookmarkUiEvent>): AddBookmarkUiState {
-    var existingBookmark: Bookmark? by remember { mutableStateOf(null) }
-    var loadingBookmark by remember { mutableStateOf(mode is BookmarkMode.Pending) }
+    var loadedBookmark: Bookmark? by remember { mutableStateOf(null) }
+    var loadingBookmark by remember { mutableStateOf(mode is BookmarkMode.Pending || mode is Edit) }
     var pendingBookmark: PendingBookmark? by remember { mutableStateOf(null) }
-    var pendingUnavailable by remember { mutableStateOf(false) }
+    var pendingEditRejected by remember { mutableStateOf(false) }
     var saving by remember { mutableStateOf(false) }
-    var checkUrlResult: CheckUrlResult? by remember { mutableStateOf(null) }
+    var url by remember { mutableStateOf((mode as? BookmarkMode.Shared)?.url.orEmpty()) }
     var errorMessage by remember { mutableStateOf("") }
 
     val checkingUrl by checkBookmarkUrl.inProgress.collectAsState(false)
-    val effectiveBookmarkId = (mode as? BookmarkMode.Edit)?.bookmarkId ?: existingBookmark?.id
+    val currentCheck = rememberUrlCheck(url, saving) { checkedUrl -> url == checkedUrl && !saving }
+    val existingBookmark = loadedBookmark ?: currentCheck?.result?.existingBookmark
+    val pendingUnavailable = pendingEditRejected || isMissingDraft(loadingBookmark, pendingBookmark)
 
     // Load initial data based on mode
     LaunchedEffect(mode) {
       when (mode) {
-        is New -> {
-          /* Nothing to load */
-        }
-        is Shared -> {
-          checkBookmarkUrl(mode.url)
-            .onOk { result ->
-              checkUrlResult = result
-              if (result.existingBookmark != null) {
-                existingBookmark = result.existingBookmark
-                emitEffect(AddBookmarkUiEffect.ExistingBookmarkFound)
-              }
-            }
-            .onErr { Logger.e { "CheckError: $it" } }
-        }
+        BookmarkMode.New,
+        is BookmarkMode.Shared -> Unit
         is BookmarkMode.Pending -> {
-          pendingBookmark = pendingBookmarks.get(mode.pendingId)
-          pendingUnavailable = pendingBookmark == null
-          loadingBookmark = false
+          pendingBookmarks.observe(mode.pendingId).collect {
+            pendingBookmark = it
+            pendingEditRejected = false
+            loadingBookmark = false
+          }
         }
         is Edit -> {
-          loadingBookmark = true
           getBookmark(mode.bookmarkId)
-            .onOk { existingBookmark = it }
+            .onOk { loadedBookmark = it }
             .onErr {
               Logger.e { "Failed to load bookmark: $it" }
               errorMessage = it.message
@@ -99,14 +95,18 @@ class AddBookmarkPresenter(
       when (event) {
         Close -> emitEffect(AddBookmarkUiEffect.NavigateUp)
         is Save ->
-          if (!saving) {
+          if (
+            !saving && !loadingBookmark && !pendingUnavailable && pendingBookmark?.canEdit != false
+          ) {
             saving = true
+            val serverId =
+              (mode as? BookmarkMode.Edit)?.bookmarkId ?: currentCheck?.targetFor(event.url)
             presenterScope.launch {
               try {
-                save(event, effectiveBookmarkId, pendingBookmark)
+                save(event, serverId, pendingBookmark)
                   .onOk { saved ->
                     if (saved) emitEffect(AddBookmarkUiEffect.BookmarkSaved)
-                    else pendingUnavailable = true
+                    else pendingEditRejected = true
                   }
                   .onErr { errorMessage = it.message }
               } finally {
@@ -115,20 +115,7 @@ class AddBookmarkPresenter(
             }
           }
 
-        is CheckUrl ->
-          presenterScope.launch {
-            if (mode is BookmarkMode.Pending) return@launch
-            checkBookmarkUrl(event.url)
-              .onOk { result ->
-                checkUrlResult = result
-                // If URL already exists, switch to edit mode automatically
-                if (result.existingBookmark != null && existingBookmark == null) {
-                  existingBookmark = result.existingBookmark
-                  emitEffect(AddBookmarkUiEffect.ExistingBookmarkFound)
-                }
-              }
-              .onErr { Logger.e { "CheckError: $it" } }
-          }
+        is UrlChanged -> url = event.url
       }
     }
 
@@ -139,10 +126,42 @@ class AddBookmarkPresenter(
       pendingUnavailable = pendingUnavailable,
       loading = loadingBookmark,
       checkingUrl = checkingUrl,
-      checkUrlResult = checkUrlResult,
+      checkUrlResult = currentCheck?.result,
+      checkedUrl = currentCheck?.url,
       saving = saving,
       errorMessage = errorMessage.ifBlank { null },
     )
+  }
+
+  private fun isMissingDraft(loading: Boolean, pending: PendingBookmark?): Boolean =
+    mode is BookmarkMode.Pending && !loading && pending == null
+
+  @Composable
+  private fun rememberUrlCheck(
+    lookupUrl: String,
+    saving: Boolean,
+    isCurrent: (String) -> Boolean,
+  ): CheckedUrl? {
+    val stillCurrent by rememberUpdatedState(isCurrent)
+    var checked by remember(lookupUrl) { mutableStateOf<CheckedUrl?>(null) }
+    LaunchedEffect(lookupUrl, saving) {
+      if (mode is Edit || mode is BookmarkMode.Pending || saving || lookupUrl.isBlank()) {
+        return@LaunchedEffect
+      }
+      if (checked != null) return@LaunchedEffect
+      delay(UrlCheckDelay)
+      checkBookmarkUrl(lookupUrl)
+        .onOk { result ->
+          if (stillCurrent(lookupUrl)) {
+            checked = CheckedUrl(lookupUrl, result)
+            if (result.existingBookmark != null) {
+              emitEffect(AddBookmarkUiEffect.ExistingBookmarkFound)
+            }
+          }
+        }
+        .onErr { Logger.e { "CheckError: $it" } }
+    }
+    return checked
   }
 
   private suspend fun save(
@@ -173,6 +192,11 @@ class AddBookmarkPresenter(
           .map { true }
       else -> addBookmark(fields).map { true }
     }
+  }
+
+  private data class CheckedUrl(val url: String, val result: CheckUrlResult) {
+    fun targetFor(submittedUrl: String): Long? =
+      result.existingBookmark?.takeIf { submittedUrl == url || submittedUrl == it.url }?.id
   }
 
   @AssistedFactory

@@ -11,6 +11,8 @@ import kotlinx.coroutines.flow.Flow
 interface PendingBookmarks {
   fun observe(): Flow<List<PendingBookmark>>
 
+  fun observe(id: Long): Flow<PendingBookmark?>
+
   suspend fun get(id: Long): PendingBookmark?
 
   /** Returns after durable local storage; the foreground uploader owns all network work. */
@@ -19,24 +21,18 @@ interface PendingBookmarks {
   /** False if the item was removed, is uploading, or awaits an overwrite/discard decision. */
   suspend fun edit(id: Long, bookmark: SaveBookmark): Boolean
 
-  /** Does not wait for network requests. An item already being POSTed cannot be discarded. */
+  /** Does not wait for network requests. An item already being uploaded cannot be discarded. */
   suspend fun discard(id: Long)
 
   /**
    * Requests a retry without network work. The next foreground uploader also checks requested items
    * requiring attention, except known URL matches that need an explicit overwrite. Requests wait in
-   * memory and are consumed before POST so uncertain uploads need a fresh decision.
+   * memory and are consumed before upload so uncertain uploads need a fresh decision.
    */
   suspend fun retry(id: Long? = null)
 
   /** Authorizes one foreground attempt to save a draft whose URL already exists on the server. */
   suspend fun overwrite(id: Long)
-
-  /**
-   * Clears this account's credentials only if it is still current and has no pending creations.
-   * Serialized with local writes across user graphs; a stale graph cannot reset another account.
-   */
-  suspend fun resetAccountIfEmpty(): Boolean
 
   /** Runs until cancelled. The authenticated foreground lifecycle owns this call. */
   suspend fun runUploader()

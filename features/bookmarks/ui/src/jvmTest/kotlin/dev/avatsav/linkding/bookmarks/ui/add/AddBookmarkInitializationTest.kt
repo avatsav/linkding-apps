@@ -6,6 +6,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.test.assertIsNotEnabled
 import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
@@ -66,6 +67,24 @@ class AddBookmarkInitializationTest {
     }
     compose.onNodeWithText("Save").performClick()
     assertEquals(listOf<AddBookmarkUiEvent>(expectedSave.copy(title = "Local title")), events)
+  }
+
+  @Test
+  fun `a conflict disables save without resetting the typed title`() {
+    val events = mutableListOf<AddBookmarkUiEvent>()
+    var state by mutableStateOf(pendingState())
+    setContent({ state }, events)
+    compose.onNodeWithText("Title").performTextReplacement("Local title")
+    compose.runOnIdle {
+      state =
+        state.copy(
+          pendingBookmark = state.pendingBookmark?.copy(state = PendingBookmark.State.AlreadyExists)
+        )
+    }
+    compose.onNodeWithText("Bookmark already exists").assertExists()
+    compose.onNodeWithText("Save").assertIsNotEnabled()
+    compose.onNodeWithText("Local title").assertExists()
+    assertEquals(emptyList(), events)
   }
 
   private fun setContent(
