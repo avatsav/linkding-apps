@@ -21,9 +21,13 @@ This project owes its multiplatform foundation to the excellent [Tivi](https://g
 
 ## Local Linkding server
 
-Use the development server for manual testing without touching your real library:
+Use the development server in `docker/linkding/` for manual testing without
+touching your real library. Run the Compose commands below from that directory.
+If you already have a root `.env` from the old setup, move it to `docker/linkding/`
+instead of copying the example. The existing Compose data volume is reused.
 
 ```bash
+cd docker/linkding
 cp .env.example .env
 # Generate a test token once:
 python3 -c 'import secrets; print(secrets.token_hex(20))'
@@ -64,8 +68,8 @@ without a manual refresh.
 
 `docker compose down` removes the container but retains its named data volume.
 **`docker compose down --volumes` deletes the development library and account.**
-`.env` is ignored by Git. `LINKDING_PORT` can change the host port, and
-`LINKDING_IMAGE` can pin a server version; both are shown in `.env.example`.
+The local `.env` is ignored by Git. Set `LINKDING_PORT` to change the host port
+or `LINKDING_IMAGE` to override the version pinned in `compose.yaml`.
 
 ## License
 

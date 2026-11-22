@@ -69,6 +69,8 @@ sealed interface BookmarksUiEvent {
 
   data class RetryPending(val id: Long? = null) : BookmarksUiEvent
 
+  data class OverwritePending(val id: Long) : BookmarksUiEvent
+
   data class DiscardPending(val id: Long) : BookmarksUiEvent
 
   // Refresh & Undo

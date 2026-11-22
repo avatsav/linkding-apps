@@ -47,6 +47,19 @@ class PendingBookmarkInteractionsTest {
   }
 
   @Test
+  fun `conflicting bookmark shows the reason it stays pending and tap selects actions`() {
+    val actions = mutableListOf<String>()
+    setRow(
+      pendingBookmark().copy(state = PendingBookmark.State.AlreadyExists),
+      onOpen = { actions += "open" },
+      onActions = { actions += "actions:${it.id}" },
+    )
+    compose.onNodeWithText("Already exists on Linkding").assertExists()
+    compose.onNodeWithText("Pending example").performClick()
+    assertEquals(listOf("actions:1"), actions)
+  }
+
+  @Test
   fun `regular bookmark keeps tap and long press behavior with shared row`() {
     val actions = mutableListOf<String>()
     compose.setContent {

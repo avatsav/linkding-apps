@@ -28,6 +28,14 @@ class PendingBookmarksCoordinator(connectivity: ConnectivityObserver) {
     val uploaderMutex = Mutex()
     val wakeups = Channel<Unit>(Channel.CONFLATED)
     // Protected by localMutex. Requests survive collector gaps, but not process death.
-    val retryIds = mutableSetOf<Long>()
+    val retryRequests = mutableMapOf<Long, Request>()
+    private var nextRetryGeneration = 0L
+
+    fun request(id: Long, overwrite: Boolean = false) {
+      retryRequests[id] = Request(++nextRetryGeneration, overwrite)
+      wakeups.trySend(Unit)
+    }
   }
+
+  internal data class Request(val generation: Long, val overwrite: Boolean)
 }

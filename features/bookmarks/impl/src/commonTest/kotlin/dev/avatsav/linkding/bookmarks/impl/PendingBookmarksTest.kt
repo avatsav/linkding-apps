@@ -1,28 +1,12 @@
 package dev.avatsav.linkding.bookmarks.impl
 
-import com.github.michaelbull.result.Err
 import com.github.michaelbull.result.Ok
-import com.github.michaelbull.result.Result
-import dev.avatsav.linkding.api.LinkdingBookmarksApi
-import dev.avatsav.linkding.api.models.LinkdingBookmark
-import dev.avatsav.linkding.api.models.LinkdingBookmarkCategory
-import dev.avatsav.linkding.api.models.LinkdingBookmarksResponse
-import dev.avatsav.linkding.api.models.LinkdingCheckUrlResponse
 import dev.avatsav.linkding.api.models.LinkdingError
-import dev.avatsav.linkding.api.models.LinkdingSaveBookmarkRequest
-import dev.avatsav.linkding.api.models.LinkdingUpdateBookmarkRequest
-import dev.avatsav.linkding.bookmarks.impl.mappers.BookmarkMapper
-import dev.avatsav.linkding.data.db.daos.BookmarksDao
-import dev.avatsav.linkding.data.db.daos.PendingBookmarksDao
+import dev.avatsav.linkding.bookmarks.impl.PendingBookmarksFixture.Companion.draft
+import dev.avatsav.linkding.bookmarks.impl.PendingBookmarksFixture.Companion.remote
 import dev.avatsav.linkding.data.model.ApiConfig
-import dev.avatsav.linkding.data.model.Bookmark
 import dev.avatsav.linkding.data.model.PendingBookmark
-import dev.avatsav.linkding.data.model.SaveBookmark
 import dev.avatsav.linkding.data.model.SaveResult
-import dev.avatsav.linkding.data.model.prefs.AppTheme
-import dev.avatsav.linkding.internet.ConnectivityObserver
-import dev.avatsav.linkding.internet.LocalNetworkAccess
-import dev.avatsav.linkding.prefs.AppPreferences
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -31,9 +15,6 @@ import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitCancellation
 import kotlinx.coroutines.cancelAndJoin
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.advanceTimeBy
@@ -43,7 +24,7 @@ import kotlinx.coroutines.test.runTest
 class PendingBookmarksTest {
   @Test
   fun `retry requests wait for a foreground uploader`() = runTest {
-    val f = Fixture()
+    val f = PendingBookmarksFixture()
     f.api.online = true
     assertTrue(f.queue.create(draft).isOk)
     val item = f.queue.observeFirst()
@@ -59,7 +40,7 @@ class PendingBookmarksTest {
 
   @Test
   fun `two queue instances share one foreground uploader`() = runTest {
-    val f = Fixture()
+    val f = PendingBookmarksFixture()
     f.api.online = true
     assertTrue(f.queue.create(draft).isOk)
     val release = CompletableDeferred<Unit>()
@@ -77,7 +58,7 @@ class PendingBookmarksTest {
 
   @Test
   fun `another foreground instance cannot recover a live POST as interrupted`() = runTest {
-    val f = Fixture()
+    val f = PendingBookmarksFixture()
     f.api.online = true
     assertTrue(f.queue.create(draft).isOk)
     f.api.onSave = { awaitCancellation() }
@@ -105,7 +86,7 @@ class PendingBookmarksTest {
 
   @Test
   fun `granting local network permission wakes the foreground uploader`() = runTest {
-    val f = Fixture()
+    val f = PendingBookmarksFixture()
     f.access.permissionGranted.value = false
     f.api.online = true
     assertTrue(f.queue.create(draft).isOk)
@@ -133,7 +114,7 @@ class PendingBookmarksTest {
 
   @Test
   fun `save finishes locally without waiting for an unreachable backend`() = runTest {
-    val f = Fixture()
+    val f = PendingBookmarksFixture()
     f.api.onCheck = { awaitCancellation() }
     val save = async { f.queue.create(draft) }
     runCurrent()
@@ -174,7 +155,7 @@ class PendingBookmarksTest {
 
   @Test
   fun `editing updates the durable creation and retry sends latest fields`() = runTest {
-    val f = Fixture()
+    val f = PendingBookmarksFixture()
     assertTrue(f.queue.create(draft).isOk)
     val id = f.queue.observeFirst().id
     val changed = draft.copy(title = "Updated", notes = "Offline notes", tags = setOf("new"))
@@ -230,25 +211,63 @@ class PendingBookmarksTest {
   }
 
   @Test
-  fun `existing server bookmark clears the pending creation without POST`() = runTest {
-    val f = Fixture()
-    val existing = remote.copy(title = "Server title", notes = "Server notes")
+  fun `active and archived URL matches keep the draft and normal retry cannot overwrite`() =
+    runTest {
+      for (archived in listOf(false, true)) {
+        val f = foregroundFixture()
+        f.api.online = true
+        f.api.existing = remote.copy(isArchived = archived)
+        assertTrue(f.queue.create(draft).isOk)
+        runCurrent()
+        assertEquals(PendingBookmark.State.AlreadyExists, f.queue.observeFirst().state)
+        assertEquals(draft, f.queue.observeFirst().bookmark)
+        retry(f.queue, 1)
+        retry(f.queue)
+        assertEquals(listOf(draft.url), f.api.checkedUrls)
+        assertTrue(f.api.sent.isEmpty())
+        assertTrue(f.cache.rows.isEmpty())
+      }
+    }
+
+  @Test
+  fun `confirmed overwrite uses the pending fields and clears the draft without caching`() =
+    runTest {
+      val f = foregroundFixture()
+      val edited = draft.copy(notes = "Local notes", tags = setOf("saved-offline"))
+      f.api.online = true
+      f.api.existing = remote.copy(isArchived = true)
+      assertTrue(f.queue.create(edited).isOk)
+      runCurrent()
+
+      assertEquals(PendingBookmark.State.AlreadyExists, f.queue.observeFirst().state)
+      f.newQueue().overwrite(1)
+      assertTrue(f.api.sent.isEmpty(), "Confirming must leave network work to the uploader")
+      runCurrent()
+
+      assertEquals(listOf(edited.url, edited.url), f.api.checkedUrls)
+      assertEquals(edited.notes, f.api.sent.single().notes)
+      assertEquals(edited.tags, f.api.sent.single().tagNames)
+      assertTrue(f.store.rows.value.isEmpty())
+      assertTrue(f.cache.rows.isEmpty())
+    }
+
+  @Test
+  fun `discarding a conflict only removes the draft`() = runTest {
+    val f = foregroundFixture()
     f.api.online = true
-    f.api.existing = existing
+    f.api.existing = remote
     assertTrue(f.queue.create(draft).isOk)
-    backgroundScope.launch { f.queue.runUploader() }
     runCurrent()
-    assertEquals(listOf(draft.url), f.api.checkedUrls)
+    assertEquals(PendingBookmark.State.AlreadyExists, f.queue.observeFirst().state)
+    f.queue.discard(1)
+    runCurrent()
+    assertTrue(f.store.rows.value.isEmpty())
     assertTrue(f.api.sent.isEmpty())
-    assertTrue(f.store.rows.value.isEmpty(), "A confirmed existing URL should not stay pending")
-    val cached = f.cache.rows.single()
-    assertEquals(existing.id, cached.id)
-    assertEquals(existing.title, cached.title)
-    assertEquals(existing.notes, cached.notes)
+    assertTrue(f.cache.rows.isEmpty())
   }
 
   @Test
-  fun `retry clears an ambiguous POST when the bookmark now exists`() = runTest {
+  fun `retry marks a conflict when an ambiguous POST now exists on the server`() = runTest {
     val f = foregroundFixture()
     f.api.online = true
     f.api.saveError = LinkdingError.Connectivity("Timed out")
@@ -258,8 +277,8 @@ class PendingBookmarksTest {
     f.api.existing = remote
     retry(f.queue)
     assertEquals(1, f.api.sent.size)
-    assertTrue(f.store.rows.value.isEmpty())
-    assertEquals(remote.id, f.cache.rows.single().id)
+    assertEquals(PendingBookmark.State.AlreadyExists, f.queue.observeFirst().state)
+    assertTrue(f.cache.rows.isEmpty())
   }
 
   @Test
@@ -274,7 +293,7 @@ class PendingBookmarksTest {
 
   @Test
   fun `uploader cancellation propagates and leaves a durable in-flight record`() = runTest {
-    val f = Fixture()
+    val f = PendingBookmarksFixture()
     f.api.online = true
     f.api.onSave = { awaitCancellation() }
     assertTrue(f.queue.create(draft).isOk)
@@ -288,7 +307,7 @@ class PendingBookmarksTest {
 
   @Test
   fun `foreground startup uploads pending items without an internet hint`() = runTest {
-    val f = Fixture()
+    val f = PendingBookmarksFixture()
     f.online.value = false
     assertTrue(f.queue.create(draft).isOk)
     f.api.online = true
@@ -301,7 +320,7 @@ class PendingBookmarksTest {
 
   @Test
   fun `foreground retry discovers host recovery without a connectivity change`() = runTest {
-    val f = Fixture()
+    val f = PendingBookmarksFixture()
     f.online.value = false
     assertTrue(f.queue.create(draft).isOk)
     backgroundScope.launch { f.queue.runUploader() }
@@ -316,7 +335,7 @@ class PendingBookmarksTest {
 
   @Test
   fun `startup does not automatically resend an interrupted POST`() = runTest {
-    val f = Fixture()
+    val f = PendingBookmarksFixture()
     assertTrue(f.queue.create(draft).isOk)
     val item = f.queue.observeFirst()
     f.store.update("account", item.copy(state = PendingBookmark.State.Uploading))
@@ -520,7 +539,7 @@ class PendingBookmarksTest {
 
   @Test
   fun `backgrounding during manual preflight stops the batch until foreground resumes`() = runTest {
-    val f = Fixture()
+    val f = PendingBookmarksFixture()
     f.api.online = true
     assertTrue(f.queue.create(draft).isOk)
     assertTrue(f.queue.create(draft.copy(url = "https://example.com/second")).isOk)
@@ -545,7 +564,7 @@ class PendingBookmarksTest {
 
   @Test
   fun `foreground handoff never automatically retries an ambiguous POST`() = runTest {
-    val f = Fixture()
+    val f = PendingBookmarksFixture()
     f.api.online = true
     assertTrue(f.queue.create(draft).isOk)
     f.api.onSave = { awaitCancellation() }
@@ -567,7 +586,7 @@ class PendingBookmarksTest {
 
   @Test
   fun `retry from another graph reaches the active foreground owner`() = runTest {
-    val f = Fixture()
+    val f = PendingBookmarksFixture()
     f.api.online = true
     assertTrue(f.queue.create(draft).isOk)
     val item = f.queue.observeFirst()
@@ -582,7 +601,7 @@ class PendingBookmarksTest {
 
   @Test
   fun `local creation in another graph wakes the active foreground owner`() = runTest {
-    val f = Fixture()
+    val f = PendingBookmarksFixture()
     f.api.online = true
     backgroundScope.launch { f.queue.runUploader() }
     runCurrent()
@@ -627,215 +646,13 @@ class PendingBookmarksTest {
     assertTrue(f.store.getAll("other-account").isEmpty())
   }
 
-  private fun TestScope.foregroundFixture(): Fixture =
-    Fixture().also { fixture -> backgroundScope.launch { fixture.queue.runUploader() } }
+  private fun TestScope.foregroundFixture(): PendingBookmarksFixture =
+    PendingBookmarksFixture().also { fixture ->
+      backgroundScope.launch { fixture.queue.runUploader() }
+    }
 
   private suspend fun TestScope.retry(queue: DefaultPendingBookmarks, id: Long? = null) {
     queue.retry(id)
     runCurrent()
-  }
-
-  private suspend fun DefaultPendingBookmarks.observeFirst() = get(1) ?: error("No pending item")
-
-  private class Fixture {
-    val store = MemoryPendingDao()
-    val cache = MemoryBookmarksDao()
-    val api = FakeApi()
-    val preferences = FakePreferences()
-    val online = MutableStateFlow(true)
-    val access = FakeLocalNetworkAccess()
-    private val coordinator =
-      PendingBookmarksCoordinator(
-        object : ConnectivityObserver {
-          override val observeIsOnline = online
-        }
-      )
-
-    fun newQueue(config: ApiConfig = initialConfig) =
-      DefaultPendingBookmarks(
-        store,
-        cache,
-        api,
-        BookmarkMapper(),
-        preferences,
-        config,
-        access,
-        coordinator,
-      )
-
-    val queue = newQueue()
-  }
-
-  private class FakeLocalNetworkAccess : LocalNetworkAccess() {
-    override val permissionRequired = true
-    public override val permissionGranted = MutableStateFlow(true)
-    var onLookup: suspend () -> Unit = {}
-
-    override suspend fun isLocalServer(hostUrl: String): Boolean {
-      onLookup()
-      return true
-    }
-
-    override fun refresh() = Unit
-  }
-
-  private class MemoryPendingDao : PendingBookmarksDao {
-    val rows = MutableStateFlow<List<Pair<String, PendingBookmark>>>(emptyList())
-    private var nextId = 1L
-
-    override fun observeAll(accountId: String): Flow<List<PendingBookmark>> = rows.map { items ->
-      items.filter { it.first == accountId }.map { it.second }
-    }
-
-    override suspend fun getAll(accountId: String) =
-      rows.value.filter { it.first == accountId }.map { it.second }
-
-    override suspend fun insert(accountId: String, bookmark: PendingBookmark): Long {
-      val id = nextId++
-      rows.value += accountId to bookmark.copy(id = id)
-      return id
-    }
-
-    override suspend fun update(accountId: String, bookmark: PendingBookmark) {
-      rows.value =
-        rows.value.map {
-          if (it.first == accountId && it.second.id == bookmark.id) accountId to bookmark else it
-        }
-    }
-
-    override suspend fun delete(accountId: String, id: Long) {
-      rows.value = rows.value.filterNot { it.first == accountId && it.second.id == id }
-    }
-  }
-
-  private class MemoryBookmarksDao : BookmarksDao {
-    val rows = mutableListOf<Bookmark>()
-
-    override suspend fun insert(bookmark: Bookmark) {
-      rows.add(bookmark)
-    }
-
-    override suspend fun insert(bookmarks: List<Bookmark>) {
-      rows.addAll(bookmarks)
-    }
-
-    override suspend fun update(bookmark: Bookmark) {
-      rows.removeAll { it.id == bookmark.id }
-      rows.add(bookmark)
-    }
-
-    override suspend fun upsert(bookmark: Bookmark): Long {
-      update(bookmark)
-      return bookmark.id
-    }
-
-    override suspend fun upsert(bookmarks: List<Bookmark>) = bookmarks.map { upsert(it) }
-
-    override suspend fun delete(id: Long) {
-      rows.removeAll { it.id == id }
-    }
-
-    override suspend fun deleteAll() {
-      rows.clear()
-    }
-  }
-
-  private class FakePreferences : AppPreferences {
-    var config: ApiConfig? = initialConfig
-    var localAccountId = "account"
-
-    override fun getApiConfig() = config
-
-    override fun getAccountId() = localAccountId
-
-    override fun observeApiConfig() = MutableStateFlow(config)
-
-    override suspend fun setApiConfig(apiConfig: ApiConfig?) {
-      config = apiConfig
-    }
-
-    override fun observeAppTheme() = MutableStateFlow(AppTheme.System)
-
-    override suspend fun setAppTheme(appTheme: AppTheme) = Unit
-
-    override fun observeUseDynamicColors() = MutableStateFlow(false)
-
-    override suspend fun toggleUseDynamicColors() = Unit
-  }
-
-  private class FakeApi : LinkdingBookmarksApi {
-    var online = false
-    var checkError: LinkdingError? = null
-    var saveError: LinkdingError? = null
-    var existing: LinkdingBookmark? = null
-    var onCheck: suspend () -> Unit = {}
-    var onSave: suspend () -> Unit = {}
-    val checkedUrls = mutableListOf<String>()
-    val sent = mutableListOf<LinkdingSaveBookmarkRequest>()
-
-    override suspend fun checkUrl(url: String): Result<LinkdingCheckUrlResponse, LinkdingError> {
-      checkedUrls += url
-      onCheck()
-      val error = checkError
-      return when {
-        error != null -> Err(error)
-        !online -> Err(LinkdingError.Connectivity())
-        else ->
-          Ok(
-            LinkdingCheckUrlResponse(
-              existing,
-              LinkdingCheckUrlResponse.Metadata(url, null, null),
-            )
-          )
-      }
-    }
-
-    override suspend fun saveBookmark(
-      request: LinkdingSaveBookmarkRequest
-    ): Result<LinkdingBookmark, LinkdingError> {
-      sent += request
-      onSave()
-      saveError?.let {
-        return Err(it)
-      }
-      return Ok(
-        remote.copy(
-          title = request.title.orEmpty(),
-          notes = request.notes.orEmpty(),
-          tagNames = request.tagNames,
-        )
-      )
-    }
-
-    override suspend fun getBookmarks(
-      offset: Int,
-      limit: Int,
-      query: String,
-      category: LinkdingBookmarkCategory,
-      tags: List<String>,
-    ): Result<LinkdingBookmarksResponse, LinkdingError> = error("Unexpected read")
-
-    override suspend fun getBookmark(id: Long): Result<LinkdingBookmark, LinkdingError> =
-      error("Unexpected read")
-
-    override suspend fun updateBookmark(
-      id: Long,
-      request: LinkdingUpdateBookmarkRequest,
-    ): Result<LinkdingBookmark, LinkdingError> = error("Must not edit server bookmarks")
-
-    override suspend fun archiveBookmark(id: Long): Result<Unit, LinkdingError> =
-      error("Must not archive")
-
-    override suspend fun unarchiveBookmark(id: Long): Result<Unit, LinkdingError> =
-      error("Must not unarchive")
-
-    override suspend fun deleteBookmark(id: Long): Result<Unit, LinkdingError> =
-      error("Must not delete")
-  }
-
-  companion object {
-    private val initialConfig = ApiConfig("https://linkding.example", "secret")
-    private val draft = SaveBookmark("https://example.com/article", title = "Article")
-    private val remote = LinkdingBookmark(id = 42, url = draft.url)
   }
 }

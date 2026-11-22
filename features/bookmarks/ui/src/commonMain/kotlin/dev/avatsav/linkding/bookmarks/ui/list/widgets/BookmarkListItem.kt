@@ -56,6 +56,7 @@ internal fun BookmarkRow(
   onLongClick: () -> Unit,
   modifier: Modifier = Modifier,
   leadingIcon: (@Composable () -> Unit)? = null,
+  status: (@Composable () -> Unit)? = null,
 ) {
   Column(modifier) {
     Column(
@@ -95,6 +96,7 @@ internal fun BookmarkRow(
           overflow = TextOverflow.Ellipsis,
         )
       }
+      status?.invoke()
       if (description.isNotEmpty()) {
         Text(
           text = description,

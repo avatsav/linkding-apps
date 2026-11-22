@@ -16,7 +16,7 @@ interface PendingBookmarks {
   /** Returns after durable local storage; the foreground uploader owns all network work. */
   suspend fun create(bookmark: SaveBookmark): Result<SaveResult, BookmarkError>
 
-  /** False if the item is being uploaded, or was uploaded/discarded while its editor was open. */
+  /** False if the item was removed, is uploading, or awaits an overwrite/discard decision. */
   suspend fun edit(id: Long, bookmark: SaveBookmark): Boolean
 
   /** Does not wait for network requests. An item already being POSTed cannot be discarded. */
@@ -24,10 +24,19 @@ interface PendingBookmarks {
 
   /**
    * Requests a retry without network work. The next foreground uploader also checks requested items
-   * requiring attention; automatic uploads skip them. Requests wait in memory while no uploader is
-   * active, and are consumed before POST so uncertain uploads need a fresh retry.
+   * requiring attention, except known URL matches that need an explicit overwrite. Requests wait in
+   * memory and are consumed before POST so uncertain uploads need a fresh decision.
    */
   suspend fun retry(id: Long? = null)
+
+  /** Authorizes one foreground attempt to save a draft whose URL already exists on the server. */
+  suspend fun overwrite(id: Long)
+
+  /**
+   * Clears this account's credentials only if it is still current and has no pending creations.
+   * Serialized with local writes across user graphs; a stale graph cannot reset another account.
+   */
+  suspend fun resetAccountIfEmpty(): Boolean
 
   /** Runs until cancelled. The authenticated foreground lifecycle owns this call. */
   suspend fun runUploader()

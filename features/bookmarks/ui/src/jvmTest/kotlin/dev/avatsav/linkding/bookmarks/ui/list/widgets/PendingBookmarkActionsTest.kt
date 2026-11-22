@@ -5,6 +5,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.test.assertIsNotEnabled
+import androidx.compose.ui.test.hasAnyAncestor
+import androidx.compose.ui.test.hasText
+import androidx.compose.ui.test.isDialog
 import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
@@ -58,6 +61,24 @@ class PendingBookmarkActionsTest {
   }
 
   @Test
+  fun `a conflict offers overwrite and discard and overwrite requires confirmation`() {
+    val actions = mutableListOf<String>()
+    setActions(
+      item = { pendingBookmark().copy(state = PendingBookmark.State.AlreadyExists) },
+      onDismiss = { actions += "dismiss" },
+      onOverwrite = { actions += "overwrite:${it.id}" },
+    )
+    compose.onNodeWithContentDescription("Retry").assertDoesNotExist()
+    compose.onNodeWithContentDescription("Edit bookmark").assertDoesNotExist()
+    compose.onNodeWithContentDescription("Discard").assertExists()
+    compose.onNodeWithText("Overwrite").performClick()
+    compose.onNodeWithText("Overwrite existing bookmark?").assertExists()
+    assertEquals(emptyList(), actions)
+    compose.onNode(hasText("Overwrite") and hasAnyAncestor(isDialog())).performClick()
+    assertEquals(listOf("dismiss", "overwrite:1"), actions)
+  }
+
+  @Test
   fun `uploading disables actions`() {
     setActions(item = { pendingBookmark().copy(state = PendingBookmark.State.Uploading) })
     compose.onNodeWithContentDescription("Edit bookmark").assertIsNotEnabled()
@@ -88,6 +109,7 @@ class PendingBookmarkActionsTest {
     onDismiss: () -> Unit = {},
     onEdit: (PendingBookmark) -> Unit = {},
     onRetry: (PendingBookmark) -> Unit = {},
+    onOverwrite: (PendingBookmark) -> Unit = {},
     onDiscard: (PendingBookmark) -> Unit = {},
   ) {
     compose.setContent {
@@ -98,6 +120,7 @@ class PendingBookmarkActionsTest {
             onDismiss = onDismiss,
             onEdit = onEdit,
             onRetry = onRetry,
+            onOverwrite = onOverwrite,
             onDiscard = onDiscard,
           )
         }

@@ -20,7 +20,6 @@ import dev.avatsav.linkding.settings.ui.SettingsUiEvent.ShowSourceCode
 import dev.avatsav.linkding.settings.ui.SettingsUiEvent.ToggleUseDynamicColors
 import dev.zacsweers.metro.Inject
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 
@@ -57,11 +56,10 @@ class SettingsPresenter(
 
         ResetApiConfig ->
           presenterScope.launch {
-            if (pendingBookmarks.observe().first().isNotEmpty()) {
-              resetBlocked = true
-            } else {
-              settingsManager.setApiConfig(null)
+            if (pendingBookmarks.resetAccountIfEmpty()) {
               emitEffect(SettingsUiEffect.ResetToAuth)
+            } else {
+              resetBlocked = true
             }
           }
 

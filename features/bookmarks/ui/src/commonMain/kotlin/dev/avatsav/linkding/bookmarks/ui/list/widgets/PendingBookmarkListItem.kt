@@ -18,6 +18,7 @@ import dev.avatsav.linkding.data.model.PendingBookmark
 import dev.avatsav.linkding.ui.compose.widgets.SmallCircularProgressIndicator
 import dev.avatsav.linkding.ui.theme.BookmarkListTokens
 import linkding_apps.features.bookmarks.ui.generated.resources.Res
+import linkding_apps.features.bookmarks.ui.generated.resources.pending_bookmark_already_exists
 import linkding_apps.features.bookmarks.ui.generated.resources.pending_bookmark_attention
 import linkding_apps.features.bookmarks.ui.generated.resources.pending_bookmark_retry
 import linkding_apps.features.bookmarks.ui.generated.resources.pending_bookmark_upload
@@ -61,8 +62,10 @@ fun PendingBookmarkListItem(
   modifier: Modifier = Modifier,
 ) {
   val uploading = pending.state == PendingBookmark.State.Uploading
+  val alreadyExists = pending.state == PendingBookmark.State.AlreadyExists
   val needsAttention =
-    pending.state == PendingBookmark.State.Failed ||
+    alreadyExists ||
+      pending.state == PendingBookmark.State.Failed ||
       pending.state == PendingBookmark.State.Uncertain
   BookmarkRow(
     title = pending.bookmark.title?.takeIf { it.isNotBlank() } ?: pending.bookmark.url,
@@ -70,7 +73,7 @@ fun PendingBookmarkListItem(
     description = pending.bookmark.description.orEmpty(),
     tags = pending.bookmark.tags,
     selected = selected,
-    onClick = { openBookmark(pending) },
+    onClick = { if (alreadyExists && !selected) toggleActions(pending) else openBookmark(pending) },
     onLongClick = { toggleActions(pending) },
     modifier = modifier,
     leadingIcon = {
@@ -79,15 +82,27 @@ fun PendingBookmarkListItem(
         Icon(
           if (needsAttention) Icons.Outlined.ErrorOutline else Icons.Outlined.CloudUpload,
           contentDescription =
-            stringResource(
-              if (needsAttention) Res.string.pending_bookmark_attention
-              else Res.string.pending_bookmark_upload
-            ),
+            if (alreadyExists) null
+            else
+              stringResource(
+                if (needsAttention) Res.string.pending_bookmark_attention
+                else Res.string.pending_bookmark_upload
+              ),
           tint =
             if (needsAttention) MaterialTheme.colorScheme.error
             else MaterialTheme.colorScheme.onSurfaceVariant,
           modifier = Modifier.size(BookmarkListTokens.statusIconSize),
         )
     },
+    status =
+      if (alreadyExists) {
+        {
+          Text(
+            stringResource(Res.string.pending_bookmark_already_exists),
+            style = MaterialTheme.typography.labelMedium,
+            color = MaterialTheme.colorScheme.error,
+          )
+        }
+      } else null,
   )
 }

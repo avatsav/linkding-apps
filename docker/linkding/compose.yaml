@@ -1,13 +1,18 @@
+---
+name: linkding-apps
+
+x-linkding-image: &image ${LINKDING_IMAGE:-sissbruecker/linkding:1.47.0}
+
 services:
   linkding-init:
-    image: ${LINKDING_IMAGE:-sissbruecker/linkding:latest}
+    image: *image
     environment:
       LD_SUPERUSER_NAME: ${LD_SUPERUSER_NAME:-admin}
       LD_SUPERUSER_PASSWORD: ${LD_SUPERUSER_PASSWORD:?Set password in .env}
       LINKDING_TEST_API_TOKEN: ${LINKDING_TEST_API_TOKEN:?Set token in .env}
     volumes:
       - linkding-data:/etc/linkding/data
-      - ./docker/linkding/init-dev-token.py:/etc/linkding/init-dev-token.py:ro
+      - ./init-dev-token.py:/etc/linkding/init-dev-token.py:ro
     entrypoint: ["/bin/sh", "-ec"]
     command:
       - |
@@ -18,7 +23,7 @@ services:
           "exec(open('/etc/linkding/init-dev-token.py').read())"
 
   linkding:
-    image: ${LINKDING_IMAGE:-sissbruecker/linkding:latest}
+    image: *image
     depends_on:
       linkding-init:
         condition: service_completed_successfully

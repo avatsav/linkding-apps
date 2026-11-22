@@ -184,6 +184,7 @@ class BookmarksPresenter(
 
         is EditPending -> emitEffect(BookmarkUiEffect.EditPending(event.id))
         is RetryPending -> presenterScope.launch { pendingBookmarks.retry(event.id) }
+        is OverwritePending -> presenterScope.launch { pendingBookmarks.overwrite(event.id) }
         is DiscardPending -> presenterScope.launch { pendingBookmarks.discard(event.id) }
         Refresh ->
           presenterScope.launch {

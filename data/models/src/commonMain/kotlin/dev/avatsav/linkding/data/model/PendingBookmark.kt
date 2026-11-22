@@ -15,6 +15,7 @@ data class PendingBookmark(
     Uploading,
     Failed,
     Uncertain,
+    AlreadyExists,
   }
 }
 

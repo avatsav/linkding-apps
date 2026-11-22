@@ -426,6 +426,7 @@ private fun RowScope.BookmarkActions(
       onDismiss = onDismiss,
       onEdit = { eventSink(BookmarksUiEvent.EditPending(it.id)) },
       onRetry = { eventSink(BookmarksUiEvent.RetryPending(it.id)) },
+      onOverwrite = { eventSink(BookmarksUiEvent.OverwritePending(it.id)) },
       onDiscard = { eventSink(BookmarksUiEvent.DiscardPending(it.id)) },
     )
   } else if (bookmark != null) {

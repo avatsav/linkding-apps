@@ -22,7 +22,11 @@ import linkding_apps.features.bookmarks.ui.generated.resources.pending_bookmark_
 import linkding_apps.features.bookmarks.ui.generated.resources.pending_bookmark_discard
 import linkding_apps.features.bookmarks.ui.generated.resources.pending_bookmark_discard_message
 import linkding_apps.features.bookmarks.ui.generated.resources.pending_bookmark_discard_title
+import linkding_apps.features.bookmarks.ui.generated.resources.pending_bookmark_overwrite
+import linkding_apps.features.bookmarks.ui.generated.resources.pending_bookmark_overwrite_message
+import linkding_apps.features.bookmarks.ui.generated.resources.pending_bookmark_overwrite_title
 import linkding_apps.features.bookmarks.ui.generated.resources.pending_bookmark_retry
+import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
@@ -31,59 +35,89 @@ internal fun RowScope.PendingBookmarkActions(
   onDismiss: () -> Unit,
   onEdit: (PendingBookmark) -> Unit,
   onRetry: (PendingBookmark) -> Unit,
+  onOverwrite: (PendingBookmark) -> Unit,
   onDiscard: (PendingBookmark) -> Unit,
 ) {
-  var confirmDiscard by rememberSaveable(pending.id) { mutableStateOf(false) }
+  var confirmation by rememberSaveable(pending.id) { mutableStateOf<Confirmation?>(null) }
   val enabled = pending.state != PendingBookmark.State.Uploading
-  IconButton(
-    enabled = enabled,
-    onClick = {
-      onDismiss()
-      onRetry(pending)
-    },
-  ) {
-    Icon(
-      Icons.Default.Refresh,
-      contentDescription = stringResource(Res.string.pending_bookmark_retry),
-    )
+  val alreadyExists = pending.state == PendingBookmark.State.AlreadyExists
+  if (alreadyExists) {
+    TextButton(onClick = { confirmation = Confirmation.Overwrite }) {
+      Text(stringResource(Res.string.pending_bookmark_overwrite))
+    }
+  } else {
+    IconButton(
+      enabled = enabled,
+      onClick = {
+        onDismiss()
+        onRetry(pending)
+      },
+    ) {
+      Icon(
+        Icons.Default.Refresh,
+        contentDescription = stringResource(Res.string.pending_bookmark_retry),
+      )
+    }
   }
-  IconButton(enabled = enabled, onClick = { confirmDiscard = true }) {
+  IconButton(enabled = enabled, onClick = { confirmation = Confirmation.Discard }) {
     Icon(
       Icons.Default.Delete,
       contentDescription = stringResource(Res.string.pending_bookmark_discard),
     )
   }
-  IconButton(
-    enabled = enabled,
-    onClick = {
-      onDismiss()
-      onEdit(pending)
-    },
-  ) {
-    Icon(Icons.Default.Edit, contentDescription = stringResource(Res.string.bookmarks_edit))
+  if (!alreadyExists) {
+    IconButton(
+      enabled = enabled,
+      onClick = {
+        onDismiss()
+        onEdit(pending)
+      },
+    ) {
+      Icon(Icons.Default.Edit, contentDescription = stringResource(Res.string.bookmarks_edit))
+    }
   }
-  if (confirmDiscard) {
+  confirmation?.let { action ->
     AlertDialog(
-      onDismissRequest = { confirmDiscard = false },
-      title = { Text(stringResource(Res.string.pending_bookmark_discard_title)) },
-      text = { Text(stringResource(Res.string.pending_bookmark_discard_message)) },
+      onDismissRequest = { confirmation = null },
+      title = { Text(stringResource(action.title)) },
+      text = { Text(stringResource(action.message)) },
       confirmButton = {
         TextButton(
-          enabled = enabled,
+          enabled = enabled && (action != Confirmation.Overwrite || alreadyExists),
           onClick = {
-            confirmDiscard = false
+            confirmation = null
             onDismiss()
-            onDiscard(pending)
+            when (action) {
+              Confirmation.Discard -> onDiscard(pending)
+              Confirmation.Overwrite -> onOverwrite(pending)
+            }
           },
         ) {
-          Text(stringResource(Res.string.pending_bookmark_discard))
+          Text(stringResource(action.label))
         }
       },
       dismissButton = {
-        TextButton(onClick = { confirmDiscard = false }) {
+        TextButton(onClick = { confirmation = null }) {
           Text(stringResource(Res.string.pending_bookmark_cancel))
         }
       },
     )
   }
+}
+
+private enum class Confirmation(
+  val title: StringResource,
+  val message: StringResource,
+  val label: StringResource,
+) {
+  Discard(
+    Res.string.pending_bookmark_discard_title,
+    Res.string.pending_bookmark_discard_message,
+    Res.string.pending_bookmark_discard,
+  ),
+  Overwrite(
+    Res.string.pending_bookmark_overwrite_title,
+    Res.string.pending_bookmark_overwrite_message,
+    Res.string.pending_bookmark_overwrite,
+  ),
 }

@@ -13,9 +13,6 @@ interface SettingsManager {
   /** Get the current API configuration. */
   fun getApiConfig(): ApiConfig?
 
-  /** Set the API configuration. */
-  suspend fun setApiConfig(apiConfig: ApiConfig?)
-
   /** Observe the current app theme. */
   fun observeAppTheme(): Flow<AppTheme>
 
