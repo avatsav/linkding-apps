@@ -19,8 +19,6 @@ class SettingsManagerImpl(private val preferences: AppPreferences) : SettingsMan
 
   override fun getApiConfig(): ApiConfig? = preferences.getApiConfig()
 
-  override suspend fun setApiConfig(apiConfig: ApiConfig?) = preferences.setApiConfig(apiConfig)
-
   override fun observeAppTheme(): Flow<AppTheme> = preferences.observeAppTheme()
 
   override suspend fun setAppTheme(theme: AppTheme) = preferences.setAppTheme(theme)

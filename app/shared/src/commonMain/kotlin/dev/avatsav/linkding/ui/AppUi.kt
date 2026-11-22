@@ -80,7 +80,9 @@ class DefaultAppUi(
 
     val authState by authManager.state.collectAsState(initialAuthState)
 
-    val userScopeRouteEntryScope = rememberUserScopeRouteEntryScope(authState)
+    val userGraph = rememberUserGraph(authState)
+    if (userGraph != null) AuthenticatedUserEffects(userGraph.pendingBookmarks)
+    val userScopeRouteEntryScope = userGraph?.routeEntryScope.orEmpty()
 
     NavigatorCompositionLocals(navigator, resultHandler) {
       LinkdingTheme(
@@ -122,18 +124,16 @@ private fun <T : Any> predictivePopTransitionSpec():
 }
 
 @Composable
-private fun rememberUserScopeRouteEntryScope(authState: AuthState): Set<RouteEntryProviderScope> {
+private fun rememberUserGraph(authState: AuthState): UserGraph? {
   return when (authState) {
     is Loading,
-    is Unauthenticated -> emptySet()
-    is Authenticated -> {
+    is Unauthenticated -> null
+    is Authenticated ->
       remember(authState.apiConfig) {
-          GraphHolder.graph<UserGraph.Factory>().create(authState.apiConfig).also { component ->
-            GraphHolder.updateGraph(component)
-          }
+        GraphHolder.graph<UserGraph.Factory>().create(authState.apiConfig).also { component ->
+          GraphHolder.updateGraph(component)
         }
-        .routeEntryScope
-    }
+      }
   }
 }
 

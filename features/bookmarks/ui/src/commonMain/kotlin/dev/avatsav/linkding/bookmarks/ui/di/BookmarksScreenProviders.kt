@@ -50,6 +50,14 @@ interface BookmarksScreenProviders {
     entry<Route.AddBookmark.Edit> { AddBookmarkScreen(retainPresenter { factory.create(it) }) }
   }
 
+  @IntoSet
+  @Provides
+  fun providePendingBookmarkEntryProviderScope(
+    factory: AddBookmarkPresenter.Factory
+  ): RouteEntryProviderScope = {
+    entry<Route.AddBookmark.Pending> { AddBookmarkScreen(retainPresenter { factory.create(it) }) }
+  }
+
   @OptIn(ExperimentalMaterial3Api::class)
   @IntoSet
   @Provides

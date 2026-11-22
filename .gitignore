@@ -15,6 +15,10 @@ local.properties
 # Keep icon
 !/.idea/icon.png
 
+# Local Linkding development credentials (including the legacy root location)
+/.env
+/docker/linkding/.env
+
 # General
 .DS_Store
 .externalNativeBuild

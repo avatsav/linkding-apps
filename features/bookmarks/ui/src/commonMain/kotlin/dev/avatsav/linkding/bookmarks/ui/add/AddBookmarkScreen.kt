@@ -32,6 +32,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.saveable.listSaver
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -42,14 +44,15 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.avatsav.linkding.bookmarks.ui.add.AddBookmarkUiEvent.Close
 import dev.avatsav.linkding.bookmarks.ui.add.AddBookmarkUiEvent.Save
+import dev.avatsav.linkding.bookmarks.ui.add.AddBookmarkUiEvent.UrlChanged
+import dev.avatsav.linkding.data.model.PendingBookmark.State
+import dev.avatsav.linkding.data.model.SaveBookmark
 import dev.avatsav.linkding.navigation.LocalNavigator
 import dev.avatsav.linkding.presenter.ObserveEffects
 import dev.avatsav.linkding.ui.compose.widgets.OutlinedTagsTextField
 import dev.avatsav.linkding.ui.compose.widgets.PlaceholderVisualTransformation
 import dev.avatsav.linkding.ui.compose.widgets.SmallCircularProgressIndicator
 import dev.avatsav.linkding.ui.compose.widgets.TagsTextFieldValue
-import kotlin.time.Duration.Companion.milliseconds
-import kotlinx.coroutines.delay
 import linkding_apps.features.bookmarks.ui.generated.resources.Res
 import linkding_apps.features.bookmarks.ui.generated.resources.add_bookmark_close
 import linkding_apps.features.bookmarks.ui.generated.resources.add_bookmark_existing_found
@@ -63,9 +66,10 @@ import linkding_apps.features.bookmarks.ui.generated.resources.add_bookmark_url
 import linkding_apps.features.bookmarks.ui.generated.resources.add_bookmark_url_exists
 import linkding_apps.features.bookmarks.ui.generated.resources.add_bookmark_url_readonly
 import linkding_apps.features.bookmarks.ui.generated.resources.edit_bookmark_title
+import linkding_apps.features.bookmarks.ui.generated.resources.pending_bookmark_already_exists
+import linkding_apps.features.bookmarks.ui.generated.resources.pending_bookmark_unavailable
+import linkding_apps.features.bookmarks.ui.generated.resources.pending_bookmark_uncertain
 import org.jetbrains.compose.resources.stringResource
-
-private const val DebounceDelay = 500L
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -90,7 +94,7 @@ fun AddBookmarkScreen(presenter: AddBookmarkPresenter, modifier: Modifier = Modi
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-private fun AddBookmark(
+internal fun AddBookmark(
   state: AddBookmarkUiState,
   snackbarHostState: SnackbarHostState,
   modifier: Modifier = Modifier,
@@ -100,30 +104,41 @@ private fun AddBookmark(
   val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
 
   // Initialize URL from Shared mode or empty for New/Edit modes
-  var url by remember { mutableStateOf(state.initialUrl) }
-  val tagsValue = remember { TagsTextFieldValue() }
+  var url by rememberSaveable { mutableStateOf(state.initialUrl) }
+  val tagsValue =
+    rememberSaveable(
+      saver =
+        listSaver<TagsTextFieldValue, String>(
+          save = { value -> value.tags.map { it.value } },
+          restore = { names -> TagsTextFieldValue().apply { replaceAll(names) } },
+        )
+    ) {
+      TagsTextFieldValue()
+    }
 
-  var title by remember { mutableStateOf("") }
-  var description by remember { mutableStateOf("") }
-  var notes by remember { mutableStateOf("") }
+  var title by rememberSaveable { mutableStateOf("") }
+  var description by rememberSaveable { mutableStateOf("") }
+  var notes by rememberSaveable { mutableStateOf("") }
+  var initialized by rememberSaveable { mutableStateOf(false) }
 
-  LaunchedEffect(state.existingBookmark) {
-    if (state.isEditMode && state.existingBookmark != null) {
-      url = state.existingBookmark.url
-      title = state.existingBookmark.title
-      description = state.existingBookmark.description
-      notes = state.existingBookmark.notes
-      tagsValue.replaceAll(state.existingBookmark.tags.toList())
+  val initialBookmark = state.formBookmark(url)
+  LaunchedEffect(initialBookmark) {
+    if (initialBookmark != null && !initialized) {
+      url = initialBookmark.url
+      title = initialBookmark.title.orEmpty()
+      description = initialBookmark.description.orEmpty()
+      notes = initialBookmark.notes.orEmpty()
+      tagsValue.replaceAll(initialBookmark.tags.toList())
+      initialized = true
     }
   }
 
-  LaunchedEffect(url) {
-    if (state.isEditMode || url.isBlank()) return@LaunchedEffect
-    delay(DebounceDelay.milliseconds)
-    currentEventSink(AddBookmarkUiEvent.CheckUrl(url))
+  LaunchedEffect(Unit) {
+    // Restore a saved form URL into a recreated presenter without rechecking a locked URL.
+    if (!state.isEditMode && url != state.initialUrl) currentEventSink(UrlChanged(url))
   }
 
-  val saveEnabled = url.isNotBlank() && !state.saving && !state.loading
+  val saveEnabled = url.isNotBlank() && !state.saving && !state.loading && !state.pendingEditBlocked
   val screenTitle =
     if (state.isEditMode) stringResource(Res.string.edit_bookmark_title)
     else stringResource(Res.string.add_bookmark_title)
@@ -149,7 +164,7 @@ private fun AddBookmark(
       AddBookmarkBottomBar(
         saving = state.saving,
         saveEnabled = saveEnabled,
-        errorMessage = state.errorMessage,
+        errorMessage = state.formErrorMessage(),
         onSave = {
           eventSink(Save(url, title, description, notes, tagsValue.tags.map { it.value }.toList()))
         },
@@ -165,8 +180,11 @@ private fun AddBookmark(
       item("url") {
         UrlTextField(
           url = url,
-          onUrlChange = { url = it },
-          isEditMode = state.isEditMode,
+          onUrlChange = {
+            url = it
+            if (!state.isEditMode) currentEventSink(UrlChanged(it))
+          },
+          isEditMode = state.isEditMode && state.mode !is BookmarkMode.Pending,
           alreadyBookmarked = state.checkUrlResult?.alreadyBookmarked == true,
         )
       }
@@ -207,6 +225,33 @@ private fun AddBookmark(
     }
   }
 }
+
+private fun AddBookmarkUiState.formBookmark(url: String): SaveBookmark? =
+  pendingBookmark?.bookmark
+    ?: existingBookmark
+      ?.takeIf { mode is BookmarkMode.Edit || checkedUrl == url || it.url == url }
+      ?.let {
+        SaveBookmark(
+          url = it.url,
+          title = it.title,
+          description = it.description,
+          notes = it.notes,
+          tags = it.tags,
+        )
+      }
+
+@Composable
+private fun AddBookmarkUiState.formErrorMessage(): String? =
+  when {
+    pendingBookmark?.state == State.AlreadyExists ->
+      stringResource(Res.string.pending_bookmark_already_exists)
+    pendingEditBlocked -> stringResource(Res.string.pending_bookmark_unavailable)
+    errorMessage != null -> errorMessage
+    pendingBookmark?.lastError != null -> pendingBookmark.lastError
+    pendingBookmark?.state == State.Uncertain ->
+      stringResource(Res.string.pending_bookmark_uncertain)
+    else -> null
+  }
 
 @Composable
 private fun AddBookmarkBottomBar(

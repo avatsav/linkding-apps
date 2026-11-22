@@ -58,6 +58,11 @@ class MainActivity : ComponentActivity() {
     }
   }
 
+  override fun onResume() {
+    super.onResume()
+    GraphHolder.graph<AndroidAppGraph>().localNetworkAccess.refresh()
+  }
+
   private fun getLaunchMode(): LaunchMode {
     val sharedLink = getSharedLinkFromIntent()
     return if (sharedLink != null) LaunchMode.SharedLink(sharedLink) else LaunchMode.Normal

@@ -6,6 +6,7 @@ import com.github.michaelbull.result.Result
 import dev.avatsav.linkding.api.models.ApiResponse
 import dev.avatsav.linkding.api.models.LinkdingError
 import dev.avatsav.linkding.api.models.LinkdingErrorResponse
+import io.ktor.http.HttpStatusCode
 
 internal fun <T> ApiResponse<T, LinkdingErrorResponse>.toLinkdingResult():
   Result<T, LinkdingError> =
@@ -14,10 +15,20 @@ internal fun <T> ApiResponse<T, LinkdingErrorResponse>.toLinkdingResult():
     is ApiResponse.Error ->
       when (this) {
         is ApiResponse.ClientError ->
-          Err(LinkdingError.Unauthorized(derivedErrorMessage("Unauthorized")))
+          if (code == HttpStatusCode.Unauthorized.value || code == HttpStatusCode.Forbidden.value) {
+            Err(LinkdingError.Unauthorized(derivedErrorMessage("Unauthorized")))
+          } else {
+            Err(LinkdingError.Other(derivedErrorMessage("Request rejected ($code)")))
+          }
         is ApiResponse.ConnectivityError ->
           Err(LinkdingError.Connectivity(derivedErrorMessage("Connectivity")))
-        else -> Err(LinkdingError.Other(derivedErrorMessage("Unknown")))
+        else ->
+          Err(
+            LinkdingError.Other(
+              derivedErrorMessage("Unknown"),
+              requestMayHaveSucceeded = true,
+            )
+          )
       }
   }
 

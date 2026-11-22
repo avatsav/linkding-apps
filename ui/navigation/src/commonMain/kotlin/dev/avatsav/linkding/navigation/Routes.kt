@@ -32,6 +32,8 @@ sealed interface Route {
     @Serializable data class Shared(val url: String) : AddBookmark
 
     @Serializable data class Edit(val bookmarkId: Long) : AddBookmark
+
+    @Serializable data class Pending(val pendingId: Long) : AddBookmark
   }
 
   @Serializable data class Url(val url: String) : Route

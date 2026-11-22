@@ -7,6 +7,7 @@ interface BookmarksDao {
 
   suspend fun insert(bookmarks: List<Bookmark>)
 
+  /** Updates an existing cached bookmark without inserting a missing row. */
   suspend fun update(bookmark: Bookmark)
 
   @IgnorableReturnValue suspend fun upsert(bookmark: Bookmark): Long

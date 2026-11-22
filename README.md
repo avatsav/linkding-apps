@@ -19,6 +19,58 @@ This project owes its multiplatform foundation to the excellent [Tivi](https://g
 - [Metro](https://github.com/ZacSweers/metro): Dependency Injection
 - Icons generated with [Icon Kitchen](https://icon.kitchen)
 
+## Local Linkding server
+
+Use the development server in `docker/linkding/` for manual testing without
+touching your real library. Run the Compose commands below from that directory.
+If you already have a root `.env` from the old setup, move it to `docker/linkding/`
+instead of copying the example. The existing Compose data volume is reused.
+
+```bash
+cd docker/linkding
+cp .env.example .env
+# Generate a test token once:
+python3 -c 'import secrets; print(secrets.token_hex(20))'
+# Save it as LINKDING_TEST_API_TOKEN in .env and set a throwaway password.
+docker compose up -d --wait
+```
+
+Compose provisions the admin account and the configured API token before starting
+Linkding. Use `LINKDING_TEST_API_TOKEN` from `.env` in the app; there is no manual
+token-creation step in the web UI. The token stays the same across restarts and
+fresh data volumes as long as you keep the same `.env` value. Changing it and
+running `docker compose up -d --wait` replaces the managed development token;
+other API tokens are left alone.
+
+The web UI is at <http://localhost:9090>. Use these server URLs in the app:
+
+| Client | Server URL |
+| --- | --- |
+| Android emulator, debug build | `http://10.0.2.2:9090/` |
+| Desktop app | `http://localhost:9090/` |
+| Android device over USB | Run `adb reverse tcp:9090 tcp:9090`, then use `http://127.0.0.1:9090/` |
+
+The container only publishes on the host's loopback interface. Android's HTTP
+exceptions apply only to debug builds and these local hosts; release builds keep
+their existing network policy. This setup is for local development, not production.
+Other clients/builds that require HTTPS need an HTTPS endpoint.
+
+To test pending uploads, authenticate while the server is running, then stop it:
+
+```bash
+docker compose stop linkding
+```
+
+Save a few new bookmarks and edit a pending item. Start the server again with
+`docker compose start linkding`, keep the app in the foreground (or tap Retry),
+and check that uploaded items move from Pending to the top of All bookmarks
+without a manual refresh.
+
+`docker compose down` removes the container but retains its named data volume.
+**`docker compose down --volumes` deletes the development library and account.**
+The local `.env` is ignored by Git. Set `LINKDING_PORT` to change the host port
+or `LINKDING_IMAGE` to override the version pinned in `compose.yaml`.
+
 ## License
 
 ```

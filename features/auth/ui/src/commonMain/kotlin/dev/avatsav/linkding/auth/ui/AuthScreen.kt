@@ -11,15 +11,21 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.LargeFlexibleTopAppBar
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
@@ -29,23 +35,34 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.autofill.ContentType
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.semantics.contentType
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.avatsav.linkding.auth.ui.AuthUiEvent.SaveCredentials
 import dev.avatsav.linkding.navigation.LocalNavigator
 import dev.avatsav.linkding.navigation.Route
 import dev.avatsav.linkding.presenter.ObserveEffects
+import dev.avatsav.linkding.ui.compose.rememberLocalNetworkPermissionRequest
 import dev.avatsav.linkding.ui.compose.widgets.SmallCircularProgressIndicator
 import linkding_apps.features.auth.ui.generated.resources.Res
+import linkding_apps.features.auth.ui.generated.resources.auth_allow_access
 import linkding_apps.features.auth.ui.generated.resources.auth_api_key
 import linkding_apps.features.auth.ui.generated.resources.auth_description
 import linkding_apps.features.auth.ui.generated.resources.auth_error_invalid_api_key
 import linkding_apps.features.auth.ui.generated.resources.auth_error_invalid_host
+import linkding_apps.features.auth.ui.generated.resources.auth_hide_api_key
 import linkding_apps.features.auth.ui.generated.resources.auth_host_url
+import linkding_apps.features.auth.ui.generated.resources.auth_local_network_required
+import linkding_apps.features.auth.ui.generated.resources.auth_open_app_settings
 import linkding_apps.features.auth.ui.generated.resources.auth_save
+import linkding_apps.features.auth.ui.generated.resources.auth_show_api_key
 import linkding_apps.features.auth.ui.generated.resources.auth_title
 import org.jetbrains.compose.resources.stringResource
 
@@ -55,29 +72,39 @@ fun AuthScreen(presenter: AuthPresenter, modifier: Modifier = Modifier) {
   val navigator = LocalNavigator.current
   val state by presenter.models.collectAsStateWithLifecycle()
   val eventSink = presenter::eventSink
+  val form = rememberAuthFormState()
+  val permissionRequest = rememberLocalNetworkPermissionRequest { granted ->
+    eventSink(
+      AuthUiEvent.LocalNetworkPermissionResult(granted, form.consumePermissionResult(granted))
+    )
+  }
 
   ObserveEffects(presenter.effects) { effect ->
     when (effect) {
       AuthEffect.AuthenticationSuccess -> navigator.resetRoot(Route.BookmarksFeed)
+      AuthEffect.RequestLocalNetworkAccess -> {
+        form.awaitPermissionResult()
+        permissionRequest.launch()
+      }
     }
   }
 
-  AuthScreen(state, modifier, eventSink)
+  AuthScreen(state, form, modifier, permissionRequest.opensSettings, eventSink)
 }
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-private fun AuthScreen(
+internal fun AuthScreen(
   state: AuthUiState,
+  form: AuthFormState,
   modifier: Modifier = Modifier,
+  opensSettings: Boolean = false,
   eventSink: (AuthUiEvent) -> Unit,
 ) {
 
-  var hostUrl by remember { mutableStateOf("") }
-  var apiKey by remember { mutableStateOf("") }
-  val allFieldsFilledOut by remember {
-    derivedStateOf { hostUrl.isNotEmpty() && apiKey.isNotEmpty() }
-  }
+  var apiKeyVisible by remember { mutableStateOf(false) }
+  val allFieldsFilledOut by
+    remember(form) { derivedStateOf { form.hostUrl.isNotEmpty() && form.apiKey.isNotEmpty() } }
 
   val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
 
@@ -105,7 +132,7 @@ private fun AuthScreen(
           Button(
             modifier = Modifier.defaultMinSize(minWidth = 56.dp, minHeight = 48.dp),
             enabled = allFieldsFilledOut && !state.loading,
-            onClick = { eventSink(SaveCredentials(hostUrl, apiKey)) },
+            onClick = { eventSink(SaveCredentials(form.hostUrl, form.apiKey)) },
           ) {
             if (state.loading) SmallCircularProgressIndicator()
             else Text(stringResource(Res.string.auth_save))
@@ -125,9 +152,25 @@ private fun AuthScreen(
       verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
       Text(text = stringResource(Res.string.auth_description))
+      if (state.localNetworkAccessRequired) {
+        Text(text = stringResource(Res.string.auth_local_network_required))
+        TextButton(
+          enabled = allFieldsFilledOut && !state.loading,
+          onClick = { eventSink(SaveCredentials(form.hostUrl, form.apiKey)) },
+        ) {
+          Text(
+            stringResource(
+              if (opensSettings) Res.string.auth_open_app_settings else Res.string.auth_allow_access
+            )
+          )
+        }
+      }
+      state.errorMessage
+        ?.takeIf { it.isNotBlank() }
+        ?.let { message -> Text(text = message, color = MaterialTheme.colorScheme.error) }
       OutlinedTextField(
         modifier = Modifier.fillMaxWidth(),
-        value = hostUrl,
+        value = form.hostUrl,
         enabled = !state.loading,
         singleLine = true,
         label = { Text(text = stringResource(Res.string.auth_host_url)) },
@@ -147,14 +190,29 @@ private fun AuthScreen(
             keyboardType = KeyboardType.Uri,
             imeAction = ImeAction.Next,
           ),
-        onValueChange = { hostUrl = it },
+        onValueChange = { form.hostUrl = it },
       )
       OutlinedTextField(
-        modifier = Modifier.fillMaxWidth(),
-        value = apiKey,
+        modifier = Modifier.fillMaxWidth().semantics { contentType = ContentType.Password },
+        value = form.apiKey,
         enabled = !state.loading,
         singleLine = true,
         label = { Text(text = stringResource(Res.string.auth_api_key)) },
+        visualTransformation =
+          if (apiKeyVisible) VisualTransformation.None else PasswordVisualTransformation(),
+        keyboardOptions =
+          KeyboardOptions(
+            autoCorrectEnabled = false,
+            keyboardType = KeyboardType.Password,
+            imeAction = ImeAction.Done,
+          ),
+        trailingIcon = {
+          ApiKeyVisibilityToggle(
+            visible = apiKeyVisible,
+            enabled = !state.loading,
+            onClick = { apiKeyVisible = !apiKeyVisible },
+          )
+        },
         isError = state.invalidApiKey,
         supportingText = {
           if (errorMessage.isNotBlank() && state.invalidApiKey) {
@@ -165,8 +223,24 @@ private fun AuthScreen(
             )
           }
         },
-        onValueChange = { apiKey = it },
+        onValueChange = { form.apiKey = it },
       )
     }
+  }
+}
+
+@Composable
+private fun ApiKeyVisibilityToggle(
+  visible: Boolean,
+  onClick: () -> Unit,
+  modifier: Modifier = Modifier,
+  enabled: Boolean = true,
+) {
+  IconButton(onClick = onClick, modifier = modifier, enabled = enabled) {
+    Icon(
+      imageVector = if (visible) Icons.Default.VisibilityOff else Icons.Default.Visibility,
+      contentDescription =
+        stringResource(if (visible) Res.string.auth_hide_api_key else Res.string.auth_show_api_key),
+    )
   }
 }
