@@ -30,7 +30,6 @@ class AuthPresenter(
     val verifying by authenticate.inProgress.collectAsState(false)
     var checkingAccess by remember { mutableStateOf(false) }
     var awaitingPermission by remember { mutableStateOf(false) }
-    var pendingCredentials by remember { mutableStateOf<AuthUiEvent.SaveCredentials?>(null) }
     var localNetworkAccessRequired by rememberSaveable { mutableStateOf(false) }
     var invalidHostUrl by rememberSaveable { mutableStateOf(false) }
     var invalidApiKey by rememberSaveable { mutableStateOf(false) }
@@ -45,7 +44,6 @@ class AuthPresenter(
             errorMessage = ""
             localNetworkAccessRequired = false
             checkingAccess = true
-            pendingCredentials = event
             presenterScope.launch {
               try {
                 if (localNetworkAccess.check(event.hostUrl) == LocalNetworkAccess.State.Required) {
@@ -62,7 +60,6 @@ class AuthPresenter(
                         is Other -> errorMessage = error.message
                       }
                     }
-                  pendingCredentials = null
                 }
               } finally {
                 checkingAccess = false
@@ -74,8 +71,7 @@ class AuthPresenter(
           localNetworkAccess.refresh()
           awaitingPermission = false
           localNetworkAccessRequired = !event.granted
-          val credentials = pendingCredentials
-          pendingCredentials = null
+          val credentials = event.credentials
           if (event.granted && credentials != null) eventSink(credentials)
         }
       }

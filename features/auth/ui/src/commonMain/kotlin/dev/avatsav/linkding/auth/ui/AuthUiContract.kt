@@ -18,7 +18,10 @@ data class AuthUiState(
 sealed interface AuthUiEvent {
   data class SaveCredentials(val hostUrl: String, val apiKey: String) : AuthUiEvent
 
-  data class LocalNetworkPermissionResult(val granted: Boolean) : AuthUiEvent
+  data class LocalNetworkPermissionResult(
+    val granted: Boolean,
+    val credentials: SaveCredentials?,
+  ) : AuthUiEvent
 }
 
 sealed interface AuthEffect {

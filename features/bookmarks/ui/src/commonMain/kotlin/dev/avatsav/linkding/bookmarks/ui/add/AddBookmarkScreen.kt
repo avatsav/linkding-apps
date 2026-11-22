@@ -44,6 +44,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.avatsav.linkding.bookmarks.ui.add.AddBookmarkUiEvent.Close
 import dev.avatsav.linkding.bookmarks.ui.add.AddBookmarkUiEvent.Save
+import dev.avatsav.linkding.data.model.SaveBookmark
 import dev.avatsav.linkding.navigation.LocalNavigator
 import dev.avatsav.linkding.presenter.ObserveEffects
 import dev.avatsav.linkding.ui.compose.widgets.OutlinedTagsTextField
@@ -94,7 +95,7 @@ fun AddBookmarkScreen(presenter: AddBookmarkPresenter, modifier: Modifier = Modi
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-private fun AddBookmark(
+internal fun AddBookmark(
   state: AddBookmarkUiState,
   snackbarHostState: SnackbarHostState,
   modifier: Modifier = Modifier,
@@ -121,25 +122,26 @@ private fun AddBookmark(
   var notes by rememberSaveable { mutableStateOf("") }
   var initialized by rememberSaveable { mutableStateOf(false) }
 
-  LaunchedEffect(state.pendingBookmark) {
-    val draft = state.pendingBookmark?.bookmark
-    if (draft != null && !initialized) {
-      url = draft.url
-      title = draft.title.orEmpty()
-      description = draft.description.orEmpty()
-      notes = draft.notes.orEmpty()
-      tagsValue.replaceAll(draft.tags.toList())
-      initialized = true
-    }
-  }
-
-  LaunchedEffect(state.existingBookmark) {
-    if (state.isEditMode && state.existingBookmark != null && !initialized) {
-      url = state.existingBookmark.url
-      title = state.existingBookmark.title
-      description = state.existingBookmark.description
-      notes = state.existingBookmark.notes
-      tagsValue.replaceAll(state.existingBookmark.tags.toList())
+  val initialBookmark =
+    state.pendingBookmark?.bookmark
+      ?: state.existingBookmark
+        ?.takeIf { state.isEditMode }
+        ?.let {
+          SaveBookmark(
+            url = it.url,
+            title = it.title,
+            description = it.description,
+            notes = it.notes,
+            tags = it.tags,
+          )
+        }
+  LaunchedEffect(initialBookmark) {
+    if (initialBookmark != null && !initialized) {
+      url = initialBookmark.url
+      title = initialBookmark.title.orEmpty()
+      description = initialBookmark.description.orEmpty()
+      notes = initialBookmark.notes.orEmpty()
+      tagsValue.replaceAll(initialBookmark.tags.toList())
       initialized = true
     }
   }

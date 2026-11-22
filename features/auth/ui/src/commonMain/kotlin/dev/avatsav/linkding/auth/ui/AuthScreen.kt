@@ -33,7 +33,6 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.autofill.ContentType
@@ -73,35 +72,39 @@ fun AuthScreen(presenter: AuthPresenter, modifier: Modifier = Modifier) {
   val navigator = LocalNavigator.current
   val state by presenter.models.collectAsStateWithLifecycle()
   val eventSink = presenter::eventSink
-  val permissionRequest = rememberLocalNetworkPermissionRequest {
-    eventSink(AuthUiEvent.LocalNetworkPermissionResult(it))
+  val form = rememberAuthFormState()
+  val permissionRequest = rememberLocalNetworkPermissionRequest { granted ->
+    eventSink(
+      AuthUiEvent.LocalNetworkPermissionResult(granted, form.consumePermissionResult(granted))
+    )
   }
 
   ObserveEffects(presenter.effects) { effect ->
     when (effect) {
       AuthEffect.AuthenticationSuccess -> navigator.resetRoot(Route.BookmarksFeed)
-      AuthEffect.RequestLocalNetworkAccess -> permissionRequest.launch()
+      AuthEffect.RequestLocalNetworkAccess -> {
+        form.awaitPermissionResult()
+        permissionRequest.launch()
+      }
     }
   }
 
-  AuthScreen(state, modifier, permissionRequest.opensSettings, eventSink)
+  AuthScreen(state, form, modifier, permissionRequest.opensSettings, eventSink)
 }
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-private fun AuthScreen(
+internal fun AuthScreen(
   state: AuthUiState,
+  form: AuthFormState,
   modifier: Modifier = Modifier,
   opensSettings: Boolean = false,
   eventSink: (AuthUiEvent) -> Unit,
 ) {
 
-  var hostUrl by rememberSaveable { mutableStateOf("") }
-  var apiKey by rememberSaveable { mutableStateOf("") }
   var apiKeyVisible by remember { mutableStateOf(false) }
-  val allFieldsFilledOut by remember {
-    derivedStateOf { hostUrl.isNotEmpty() && apiKey.isNotEmpty() }
-  }
+  val allFieldsFilledOut by
+    remember(form) { derivedStateOf { form.hostUrl.isNotEmpty() && form.apiKey.isNotEmpty() } }
 
   val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
 
@@ -129,7 +132,7 @@ private fun AuthScreen(
           Button(
             modifier = Modifier.defaultMinSize(minWidth = 56.dp, minHeight = 48.dp),
             enabled = allFieldsFilledOut && !state.loading,
-            onClick = { eventSink(SaveCredentials(hostUrl, apiKey)) },
+            onClick = { eventSink(SaveCredentials(form.hostUrl, form.apiKey)) },
           ) {
             if (state.loading) SmallCircularProgressIndicator()
             else Text(stringResource(Res.string.auth_save))
@@ -153,7 +156,7 @@ private fun AuthScreen(
         Text(text = stringResource(Res.string.auth_local_network_required))
         TextButton(
           enabled = allFieldsFilledOut && !state.loading,
-          onClick = { eventSink(SaveCredentials(hostUrl, apiKey)) },
+          onClick = { eventSink(SaveCredentials(form.hostUrl, form.apiKey)) },
         ) {
           Text(
             stringResource(
@@ -167,7 +170,7 @@ private fun AuthScreen(
         ?.let { message -> Text(text = message, color = MaterialTheme.colorScheme.error) }
       OutlinedTextField(
         modifier = Modifier.fillMaxWidth(),
-        value = hostUrl,
+        value = form.hostUrl,
         enabled = !state.loading,
         singleLine = true,
         label = { Text(text = stringResource(Res.string.auth_host_url)) },
@@ -187,11 +190,11 @@ private fun AuthScreen(
             keyboardType = KeyboardType.Uri,
             imeAction = ImeAction.Next,
           ),
-        onValueChange = { hostUrl = it },
+        onValueChange = { form.hostUrl = it },
       )
       OutlinedTextField(
         modifier = Modifier.fillMaxWidth().semantics { contentType = ContentType.Password },
-        value = apiKey,
+        value = form.apiKey,
         enabled = !state.loading,
         singleLine = true,
         label = { Text(text = stringResource(Res.string.auth_api_key)) },
@@ -220,7 +223,7 @@ private fun AuthScreen(
             )
           }
         },
-        onValueChange = { apiKey = it },
+        onValueChange = { form.apiKey = it },
       )
     }
   }

@@ -6,6 +6,13 @@ plugins {
 
 kotlin {
   sourceSets {
+    jvmTest.dependencies {
+      implementation(libs.kotlin.test)
+      implementation(libs.kotlin.coroutines.test)
+      implementation(libs.kotlin.coroutines.swing)
+      implementation(compose.desktop.currentOs)
+      implementation(libs.compose.ui.test.junit4)
+    }
     commonMain.dependencies {
       implementation(projects.features.auth.api)
       implementation(projects.core.base)
