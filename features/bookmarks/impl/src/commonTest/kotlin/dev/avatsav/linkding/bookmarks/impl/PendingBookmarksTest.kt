@@ -230,7 +230,25 @@ class PendingBookmarksTest {
   }
 
   @Test
-  fun `ambiguous POST is retained and existing URL is not posted again`() = runTest {
+  fun `existing server bookmark clears the pending creation without POST`() = runTest {
+    val f = Fixture()
+    val existing = remote.copy(title = "Server title", notes = "Server notes")
+    f.api.online = true
+    f.api.existing = existing
+    assertTrue(f.queue.create(draft).isOk)
+    backgroundScope.launch { f.queue.runUploader() }
+    runCurrent()
+    assertEquals(listOf(draft.url), f.api.checkedUrls)
+    assertTrue(f.api.sent.isEmpty())
+    assertTrue(f.store.rows.value.isEmpty(), "A confirmed existing URL should not stay pending")
+    val cached = f.cache.rows.single()
+    assertEquals(existing.id, cached.id)
+    assertEquals(existing.title, cached.title)
+    assertEquals(existing.notes, cached.notes)
+  }
+
+  @Test
+  fun `retry clears an ambiguous POST when the bookmark now exists`() = runTest {
     val f = foregroundFixture()
     f.api.online = true
     f.api.saveError = LinkdingError.Connectivity("Timed out")
@@ -240,7 +258,8 @@ class PendingBookmarksTest {
     f.api.existing = remote
     retry(f.queue)
     assertEquals(1, f.api.sent.size)
-    assertEquals(PendingBookmark.State.Failed, f.queue.observeFirst().state)
+    assertTrue(f.store.rows.value.isEmpty())
+    assertEquals(remote.id, f.cache.rows.single().id)
   }
 
   @Test
@@ -411,6 +430,29 @@ class PendingBookmarksTest {
     release.complete(Unit)
     runCurrent()
     assertTrue(f.store.rows.value.isEmpty())
+    assertTrue(f.api.sent.isEmpty())
+  }
+
+  @Test
+  fun `an existing bookmark for the old URL cannot clear an edited draft`() = runTest {
+    val f = foregroundFixture()
+    f.api.online = true
+    f.api.existing = remote
+    val release = CompletableDeferred<Unit>()
+    f.api.onCheck = { release.await() }
+    assertTrue(f.queue.create(draft).isOk)
+    runCurrent()
+
+    val changed = draft.copy(url = "https://example.com/changed")
+    assertTrue(f.queue.edit(1, changed))
+    // Hold the new check so only the old result can affect these assertions.
+    f.api.onCheck = { awaitCancellation() }
+    release.complete(Unit)
+    runCurrent()
+
+    assertEquals(listOf(draft.url, changed.url), f.api.checkedUrls)
+    assertEquals(changed, f.queue.observeFirst().bookmark)
+    assertTrue(f.cache.rows.isEmpty())
     assertTrue(f.api.sent.isEmpty())
   }
 

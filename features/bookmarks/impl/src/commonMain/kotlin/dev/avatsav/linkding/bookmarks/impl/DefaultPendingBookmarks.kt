@@ -171,13 +171,18 @@ class DefaultPendingBookmarks(
       .checkUrl(item.bookmark.url)
       .fold(
         success = { check ->
-          if (check.bookmark != null) {
-            updateIfUnchanged(
-              item,
-              State.Failed,
-              "This URL is already on the server. Review it before discarding this pending bookmark.",
-            )
-          } else send(item)
+          val existing = check.bookmark
+          if (existing == null) {
+            send(item)
+          } else {
+            coordinator.locally(accountId) {
+              // A stale preflight must not clear a draft that was edited or discarded.
+              if (get(item.id) == item && isCurrentAccount) {
+                bookmarksDao.upsert(mapper.map(existing))
+                dao.delete(accountId, item.id)
+              }
+            }
+          }
         },
         failure = { error ->
           if (error !is LinkdingError.Connectivity)
